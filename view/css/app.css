@@ -1,0 +1,75 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css";
+
+
+/* colors */
+:root {
+  --theme-color: #00e5ff;
+}
+
+
+/*theme*/
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+fieldset{
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+* {
+    user-select: none;
+    /* supported by Chrome and Opera */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 9px;
+    background: rgba(219, 219, 219, 0.7);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 9px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+
+
+/* Sidebar */
+
+side-bar {
+    position: fixed;
+
+    width: 150px;
+    height: 100%;
+
+}
+logo {
+    font-size: 50px;
+}
+logo .aqua{
+
+}
+
