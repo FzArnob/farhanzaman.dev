@@ -2,7 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector("#theme-toogle-button").addEventListener('click', function (e) {
 
     });
-    document.querySelector("#nav-menu.bar-items").addEventListener('mouseover', function (ele) {
-        
+    document.querySelectorAll(".bar-item").forEach(barItem => {
+        barItem.addEventListener('mouseover', function(e){
+            console.log("mouse");
+            barItem.childNodes[0].className = 'bar-item-icon open';
+        });
     });
 });

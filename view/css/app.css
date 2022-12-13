@@ -106,10 +106,16 @@ side-bar {
 .bar-item-icon{
     padding: 20px;
     height: 22px;
+    margin-left: -42px;
+    transform: rotate(-20deg);
     padding-left: 10px;
-    padding-right: 10;
     width: 22px;
     text-align: left;
+}
+.bar-item-icon.open{
+    margin: 0; 
+    transform: rotate(0deg);
+    transition: transform 1s linear;
 }
 .bar-item-icon-color {
     fill: var(--object-color-dark-gray);
