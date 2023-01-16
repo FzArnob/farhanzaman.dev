@@ -1,0 +1,46 @@
+.bg1 {
+  transition: all 0.5s;
+  background-color: #ffffff;
+}
+.bg2 {
+  transition: all 0.5s;
+  background-color: #f6f6f6;
+}
+.bg2-change {
+  transition: all 0.5s;
+  background-color: #fdfeff;
+}
+.c1 {
+  transition: all 0.5s;
+  color: #252525;
+}
+.c2 {
+  transition: all 0.5s;
+  color: #343434;
+}
+.bg-theme {
+  transition: all 0.5s;
+  background-color: #00d3b4;
+}
+.c-theme {
+  transition: all 0.5s;
+  color: #00d3b4;
+}
+.bg-theme-second {
+    transition: all 0.5s;
+    background-color: #fd2155;
+  }
+  .c-theme-second {
+    transition: all 0.5s;
+    color: #fd2155;
+  }
+.c3 {
+  transition: all 0.5s;
+  color: #7f7f7f;
+}
+@media screen and (min-width: 800px) {
+  .bg2-change {
+    transition: all 0.5s;
+    background-color: #ffffff;
+  }
+}
