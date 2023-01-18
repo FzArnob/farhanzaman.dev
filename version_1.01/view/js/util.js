@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    document.getElementById("content-gap").style.marginTop = window.innerHeight+"px";
-    // preload
+  document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
+  // preload
   if (getCookie("theme") === "") {
     setCookie("theme", "light", 30);
     document
@@ -40,10 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : {
         r: null,
         g: null,
@@ -63,11 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var draw = setInterval(function () {
     var range = 100;
-    if(window.innerWidth > 800){
-        range = 15;
+    if (window.innerWidth > 800) {
+      range = 15;
     }
     if (mousePos.x > 0 && mousePos.y > 0) {
-      
+
       var colorList = [
         "#80ffec",
         "#4dffe5",
@@ -169,58 +169,103 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector("#nav-menu-button")
     .addEventListener("click", function (e) {
-        var menuBtn = document.querySelector("#nav-menu");
+      var menuBtn = document.querySelector("#nav-menu");
       menuBtn.classList.toggle("mobile-nav-menu");
       setTimeout(function () {
         (menuBtn.style.display === "block") ? menuBtn.style.display = "none" : menuBtn.style.display = "block"
       }, 100);
-      
+
     });
+});
 
-    //animation text
-    function wobbleAnimate(event) {
-        var wobbleElements = document.querySelectorAll(".wobble");
-        wobbleElements.forEach(function (el) {
-            el.addEventListener(event, function (){
-		if (
-			!el.classList.contains("animating") &&
-			!el.classList.contains("mouseover")
-		) {
-			el.classList.add("animating", "mouseover");
 
-			var letters = el.innerText.split("");
 
-			setTimeout(function () {
-				el.classList.remove("animating");
-			}, (letters.length + 1) * 50);
+//animation text
 
-			var animationName = el.dataset.animation;
-			if (!animationName) {
-				animationName = "jump";
-			}
+var wobbleElements = document.querySelectorAll(".wobble");
+wobbleElements.forEach(function (el) {
+  el.addEventListener("mouseover", function () {
+    if (
+      !el.classList.contains("animating") &&
+      !el.classList.contains("mouseover")
+    ) {
+      el.classList.add("animating", "mouseover");
 
-			el.innerText = "";
+      var letters = el.innerText.split("");
 
-			letters.forEach(function (letter) {
-				if (letter == " ") {
-					letter = "&nbsp;";
-				}
-				el.innerHTML += '<span class="letter">' + letter + "</span>";
-			});
+      setTimeout(function () {
+        el.classList.remove("animating");
+      }, (letters.length + 1) * 50);
 
-			var letterElements = el.querySelectorAll(".letter");
-			letterElements.forEach(function (letter, i) {
-				setTimeout(function () {
-					letter.classList.add(animationName);
-				}, 50 * i);
-			});
-		}
-	});
-    el.addEventListener("animationend", function () {
-		el.classList.remove("mouseover");
-	});
-})
+      var animationName = el.dataset.animation;
+      if (!animationName) {
+        animationName = "jump";
+      }
+
+      el.innerText = "";
+
+      letters.forEach(function (letter) {
+        if (letter == " ") {
+          letter = "&nbsp;";
+        }
+        el.innerHTML += '<span class="letter">' + letter + "</span>";
+      });
+
+      var letterElements = el.querySelectorAll(".letter");
+      letterElements.forEach(function (letter, i) {
+        setTimeout(function () {
+          letter.classList.add(animationName);
+        }, 50 * i);
+      });
     }
-wobbleAnimate("mouseover");
-wobbleAnimate("load");
+  });
+  el.addEventListener("animationend", function () {
+    el.classList.remove("mouseover");
+  });
+})
+
+
+window.addEventListener("load", function () {
+  setTimeout(function () {
+  var wobbleElements = document.querySelectorAll(".wobble");
+  wobbleElements.forEach(function (el) {
+    
+    if (
+      !el.classList.contains("animating") &&
+      !el.classList.contains("mouseover")
+    ) {
+      el.classList.add("animating", "mouseover");
+
+      var letters = el.innerText.split("");
+
+      setTimeout(function () {
+        el.classList.remove("animating");
+      }, (letters.length + 1) * 50);
+
+      var animationName = el.dataset.animation;
+      if (!animationName) {
+        animationName = "jump";
+      }
+
+      el.innerText = "";
+
+      letters.forEach(function (letter) {
+        if (letter == " ") {
+          letter = "&nbsp;";
+        }
+        el.innerHTML += '<span class="letter">' + letter + "</span>";
+      });
+
+      var letterElements = el.querySelectorAll(".letter");
+      letterElements.forEach(function (letter, i) {
+        setTimeout(function () {
+          letter.classList.add(animationName);
+        }, 50 * i);
+      });
+    }
+    el.addEventListener("animationend", function () {
+      el.classList.remove("mouseover");
+    });
+  })
+}, 1000);
 });
