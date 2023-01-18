@@ -62,9 +62,11 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   var draw = setInterval(function () {
-    var range = 100;
+    var range = 1000;
+    var sizeInt = getRandomInt(20, 50);
     if (window.innerWidth > 800) {
       range = 15;
+      sizeInt = getRandomInt(10, 30);
     }
     if (mousePos.x > 0 && mousePos.y > 0) {
 
@@ -99,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
         colorRGB.b +
         ", 0.6);";
 
-      var sizeInt = getRandomInt(10, 30);
       var size = "height: " + sizeInt + "px; width: " + sizeInt + "px;";
 
       var left =
@@ -223,49 +224,59 @@ wobbleElements.forEach(function (el) {
     el.classList.remove("mouseover");
   });
 })
+function isInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
 
+  );
+}
 
 window.addEventListener("load", function () {
   setTimeout(function () {
-  var wobbleElements = document.querySelectorAll(".wobble");
-  wobbleElements.forEach(function (el) {
-    
-    if (
-      !el.classList.contains("animating") &&
-      !el.classList.contains("mouseover")
-    ) {
-      el.classList.add("animating", "mouseover");
+    var wobbleElements = document.querySelectorAll(".wobble");
+    wobbleElements.forEach(function (el) {
+      if (isInViewport(el)) {
+        if (
+          !el.classList.contains("animating") &&
+          !el.classList.contains("mouseover")
+        ) {
+          el.classList.add("animating", "mouseover");
 
-      var letters = el.innerText.split("");
+          var letters = el.innerText.split("");
 
-      setTimeout(function () {
-        el.classList.remove("animating");
-      }, (letters.length + 1) * 50);
+          setTimeout(function () {
+            el.classList.remove("animating");
+          }, (letters.length + 1) * 50);
 
-      var animationName = el.dataset.animation;
-      if (!animationName) {
-        animationName = "jump";
-      }
+          var animationName = el.dataset.animation;
+          if (!animationName) {
+            animationName = "jump";
+          }
 
-      el.innerText = "";
+          el.innerText = "";
 
-      letters.forEach(function (letter) {
-        if (letter == " ") {
-          letter = "&nbsp;";
+          letters.forEach(function (letter) {
+            if (letter == " ") {
+              letter = "&nbsp;";
+            }
+            el.innerHTML += '<span class="letter">' + letter + "</span>";
+          });
+
+          var letterElements = el.querySelectorAll(".letter");
+          letterElements.forEach(function (letter, i) {
+            setTimeout(function () {
+              letter.classList.add(animationName);
+            }, 50 * i);
+          });
         }
-        el.innerHTML += '<span class="letter">' + letter + "</span>";
-      });
-
-      var letterElements = el.querySelectorAll(".letter");
-      letterElements.forEach(function (letter, i) {
-        setTimeout(function () {
-          letter.classList.add(animationName);
-        }, 50 * i);
-      });
-    }
-    el.addEventListener("animationend", function () {
-      el.classList.remove("mouseover");
-    });
-  })
-}, 1000);
+        el.addEventListener("animationend", function () {
+          el.classList.remove("mouseover");
+        });
+      } else console.log(el," not in view");
+    })
+  }, 1000);
 });
