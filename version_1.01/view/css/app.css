@@ -5,7 +5,6 @@
   --theme-color: #00d3b4;
   --theme-secondary-color: #fd2155;
 }
-
 /* theme */
 body {
   overflow-x: hidden;
@@ -18,13 +17,17 @@ body {
 
 /* restrict selection */
 * {
-  user-select: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none
+  -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
+*:focus {
+  outline: none !important;
+}
 /* scrollbar design */
 ::-webkit-scrollbar {
   width: 8px
@@ -58,11 +61,11 @@ a {
   font-size: 18px;
   font-weight: 600;
   font-family:'Segoe UI', sans-serif;
-  padding: 10px 25px;
+  padding: 15px 45px;
   width: fit-content;
   border: 2px solid var(--theme-color);
-  transition: all .8s;
-  border-radius: 8px;
+  transition: all .5s;
+  border-radius: 6px;
   cursor: pointer;
 }
 .button-basic:hover {
@@ -358,11 +361,9 @@ a {
   }
 
   .nav-icon {
-    display: block;
+    display: inherit;
     position: absolute;
-    top: -5px;
-    right: 60px;
-    transform: translate(-100%, 60%);
+    right: 80px;
     font-size: 2rem;
     cursor: pointer;
     color: var(--theme-color)

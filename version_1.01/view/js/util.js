@@ -109,16 +109,23 @@ document.addEventListener("DOMContentLoaded", function () {
         b: null,
       }
   }
-
+  var timer;
+var timeout = function () {
+  mousePos.x = -1;
+  mousePos.y = -1;
+}
+  timer = setTimeout(timeout, 30);
   document.getElementById("wrap").addEventListener("mousemove", function (e) {
     mousePos.x = e.pageX;
     mousePos.y = e.pageY;
+    clearTimeout(timer);
+    timer = setTimeout(timeout, 30);
   });
 
-  document.getElementById("wrap").addEventListener("mouseleave", function (e) {
-    mousePos.x = -1;
-    mousePos.y = -1;
-  });
+  // document.getElementById("wrap").addEventListener("mouseleave", function (e) {
+  //   mousePos.x = -1;
+  //   mousePos.y = -1;
+  // });
 
   var draw = setInterval(function () {
     var range = 15;
