@@ -1,5 +1,5 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
-
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
 /* colors */
 :root {
   --theme-color: #00d3b4;
@@ -50,6 +50,26 @@ a {
 #content-gap{
   width: 100%;
 }
+
+
+.button-basic {
+  text-decoration: none;
+  color: var(--theme-color);
+  font-size: 18px;
+  font-weight: 600;
+  font-family:'Segoe UI', sans-serif;
+  padding: 10px 25px;
+  width: fit-content;
+  border: 2px solid var(--theme-color);
+  transition: all .8s;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.button-basic:hover {
+  color: #fff;
+  background-color: var(--theme-color);
+}
+
 .main-content {
 }
 /* Intro */
@@ -61,25 +81,37 @@ a {
   opacity: 0.4;
 }
 .intro-text{
-  font-family: cursive;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 500;
   position: absolute;
   left: 200px;
   top: 50%;
   transform: translateX(-100px) translateY(-50%);
   z-index: 19;
 }
+.intro-text-theme-color{
+  color: var(--theme-color);
+}
+.intro-text-secondary-theme-color{
+  color: var(--theme-secondary-color);
+}
 .intro-text-large{
-  font-size: 150px;
+  font-weight: 600;
+  font-size: 180px;
 }
 .intro-text-medium{
-  font-size: 100px;
+  font-weight: 600;
+  font-size: 120px;
 }
 .intro-text-medium-2{
-  font-size: 50px;
+  font-size: 45px;
 }
 .intro-text-small{
-  font-size: 16px;
-  max-width: 400px;
+  font-size: 18px;
+  font-family: 'Segoe UI';
+  font-weight: 400;
+  opacity: 0.9;
+  max-width: 405px;
 }
 @media screen and (max-width:880px) {
   #intro-image{
@@ -321,12 +353,15 @@ a {
     height: 2rem;
     font-size: 1.4rem
   }
+  .fa-bolt{
+    margin-top: 5px;
+  }
 
   .nav-icon {
     display: block;
     position: absolute;
-    top: -15px;
-    right: 70px;
+    top: -5px;
+    right: 60px;
     transform: translate(-100%, 60%);
     font-size: 2rem;
     cursor: pointer;
@@ -339,6 +374,30 @@ a {
   }
   .nav-item {
     margin: 0;
+  }
+  .fa-logo {
+    margin-left: 10px;
+    margin-top: 5px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 3px
+  }
+  
+  .fa-logo-text {
+    position: absolute;
+    top: 3px;
+    left: 2.5rem;
+    margin-left: .5rem;
+    font-size: 20px
+  }
+  
+  .fa-logo-sub-text {
+    letter-spacing: 2px;
+    position: absolute;
+    width: 163px;
+    top: 27px;
+    left: 0px;
+    font-size: 13.5px
   }
   
 }

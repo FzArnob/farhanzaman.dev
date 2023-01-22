@@ -1,3 +1,61 @@
+function isInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+  );
+}
+
+function wobbleAnimation() {
+  var wobbleElements = document.querySelectorAll(".wobble:not([data-animate-once])");
+  wobbleElements.forEach(function (el) {
+    if (isInViewport(el)) {
+      if (
+        !el.classList.contains("animating") &&
+        !el.classList.contains("mouseover")
+      ) {
+        el.classList.add("animating", "mouseover");
+
+        var letters = el.innerText.split("");
+
+        setTimeout(function () {
+          el.classList.remove("animating");
+        }, (letters.length + 1) * 50);
+
+        var animationName = el.dataset.animation;
+        if (!animationName) {
+          animationName = "jump";
+        }
+
+        el.innerText = "";
+
+        letters.forEach(function (letter) {
+          if (letter == " ") {
+            letter = "&nbsp;";
+          }
+          el.innerHTML += '<span class="letter">' + letter + "</span>";
+        });
+
+        var letterElements = el.querySelectorAll(".letter");
+        letterElements.forEach(function (letter, i) {
+          setTimeout(function () {
+            letter.classList.add(animationName);
+          }, 50 * i);
+        });
+      }
+      el.addEventListener("animationend", function () {
+        el.classList.remove("mouseover");
+      });
+      el.dataset.animateOnce = "true";
+    } else console.log(el," not in view");
+  })
+}
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
@@ -28,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setTimeout(function () {
     document.querySelector("pre-loader").style.display = "none"; // hide
     document.querySelector("main-page").style.display = "block"; // show
+    wobbleAnimation();
   }, 1000);
 
   //   intro animation
@@ -62,11 +121,13 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   var draw = setInterval(function () {
-    var range = 1000;
-    var sizeInt = getRandomInt(20, 50);
-    if (window.innerWidth > 800) {
-      range = 15;
-      sizeInt = getRandomInt(10, 30);
+    var range = 15;
+    var sizeInt = getRandomInt(20, 30);
+    if (window.innerWidth < 800) {
+      range = 1000;
+      sizeInt = getRandomInt(10, 50);
+        mousePos.x = window.innerWidth/2;
+        mousePos.y = window.innerHeight/2;
     }
     if (mousePos.x > 0 && mousePos.y > 0) {
 
@@ -182,10 +243,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 //animation text
-
+function addListenerMulti(element, eventNames, listener) {
+  var events = eventNames.split(' ');
+  for (var i=0, iLen=events.length; i<iLen; i++) {
+    element.addEventListener(events[i], listener, false);
+  }
+}
 var wobbleElements = document.querySelectorAll(".wobble");
 wobbleElements.forEach(function (el) {
-  el.addEventListener("mouseover", function () {
+addListenerMulti(el, 'mouseover click', function(){
     if (
       !el.classList.contains("animating") &&
       !el.classList.contains("mouseover")
@@ -224,59 +290,5 @@ wobbleElements.forEach(function (el) {
     el.classList.remove("mouseover");
   });
 })
-function isInViewport(el) {
-  const rect = el.getBoundingClientRect();
-  return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
 
-  );
-}
-
-window.addEventListener("load", function () {
-  setTimeout(function () {
-    var wobbleElements = document.querySelectorAll(".wobble");
-    wobbleElements.forEach(function (el) {
-      if (isInViewport(el)) {
-        if (
-          !el.classList.contains("animating") &&
-          !el.classList.contains("mouseover")
-        ) {
-          el.classList.add("animating", "mouseover");
-
-          var letters = el.innerText.split("");
-
-          setTimeout(function () {
-            el.classList.remove("animating");
-          }, (letters.length + 1) * 50);
-
-          var animationName = el.dataset.animation;
-          if (!animationName) {
-            animationName = "jump";
-          }
-
-          el.innerText = "";
-
-          letters.forEach(function (letter) {
-            if (letter == " ") {
-              letter = "&nbsp;";
-            }
-            el.innerHTML += '<span class="letter">' + letter + "</span>";
-          });
-
-          var letterElements = el.querySelectorAll(".letter");
-          letterElements.forEach(function (letter, i) {
-            setTimeout(function () {
-              letter.classList.add(animationName);
-            }, 50 * i);
-          });
-        }
-        el.addEventListener("animationend", function () {
-          el.classList.remove("mouseover");
-        });
-      } else console.log(el," not in view");
-    })
-  }, 1000);
-});
+window.addEventListener("scroll", wobbleAnimation);
