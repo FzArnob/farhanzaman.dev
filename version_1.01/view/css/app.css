@@ -61,7 +61,7 @@ a {
   font-size: 18px;
   font-weight: 600;
   font-family:'Segoe UI', sans-serif;
-  padding: 15px 45px;
+  padding: 10px 40px;
   width: fit-content;
   border: 2px solid var(--theme-color);
   transition: all .5s;
@@ -79,8 +79,8 @@ a {
 #intro-image{
   position: absolute;
   transition: opacity 1s;
-  right: -60px;
-  height: 100%;
+  right: -30px;
+  height: 95%;
   opacity: 0.4;
 }
 .intro-text{
@@ -88,7 +88,7 @@ a {
   font-weight: 500;
   position: absolute;
   left: 200px;
-  top: 50%;
+  top: calc( 50% + 70px );
   transform: translateX(-100px) translateY(-50%);
   z-index: 19;
 }
@@ -118,8 +118,9 @@ a {
 }
 @media screen and (max-width:880px) {
   #intro-image{
-    height: 70%;
+    height: 80%;
     top: 50%;
+    opacity: 0.2;
     transform: translateY(-50%);
   }
   .intro-text{

@@ -35,7 +35,11 @@ function wobbleAnimation() {
         letters.forEach(function (letter) {
           if (letter == " ") {
             letter = "&nbsp;";
-          }
+            el.innerHTML += '<span class="letter">' + letter + "</span>"; '<span class="letter">' + letter + "</span>";
+          } else if (letter == "$") {
+            letter = "<br/>";
+            el.innerHTML += letter;
+          } else
           el.innerHTML += '<span class="letter">' + letter + "</span>";
         });
 
@@ -58,7 +62,7 @@ function wobbleAnimation() {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
+  document.getElementById("content-gap").style.marginTop = window.innerHeight-70 + "px";
   // preload
   if (getCookie("theme") === "") {
     setCookie("theme", "light", 30);
