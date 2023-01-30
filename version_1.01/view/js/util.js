@@ -118,12 +118,12 @@ var timeout = function () {
   mousePos.x = -1;
   mousePos.y = -1;
 }
-  timer = setTimeout(timeout, 30);
+  timer = setTimeout(timeout, 100);
   document.getElementById("wrap").addEventListener("mousemove", function (e) {
     mousePos.x = e.pageX;
     mousePos.y = e.pageY;
     clearTimeout(timer);
-    timer = setTimeout(timeout, 30);
+    timer = setTimeout(timeout, 100);
   });
 
   // document.getElementById("wrap").addEventListener("mouseleave", function (e) {
