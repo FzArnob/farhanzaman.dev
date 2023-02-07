@@ -118,12 +118,12 @@ var timeout = function () {
   mousePos.x = -1;
   mousePos.y = -1;
 }
-  timer = setTimeout(timeout, 100);
+  timer = setTimeout(timeout, 500);
   document.getElementById("wrap").addEventListener("mousemove", function (e) {
     mousePos.x = e.pageX;
     mousePos.y = e.pageY;
     clearTimeout(timer);
-    timer = setTimeout(timeout, 100);
+    timer = setTimeout(timeout, 500);
   });
 
   // document.getElementById("wrap").addEventListener("mouseleave", function (e) {
@@ -132,10 +132,12 @@ var timeout = function () {
   // });
 
   var draw = setInterval(function () {
-    var range = 15;
+    var rangex = 15;
+    var rangey = 15;
     var sizeInt = getRandomInt(20, 30);
     if (window.innerWidth < 800) {
-      range = 1000;
+      rangex = window.innerWidth/2;
+      rangey = window.innerHeight/2;
       sizeInt = getRandomInt(10, 50);
         mousePos.x = window.innerWidth/2;
         mousePos.y = window.innerHeight/2;
@@ -177,12 +179,12 @@ var timeout = function () {
 
       var left =
         "left: " +
-        getRandomInt(mousePos.x - range - sizeInt, mousePos.x + range) +
+        getRandomInt(mousePos.x - rangex - sizeInt, mousePos.x + rangex) +
         "px;";
 
       var top =
         "top: " +
-        getRandomInt(mousePos.y - range - sizeInt, mousePos.y + range) +
+        getRandomInt(mousePos.y - rangey - sizeInt, mousePos.y + rangey) +
         "px;";
 
       var style = left + top + color + size;
@@ -194,7 +196,7 @@ var timeout = function () {
       });
       document.getElementById("wrap").appendChild(ball);
     }
-  }, 10);
+  }, (window.innerWidth < 800) ? 200: 20);
 
 
   // intro image animation

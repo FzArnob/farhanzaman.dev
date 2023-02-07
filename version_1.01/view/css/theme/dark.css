@@ -1,3 +1,6 @@
+
+
+
 .bg1 {
   transition: all 0.5s;
   background-color: #252525;
@@ -41,9 +44,8 @@
   transition: all 0.5s;
   color: #b4b4b4;
 }
-@media screen and (min-width: 800px) {
-  .bg2-change {
-    transition: all 0.5s;
-    background-color: #252525;
+@media screen and (max-width: 600px) {
+  .intro-text{
+    background-color: rgba(0,0,0,0.3);
   }
 }

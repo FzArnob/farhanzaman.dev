@@ -4,6 +4,7 @@
 :root {
   --theme-color: #00d3b4;
   --theme-secondary-color: #fd2155;
+  --theme-color-rbga: rgba(0, 211, 180, 0.8);
 }
 /* theme */
 body {
@@ -69,8 +70,8 @@ a {
   cursor: pointer;
 }
 .button-basic:hover {
-  color: #fff;
-  background-color: var(--theme-color);
+  color: inherit;
+  background-color: var(--theme-color-rbga);
 }
 
 .main-content {
@@ -88,7 +89,7 @@ a {
   font-weight: 500;
   position: absolute;
   left: 200px;
-  top: calc( 50% + 70px );
+  top: 50%;
   transform: translateX(-100px) translateY(-50%);
   z-index: 19;
 }
@@ -106,17 +107,19 @@ a {
   font-weight: 600;
   font-size: 120px;
 }
-.intro-text-medium-2{
+.intro-text-medium-2 {
   font-size: 45px;
 }
-.intro-text-small{
+.intro-text-small {
   font-size: 18px;
   font-family: 'Segoe UI';
   font-weight: 400;
-  opacity: 0.9;
   max-width: 405px;
 }
-@media screen and (max-width:880px) {
+.inline {
+  display: inline-block;
+}
+@media screen and (max-width:800px) {
   #intro-image{
     height: 80%;
     top: 50%;
@@ -125,9 +128,11 @@ a {
   }
   .intro-text{
     position: absolute;
-    left: 100px;
-    top: 50%;
-    transform: translateX(-50px) translateY(-50%);
+    padding: 15px;
+    border-radius: 8px;
+    left: 50px;
+    top: calc(50% + 20px);
+    transform: translateX(-25px) translateY(-50%);
     z-index: 19;
   }
   .intro-text-large{
@@ -174,9 +179,9 @@ a {
 .ball {
   pointer-events: none;
   position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  /* border-radius: 50%; */
   background: gray;
   animation: implode 1.5s ease-in-out;
   animation-fill-mode: both;
@@ -412,7 +417,138 @@ a {
   padding: 0;
 }
 
+/* dot rader */
+.hotspot {
+  display: block;
+  position: absolute;
 
+  border-radius: 50%;
+}
+.hotspot.main-wrapper {
+  position: absolute;
+}
+.hotspot.dots-container {
+  position: relative;
+}
+.hotspot.dot1 {
+  width: 7px;
+  height: 7px;
+  border: 5px solid var(--theme-color);
+  background-color: transparent;
+  z-index: 1;
+  opacity: 0.2;
+  animation: dot1 2s infinite;
+}
+.hotspot.dot2 {
+  width: 7px;
+  height: 7px;
+  background-color: var(--theme-color);
+  z-index: 2;
+  animation: dot2 2s infinite;
+}
+.hotspot.dot3 {
+  width: 7px;
+  height: 7px;
+  background-color: var(--theme-color);
+  z-index: 3;
+  animation: dot3 1s alternate infinite;
+}
+
+@keyframes dot1 {
+  0% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(5);
+  }
+}
+@keyframes dot2 {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2);
+  }
+}
+@keyframes dot3 {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+
+
+
+/* row and column*/
+.row{
+  display: flex;
+  width: 100%;
+}
+.column-2{
+  width: 50%;
+}
+@media screen and (max-width:800px) {
+  .column-2{
+    width: 100%;
+  }
+  .row{
+    display: block;
+    width: 100%;
+  }
+}
+/* point and box */
+.point-box{
+  margin: auto;
+  max-width: 70%;
+  position: relative;
+  border-left: 1px solid var(--theme-color);
+  opacity: 0.6;
+  cursor: pointer;
+}
+.point-box:hover {
+  opacity: 1;
+}
+
+.box-header{
+  margin: 10px;
+  margin-left: 30px;
+  font-family: 'Ubuntu';
+  font-size: 18px;
+  font-weight: 500;
+}
+.box-sub-header{
+  margin: 10px;
+
+  margin-left: 30px;
+
+}
+.box-description{
+  margin-left: 30px;
+
+}
+
+.box-border{
+  border-left: 2px solid var(--theme-color);
+}
+
+.theme-color{
+  color: var(--theme-color);
+}
+
+.topic{
+  margin: auto;
+  max-width: 70%;
+  font-family: 'Ubuntu';
+  font-size: 22px;
+  font-weight: 600;
+}
 
 /* animation */
 .animate-fading{animation:fading 10s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
