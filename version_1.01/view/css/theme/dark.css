@@ -44,6 +44,10 @@
   transition: all 0.5s;
   color: #b4b4b4;
 }
+.cross-theme {
+  transition: all 0.5s;
+  color: #fff;
+}
 @media screen and (max-width: 600px) {
   .intro-text{
     background-color: rgba(0,0,0,0.3);

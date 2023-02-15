@@ -13,6 +13,7 @@ function wobbleAnimation() {
   var wobbleElements = document.querySelectorAll(".wobble:not([data-animate-once])");
   wobbleElements.forEach(function (el) {
     if (isInViewport(el)) {
+      
       if (
         !el.classList.contains("animating") &&
         !el.classList.contains("mouseover")
