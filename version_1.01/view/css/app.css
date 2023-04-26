@@ -513,6 +513,10 @@ a {
   display: flex;
   width: 100%;
 }
+.ch-1{
+  margin: auto;
+  width: fit-content;
+}
 .column-2{
   position: relative;
   width: 50%;
