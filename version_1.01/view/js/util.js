@@ -55,7 +55,8 @@ function wobbleAnimation() {
         el.classList.remove("mouseover");
       });
       el.dataset.animateOnce = "true";
-    } else console.log(el," not in view");
+    } 
+    // else console.log(el," not in view");
   })
 }
 
@@ -197,7 +198,7 @@ var timeout = function () {
       });
       document.getElementById("wrap").appendChild(ball);
     }
-  }, (window.innerWidth < 800) ? 200: 20);
+  }, (window.innerWidth < 800) ? 300: 20);
 
 
   // intro image animation

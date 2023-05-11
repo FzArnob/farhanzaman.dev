@@ -1,71 +1,58 @@
-function getRandomInt(min, max) {
-    return Math.round(Math.random() * (max - min + 1)) + min;
+const skillTags = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "TypeScript",
+  "Python",
+  "Java",
+  "C++",
+  "PHP",
+  "SpringBoot",
+  "ReactJS",
+  "MongoDB",
+  "NodeJS",
+  "MySQL",
+  "NoSQL",
+  "GraphQL",
+  "Selenium",
+  "OOD",
+  "Redux",
+  "jQuery",
+  "Photoshop",
+  "Illustrator",
+  "Excel",
+  "PowerPoint"
+];
+var radius;
+if (window.innerWidth <= 800){
+  radius = window.innerWidth/2;
+} else {
+  radius = window.innerWidth/4;
+  if(radius > 400 ) radius = 400;
 }
-document.addEventListener("DOMContentLoaded", function () {
-    var tags = document.querySelectorAll("#tags a");
-    var canvas = document.getElementById("skill-canvas");
-    var context = canvas.getContext("2d");
-    var textSize = 15;
-    if(window.innerWidth < 600){
-    textSize = 12;
-    canvas.setAttribute("width", window.innerWidth-100);
-        canvas.setAttribute("height", window.innerWidth-100);
-    }
-        else if (window.innerWidth > 1200){
-    textSize = 20;
-    canvas.setAttribute("width", 600);
-            canvas.setAttribute("height", 600);
-} else{
-    textSize = 15;
-    canvas.setAttribute("width", (window.innerWidth/2));
-    canvas.setAttribute("height", (window.innerWidth/2));
-}
+var tagCloud = TagCloud(".skillTags", skillTags, {
+  // radius in px
+  radius: radius,
 
-    if (typeof TagCanvas !== "undefined") {
-        TagCanvas.Start("skill-canvas", "tags", {
-            textFont: "Segoe UI",
-            textColour: "#00d3b4",
-            weight: true,
-            weightFrom: "data-weight",
-            weightSize: 5,
-            textHeight: textSize,
-            weightGradient: {
-                0: "#f00",
-                0.33: "#ff0",
-                0.66: "#0f0",
-                1: "#00f"
-            },
-            outlineOffset: 4,
-            outlineRadius: 6,
-            outlineMethod: 'colour',
-            outlineColour: "#fd2155",
-            reverse: true,
-            depth: 0.8,
-            maxSpeed: 0.05,
-            initial: [0.1, -0.1],
-            decel: 0.98,
-            fadeIn: 1000,
-            radiusX: 1,
-            radiusY: 1,
-            wheelZoom: false,
-            zooM: 1
-        });
-    } else {
-        console.error("TagCanvas not found");
-        canvas.style.display = "none";
-    }
-    for (var i = 0; i < tags.length; i++) {
-        if(window.innerWidth < 600){
-        tags[i].setAttribute("data-weight", Math.random() * 10);
-        } else {
-        tags[i].setAttribute("data-weight", Math.random() * 25);
+  // animation speed
+  // slow, normal, fast
+  maxSpeed: "fast",
+  initSpeed: "normal",
 
-        }
-        tags[i].addEventListener("click", function (event) {
-            event.preventDefault();
-            TagCanvas.TagToFront(this, {
-                active: true
-            });
-        });
-    }
+  // 0 = top
+  // 90 = left
+  // 135 = right-bottom
+  direction: 135,
+
+  // interact with cursor move on mouse out
+  keep: true,
 });
+var textSize = Math.floor(20*radius/300);
+// console.log(radius,"--" ,Math.floor(20*radius/300));
+document.getElementById("skill-canvas").firstChild.style.fontSize =  textSize + "px";
+// console.log(document.getElementById("skill-canvas").firstChild.style.fontSize);
+
+//To change the color of text randomly
+// var colors = ["#34A853", "#FBBC05", "#4285F4", "#7FBC00", "FFBA01", "01A6F0"];
+// var random_color = colors[Math.floor(Math.random() * colors.length)];
+// document.querySelector(".content").style.color = random_color;

@@ -590,13 +590,18 @@ a {
 #skill-canvas-container{
   position: relative;
 }
-#skill-canvas{
-
-position: absolute; 
-left: 50%;
-transform: translateX(-50%); 
+.tagcloud {
+  font-family: 'Segoe UI';  
+  margin: auto;
 }
 
+.tagcloud--item:hover {
+  cursor: pointer;
+  color: #fd2155;
+}
+.tagcloud--item {
+  color: #0bc1a6;
+}
 /* animation */
 .animate-fading{animation:fading 10s infinite}@keyframes fading{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
 .animate-opacity{animation:opac 0.8s}@keyframes opac{from{opacity:0} to{opacity:1}}
