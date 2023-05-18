@@ -143,6 +143,26 @@ a {
   font-weight: 400;
   max-width: 405px;
 }
+.section-head {
+  font-weight: 600;
+  font-size: 80px;
+  margin: auto;
+  transform: translateX(-10px);
+  max-width: 70%;
+  margin-top: 50px;
+}
+.section-title {
+  font-size: 25px;
+  margin: auto;
+  max-width: 70%;
+  margin-top: 10px;
+}
+
+.section-text {
+  font-size: 14px;
+  margin: auto;
+  max-width: 70%;
+}
 
 .inline {
   display: inline-block;
@@ -177,10 +197,31 @@ a {
   .intro-text-medium-2 {
     font-size: 30px;
   }
-
+  .section-head {
+    font-size: 35px;
+    transform: translateX(-2px);
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .section-text {
+    font-size: 13px;
+  }
   .intro-text-small {
-    font-size: 15px;
+    font-size: 14px;
     max-width: 400px;
+  }
+}
+@media screen and (min-width:800px) and (max-width:1000px) {
+  .section-head {
+    font-weight: 600;
+    font-size: 60px;
+    transform: translateX(-6px);
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
   }
 }
 
@@ -656,19 +697,6 @@ a {
 
 .tagcloud--item {
   color: #0bc1a6;
-}
-
-.section-head {
-  font-size: 45px;
-  margin: auto;
-  max-width: 70%;
-  margin-top: 100px;
-}
-
-.section-text {
-  font-size: 15px;
-  margin: auto;
-  max-width: 70%;
 }
 .achievement-preview{
 
