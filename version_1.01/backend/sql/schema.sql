@@ -1,3 +1,5 @@
+-- Schema basic tables
+
 CREATE TABLE profile_info
 (
     profile_id                   INT PRIMARY KEY AUTO_INCREMENT,
@@ -25,7 +27,8 @@ CREATE TABLE profile_info
     delete_flag                  BOOLEAN   DEFAULT FALSE
 );
 
-CREATE TABLE education
+
+CREATE TABLE education_items
 (
     education_id   INT PRIMARY KEY AUTO_INCREMENT,
     institute_name VARCHAR(255),
@@ -40,7 +43,7 @@ CREATE TABLE education
     delete_flag    BOOLEAN   DEFAULT FALSE
 );
 
-CREATE TABLE experience
+CREATE TABLE experience_items
 (
     experience_id   INT PRIMARY KEY AUTO_INCREMENT,
     institute_name  VARCHAR(255),
@@ -105,7 +108,7 @@ CREATE TABLE gallery_items
     delete_flag  BOOLEAN   DEFAULT FALSE
 );
 
-CREATE TABLE message_table
+CREATE TABLE direct_messages
 (
     message_id  INT PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(255) NOT NULL,
@@ -115,3 +118,54 @@ CREATE TABLE message_table
     created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     delete_flag BOOLEAN   DEFAULT FALSE
 );
+
+-- Relational Mapping
+
+CREATE TABLE profile_education
+(
+    fk_profile_id   INT,
+    fk_education_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_education_id) REFERENCES education_items (education_id)
+);
+
+CREATE TABLE profile_experience
+(
+    fk_profile_id    INT,
+    fk_experience_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_experience_id) REFERENCES experience_items (experience_id)
+);
+
+CREATE TABLE profile_expertise
+(
+    fk_profile_id   INT,
+    fk_expertise_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_expertise_id) REFERENCES expertise_items (expertise_id)
+);
+
+CREATE TABLE profile_projects
+(
+    fk_profile_id INT,
+    fk_project_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_project_id) REFERENCES projects (project_id)
+);
+
+CREATE TABLE profile_gallery_items
+(
+    fk_profile_id INT,
+    fk_item_id    INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_item_id) REFERENCES gallery_items (item_id)
+);
+
+CREATE TABLE profile_direct_messages
+(
+    fk_profile_id INT,
+    fk_message_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_message_id) REFERENCES direct_messages (message_id)
+);
+
