@@ -14,7 +14,7 @@ CREATE TABLE profile_info
     address                      VARCHAR(255),
     phone                        VARCHAR(20),
     secondary_phone              VARCHAR(20),
-    email                        VARCHAR(255),
+    email                        VARCHAR(255) NOT NULL UNIQUE,
     alternative_email            VARCHAR(255),
     facebook_url                 VARCHAR(255),
     github_url                   VARCHAR(255),
@@ -115,5 +115,3 @@ CREATE TABLE message_table
     created     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     delete_flag BOOLEAN   DEFAULT FALSE
 );
-
-
