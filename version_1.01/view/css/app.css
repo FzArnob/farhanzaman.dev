@@ -1,6 +1,9 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
-
+@font-face {
+  font-family: social-font;
+  src: url(../static/social.ttf);
+}
 /* colors */
 :root {
   --theme-color: #00d3b4;
@@ -58,12 +61,18 @@ a {
 
 #content-gap {
   width: 100%;
-  height: 50px;
+  height: 70px;
 }
 
 
-.button-basic {
+.button-basic a {
   text-decoration: none;
+  position: relative;
+  color: inherit;
+  z-index: 20;
+}
+  .button-basic {
+  position: relative;
   color: var(--theme-color);
   font-size: 18px;
   font-weight: 600;
@@ -75,10 +84,12 @@ a {
   border-radius: 6px;
   cursor: pointer;
 }
-
+.button-basic a:hover {
+  color: #fff;
+}
 .button-basic:hover {
-  color: inherit;
-  background-color: var(--theme-color-rbga);
+  color: #fff;
+  background-color: var(--theme-color)
 }
 
 .resume-btn {
@@ -89,11 +100,12 @@ a {
 }
 
 .bottom-gradient {
-  height: 10%;
+  height: 100px;
   position: absolute;
   bottom: 0;
   width: 100%;
 }
+
 
 .main-content {}
 
@@ -154,15 +166,15 @@ a {
 }
 
 .section-title {
-  font-size: 25px;
+  font-size: 35px;
   margin: auto;
   max-width: 70%;
   margin-top: 10px;
-  margin-top: 60px;
+  margin-top: 90px;
 }
 
 .section-text {
-  font-size: 14px;
+  font-size: 15px;
   margin: auto;
   max-width: 70%;
 }
@@ -213,7 +225,7 @@ a {
   }
 
   .section-text {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .intro-text-small {
@@ -406,6 +418,7 @@ a {
 }
 
 .themeBtn-icon {
+  margin-top: -2px;
   font-size: 32px;
   line-height: 1.2;
 }
@@ -679,7 +692,7 @@ a {
   position: relative;
   top: -10px;
   margin-left: 30px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .box-border {
@@ -1076,7 +1089,7 @@ a {
   margin-right: 10px;
   width: fit-content;
   padding: 3px 10px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   border: solid 2px #c5c5c5;
   border-radius: 10px;
@@ -1092,7 +1105,8 @@ a {
 .work-card .work-card-details {
   margin-right: 20px;
   margin-left: 20px;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 300;
 }
 
 .works {
@@ -1111,7 +1125,13 @@ a {
 .gallery-container {
   display: flex;
   flex-wrap: wrap;
+  position: relative;
   justify-content: center;
+}
+.gallery-container-shadow{
+  position: absolute;
+  width: 100%;
+  z-index: 10;
 }
 
 .gallery-image {
@@ -1177,7 +1197,7 @@ a {
 
 .box-shadow-a,
 .button:hover {
-  box-shadow: 0 0 0 4px #cde1f8
+  box-shadow: 0 0 0 4px rgba(0, 211, 180, 0.3);
 }
 
 .bg-image {
@@ -1188,7 +1208,7 @@ a {
 }
 
 .overlay-mf {
-  background-color: #0078ff
+  background-color: var(--theme-color)
 }
 
 .overlay-mf {
@@ -1241,7 +1261,7 @@ a {
   content: '';
   position: absolute;
   height: 3px;
-  background-color: #0078ff;
+  background-color: var(--theme-secondary-color);
   width: 100px;
   bottom: -12px
 }
@@ -1249,14 +1269,13 @@ a {
 .box-shadow-full {
   padding: 3rem 1.25rem;
   position: relative;
-  background-color: #fff;
   margin-bottom: 3rem;
   z-index: 2;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .06), 0 2px 5px 0 rgba(0, 0, 0, .2)
 }
 
 .socials {
-  padding: 1.5rem 0
+  padding: 1.8rem 0
 }
 
 .socials ul li {
@@ -1264,20 +1283,19 @@ a {
 }
 
 .socials .ico-circle {
+  font-family: social-font;
   height: 40px;
   width: 40px;
   font-size: 1.7rem;
   border-radius: 50%;
-  line-height: 1.4;
+  line-height: 30px;
   margin: 0 15px 0 0;
-  box-shadow: 0 0 0 3px #0078ff;
   transition: all .5s ease
 }
 
 .socials .ico-circle:hover {
-  background-color: #0078ff;
-  color: #fff;
-  box-shadow: 0 0 0 3px #cde1f8;
+  font-family: social-font;
+  color: var(--theme-secondary-color);
   transition: all .5s ease
 }
 
@@ -1293,11 +1311,12 @@ a {
 }
 
 .list-ico span {
-  color: #0078ff;
+  color: var(--theme-secondary-color);
   margin-right: 10px
 }
 
 .ico-circle {
+  font-family: social-font;
   height: 100px;
   width: 100px;
   font-size: 2rem;
@@ -1305,7 +1324,6 @@ a {
   line-height: 1.55;
   margin: 0 auto;
   text-align: center;
-  box-shadow: 0 0 0 10px #0078ff;
   display: block
 }
 
@@ -1366,8 +1384,8 @@ footer .credits a {
 }
 
 #sendmessage {
-  color: #0078ff;
-  border: 1px solid #0078ff;
+  color: var(--theme-color);
+  border: 1px solid var(--theme-color);
   display: none;
   text-align: center;
   padding: 15px;
@@ -1414,15 +1432,15 @@ footer .credits a {
 }
 
 .button:hover {
-  background-color: #0062d3;
+  background-color: #009f87;
   color: #fff;
   transition: all .5s ease
 }
 
 .button-a {
-  background-color: #0078ff;
+  background-color: var(--theme-color);
   color: #fff;
-  border-color: #cde1f8
+  border-color: var(--theme-color)
 }
 
 .button-big {
@@ -1451,59 +1469,28 @@ footer .credits a {
 }
 
 
+.text-icon{
+ font-size: 16px;
+ color: var(--theme-secondary-color);
+}
 
 
-/*!
+
+
+/* !
  * Bootstrap v4.1.3 (https://getbootstrap.com/)
  * Copyright 2011-2018 The Bootstrap Authors
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
- :root {
-  --blue: #007bff;
-  --indigo: #6610f2;
-  --purple: #6f42c1;
-  --pink: #e83e8c;
-  --red: #dc3545;
-  --orange: #fd7e14;
-  --yellow: #ffc107;
-  --green: #28a745;
-  --teal: #20c997;
-  --cyan: #17a2b8;
-  --white: #fff;
-  --gray: #6c757d;
-  --gray-dark: #343a40;
-  --primary: #007bff;
-  --secondary: #6c757d;
-  --success: #28a745;
-  --info: #17a2b8;
-  --warning: #ffc107;
-  --danger: #dc3545;
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --breakpoint-xs: 0;
-  --breakpoint-sm: 576px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 992px;
-  --breakpoint-xl: 1200px;
-  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
+ 
 
-*,
-*::before,
-*::after {
+#contact-section *,
+#contact-section *::before,
+#contact-section *::after {
   box-sizing: border-box;
 }
 
-html {
-  font-family: sans-serif;
-  line-height: 1.15;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  -ms-overflow-style: scrollbar;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
 
 @-ms-viewport {
   width: device-width;
@@ -1513,16 +1500,6 @@ footer, section {
   display: block;
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #212529;
-  text-align: left;
-  background-color: #fff;
-}
 
 h5 {
   margin-top: 0;
@@ -1544,14 +1521,14 @@ strong {
 }
 
 a {
-  color: #007bff;
+  color: var(--theme-color);
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
 
 a:hover {
-  color: #0056b3;
+  color: var(--theme-color);
   text-decoration: underline;
 }
 
@@ -1616,8 +1593,8 @@ h5 {
 }
 
 .lead {
-  font-size: 1.25rem;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 400;
 }
 
 .container {
@@ -1660,6 +1637,7 @@ h5 {
 }
 
 .col-sm-12, .col-md-6, .col-md-12 {
+  box-sizing: border-box;
   position: relative;
   width: 100%;
   min-height: 1px;
@@ -1669,19 +1647,23 @@ h5 {
 
 @media (min-width: 576px) {
   .col-sm-12 {
+  box-sizing: border-box;
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   .col-md-6 {
+  box-sizing: border-box;
     -ms-flex: 0 0 50%;
     flex: 0 0 50%;
     max-width: 50%;
   }
   .col-md-12 {
+  box-sizing: border-box;
+
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
@@ -1719,7 +1701,7 @@ h5 {
   background-color: #fff;
   border-color: #80bdff;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 211, 180, 0.25);
 }
 
 .form-control::-webkit-input-placeholder {
@@ -1761,12 +1743,12 @@ textarea.form-control {
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active {
   color: #fff;
-  background-color: #0062cc;
-  border-color: #005cbf;
+  background-color: rgb(0, 211, 180);
+  border-color: rgb(0, 211, 180);
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus {
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 211, 180, 0.5);
 }
 
 .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active {
@@ -1796,7 +1778,7 @@ textarea.form-control {
 }
 
 .btn-info:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus {
-  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 211, 180, 0.5);
 }
 
 .btn-warning:not(:disabled):not(.disabled):active, .btn-warning:not(:disabled):not(.disabled).active {
@@ -1841,12 +1823,12 @@ textarea.form-control {
 
 .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: rgb(0, 211, 180);
+  border-color: rgb(0, 211, 180);
 }
 
 .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled).active:focus {
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 211, 180, 0.5);
 }
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active, .btn-outline-secondary:not(:disabled):not(.disabled).active {
@@ -1876,7 +1858,7 @@ textarea.form-control {
 }
 
 .btn-outline-info:not(:disabled):not(.disabled):active:focus, .btn-outline-info:not(:disabled):not(.disabled).active:focus {
-  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 211, 180, 0.5);
 }
 
 .btn-outline-warning:not(:disabled):not(.disabled):active, .btn-outline-warning:not(:disabled):not(.disabled).active {
@@ -1990,4 +1972,51 @@ textarea.form-control {
     min-width: 992px !important;
   }
 }
+
+#contact{
+  border-radius: 8px;
+}
+#contact-section{
+  margin-top: -100px;
+}
+.reverse-color{
+  margin-top: 50px;
+  background-color: #fd2155;
+  border: 1px solid #fd2155;
+  padding-left: 60px;
+  color: #fff;
+}
+.reverse-color:hover{
+  background-color: #d6204a;
+  box-shadow: 0 0 0 4px rgba(255, 119, 173, 0.184);
+}
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+
+.resume{
+  position: absolute;
+  left: 30px;
+  top: 15px;
+}
+#back-to-top-btn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, .4);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+#back-to-top-btn.show {
+  display: block;
+}

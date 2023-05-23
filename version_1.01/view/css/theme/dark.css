@@ -1,55 +1,74 @@
-
-
-
 .bg1 {
   transition: all 0.5s;
   background-color: #252525;
 }
+
 .bg2 {
   transition: all 0.5s;
   background-color: #343434;
 }
+
 .bg2-change {
   transition: all 0.5s;
   background-color: #343434;
 }
+
 .c1 {
   transition: all 0.5s;
   color: #e7e7e7;
 }
+
 .c2 {
   transition: all 0.5s;
   color: #a3a3a3;
 }
+
 .bg-theme {
   transition: all 0.5s;
   background-color: #00d3b4;
 }
+
 .c-theme {
   transition: all 0.5s;
   color: #00d3b4;
 }
+
 .bg-theme-second {
   transition: all 0.5s;
   background-color: #fd2155;
 }
+
 .c-theme-second {
   transition: all 0.5s;
   color: #fd2155;
 }
-.op1{
+
+.op1 {
   opacity: 0.8;
 }
+
 .c3 {
   transition: all 0.5s;
   color: #b4b4b4;
 }
+
 .cross-theme {
   transition: all 0.5s;
   color: #00d3b4;
 }
+
+.bottom-gradient-bg {
+
+  background: rgb(37, 37, 37);
+  background: linear-gradient(to bottom, rgba(37, 37, 37, 0) 0%, rgb(37, 37, 37));
+  border-bottom: 1px solid #00d3b4;
+}
+#back-to-top-btn:hover{
+  color: #00d3b4;
+  box-shadow: 0 0 15px #00d3b4;
+}
 @media screen and (max-width: 600px) {
-  .intro-text{
-    background-color: rgba(0,0,0,0.3);
+  .intro-text {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 }
