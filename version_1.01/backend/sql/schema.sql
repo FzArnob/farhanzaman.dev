@@ -4,6 +4,7 @@ CREATE TABLE profile_info
 (
     profile_id                   INT PRIMARY KEY AUTO_INCREMENT,
     full_name                    VARCHAR(255),
+    name_subtitle_highlight      VARCHAR(255),
     name_subtitle                VARCHAR(255),
     nick_name                    VARCHAR(50),
     intro_text                   TEXT,
