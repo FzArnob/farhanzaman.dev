@@ -21,5 +21,18 @@ class ProfileController
         header('Content-Type: application/json');
         echo $profileDataJson;
     }
+    public function sendDirectMessage($name, $email, $subject, $message)
+    {
+        $directMessage = $this->model->sendDirectMessage($name, $email, $subject, $message);
+
+        // Convert the profile data to JSON
+        $directMessageJson = json_encode($directMessage);
+
+        // Return the JSON response
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
+        header('Content-Type: application/json');
+        echo $directMessageJson;
+    }
 }
 ?>

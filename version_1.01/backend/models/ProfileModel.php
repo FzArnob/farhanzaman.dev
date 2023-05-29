@@ -58,7 +58,30 @@ class ProfileModel
                   WHERE profile_direct_messages.fk_profile_id = $profile_id";
         $direct_messages = $this->conn->query($query)->fetch_all(MYSQLI_ASSOC);
         $result['direct_messages'] = $direct_messages;
+        http_response_code(200);
+        return $result;
+    }
 
+    public function sendDirectMessage($name, $email, $subject, $message)
+    {
+        $result = array();
+        $stmt = $this->conn->prepare("INSERT INTO direct_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        if ($stmt->execute()) {
+            // Data inserted successfully
+            $data = array();
+            $data["id"] = $stmt->insert_id;
+            $data["name"] = $name;
+            $data["email"] = $email;
+            $data["subject"] = $subject;
+            http_response_code(200);
+            $result["message"] = "Success: add";
+            $result["data"] = $data;
+        } else {
+            // Failed to insert data
+            http_response_code(500);
+            $result["message"] = "Error: " . $stmt->error;
+        }
         return $result;
     }
 }

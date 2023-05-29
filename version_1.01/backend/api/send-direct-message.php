@@ -17,12 +17,28 @@ $model = new ProfileModel($conn);
 $controller = new ProfileController($model);
 
 // Process the request
-if (isset($_GET['profile_id'])) {
-    $profile_id = $_GET['profile_id'];
-    $controller->getProfileData($profile_id);
+if (isset($_POST['name']) && $_POST['email'] && $_POST['subject'] && $_POST['message']) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $message = $_POST['message'];
+
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $controller->sendDirectMessage($name, $email, $subject, $message);
+    } else {
+        http_response_code(400);
+        $result["message"] = "Error: Invalid email address";
+        $errorJson = json_encode($result);
+
+        // Return the JSON response
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
+        header('Content-Type: application/json');
+        echo $errorJson;
+    }
 } else {
     http_response_code(400);
-    $result["message"] = "Error: profile_id parameter is missing.";
+    $result["message"] = "Error: ( name, email, subject, message ) any parameter is missing.";
     $errorJson = json_encode($result);
 
     // Return the JSON response
@@ -34,4 +50,3 @@ if (isset($_GET['profile_id'])) {
 
 // Close the database connection
 $conn->close();
-?>
