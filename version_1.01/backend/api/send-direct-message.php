@@ -12,22 +12,25 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$conn->autocommit(false);
+
 // Create the model and controller instances
 $model = new ProfileModel($conn);
 $controller = new ProfileController($model);
 
 // Process the request
-if (isset($_POST['name']) && $_POST['email'] && $_POST['subject'] && $_POST['message']) {
+if (isset($_POST['profile_id']) && isset($_POST['name']) && $_POST['email'] && $_POST['subject'] && $_POST['message']) {
+    $profileId = $_POST['profile_id'];
     $name = $_POST['name'];
     $email = $_POST['email'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
 
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $controller->sendDirectMessage($name, $email, $subject, $message);
+        $controller->sendDirectMessage($profileId, $name, $email, $subject, $message);
     } else {
         http_response_code(400);
-        $result["message"] = "Error: Invalid email address";
+        $result["message"] = "Invalid email address";
         $errorJson = json_encode($result);
 
         // Return the JSON response
@@ -38,7 +41,7 @@ if (isset($_POST['name']) && $_POST['email'] && $_POST['subject'] && $_POST['mes
     }
 } else {
     http_response_code(400);
-    $result["message"] = "Error: ( name, email, subject, message ) any parameter is missing.";
+    $result["message"] = "Name, email, subject, message is mandatory.";
     $errorJson = json_encode($result);
 
     // Return the JSON response
@@ -48,5 +51,7 @@ if (isset($_POST['name']) && $_POST['email'] && $_POST['subject'] && $_POST['mes
     echo $errorJson;
 }
 
+$conn->commit();
 // Close the database connection
 $conn->close();
+?>

@@ -21,9 +21,9 @@ class ProfileController
         header('Content-Type: application/json');
         echo $profileDataJson;
     }
-    public function sendDirectMessage($name, $email, $subject, $message)
+    public function sendDirectMessage($profileId, $name, $email, $subject, $message)
     {
-        $directMessage = $this->model->sendDirectMessage($name, $email, $subject, $message);
+        $directMessage = $this->model->sendDirectMessage($profileId, $name, $email, $subject, $message);
 
         // Convert the profile data to JSON
         $directMessageJson = json_encode($directMessage);

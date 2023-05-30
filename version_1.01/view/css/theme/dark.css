@@ -67,6 +67,11 @@
   color: #00d3b4;
   box-shadow: 0 0 15px #00d3b4;
 }
+.triangle {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #343434;
+}
 @media screen and (max-width: 600px) {
   .intro-text {
     background-color: rgba(0, 0, 0, 0.3);

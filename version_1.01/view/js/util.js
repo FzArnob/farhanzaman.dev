@@ -67,6 +67,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("content-gap").style.marginTop = window.innerHeight-70 + "px";
   // preload
   if (getCookie("theme") === "") {
+    var themePopUp = document.getElementById("theme-popup");
+    themePopUp.addEventListener('click', function(){
+      themePopUp.style.display = 'none';
+    });
+    themePopUp.style.display = 'block';
     setCookie("theme", "light", 30);
     document
       .querySelector("head")

@@ -19,6 +19,17 @@
     <img src="view/static/favicon.png" />
   </pre-loader>
   <main-page class="bg1 c1 hidden">
+    <div id="theme-popup" class="animate-bottom">
+      <div class="popup-back"></div>
+      <div class="popup-box bg2 c2">
+        <div class="popup-content">
+          <div class="triangle"></div>
+          <div class="popup-text">You can switch <span
+              class="c-theme">theme</span> here.</div>
+          <div class="popup-button">Okay</div>
+        </div>
+      </div>
+    </div>
     <div class="intro-animation">
       <div id="wrap">
         <div class="intro-text">
@@ -266,12 +277,23 @@
               Java, C++, and others. A programmer with excellent programming skills can build applications that solve
               complex problems, automate processes, and enhance productivity. With the increasing demand for technology,
               programming skills are becoming even more critical for success in the job market.</div>
-            <div class="achievement-preview">
-              <span class="achievement-node"></span>
-              <span class="achievement-node"></span>
-              <span class="achievement-node"></span>
-              <span class="achievement-node"></span>
-            </div>
+              <div class="achievement-preview">
+                <a class="achievement-node">
+                  <img class="achievement-node-image" src="view/static/svg/css.svg">
+                </a>
+                <a class="achievement-node">
+                  <img class="achievement-node-image" src="view/static/svg/js.svg">
+                </a>
+                <a class="achievement-node">
+                  <img class="achievement-node-image" src="view/static/svg/python.svg">
+                </a>
+                <a class="achievement-node">
+                  <img class="achievement-node-image" src="view/static/svg/ielts.svg">
+                </a>
+                <a class="achievement-node">
+                  <img class="achievement-node-image" src="view/static/svg/selenium.svg">
+                </a>
+              </div>
           </div>
           <div id="skill-canvas-container" class="column-2">
             <span id="skill-canvas" class="skillTags"></span>
@@ -362,27 +384,27 @@
                         </h5>
                       </div>
                       <div>
-                        <form action="" method="post" role="form" class="contactForm">
+                        <form action="" method="post" role="form" id="direct-message" class="contactForm">
                           <div id="sendmessage">Your message has been sent. Thank you!</div>
                           <div id="errormessage"></div>
                           <div class="row">
                             <div class="col-md-12 mb-3">
                               <div class="form-group">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name"
+                                <input type="text" name="name" class="form-control" id="message-name" placeholder="Your Name"
                                   data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
                                 <div class="validation"></div>
                               </div>
                             </div>
                             <div class="col-md-12 mb-3">
                               <div class="form-group">
-                                <input type="email" class="form-control" name="email" id="email"
+                                <input type="email" class="form-control" name="email" id="message-email"
                                   placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
                                 <div class="validation"></div>
                               </div>
                             </div>
                             <div class="col-md-12 mb-3">
                               <div class="form-group">
-                                <input type="text" class="form-control" name="subject" id="subject"
+                                <input type="text" class="form-control" name="subject" id="message-subject"
                                   placeholder="Subject" data-rule="minlen:4"
                                   data-msg="Please enter at least 8 chars of subject" />
                                 <div class="validation"></div>
@@ -391,7 +413,7 @@
                             <div class="col-md-12 mb-3">
                               <div class="form-group">
                                 <textarea class="form-control" name="message" rows="5" data-rule="required"
-                                  data-msg="Please write something for us" placeholder="Message"></textarea>
+                                  data-msg="Please write something for us" placeholder="Message" id="message"></textarea>
                                 <div class="validation"></div>
                               </div>
                             </div>

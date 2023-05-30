@@ -38,7 +38,8 @@ body {
 
 /* scrollbar design */
 ::-webkit-scrollbar {
-  width: 8px
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -301,7 +302,7 @@ a {
   position: sticky;
   font-size: 1rem;
   top: 0;
-  z-index: 99;
+  z-index: 102;
   box-shadow: 0 0 15px rgba(0, 0, 0, .3);
   border-bottom-right-radius: 16px;
   border-bottom-left-radius: 16px
@@ -414,6 +415,7 @@ a {
   font-size: 25px;
   opacity: .7;
   margin-right: 30px;
+  z-index: 101;
   cursor: pointer
 }
 
@@ -729,9 +731,43 @@ a {
   color: #0bc1a6;
 }
 
-.achievement-preview {}
+.achievement-preview {
+  max-width: 70%;
+  margin: auto;
+  display: flex;
+  justify-content: left;
+  margin-top: 40px;
+}
 
-.achievement-node {}
+.achievement-node {
+  margin: 20px;
+
+}
+.achievement-node-image{
+ width: 100px;
+ margin-right: 10px;
+}
+
+@media screen and (max-width:800px) {
+  .achievement-preview {
+    max-width: 70%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 40px;
+  }
+  
+  .achievement-node {
+    margin: 20px;
+  
+  }
+  .achievement-node-image{
+   width: 80px;
+   height: 80px;
+   margin: none;
+  }
+}
 
 /* animation */
 .animate-fading {
@@ -2019,4 +2055,60 @@ textarea.form-control {
 
 #back-to-top-btn.show {
   display: block;
+}
+#theme-popup{
+  display: none;
+  z-index: 102;
+  position: relative;
+}
+
+.popup-back {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0, 0, 0, .5);
+}
+.popup-button{
+  background-color: var(--theme-secondary-color);
+  padding: 5px;
+  border-radius: 4px;
+  color: #FFF;
+  font-size: 13px;
+  width: fit-content;
+  margin: auto;
+  margin-top: 10px;
+  margin-right: 0px;
+  cursor: pointer;
+}
+
+.popup-box {
+  position: fixed;
+  top: 90px;
+  right: 30px;
+  width: 100px;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, .3);
+  z-index: 101;
+}
+
+.popup-content {
+  position: relative;
+  width: 100%;
+}
+.popup-text {
+  font-family: 'Segoe UI';
+  font-size: 13px;
+  text-align: left;
+}
+
+.triangle {
+  position: absolute;
+  top: -19px;
+  right: 5px;
+  width: 0;
+  height: 0;
 }
