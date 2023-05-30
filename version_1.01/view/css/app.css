@@ -741,7 +741,11 @@ a {
 
 .achievement-node {
   margin: 20px;
-
+  cursor: pointer;
+}
+.achievement-node:hover {
+  transition: all 0.3s;
+  transform: scale(1.1);
 }
 .achievement-node-image{
  width: 100px;
