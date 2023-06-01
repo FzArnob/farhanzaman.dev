@@ -41,7 +41,7 @@ CREATE TABLE education_items
     end_date       DATE,
     is_present     BOOLEAN,
     subject        VARCHAR(255),
-    activity    VARCHAR(255),
+    activity       VARCHAR(255),
     created_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     delete_flag    BOOLEAN   DEFAULT FALSE
@@ -52,15 +52,15 @@ CREATE TABLE experience_items
     experience_id   INT PRIMARY KEY AUTO_INCREMENT,
     institute_name  VARCHAR(255),
     institute_std   VARCHAR(50),
-    institute_url        VARCHAR(255),
+    institute_url   VARCHAR(255),
     start_date      DATE,
     end_date        DATE,
     is_present      BOOLEAN,
     position        VARCHAR(255),
     project_details TEXT,
-    project_text_1   VARCHAR(255),
-    project_text_2   VARCHAR(255),
-    project_text_3   VARCHAR(255),
+    project_text_1  VARCHAR(255),
+    project_text_2  VARCHAR(255),
+    project_text_3  VARCHAR(255),
     project_url_1   VARCHAR(255),
     project_url_2   VARCHAR(255),
     project_url_3   VARCHAR(255),
@@ -79,6 +79,19 @@ CREATE TABLE expertise_items
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     delete_flag  BOOLEAN   DEFAULT FALSE
+);
+CREATE TABLE achievement_items
+(
+    achievement_id     INT PRIMARY KEY AUTO_INCREMENT,
+    name               VARCHAR(255),
+    description        TEXT,
+    certification_date DATE,
+    certification_url  VARCHAR(255),
+    duration           INT,
+    level              VARCHAR(50),
+    created_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    delete_flag        BOOLEAN   DEFAULT FALSE
 );
 
 CREATE TABLE projects
