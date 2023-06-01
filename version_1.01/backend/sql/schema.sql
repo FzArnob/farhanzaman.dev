@@ -165,6 +165,14 @@ CREATE TABLE profile_expertise
     FOREIGN KEY (fk_expertise_id) REFERENCES expertise_items (expertise_id)
 );
 
+CREATE TABLE profile_achievement
+(
+    fk_profile_id   VARCHAR(20),
+    fk_achievement_id INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_achievement_id) REFERENCES achievement_items (achievement_id)
+);
+
 CREATE TABLE profile_projects
 (
     fk_profile_id VARCHAR(20),
