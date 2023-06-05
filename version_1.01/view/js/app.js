@@ -436,14 +436,6 @@ document.addEventListener("DOMContentLoaded", function () {
         mousePos.y = e.pageY;
         var rangex = 15;
         var rangey = 15;
-        var sizeInt = getRandomInt(20, 30);
-        if (window.innerWidth < 800) {
-            rangex = window.innerWidth / 2;
-            rangey = window.innerHeight / 2;
-            sizeInt = getRandomInt(10, 50);
-            mousePos.x = window.innerWidth / 2;
-            mousePos.y = window.innerHeight / 2;
-        }
         if (mousePos.x > 0 && mousePos.y > 0) {
 
             var colorList = [
