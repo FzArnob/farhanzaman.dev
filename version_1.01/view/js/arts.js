@@ -1,5 +1,5 @@
 // Gallery Library
-function createGallery(imageUrls, boxSize) {
+function getGallery(imageUrls, boxSize) {
   const container = document.createElement('div');
   container.style.height = ((boxSize + (boxSize / 2)) + 45) + 'px'
   container.style.overflow = 'hidden';
@@ -84,15 +84,15 @@ const imageUrls = [
   "https://drive.google.com/uc?export=view&id=1kTWK3N0JFUyRdCjku0leRiy7Cq-bxfGT"
   // Add more image URLs as needed
 ];
-
+function createGallery(imageUrls){
 var imageSide = (window.innerWidth / (window.innerWidth / 300)) - 3;
 
 if (window.innerWidth < 800) imageSide = (window.innerWidth / (window.innerWidth / 300)) - 3;
 else imageSide = (window.innerWidth / (window.innerWidth / 400)) - 3;
 
-const gallery = createGallery(imageUrls, imageSide);
+const gallery = getGallery(imageUrls, imageSide);
 document.getElementById('gallery').appendChild(gallery);
-
+}
 window.addEventListener('scroll', function () {
   var button = document.getElementById('back-to-top-btn');
   if (window.pageYOffset > 300) {
