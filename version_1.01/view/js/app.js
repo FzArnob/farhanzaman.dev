@@ -1,5 +1,5 @@
 const host = "http://localhost/fzs-lab-portfolio/version_1.01/backend/api";
-const data = null;
+var data = null;
 
 
 
@@ -52,12 +52,18 @@ function checkGolbalData(ms) {
     sleep(ms).then(() => {
         if (data == null) {
             checkGolbalData(ms);
+        } else {
+            setTimeout(function () {
+                document.querySelector("pre-loader").style.display = "none"; // hide
+                document.querySelector("main-page").style.display = "block"; // show
+                wobbleAnimation();
+            }, 1000);
         }
     });
 }
 function fetchProfileData() {
-    const profileId = 'far1han';
-    const url = `http://localhost/fzs-lab-portfolio/version_1.01/backend/api/get-profile-data.php?profile_id=${profileId}`;
+    const profileId = 'farhan';
+    const url = host + `/get-profile-data.php?profile_id=${profileId}`;
 
     return new Promise((resolve, reject) => {
         fetch(url)
@@ -67,8 +73,8 @@ function fetchProfileData() {
                 }
                 return response.json();
             })
-            .then(data => {
-                resolve(data);
+            .then(result => {
+                resolve(result);
             })
             .catch(error => {
                 reject(error);
@@ -77,8 +83,10 @@ function fetchProfileData() {
 }
 // API Usage:
 fetchProfileData()
-    .then(data => {
-        console.log(data); // Handle the response data here
+    .then(result => {
+        console.log(result);
+        data = result;
+        checkGolbalData(500); // Handle the response data here
     })
     .catch(error => {
         console.error(error); // Handle any errors here
@@ -266,15 +274,24 @@ function createSkillCloud(skillTags) {
 
 
 // ================================================= Utilities Handler ================================================= 
-function isInViewport(el) {
-    const rect = el.getBoundingClientRect();
+function isInViewport(element) {
+    const rect = element.getBoundingClientRect();
     return (
         rect.top >= 0 &&
         rect.left >= 0 &&
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-
     );
+}
+function skillBarAnimation() {
+    const elements = document.querySelectorAll('.progress-line span');
+    elements.forEach((element) => {
+        if (isInViewport(element)) {
+            element.classList.add('in-viewport');
+        } else {
+            element.classList.remove('in-viewport');
+        }
+    });
 }
 
 function wobbleAnimation() {
@@ -362,11 +379,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 `<link type="text/css" rel="stylesheet" href="view/css/theme/light.css" />`
             );
     }
-    setTimeout(function () {
-        document.querySelector("pre-loader").style.display = "none"; // hide
-        document.querySelector("main-page").style.display = "block"; // show
-        wobbleAnimation();
-    }, 1000);
 
     //theme toogle
     document
@@ -443,19 +455,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "#80ffec",
                 "#4dffe5",
                 "#00e6c4",
-                "#00b398",
-                "#00806d",
 
                 "#fe819e",
                 "#fd4e78",
                 "#fd1c51",
-                "#e30237",
-                "#e30237",
 
-                "#737373",
-                "#a6a6a6",
-                "#8c8c8c",
-                "#595959",
+                "#c4c4c4",
             ];
             var colorCode = colorList[getRandomInt(0, colorList.length - 1)];
             var colorRGB = hexToRgb(colorCode);
@@ -542,6 +547,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     window.addEventListener("scroll", wobbleAnimation);
+    window.addEventListener("scroll", skillBarAnimation);
 
     // intro image animation
     var introImageEle = document.getElementById("intro-image");
@@ -593,7 +599,7 @@ const skillTags = [
     "Illustrator",
     "Excel",
     "PowerPoint"
-  ];
+];
 createSkillCloud(skillTags);
 
 const imageUrls = [
@@ -617,5 +623,59 @@ const imageUrls = [
     "https://drive.google.com/uc?export=view&id=1lD_0RMbcd0NhwsITCLfb2bm2i7bjOuKa",
     "https://drive.google.com/uc?export=view&id=1kTWK3N0JFUyRdCjku0leRiy7Cq-bxfGT"
     // Add more image URLs as needed
-  ];
+];
 createGallery(imageUrls);
+
+function generateSkillBars() {
+    // Create the skill bars container div
+    const skillBarsDiv = document.getElementById("skill-bars");
+    skillBarsDiv.classList.add('skill-bars');
+
+    // Skill data
+    const skills = [
+        { name: 'HTML', width: 90, className: 'html' },
+        { name: 'CSS', width: 60, className: 'css' },
+        { name: 'jQuery', width: 85, className: 'jquery' },
+        { name: 'Python', width: 50, className: 'python' },
+        { name: 'MySQL', width: 75, className: 'mysql' }
+    ];
+
+    // Create the individual skill bars
+    skills.forEach(skill => {
+        // Create the skill bar div
+        const skillBarDiv = document.createElement('div');
+        skillBarDiv.classList.add('bar');
+
+        // Create the info div
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('info');
+
+        // Create the span element inside the info div
+        const spanElement = document.createElement('span');
+        spanElement.textContent = skill.name;
+
+        // Append the span element to the info div
+        infoDiv.appendChild(spanElement);
+
+        // Create the progress line div
+        const progressLineDiv = document.createElement('div');
+        progressLineDiv.classList.add('progress-line');
+
+        // Create the span element inside the progress line div
+        const spanElement2 = document.createElement('span');
+        spanElement2.style.width = skill.width + '%';
+        spanElement2.setAttribute('data-value', skill.width + "%")
+
+        // Append the span element to the progress line div
+        progressLineDiv.appendChild(spanElement2);
+
+        // Append the info div and progress line div to the skill bar div
+        skillBarDiv.appendChild(infoDiv);
+        skillBarDiv.appendChild(progressLineDiv);
+
+        // Append the skill bar div to the skill bars container div
+        skillBarsDiv.appendChild(skillBarDiv);
+    });
+}
+
+generateSkillBars()

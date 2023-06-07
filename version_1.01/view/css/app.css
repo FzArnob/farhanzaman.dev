@@ -8,6 +8,7 @@
 :root {
   --theme-color: #00d3b4;
   --theme-secondary-color: #fd2155;
+  --color-1-rgba: rgba(0,0,0, 0.2);
   --theme-color-rbga: rgba(0, 211, 180, 0.8);
 }
 
@@ -95,7 +96,7 @@ a {
 
 .resume-btn {
   margin: auto;
-  max-width: 70%;
+  max-width: 75%;
   position: relative;
   margin-top: 30px;
 }
@@ -169,7 +170,7 @@ a {
 .section-title {
   font-size: 35px;
   margin: auto;
-  max-width: 70%;
+  max-width: 75%;
   margin-top: 10px;
   margin-top: 90px;
 }
@@ -177,7 +178,7 @@ a {
 .section-text {
   font-size: 15px;
   margin: auto;
-  max-width: 70%;
+  max-width: 75%;
 }
 
 .inline {
@@ -656,7 +657,7 @@ a {
 /* point and box */
 .point-box {
   margin: auto;
-  max-width: 70%;
+  max-width: 75%;
   position: relative;
   border-left: 1px solid var(--theme-color);
   margin-top: -6px;
@@ -707,7 +708,7 @@ a {
 
 .topic {
   margin: auto;
-  max-width: 70%;
+  max-width: 75%;
   font-family: 'Ubuntu';
   font-size: 22px;
   font-weight: 600;
@@ -732,15 +733,15 @@ a {
 }
 
 .achievement-preview {
-  max-width: 70%;
   margin: auto;
   display: flex;
-  justify-content: left;
-  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .achievement-node {
-  margin: 20px;
+  margin: 20px; 
   cursor: pointer;
 }
 .achievement-node:hover {
@@ -753,14 +754,6 @@ a {
 }
 
 @media screen and (max-width:800px) {
-  .achievement-preview {
-    max-width: 70%;
-    margin: auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 40px;
-  }
   
   .achievement-node {
     margin: 20px;
@@ -2115,4 +2108,100 @@ textarea.form-control {
   right: 5px;
   width: 0;
   height: 0;
+}
+
+
+
+
+
+::selection{
+  color: #fff;
+  background: var(--theme-color);
+}
+.skill-bars{
+  max-width: 75%;
+  margin: auto;
+}
+.skill-bars .bar{
+  margin: 20px 0;
+}
+.skill-bars .bar:first-child{
+  margin-top: 0px;
+}
+.skill-bars .bar .info{
+  margin-bottom: 5px;
+}
+.skill-bars .bar .info span{
+  font-weight: 500;
+  font-size: 17px;
+  opacity: 0;
+  animation: showText 0.5s 1s linear forwards;
+}
+@keyframes showText {
+  100%{
+    opacity: 1;
+  }
+}
+.skill-bars .bar .progress-line{
+  height: 5px;
+  width: 100%;
+  background: var(--color-1-rgba);
+  position: relative;
+  transform: scaleX(0);
+  transform-origin: left;
+  border-radius: 10px;
+  animation: animate 1s cubic-bezier(1,0,0.5,1) forwards;
+}
+@keyframes animate {
+  100%{
+    transform: scaleX(1);
+  }
+}
+.bar .progress-line span{
+  height: 100%;
+  position: absolute;
+  border-radius: 10px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--theme-color);
+  animation: animate 1s 1s cubic-bezier(1,0,0.5,1) forwards;
+}
+.progress-line span::before{
+  position: absolute;
+  content: "";
+  top: -10px;
+  right: 0;
+  height: 0;
+  width: 0;
+  border: 7px solid transparent;
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  border-top-color: var(--color-1-rgba);
+  opacity: 0;
+  animation: showText2 0.5s 1.5s linear forwards;
+}
+.progress-line span::after{
+  content: attr(data-value);
+  position: absolute;
+  top: -28px;
+  right: 0;
+  font-weight: 500;
+  background: var(--color-1-rgba);
+  color: #fff;
+  padding: 1px 8px;
+  font-size: 12px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 3px;
+  opacity: 0;
+  animation: showText2 0.5s 1.5s linear forwards;
+}
+.progress-line span.in-viewport {
+  animation-delay: 0.5s;
+}
+@keyframes showText2 {
+  100%{
+    opacity: 1;
+  }
 }
