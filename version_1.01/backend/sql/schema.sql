@@ -80,6 +80,19 @@ CREATE TABLE expertise_items
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     delete_flag  BOOLEAN   DEFAULT FALSE
 );
+
+CREATE TABLE skill_items
+(
+    skill_id     INT PRIMARY KEY AUTO_INCREMENT,
+    name         VARCHAR(255),
+    description  TEXT,
+    duration     INT,
+    percentage   INT,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    delete_flag  BOOLEAN   DEFAULT FALSE
+);
+
 CREATE TABLE achievement_items
 (
     achievement_id     INT PRIMARY KEY AUTO_INCREMENT,
@@ -165,9 +178,17 @@ CREATE TABLE profile_expertise
     FOREIGN KEY (fk_expertise_id) REFERENCES expertise_items (expertise_id)
 );
 
+CREATE TABLE profile_skill
+(
+    fk_profile_id VARCHAR(20),
+    fk_skill_id   INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_skill_id) REFERENCES skill_items (skill_id)
+);
+
 CREATE TABLE profile_achievement
 (
-    fk_profile_id   VARCHAR(20),
+    fk_profile_id     VARCHAR(20),
     fk_achievement_id INT,
     FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
     FOREIGN KEY (fk_achievement_id) REFERENCES achievement_items (achievement_id)
