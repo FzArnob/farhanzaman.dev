@@ -109,6 +109,8 @@ a {
 }
 
 
+.main-content {}
+
 /* Intro */
 #intro-image {
   position: absolute;
@@ -1592,7 +1594,7 @@ button {
 
 button,
 [type="submit"] {
-  appearance: button;
+  -webkit-appearance: button;
 }
 
 button::-moz-focus-inner,
