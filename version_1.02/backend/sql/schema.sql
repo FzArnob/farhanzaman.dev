@@ -80,6 +80,19 @@ CREATE TABLE expertise_items
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     delete_flag  BOOLEAN   DEFAULT FALSE
 );
+
+CREATE TABLE skill_items
+(
+    skill_id     INT PRIMARY KEY AUTO_INCREMENT,
+    name         VARCHAR(255),
+    description  TEXT,
+    duration     INT,
+    percentage   INT,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    delete_flag  BOOLEAN   DEFAULT FALSE
+);
+
 CREATE TABLE achievement_items
 (
     achievement_id     INT PRIMARY KEY AUTO_INCREMENT,
@@ -165,6 +178,14 @@ CREATE TABLE profile_expertise
     FOREIGN KEY (fk_expertise_id) REFERENCES expertise_items (expertise_id)
 );
 
+CREATE TABLE profile_skill
+(
+    fk_profile_id VARCHAR(20),
+    fk_skill_id   INT,
+    FOREIGN KEY (fk_profile_id) REFERENCES profile_info (profile_id),
+    FOREIGN KEY (fk_skill_id) REFERENCES skill_items (skill_id)
+);
+
 CREATE TABLE profile_achievement
 (
     fk_profile_id   VARCHAR(20),
@@ -199,7 +220,7 @@ CREATE TABLE profile_direct_messages
 
 -- Insert data into the profile_info table
 INSERT INTO profile_info (profile_id, full_name, name_subtitle, name_subtitle_highlight, nick_name, designation, intro_text, intro_image_url, resume_url, expertise_preference_title, expertise_preference_details, website_base_url, website_domain_name, contact_preference_details, address, phone, secondary_phone, email, alternative_email, facebook_url, github_url, linkedin_url, whatsapp_url)
-VALUES ('FARHAN', 'John Doe', 'Software Engineer', 'Expert in Backend Development', 'JD', 'Senior Software Engineer', 'I am a software engineer with expertise in backend development.', 'https://example.com/intro_image.jpg', 'https://example.com/resume.pdf', 'Backend Development', 'I have 5 years of experience in building scalable and efficient backend systems.', 'https://example.com', 'example.com', 'Preferred contact via email or phone.', '123 Main St, City, Country', '1234567890', '9876543210', 'john.doe@example.com', 'johndoe@gmail.com', 'https://www.facebook.com/johndoe', 'https://github.com/johndoe', 'https://www.linkedin.com/in/johndoe', 'https://wa.me/1234567890');
+VALUES ('farhan', 'Farhan Zaman', 'A curious ', 'S O U L', 'Farhan', 'Software Engineer', 'A tech enthusiast, always ready for new challenges and quick learner. To know more about my works and interests check out my details.', 'https://example.com/intro_image.jpg', 'https://example.com/resume.pdf', 'Backend Development', 'I have 5 years of experience in building scalable and efficient backend systems.', 'https://example.com', 'example.com', 'Preferred contact via email or phone.', '123 Main St, City, Country', '1234567890', '9876543210', 'john.doe@example.com', 'johndoe@gmail.com', 'https://www.facebook.com/johndoe', 'https://github.com/johndoe', 'https://www.linkedin.com/in/johndoe', 'https://wa.me/1234567890');
 
 -- Insert data into the education_items table
 INSERT INTO education_items (institute_name, institute_std, institute_url, start_date, end_date, is_present, subject, activity)
@@ -237,32 +258,32 @@ VALUES ('Jane Smith', 'jane.smith@example.com', 'Regarding Project Inquiry', 'I 
 
 -- Insert data into the profile_education table
 INSERT INTO profile_education (fk_profile_id, fk_education_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_experience table
 INSERT INTO profile_experience (fk_profile_id, fk_experience_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_expertise table
 INSERT INTO profile_expertise (fk_profile_id, fk_expertise_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_skill table
 INSERT INTO profile_skill (fk_profile_id, fk_skill_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_achievement table
 INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_projects table
 INSERT INTO profile_projects (fk_profile_id, fk_project_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_gallery_items table
 INSERT INTO profile_gallery_items (fk_profile_id, fk_item_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);
 
 -- Insert data into the profile_direct_messages table
 INSERT INTO profile_direct_messages (fk_profile_id, fk_message_id)
-VALUES ('FARHAN', 1);
+VALUES ('farhan', 1);

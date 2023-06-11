@@ -38,6 +38,13 @@ class ProfileModel
                   WHERE profile_expertise.fk_profile_id = '$profile_id'";
         $expertise_items = $this->conn->query($query)->fetch_all(MYSQLI_ASSOC);
         $result['profile']['expertises'] = $expertise_items;
+
+        // Fetch skill items
+        $query = "SELECT skill_items.* FROM skill_items
+                  INNER JOIN profile_skill ON skill_items.skill_id = profile_skill.fk_skill_id
+                  WHERE profile_skill.fk_profile_id = '$profile_id'";
+        $skill_items = $this->conn->query($query)->fetch_all(MYSQLI_ASSOC);
+        $result['profile']['skills'] = $skill_items;
         
         // Fetch achievement items
         $query = "SELECT achievement_items.* FROM achievement_items

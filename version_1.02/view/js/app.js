@@ -1,4 +1,4 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.01/backend/api";
+const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
 var data = null;
 
 
