@@ -10,7 +10,7 @@
 :root {
   --theme-color: #00d3b4;
   --theme-secondary-color: #fd2155;
-  --color-1-rgba: rgba(0, 0, 0, 0.2);
+  --color-1-rgba: rgba(0, 0, 0, 0.3);
   --theme-color-rbga: rgba(0, 211, 180, 0.8);
 }
 
@@ -1105,6 +1105,10 @@ a {
   flex-direction: column;
   box-shadow: 0 0 15px rgba(0, 0, 0, .3);
   border-radius: 10px;
+  cursor: pointer;
+}
+.work-card:hover {
+transform: scale(1.1);
 }
 
 .work-card .work-card-image {
@@ -2277,7 +2281,7 @@ textarea.form-control {
   padding-top: 0;
   padding-bottom: 0;
   margin-bottom: 20px;
-  margin-top: 50px;
+  margin-top: 5vw;
   height: fit-content;
   max-height: calc(25vw - 85px);
   overflow-y: auto;
@@ -2309,4 +2313,12 @@ textarea.form-control {
     max-height: none;
     overflow: auto;
   }
+}
+.button-b {
+  background-color: rgba(0, 0, 0, .01);
+  color: var(--theme-color);
+  border-color: var(--theme-color);
+}
+.button-b:hover{
+  background-color: var(--theme-color);
 }

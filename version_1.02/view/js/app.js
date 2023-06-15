@@ -160,15 +160,16 @@ document.getElementById("direct-message").addEventListener("submit", function (e
 
 function createGallery(imageUrls) {
     var imageSide = (window.innerWidth / (window.innerWidth / 300)) - 3;
-
-    if (window.innerWidth < 800) imageSide = (window.innerWidth / (window.innerWidth / 300)) - 3;
-    else imageSide = (window.innerWidth / (window.innerWidth / 400)) - 3;
-
-    const gallery = getGallery(imageUrls, imageSide);
+    var numColumn = Math.floor(window.innerWidth / 300);
+    if (window.innerWidth < 800) {
+        numColumn = Math.floor(window.innerWidth / 400);
+        imageSide = (window.innerWidth / (window.innerWidth / 400)) - 3;
+    }
+    const gallery = getGallery(imageUrls, imageSide, numColumn);
     document.getElementById('gallery').appendChild(gallery);
 }
 // Gallery Library
-function getGallery(imageUrls, boxSize) {
+function getGallery(imageUrls, boxSize, numColumn) {
     const container = document.createElement('div');
     container.style.height = ((boxSize + (boxSize / 2)) + 45) + 'px'
     container.style.overflow = 'hidden';
@@ -179,7 +180,8 @@ function getGallery(imageUrls, boxSize) {
     containerShadow.classList.add('bottom-gradient-bg');
     containerShadow.classList.add('gallery-container-shadow');
     // Create and append images
-    imageUrls.forEach((url) => {
+for (let i = 0; i < numColumn*2; i++) {
+        const url = imageUrls[i];
         const image = document.createElement('img');
         image.src = url;
         image.classList.add('gallery-image');
@@ -223,7 +225,7 @@ function getGallery(imageUrls, boxSize) {
         imageContainer.appendChild(background);
         imageContainer.appendChild(zoomIcon);
         container.appendChild(imageContainer);
-    });
+    }
     container.appendChild(containerShadow);
     return container;
 }
