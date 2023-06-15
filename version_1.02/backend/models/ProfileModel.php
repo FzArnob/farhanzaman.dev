@@ -16,7 +16,7 @@ class ProfileModel
         // Fetch profile information
         $query = "SELECT * FROM profile_info WHERE profile_id = '$profile_id'";
         $profile_info = $this->conn->query($query)->fetch_assoc();
-        $result['profile'] = $profile_info;
+        $result['profile']['info'] = $profile_info;
 
         // Fetch education items
         $query = "SELECT education_items.* FROM education_items
