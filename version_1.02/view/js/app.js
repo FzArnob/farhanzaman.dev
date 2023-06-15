@@ -633,29 +633,27 @@ const imageUrls = [
 ];
 createGallery(imageUrls);
 
-function generateSkillBars() {
+// Skill data
+const skills = [
+    { name: 'Problem Solving', width: 4.6, className: 'ps' },
+    { name: 'Critical thinking', width: 4, className: 'ct' },
+    { name: 'Teamwork', width: 3.3, className: 'tw' },
+    { name: 'Business Communication', width: 4.1, className: 'bc' },
+    { name: 'Interpersonal skills', width: 3.2, className: 'is' },
+    { name: 'Adaptability', width: 2.55, className: 'a' },
+    { name: 'Leadership', width: 4, className: 'l' },
+    { name: 'Presentation skills', width: 4, className: 'psk' },
+    { name: 'Creativity', width: 3, className: 'c' },
+    { name: 'Self-motivated', width: 3, className: 'sm' },
+    { name: 'Organizational skills', width: 2, className: 'os' },
+    { name: 'Time management', width: 3, className: 'tm' }
+];
+
+function generateSkillBars(skills) {
     // Create the skill bars container div
     const skillBarsDiv = document.getElementById("skill-bars");
     skillBarsDiv.classList.add('skill-bars');
 
-    // Skill data
-    const skills = [
-        { name: 'HTML', width: 90, className: 'html' },
-        { name: 'CSS', width: 60, className: 'css' },
-        { name: 'jQuery', width: 85, className: 'jquery' },
-        { name: 'Python', width: 50, className: 'python' },
-        { name: 'MySQL', width: 75, className: 'mysql' },
-        { name: 'HTML', width: 90, className: 'html' },
-        { name: 'CSS', width: 60, className: 'css' },
-        { name: 'jQuery', width: 85, className: 'jquery' },
-        { name: 'Python', width: 50, className: 'python' },
-        { name: 'MySQL', width: 75, className: 'mysql' },
-        { name: 'HTML', width: 90, className: 'html' },
-        { name: 'CSS', width: 60, className: 'css' },
-        { name: 'jQuery', width: 85, className: 'jquery' },
-        { name: 'Python', width: 50, className: 'python' },
-        { name: 'MySQL', width: 75, className: 'mysql' }
-    ];
     var count;
     if(window.innerWidth <= 800) count = Math.floor((window.innerWidth) / 72);
     else count = Math.floor((window.innerWidth / 4) / 72);
@@ -683,6 +681,7 @@ function generateSkillBars() {
         progressLineDiv.classList.add('progress-line');
 
         // Create the span element inside the progress line div
+        skill.width = skill.width*20;
         const spanElement2 = document.createElement('span');
         spanElement2.style.width = skill.width + '%';
         spanElement2.setAttribute('data-value', skill.width + "%")
@@ -699,4 +698,4 @@ function generateSkillBars() {
     }
 }
 
-generateSkillBars()
+generateSkillBars(skills)
