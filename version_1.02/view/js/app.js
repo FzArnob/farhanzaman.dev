@@ -252,7 +252,12 @@ function createSkillCloud(skillTags) {
         // interact with cursor move on mouse out
         keep: true,
     });
-    var textSize = Math.floor(20 * radius / 300);
+    var textSize;
+    if(window.innerWidth <= 1400){
+        textSize = Math.floor(27 * radius / 300);
+    } else {
+        textSize = Math.floor(22 * radius / 300);
+    }
     // console.log(radius,"--" ,Math.floor(20*radius/300));
     document.getElementById("skill-canvas").firstChild.style.fontSize = textSize + "px";
     // console.log(document.getElementById("skill-canvas").firstChild.style.fontSize);
@@ -637,11 +642,25 @@ function generateSkillBars() {
         { name: 'CSS', width: 60, className: 'css' },
         { name: 'jQuery', width: 85, className: 'jquery' },
         { name: 'Python', width: 50, className: 'python' },
+        { name: 'MySQL', width: 75, className: 'mysql' },
+        { name: 'HTML', width: 90, className: 'html' },
+        { name: 'CSS', width: 60, className: 'css' },
+        { name: 'jQuery', width: 85, className: 'jquery' },
+        { name: 'Python', width: 50, className: 'python' },
+        { name: 'MySQL', width: 75, className: 'mysql' },
+        { name: 'HTML', width: 90, className: 'html' },
+        { name: 'CSS', width: 60, className: 'css' },
+        { name: 'jQuery', width: 85, className: 'jquery' },
+        { name: 'Python', width: 50, className: 'python' },
         { name: 'MySQL', width: 75, className: 'mysql' }
     ];
+    var count;
+    if(window.innerWidth <= 800) count = Math.floor((window.innerWidth) / 72);
+    else count = Math.floor((window.innerWidth / 4) / 72);
 
     // Create the individual skill bars
-    skills.forEach(skill => {
+    for (let i = 0; i < count; i++) {
+        const skill = skills[i];
         // Create the skill bar div
         const skillBarDiv = document.createElement('div');
         skillBarDiv.classList.add('bar');
@@ -675,7 +694,7 @@ function generateSkillBars() {
 
         // Append the skill bar div to the skill bars container div
         skillBarsDiv.appendChild(skillBarDiv);
-    });
+    }
 }
 
 generateSkillBars()
