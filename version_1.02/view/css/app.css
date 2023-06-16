@@ -180,6 +180,7 @@ a {
 .section-text {
   font-size: 15px;
   width: 100%;
+  line-height: 1.75;
 }
 
 .inline {
@@ -213,7 +214,7 @@ a {
   }
 
   .intro-text-medium-2 {
-    font-size: 30px;
+    font-size: 29px;
   }
 
   .section-head {
@@ -1107,8 +1108,9 @@ a {
   border-radius: 10px;
   cursor: pointer;
 }
+
 .work-card:hover {
-transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .work-card .work-card-image {
@@ -1161,6 +1163,7 @@ transform: scale(1.1);
 #gallery {
   margin-top: 50px;
   width: fit-content;
+  
 }
 
 .gallery-container {
@@ -1190,7 +1193,8 @@ transform: scale(1.1);
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  padding: 1.1%;
+  transition: all 0.4s;
+  margin: 20px;
 }
 
 .gallery-image-back {
@@ -2229,6 +2233,7 @@ textarea.form-control {
   transform-origin: left;
   background: var(--theme-color);
   animation: animate 1s 1s cubic-bezier(1, 0, 0.5, 1) forwards;
+  animation-delay: 0.5s;
 }
 
 .progress-line span::before {
@@ -2264,9 +2269,7 @@ textarea.form-control {
   animation: showText2 0.5s 1.5s linear forwards;
 }
 
-.progress-line span.in-viewport {
-  animation-delay: 0.5s;
-}
+
 
 @keyframes showText2 {
   100% {
@@ -2314,11 +2317,99 @@ textarea.form-control {
     overflow: auto;
   }
 }
+
 .button-b {
   background-color: rgba(0, 0, 0, .01);
   color: var(--theme-color);
   border-color: var(--theme-color);
 }
-.button-b:hover{
+
+.button-b:hover {
   background-color: var(--theme-color);
+}
+
+#photoContainer {
+  position: fixed;
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  z-index: 115;
+}
+
+#largePhoto {
+  object-fit: contain;
+  width: 100%;
+  z-index: 113;
+}
+
+#thumbnailContainer {
+  padding: 20px;
+  padding-top: 70px;
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+  left: 0;
+  z-index: 113;
+}
+
+.thumbnail {
+  width: 150px;
+  height: 150px;
+  margin-right: 30px;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.thumbnail:hover {
+  transform: scale(1.1);
+}
+
+.thumbnail.selected {
+  border-color: var(--theme-color);
+}
+
+#photoTitle {
+  position: absolute;
+  top: 10px;
+  margin: auto;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#photoSubtitle {
+  position: absolute;
+  top: 30px;
+  margin: auto;
+  font-size: 14px;
+}
+
+#closeButton {
+  z-index: 114;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+#zoomButtons {
+  z-index: 114;
+  position: absolute;
+  top: 6px;
+  right: 45px;
+  display: flex;
+  gap: 5px;
+}
+
+#zoomButtons button {
+  z-index: 114;
+  padding: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }

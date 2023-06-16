@@ -1,4 +1,6 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
+// const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
+// const host = "http://192.168.0.104/fzs-lab-portfolio/version_1.02/backend/api";
+const host = "https://farhanzaman.dev/backend/api";
 var data = null;
 
 
@@ -159,64 +161,75 @@ document.getElementById("direct-message").addEventListener("submit", function (e
 // ================================================= Data Response Handler ================================================= 
 
 function createGallery(imageUrls) {
-    var imageSide = (window.innerWidth / (window.innerWidth / 300)) - 3;
-    var numColumn = Math.floor(window.innerWidth / 300);
-    if (window.innerWidth < 800) {
-        numColumn = Math.floor(window.innerWidth / 400);
-        imageSide = (window.innerWidth / (window.innerWidth / 400)) - 3;
-    }
-    const gallery = getGallery(imageUrls, imageSide, numColumn);
-    document.getElementById('gallery').appendChild(gallery);
-}
-// Gallery Library
-function getGallery(imageUrls, boxSize, numColumn) {
     const container = document.createElement('div');
-    container.style.height = ((boxSize + (boxSize / 2)) + 45) + 'px'
     container.style.overflow = 'hidden';
     container.classList.add('gallery-container');
+
+    var numColumn;
+
+    switch (true) {
+        case window.innerWidth >= 600 && window.innerWidth < 800:
+            numColumn = 2;
+            break;
+        case window.innerWidth >= 800 && window.innerWidth < 1400:
+            numColumn = 3;
+            break;
+        case window.innerWidth >= 1400 && window.innerWidth < 2000:
+            numColumn = 4;
+            break;
+        case window.innerWidth >= 2000:
+            numColumn = 5;
+            break;
+        default:
+            numColumn = 1;
+            break;
+    }
+    var imageSide = (window.innerWidth / numColumn) - 70;
+
+    const containerHeight = imageSide + (imageSide / 2) + 30;
+    const containerShadowHeight = imageSide / 2;
+
+    container.style.height = containerHeight + 'px';
+
     const containerShadow = document.createElement('div');
-    containerShadow.style.height = ((boxSize / 2)) + 'px';
-    containerShadow.style.top = ((boxSize + (boxSize / 2)) + 45) - (boxSize / 2) - 1 + 'px';
+    containerShadow.style.height = containerShadowHeight + 'px';
+    containerShadow.style.top = containerHeight - containerShadowHeight - 1 + 'px';
     containerShadow.classList.add('bottom-gradient-bg');
     containerShadow.classList.add('gallery-container-shadow');
-    // Create and append images
-for (let i = 0; i < numColumn*2; i++) {
-        const url = imageUrls[i];
+    console.log(numColumn);
+    for (let i = 0; i < numColumn * 2; i++) {
+        var url = imageUrls[i];
         const image = document.createElement('img');
         image.src = url;
         image.classList.add('gallery-image');
-
-        // Crop and center images
         image.style.objectFit = 'cover';
-        image.style.width = boxSize + 'px';
-        image.style.height = boxSize + 'px';
+        image.style.width = imageSide + 'px';
+        image.style.height = imageSide + 'px';
 
-        // Add fullscreen view on click
         const zoomIcon = document.createElement('div');
         zoomIcon.classList.add('zoom-icon');
         zoomIcon.classList.add('material-symbols-outlined');
         zoomIcon.classList.add('c-theme');
         zoomIcon.style.fontSize = '50px';
         zoomIcon.innerHTML = 'add_circle';
-        zoomIcon.addEventListener('click', () => {
-            image.classList.toggle('fullscreen');
-        });
+
         const background = document.createElement('div');
         background.classList.add('gallery-image-back');
 
-        // Append image and zoom icon to container
         const imageContainer = document.createElement('div');
-        imageContainer.style.width = boxSize + 'px';
-        imageContainer.style.height = boxSize + 'px';
-        // Add zoom effect on hover
+        imageContainer.style.width = imageSide + 'px';
+        imageContainer.style.height = imageSide + 'px';
         imageContainer.addEventListener('mouseover', () => {
-            image.classList.add('zoomed');
+            imageContainer.classList.add('zoomed');
             zoomIcon.style.display = 'block';
             background.style.display = 'block';
         });
-
+        imageContainer.addEventListener('click', () => {
+            document.getElementById('photoContainer').style.display = 'flex';
+            selectPhoto(i);
+        });
         imageContainer.addEventListener('mouseout', () => {
-            image.classList.remove('zoomed');
+            imageContainer.classList.remove('zoomed');
             zoomIcon.style.display = 'none';
             background.style.display = 'none';
         });
@@ -226,9 +239,11 @@ for (let i = 0; i < numColumn*2; i++) {
         imageContainer.appendChild(zoomIcon);
         container.appendChild(imageContainer);
     }
+
     container.appendChild(containerShadow);
-    return container;
+    document.getElementById('gallery').appendChild(container);
 }
+
 function createSkillCloud(skillTags) {
     var radius;
     if (window.innerWidth <= 800) {
@@ -255,7 +270,7 @@ function createSkillCloud(skillTags) {
         keep: true,
     });
     var textSize;
-    if(window.innerWidth <= 1400){
+    if (window.innerWidth <= 1400) {
         textSize = Math.floor(27 * radius / 300);
     } else {
         textSize = Math.floor(22 * radius / 300);
@@ -290,16 +305,7 @@ function isInViewport(element) {
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
 }
-function skillBarAnimation() {
-    const elements = document.querySelectorAll('.progress-line span');
-    elements.forEach((element) => {
-        if (isInViewport(element)) {
-            element.classList.add('in-viewport');
-        } else {
-            element.classList.remove('in-viewport');
-        }
-    });
-}
+
 
 function wobbleAnimation() {
     var wobbleElements = document.querySelectorAll(".wobble:not([data-animate-once])");
@@ -554,7 +560,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     window.addEventListener("scroll", wobbleAnimation);
-    window.addEventListener("scroll", skillBarAnimation);
 
     // intro image animation
     var introImageEle = document.getElementById("intro-image");
@@ -631,23 +636,62 @@ const imageUrls = [
     "https://drive.google.com/uc?export=view&id=1kTWK3N0JFUyRdCjku0leRiy7Cq-bxfGT"
     // Add more image URLs as needed
 ];
+// Example usage
+const photos = [
+    {
+        src: "https://drive.google.com/uc?export=view&id=1uTNMfmAJ37-eT0bTfvlEbBOkV_o9xAN2",
+        title: "Photo 1",
+        subtitle: "Description 1"
+    },
+    {
+        src: "https://drive.google.com/uc?export=view&id=1kk5XwFs6rpB-025pSz5rLFanuUm6-Q4t",
+        title: "Photo 2",
+        subtitle: "Description 2"
+    },
+    {
+        src: "https://drive.google.com/uc?export=view&id=1kaUC67zGqKIVqo_cqNnFmYhRh-aArxmu",
+        title: "Photo 3",
+        subtitle: "Description 3"
+    },
+    {
+        src: "https://drive.google.com/uc?export=view&id=1kSWSM9_6WkFeP9dZJcCqTMv3m6hAiG7O",
+        title: "Photo 1",
+        subtitle: "Description 1"
+    },
+    {
+        src: "https://drive.google.com/uc?export=view&id=1keL-fGWtm-P8RILuG-E5aFxpVDXId6h8",
+        title: "Photo 2",
+        subtitle: "Description 2"
+    },
+    {
+        src:
+            "https://drive.google.com/uc?export=view&id=1kbcW8RN7Q6twRR6aes5CfY7e1t_2SFGy",
+        title: "Photo 3",
+        subtitle: "Description 3"
+    },
+    {
+        src:
+            "https://drive.google.com/uc?export=view&id=1knnF-6NKTCiVBJU07D-O67vRJsx-2Y_H",
+        title: "Photo 1",
+        subtitle: "Description 1"
+    },
+    {
+        src:
+            "https://drive.google.com/uc?export=view&id=1kx9Oy4gTXmTg8zK4UPWPcXhT4501sIsM",
+        title: "Photo 2",
+        subtitle: "Description 2"
+    },
+    {
+        src:
+            "https://drive.google.com/uc?export=view&id=1l59pamuCF42zd7_SpjYXA0VYPNfdPGXw",
+        title: "Photo 3",
+        subtitle: "Description 3"
+    }
+    // Add more photos as needed
+];
 createGallery(imageUrls);
 
-// Skill data
-const skills = [
-    { name: 'Problem Solving', width: 4.6, className: 'ps' },
-    { name: 'Critical thinking', width: 4, className: 'ct' },
-    { name: 'Teamwork', width: 3.3, className: 'tw' },
-    { name: 'Business Communication', width: 4.1, className: 'bc' },
-    { name: 'Interpersonal skills', width: 3.2, className: 'is' },
-    { name: 'Adaptability', width: 2.55, className: 'a' },
-    { name: 'Leadership', width: 4, className: 'l' },
-    { name: 'Presentation skills', width: 4, className: 'psk' },
-    { name: 'Creativity', width: 3, className: 'c' },
-    { name: 'Self-motivated', width: 3, className: 'sm' },
-    { name: 'Organizational skills', width: 2, className: 'os' },
-    { name: 'Time management', width: 3, className: 'tm' }
-];
+
 
 function generateSkillBars(skills) {
     // Create the skill bars container div
@@ -655,7 +699,7 @@ function generateSkillBars(skills) {
     skillBarsDiv.classList.add('skill-bars');
 
     var count;
-    if(window.innerWidth <= 800) count = Math.floor((window.innerWidth) / 72);
+    if (window.innerWidth <= 800) count = Math.floor((window.innerWidth) / 72);
     else count = Math.floor((window.innerWidth / 4) / 72);
 
     // Create the individual skill bars
@@ -681,10 +725,9 @@ function generateSkillBars(skills) {
         progressLineDiv.classList.add('progress-line');
 
         // Create the span element inside the progress line div
-        skill.width = skill.width*20;
         const spanElement2 = document.createElement('span');
-        spanElement2.style.width = skill.width + '%';
-        spanElement2.setAttribute('data-value', skill.width + "%")
+        spanElement2.style.width = skill.width * 20 + '%';
+        spanElement2.setAttribute('data-value', skill.width + "/5")
 
         // Append the span element to the progress line div
         progressLineDiv.appendChild(spanElement2);
@@ -697,5 +740,162 @@ function generateSkillBars(skills) {
         skillBarsDiv.appendChild(skillBarDiv);
     }
 }
+function skillBarAnimation() {
+    const element = document.getElementById('skill-bars');
+    if (!element.classList.contains('in-viewport')) {
+        if (isInViewport(element)) {
+            element.classList.add('in-viewport');
+            // Skill data
+            const skills = [
+                { name: 'Problem Solving', width: 4.6, className: 'ps' },
+                { name: 'Critical thinking', width: 4, className: 'ct' },
+                { name: 'Teamwork', width: 3.3, className: 'tw' },
+                { name: 'Leadership', width: 4.1, className: 'bc' },
+                { name: 'Interpersonal skills', width: 3.2, className: 'is' },
+                { name: 'Adaptability', width: 2.55, className: 'a' },
+                { name: 'Business Communication', width: 4, className: 'l' },
+                { name: 'Presentation skills', width: 4, className: 'psk' },
+                { name: 'Creativity', width: 3, className: 'c' },
+                { name: 'Self-motivated', width: 3, className: 'sm' },
+                { name: 'Organizational skills', width: 2, className: 'os' },
+                { name: 'Time management', width: 3, className: 'tm' }
+            ];
+            generateSkillBars(skills);
+        }
+    }
 
-generateSkillBars(skills)
+}
+window.addEventListener("scroll", skillBarAnimation);
+
+function createPhotoViewer(targetElement, photos) {
+    const photoContainer = document.getElementById(targetElement);
+
+    // Create large photo element
+    const largePhoto = document.createElement('img');
+    largePhoto.id = 'largePhoto';
+    largePhoto.src = '';
+    largePhoto.alt = 'Large Photo';
+
+    // Create thumbnail container
+    const thumbnailContainer = document.createElement('div');
+    thumbnailContainer.id = 'thumbnailContainer';
+    thumbnailContainer.classList.add('bg2');
+
+    // Create title and subtitle elements
+    const photoTitle = document.createElement('div');
+    photoTitle.id = 'photoTitle';
+    const photoSubtitle = document.createElement('div');
+    photoSubtitle.id = 'photoSubtitle';
+    photoTitle.classList.add('c1');
+    photoSubtitle.classList.add('c1');
+    // Append elements to the photo container
+    photoContainer.appendChild(largePhoto);
+    photoContainer.appendChild(thumbnailContainer);
+    thumbnailContainer.appendChild(photoTitle);
+    thumbnailContainer.appendChild(photoSubtitle);
+    photoContainer.classList.add('bg1');
+
+    // Populate thumbnail images
+    photos.forEach((photo, index) => {
+        const thumbnail = document.createElement('img');
+        thumbnail.classList.add('thumbnail');
+        thumbnail.src = photo.src;
+        thumbnail.alt = `Thumbnail ${index + 1}`;
+        thumbnail.addEventListener('click', () => selectPhoto(index));
+        thumbnailContainer.appendChild(thumbnail);
+    });
+
+    // Set initial selection
+    selectPhoto(0);
+}
+
+// Set the photo viewer to occupy the full screen ratio
+function setFullScreenRatio() {
+    const photoContainer = document.getElementById('photoContainer');
+    const largePhoto = document.getElementById('largePhoto');
+    const thumbnailContainer = document.getElementById('thumbnailContainer');
+    const photoTitle = document.getElementById('photoTitle');
+    const photoSubtitle = document.getElementById('photoSubtitle');
+
+
+    // Set container heights
+    photoContainer.style.height = '100%';
+    thumbnailContainer.style.height = `170px`;
+    largePhoto.style.maxHeight = 'calc(100% - 250px)';
+}
+
+// Select a photo
+function selectPhoto(index) {
+    const selectedPhoto = photos[index];
+    const largePhoto = document.getElementById('largePhoto');
+    const thumbnailContainer = document.getElementById('thumbnailContainer');
+    const photoTitle = document.getElementById('photoTitle');
+    const photoSubtitle = document.getElementById('photoSubtitle');
+    largePhoto.src = selectedPhoto.src;
+    photoTitle.textContent = selectedPhoto.title;
+    photoSubtitle.textContent = selectedPhoto.subtitle;
+
+    // Remove previous selection
+    const previousSelectedThumbnail = thumbnailContainer.querySelector('.thumbnail.selected');
+    if (previousSelectedThumbnail) {
+        previousSelectedThumbnail.classList.remove('selected');
+    }
+
+    // Add new selection
+    const currentThumbnail = thumbnailContainer.children[index + 2];
+    currentThumbnail.classList.add('selected');
+}
+
+
+createPhotoViewer('photoContainer', photos);
+setFullScreenRatio();
+
+// Update the full screen ratio when the window is resized
+window.addEventListener('resize', setFullScreenRatio);
+// Close button functionality
+const closeButton = document.getElementById('closeButton');
+closeButton.addEventListener('click', () => {
+    document.getElementById('photoContainer').style.display = 'none';
+});
+
+// Zoom in and out buttons functionality
+const zoomInButton = document.getElementById('zoomInButton');
+const zoomOutButton = document.getElementById('zoomOutButton');
+let scale = 1;
+zoomInButton.addEventListener('click', () => {
+    if (scale < 5) {
+        const largePhoto = document.getElementById('largePhoto');
+        scale += 0.1;
+        largePhoto.style.transform = `scale(${scale})`;
+    }
+});
+
+zoomOutButton.addEventListener('click', () => {
+    if (scale > 0.6) {
+        const largePhoto = document.getElementById('largePhoto');
+        scale -= 0.1;
+        largePhoto.style.transform = `scale(${scale})`;
+    }
+});
+let posX = 0;
+let posY = 0;
+let isDragging = false;
+let startX;
+let startY;
+largePhoto.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    startX = event.clientX - posX;
+    startY = event.clientY - posY;
+});
+
+largePhoto.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+window.addEventListener('mousemove', (event) => {
+    if (isDragging) {
+        posX = event.clientX - startX;
+        posY = event.clientY - startY;
+        largePhoto.style.transform = `scale(${scale}) translate(${posX}px, ${posY}px)`;
+    }
+});
