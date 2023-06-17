@@ -33,7 +33,11 @@
       </button>
     </div>
   </div>
-  <button id="back-to-top-btn">&#8673;</button>
+  <button id="back-to-top-btn">
+    <span class="material-symbols-outlined">
+      stat_1
+    </span>
+  </button>
   <pre-loader class="pre-loader">
     <img src="view/static/favicon.png" />
   </pre-loader>
@@ -74,10 +78,14 @@
             class="fa-logo-text"> Farhan Zaman <span class="fa-logo-sub-text">A curious <span class="c-theme-second">S O
                 U L</span></divspan></a>
         <ul class="nav-menu bg2 animate-right" id="nav-menu">
-          <li class="nav-item"><a class="nav-links c1 active" href="#about-section">About</a></li>
-          <li class="nav-item"><a class="nav-links c1" href="#expertise-section">Expertise</a></li>
-          <li class="nav-item"><a class="nav-links c1" href="#works-section">Works</a></li>
-          <li class="nav-item"><a class="nav-links c1" href="#gallery-section">Gallery</a></li>
+          <li class="nav-item"><a class="nav-links c1 active" href="#about-section"
+              onclick="smoothScroll('#about-section')">About</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="#expertise-section"
+              onclick="smoothScroll('#expertise-section')">Expertise</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="#works-section"
+              onclick="smoothScroll('#works-section')">Works</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="#gallery-section"
+              onclick="smoothScroll('#gallery-section')">Gallery</a></li>
         </ul>
         <div class="nav-icon animate-top" id="nav-menu-button">
           <span class="material-symbols-outlined mobile-menu-icon">list</span>
@@ -390,9 +398,9 @@
           <div id="gallery"></div>
         </div>
         <div class="row">
-          <button type="submit"
+          <a href="gallery.html"
             style="z-index: 10; margin-left: 50%; transform: translate(-50%,-51%); margin-bottom: 40px;"
-            class="button button-a button-big button-rouded back-color" id="expand-gallery">Explore</button>
+            class="button button-a button-big button-rouded back-color">Explore</a>
         </div>
       </section>
       <section id="contact-section" class="paralax-mf footer-paralax bg-image sect-mt4 route"

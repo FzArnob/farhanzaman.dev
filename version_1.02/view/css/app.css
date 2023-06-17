@@ -1,5 +1,5 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&family=Ubuntu:wght@300&display=swap');
 
 @font-face {
   font-family: social-font;
@@ -19,7 +19,7 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI';
+  font-family: 'Noto Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale
 }
@@ -32,6 +32,7 @@ body {
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  scroll-behavior: smooth;
   user-select: none;
 }
 
@@ -69,6 +70,7 @@ a {
 }
 
 
+
 .button-basic a {
   text-decoration: none;
   position: relative;
@@ -81,7 +83,7 @@ a {
   color: var(--theme-color);
   font-size: 18px;
   font-weight: 600;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Noto Sans', sans-serif;
   padding: 10px 40px;
   width: fit-content;
   border: 2px solid var(--theme-color);
@@ -157,7 +159,7 @@ a {
 
 .intro-text-small {
   font-size: 18px;
-  font-family: 'Segoe UI';
+  font-family: 'Noto Sans', sans-serif;
   font-weight: 400;
   max-width: 405px;
 }
@@ -348,9 +350,7 @@ a {
   padding: 5px;
   margin-right: 2rem;
 }
-
 .nav-links {
-  text-decoration: none;
   padding: .5rem 1rem;
   height: 100%;
   border-bottom: 3px solid transparent
@@ -677,7 +677,7 @@ a {
 .box-header {
   margin: 10px;
   margin-left: 30px;
-  font-family: 'Ubuntu';
+  font-family: 'Ubuntu', sans-serif;
   position: relative;
   top: -10px;
   font-size: 17px;
@@ -711,7 +711,7 @@ a {
 .topic {
   margin: auto;
   max-width: 75%;
-  font-family: 'Ubuntu';
+  font-family: 'Ubuntu', sans-serif;
   font-size: 22px;
   font-weight: 600;
 }
@@ -721,7 +721,7 @@ a {
 }
 
 .tagcloud {
-  font-family: 'Segoe UI';
+  font-family: 'Noto Sans', sans-serif;
   margin: auto;
 }
 
@@ -1576,7 +1576,7 @@ a {
 
 a:hover {
   color: var(--theme-color);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 button {
@@ -1645,7 +1645,7 @@ h5 {
 }
 
 .container {
-  width: 100%;
+  /* width: calc(100% -  30px); */
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
@@ -2089,6 +2089,8 @@ textarea.form-control {
 }
 
 #back-to-top-btn {
+  padding: 0;
+  padding-top: 3px;
   display: none;
   position: fixed;
   bottom: 20px;
@@ -2156,7 +2158,7 @@ textarea.form-control {
 }
 
 .popup-text {
-  font-family: 'Segoe UI';
+  font-family: 'Noto Sans', sans-serif;
   font-size: 13px;
   text-align: left;
 }
@@ -2239,7 +2241,7 @@ textarea.form-control {
 .progress-line span::before {
   position: absolute;
   content: "";
-  top: -10px;
+  top: -9px;
   right: 0;
   height: 0;
   width: 0;
