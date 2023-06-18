@@ -72,6 +72,12 @@
   border-right: 10px solid transparent;
   border-bottom: 10px solid #f6f6f6;
 }
+.button-a {
+  color: #fff;
+}
+.reverse-color {
+  color: #fff;
+}
 @media screen and (max-width: 600px) {
   .intro-text {
     background-color: rgba(255, 255, 255, 0.3);

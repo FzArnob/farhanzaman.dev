@@ -1,5 +1,5 @@
-// const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
-const host = "http://192.168.0.105/fzs-lab-portfolio/version_1.02/backend/api";
+const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
+// const host = "http://192.168.0.106/fzs-lab-portfolio/version_1.02/backend/api";
 // const host = "https://farhanzaman.dev/backend/api";
 var data = null;
 
@@ -905,3 +905,143 @@ window.addEventListener('mousemove', (event) => {
         largePhoto.style.transform = `scale(${scale}) translate(${posX}px, ${posY}px)`;
     }
 });
+
+
+
+const worksData = [
+    {
+      logo_image: "https://drive.google.com/uc?export=view&id=1MxXMUF4dTl3-JZb063SC9S-IDzS5pF8t",
+      type: "Nature",
+      stack: "Lake",
+      name: "Lago di Braies",
+      details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+    },
+    {
+      logo_image: "https://drive.google.com/uc?export=view&id=1NZs9d45CF2pwd6i5yhzvAlYortEj8LHq",
+      type: "Nature",
+      stack: "Lake",
+      name: "Lago di Braies",
+      details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+    },
+    {
+      logo_image: "https://drive.google.com/uc?export=view&id=1l2zysM2PFm1tVut6UTbbWpJ9UxwawleG",
+      type: "Nature",
+      stack: "Lake",
+      name: "Lago di Braies",
+      details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+    },
+    {
+        logo_image: "https://drive.google.com/uc?export=view&id=1MxXMUF4dTl3-JZb063SC9S-IDzS5pF8t",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      },
+      {
+        logo_image: "https://drive.google.com/uc?export=view&id=1NZs9d45CF2pwd6i5yhzvAlYortEj8LHq",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      },
+      {
+        logo_image: "https://drive.google.com/uc?export=view&id=1l2zysM2PFm1tVut6UTbbWpJ9UxwawleG",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      },
+      {
+        logo_image: "https://drive.google.com/uc?export=view&id=1MxXMUF4dTl3-JZb063SC9S-IDzS5pF8t",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      },
+      {
+        logo_image: "https://drive.google.com/uc?export=view&id=1NZs9d45CF2pwd6i5yhzvAlYortEj8LHq",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      },
+      {
+        logo_image: "https://drive.google.com/uc?export=view&id=1l2zysM2PFm1tVut6UTbbWpJ9UxwawleG",
+        type: "Nature",
+        stack: "Lake",
+        name: "Lago di Braies",
+        details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur sodales morbi dignissim sed diam pharetra vitae ipsum odio."
+      }
+  ];
+
+  function generateWorks(targetElement, worksData){
+
+  const worksContainer = document.createElement("div");
+  worksContainer.classList.add("works");
+
+  var numColumn;
+
+    switch (true) {
+        case window.innerWidth >= 500 && window.innerWidth < 800:
+            numColumn = 2;
+            break;
+        case window.innerWidth >= 800 && window.innerWidth < 1400:
+            numColumn = 2;
+            break;
+        case window.innerWidth >= 1400 && window.innerWidth < 2000:
+            numColumn = 3;
+            break;
+        case window.innerWidth >= 2000:
+            numColumn = 4;
+            break;
+        default:
+            numColumn = 1;
+            break;
+    }
+    var workCardWidth = (window.innerWidth / numColumn) - 70;
+  for (let i = 0; i < numColumn*2; i++) {
+    const work = worksData[i];
+    
+    const workCard = document.createElement("div");
+    workCard.classList.add("work-card", "bg2");
+    workCard.style.width = workCardWidth + 'px';
+  
+    const image = document.createElement("img");
+    image.classList.add("work-card-image");
+    image.src = work.logo_image;
+  
+    const tagsContainer = document.createElement("div");
+    tagsContainer.classList.add("work-card-tags");
+  
+    const typeTag = document.createElement("div");
+    typeTag.classList.add("work-card-tag", "c-theme");
+    typeTag.textContent = work.type;
+    tagsContainer.appendChild(typeTag);
+  
+    const stackTag = document.createElement("div");
+    stackTag.classList.add("work-card-tag", "c-theme");
+    stackTag.textContent = work.stack;
+    tagsContainer.appendChild(stackTag);
+  
+    const title = document.createElement("div");
+    title.classList.add("work-card-title", "c1");
+    title.textContent = work.name;
+  
+    const details = document.createElement("div");
+    details.classList.add("work-card-details", "c2");
+    details.textContent = work.details;
+  
+    workCard.appendChild(image);
+    workCard.appendChild(tagsContainer);
+    workCard.appendChild(title);
+    workCard.appendChild(details);
+  
+    worksContainer.appendChild(workCard);
+  }
+  
+  // Append the works container to an existing element on your page
+  const parentElement = document.getElementById(targetElement);
+  parentElement.appendChild(worksContainer);
+}
+
+generateWorks("works", worksData)

@@ -183,6 +183,7 @@ a {
   font-size: 15px;
   width: 100%;
   line-height: 1.75;
+  text-align: justify;
 }
 
 .inline {
@@ -1153,8 +1154,9 @@ a {
 }
 
 .works {
-  width: 85%;
-  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -1485,7 +1487,6 @@ footer .credits a {
 
 .button-a {
   background-color: var(--theme-color);
-  color: #fff;
   border-color: var(--theme-color)
 }
 
@@ -1642,6 +1643,7 @@ h5 {
 .lead {
   font-size: 15px;
   font-weight: 400;
+  text-align: justify;
 }
 
 .container {
