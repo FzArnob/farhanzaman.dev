@@ -2107,7 +2107,7 @@ textarea.form-control {
   text-align: center;
   line-height: 40px;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 112;
 }
 
 #back-to-top-btn.show {
@@ -2335,29 +2335,37 @@ textarea.form-control {
 #photoContainer {
   position: fixed;
   width: 100%;
+  height: 100%;
   display: none;
-  flex-direction: column;
+  flex-wrap: wrap;
+  vertical-align: middle;
   align-items: center;
   z-index: 115;
+}
+#largePhotoHolder{
+  position: relative;
+  width: 100%;
+  height: calc(100% - 258px);
+  z-index: 113;
 }
 
 #largePhoto {
   object-fit: contain;
-  width: 100%;
-  z-index: 113;
+  position: absolute;
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #thumbnailContainer {
-  padding: 20px;
+  padding: 30px;
   padding-top: 70px;
-  width: 100%;
+  width: calc(100% - 60px);
   display: flex;
   overflow-x: auto;
   flex-wrap: nowrap;
-  position: absolute;
-  bottom: 0;
-  left: 30px;
-  left: 0;
   z-index: 113;
 }
 
@@ -2394,7 +2402,7 @@ textarea.form-control {
 }
 
 #closeButton {
-  z-index: 114;
+  z-index: 115;
   position: absolute;
   top: 10px;
   right: 10px;
@@ -2402,7 +2410,7 @@ textarea.form-control {
 }
 
 #zoomButtons {
-  z-index: 114;
+  z-index: 115;
   position: absolute;
   top: 6px;
   right: 45px;
@@ -2411,7 +2419,7 @@ textarea.form-control {
 }
 
 #zoomButtons button {
-  z-index: 114;
+  z-index: 115;
   padding: 5px;
   background: none;
   border: none;

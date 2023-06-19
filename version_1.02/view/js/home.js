@@ -430,6 +430,8 @@ function createPhotoViewer(targetElement, photos) {
     largePhoto.id = 'largePhoto';
     largePhoto.src = '';
     largePhoto.alt = 'Large Photo';
+    const largePhotoHolder = document.createElement('div');
+    largePhotoHolder.id = 'largePhotoHolder';
     // Create thumbnail container
     const thumbnailContainer = document.createElement('div');
     thumbnailContainer.id = 'thumbnailContainer';
@@ -442,7 +444,8 @@ function createPhotoViewer(targetElement, photos) {
     photoTitle.classList.add('c1');
     photoSubtitle.classList.add('c1');
     // Append elements to the photo container
-    photoContainer.appendChild(largePhoto);
+    largePhotoHolder.appendChild(largePhoto);
+    photoContainer.appendChild(largePhotoHolder);
     photoContainer.appendChild(thumbnailContainer);
     thumbnailContainer.appendChild(photoTitle);
     thumbnailContainer.appendChild(photoSubtitle);
@@ -460,18 +463,6 @@ function createPhotoViewer(targetElement, photos) {
     selectPhoto(0);
 }
 
-// Set the photo viewer to occupy the full screen ratio
-function setFullScreenRatio() {
-    const photoContainer = document.getElementById('photoContainer');
-    const largePhoto = document.getElementById('largePhoto');
-    const thumbnailContainer = document.getElementById('thumbnailContainer');
-    const photoTitle = document.getElementById('photoTitle');
-    const photoSubtitle = document.getElementById('photoSubtitle');
-    // Set container heights
-    photoContainer.style.height = '100%';
-    thumbnailContainer.style.height = `170px`;
-    largePhoto.style.maxHeight = 'calc(100% - 250px)';
-}
 // Select a photo
 function selectPhoto(index) {
     const selectedPhoto = photos[index];
@@ -492,52 +483,92 @@ function selectPhoto(index) {
     currentThumbnail.classList.add('selected');
 }
 createPhotoViewer('photoContainer', photos);
-setFullScreenRatio();
-// Update the full screen ratio when the window is resized
-window.addEventListener('resize', setFullScreenRatio);
 // Close button functionality
 const closeButton = document.getElementById('closeButton');
 closeButton.addEventListener('click', () => {
     document.getElementById('photoContainer').style.display = 'none';
 });
-// Zoom in and out buttons functionality
-const zoomInButton = document.getElementById('zoomInButton');
-const zoomOutButton = document.getElementById('zoomOutButton');
-let scale = 1;
-zoomInButton.addEventListener('click', () => {
-    if (scale < 5) {
-        const largePhoto = document.getElementById('largePhoto');
-        scale += 0.1;
-        largePhoto.style.transform = `scale(${scale})`;
-    }
-});
-zoomOutButton.addEventListener('click', () => {
-    if (scale > 0.6) {
-        const largePhoto = document.getElementById('largePhoto');
-        scale -= 0.1;
-        largePhoto.style.transform = `scale(${scale})`;
-    }
-});
-let posX = 0;
-let posY = 0;
-let isDragging = false;
-let startX;
-let startY;
-largePhoto.addEventListener('mousedown', (event) => {
+// Zoom in, out and drag functionality
+const swipeImage = document.getElementById('largePhoto');
+const zoomInBtn = document.getElementById('zoomInButton');
+  const zoomOutBtn = document.getElementById('zoomOutButton');
+  let scale = 1;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let currentTranslateX = 0;
+  let currentTranslateY = 0;
+  let previousTranslateX = 0;
+  let previousTranslateY = 0;
+
+  swipeImage.addEventListener('mousedown', startDrag);
+  swipeImage.addEventListener('touchstart', startDrag);
+
+  swipeImage.addEventListener('mousemove', drag);
+  swipeImage.addEventListener('touchmove', drag);
+
+  swipeImage.addEventListener('mouseup', endDrag);
+  swipeImage.addEventListener('touchend', endDrag);
+
+  swipeImage.addEventListener('mouseleave', endDrag);
+  swipeImage.addEventListener('touchcancel', endDrag);
+
+  zoomInBtn.addEventListener('click', zoomIn);
+  zoomOutBtn.addEventListener('click', zoomOut);
+
+  function startDrag(event) {
+    event.preventDefault();
     isDragging = true;
-    startX = event.clientX - posX;
-    startY = event.clientY - posY;
-});
-largePhoto.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-window.addEventListener('mousemove', (event) => {
-    if (isDragging) {
-        posX = event.clientX - startX;
-        posY = event.clientY - startY;
-        largePhoto.style.transform = `scale(${scale}) translate(${posX}px, ${posY}px)`;
+
+    if (event.type === 'touchstart') {
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    } else {
+      startX = event.clientX;
+      startY = event.clientY;
     }
-});
+
+    previousTranslateX = currentTranslateX || 0;
+    previousTranslateY = currentTranslateY || 0;
+  }
+
+  function drag(event) {
+    event.preventDefault();
+    if (isDragging) {
+      let x, y;
+
+      if (event.type === 'touchmove') {
+        x = event.touches[0].clientX;
+        y = event.touches[0].clientY;
+      } else {
+        x = event.clientX;
+        y = event.clientY;
+      }
+
+      const dragDistanceX = x - startX;
+      const dragDistanceY = y - startY;
+
+      currentTranslateX = previousTranslateX + dragDistanceX;
+      currentTranslateY = previousTranslateY + dragDistanceY;
+
+      swipeImage.style.transform = `scale(${scale}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+    }
+  }
+
+  function endDrag(event) {
+    event.preventDefault();
+    isDragging = false;
+  }
+
+  function zoomIn() {
+    scale += 0.1;
+    swipeImage.style.transform = `scale(${scale}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+  }
+
+  function zoomOut() {
+    scale -= 0.1;
+    swipeImage.style.transform = `scale(${scale}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+  }
 
 
 
