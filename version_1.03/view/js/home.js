@@ -700,15 +700,15 @@ function generateWorks(targetElement, worksData) {
 generateWorks("works", worksData);
 
 // SOCIAL CONTACTS [CONTACT]
-function generateSocialContact(targetElement) {
+function generateSocialContact(targetElement, data) {
 
     const ul = document.createElement('ul');
 
     const socialLinks = [
-        { href: 'https://www.facebook.com/farhanzamanarnob/', text: 'A' },
-        { href: 'https://github.com/FzArnob', text: 'B' },
-        { href: 'https://www.linkedin.com/in/md-farhan-zaman/', text: 'C' },
-        { href: 'https://wa.me/8801521581368', text: 'D' }
+        { href: data.facebook_url, text: 'A' },
+        { href: data.github_url, text: 'B' },
+        { href: data.linkedin_url, text: 'C' },
+        { href: data.whatsapp_url, text: 'D' }
     ];
 
     socialLinks.forEach(link => {
@@ -731,24 +731,20 @@ function generateSocialContact(targetElement) {
     }
 }
 
-// Call the function with the target element ID
-generateSocialContact('social-contact');
-
 // INFO [CONTACT]
 
-function generateInfo(targetElement) {
+function generateInfo(targetElement, data) {
     const infoParagraph = document.createElement('p');
     infoParagraph.className = 'lead';
-    infoParagraph.textContent =
-        'For any professional inquiries or opportunities, or if you simply want to get in touch, please feel free to contact me using the provided contact details. I am readily available to discuss potential alliance, projects, or career prospects. Your interest is greatly appreciated, and I look forward to the possibility of working together.';
+    infoParagraph.textContent = data.contact_preference_details
 
     const ul = document.createElement('ul');
     ul.className = 'list-ico';
 
     const listItems = [
-        { text: '35, LAKECIRCUS, KALABAGAN, Dhaka, Bangladesh -1205', icon: 'home_pin' },
-        { text: '(+880) 1521581368', icon: 'call' },
-        { text: 'farhanzamanarnob@gmail.com', icon: 'mail' }
+        { text: data.address, icon: 'home_pin' },
+        { text: data.phone, icon: 'call' },
+        { text: data.email, icon: 'mail' }
     ];
 
     listItems.forEach(item => {
@@ -769,35 +765,33 @@ function generateInfo(targetElement) {
     }
 }
 
-// Call the function with the target element ID
-generateInfo('info');
 
 // ACHEIVEMENTS [EXPERTISE]
 
 
-function generateAchievements(targetElement) {
+function generateAchievements(targetElement, achievementData) {
     const achievementDiv = document.createElement('div');
     achievementDiv.className = 'achievement-preview';
   
-    const achievementData = [
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/css.svg', tooltip: 'CSS' },
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/js.svg', tooltip: 'JavaScript' },
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/python.svg', tooltip: 'Python' },
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/ielts.svg', tooltip: 'IELTS' },
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/selenium.svg', tooltip: 'Selenium' },
-      { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/beecrowd.svg', tooltip: 'BeeCrowd' }
-    ];
+    // const achievementData = [
+    //   { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/css.svg', tooltip: 'CSS' },
+    //   { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/js.svg', tooltip: 'JavaScript' },
+    //   { href: 'https://www.hackerrank.com/certificates/3859fe77dc98', imgSrc: 'view/static/svg/python.svg', tooltip: 'Python' },
+    //   { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/ielts.svg', tooltip: 'IELTS' },
+    //   { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/selenium.svg', tooltip: 'Java Selenium' },
+    //   { href: 'https://www.beecrowd.com.br/judge/en/profile/151481', imgSrc: 'view/static/svg/beecrowd.svg', tooltip: 'BeeCrowd: Competitive Programming' }
+    // ];
   
     achievementData.forEach(data => {
       const a = document.createElement('a');
-      a.href = data.href;
+      a.href = data.certification_url;
       a.className = 'achievement-node tooltip';
       a.target = '_blank';
   
       const img = document.createElement('img');
       img.className = 'achievement-node-image';
-      img.src = data.imgSrc;
-      img.setAttribute('data-tooltip', data.tooltip);
+      img.src = data.certification_logo;
+      img.setAttribute('data-tooltip', data.name);
   
       const tooltip = document.createElement('span');
       tooltip.className = 'tooltip-text';
@@ -830,8 +824,6 @@ function generateAchievements(targetElement) {
     });
   }
   
-  // Call the function with the target element ID
-  generateAchievements('achievements');
 
   
 // EXPERIENCES [ABOUT]

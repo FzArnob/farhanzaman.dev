@@ -1,7 +1,6 @@
 const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
 // const host = "http://192.168.0.103/fzs-lab-portfolio/version_1.02/backend/api";
 // const host = "https://farhanzaman.dev/backend/api";
-var data = null;
 
 
 
@@ -47,23 +46,7 @@ function deleteCookie(cname) {
 
 
 //  ================================================= API Call Handler ================================================= 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-function checkGolbalData(ms) {
-    sleep(ms).then(() => {
-        if (data == null) {
-            checkGolbalData(ms);
-        } else {
-            setTimeout(function () {
-                document.querySelector("pre-loader").style.display = "none"; // hide
-                document.querySelector("main-page").style.display = "block"; // show
-                wobbleAnimation();
-            }, 1000);
 
-        }
-    });
-}
 function fetchProfileData() {
     const profileId = 'farhan';
     const url = host + `/get-profile-data.php?profile_id=${profileId}`;
@@ -88,8 +71,22 @@ function fetchProfileData() {
 fetchProfileData()
     .then(result => {
         console.log(result);
-        data = result;
-        checkGolbalData(500); // Handle the response data here
+        // Handle the response data here
+        document.title = result.profile.info.full_name+' '+result.profile.info.name_subtitle+' '+result.profile.info.name_subtitle_highlight;
+        document.getElementById('nick_name').innerHTML = result.profile.info.nick_name;
+        document.getElementById('designation').innerHTML = result.profile.info.designation;
+        document.getElementById('intro_text').innerHTML = result.profile.info.intro_text; 
+        document.getElementById('footer_name').innerHTML = result.profile.info.full_name; 
+        document.getElementById('expertise-text').innerHTML = result.profile.info.expertise_preference_details;
+        generateInfo('info', result.profile.info);
+        generateSocialContact('social-contact', result.profile.info);
+        generateAchievements('achievements', result.profile.achievements);
+        
+        setTimeout(function () {
+                document.querySelector("pre-loader").style.display = "none"; // hide
+                document.querySelector("main-page").style.display = "block"; // show
+                wobbleAnimation();
+            }, 1000);
     })
     .catch(error => {
         console.error(error); // Handle any errors here
