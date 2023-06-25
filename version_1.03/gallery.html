@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Farhan Zaman - Gallery</title>
+  <link href="view/static/favicon.png" rel="icon" />
+  <meta charset="UTF-8" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="view/css/app.css" rel="stylesheet" />
+</head>
+
+<body class="bg1">
+  <div id="photoContainer" class="animate-left">
+    <div id="closeButton">
+      <span class="material-symbols-outlined c1">
+        close
+      </span>
+    </div>
+    <div id="zoomButtons">
+      <button id="zoomInButton">
+        <span class="material-symbols-outlined c1">
+          zoom_in
+        </span>
+      </button>
+      <button id="zoomOutButton">
+        <span class="material-symbols-outlined c1">
+          zoom_out
+        </span>
+      </button>
+    </div>
+  </div>
+  <button id="back-to-top-btn">
+    <span class="material-symbols-outlined">
+      stat_1
+    </span>
+  </button>
+  <pre-loader class="pre-loader">
+    <img src="view/static/favicon.png" />
+  </pre-loader>
+  <main-page class="bg1 c1 hidden">
+    <div id="theme-popup" class="animate-bottom">
+      <div class="popup-back"></div>
+      <div class="popup-box bg2 c2">
+        <div class="popup-content">
+          <div class="triangle"></div>
+          <div class="popup-text">You can switch <span class="c-theme">theme</span> here.</div>
+          <div class="popup-button">Okay</div>
+        </div>
+      </div>
+    </div>
+    <div id="navbar" class="navbar animate-left bg2"></div>
+    <section id="gallery-section">
+      <br/>
+      <div class="row">
+        <div class="section-head wobble">Gallery</div>
+      </div>
+      <div class="row">
+        <div id="gallery"></div>
+      </div>
+    </section>
+    <section class="paralax-mf footer-paralax bg-image sect-mt4 route"
+      style="background-image: url(./view/static/overlay-bg.jpg)">
+      <div class="overlay-mf"></div>
+      <footer>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="copyright-box">
+                <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
+                <div class="credits">
+                  Designed by <a href="https://farhanzaman.com/">Farhan Zaman</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </main-page>
+  <script src="view/js/gallery.js"></script>
+</body>
+
+</html>
