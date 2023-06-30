@@ -1,8 +1,9 @@
 RewriteEngine On
 RewriteBase /
+RewriteCond %{REQUEST_URI} !/backend
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /notFound.html [L]
+RewriteRule ^(.*)$ /notFound.html [L]
 Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
 Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept"

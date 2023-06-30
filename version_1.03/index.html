@@ -3,33 +3,35 @@
 
 <head>
   <title></title>
-  <link href="https://farhanzaman.dev/view/static/favicon.png" rel="icon" />
+  <link href="view/static/favicon.png" rel="icon" />
   <meta charset="UTF-8" />
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link href="view/css/app.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"> </script>
 </head>
 
 <body class="bg1">
-  <div id="photoContainer" class="animate-left">
-    <div id="closeButton">
-      <span class="material-symbols-outlined c1">
-        close
-      </span>
-    </div>
-    <div id="zoomButtons">
-      <button id="zoomInButton">
-        <span class="material-symbols-outlined c1">
-          zoom_in
+  <div id="photoContainer" class="animate-top">
+    <div class="pc_buttons">
+      <div id="zoomButtons">
+        <button id="zoomInButton">
+          <span class="material-symbols-outlined">
+            zoom_in
+          </span>
+        </button>
+        <button id="zoomOutButton">
+          <span class="material-symbols-outlined">
+            zoom_out
+          </span>
+        </button>
+      </div>
+      <div id="closeButton">
+        <span class="material-symbols-outlined">
+          close
         </span>
-      </button>
-      <button id="zoomOutButton">
-        <span class="material-symbols-outlined c1">
-          zoom_out
-        </span>
-      </button>
+      </div>
     </div>
   </div>
   <button id="back-to-top-btn">
@@ -38,7 +40,7 @@
     </span>
   </button>
   <pre-loader class="pre-loader">
-    <img src="https://farhanzaman.dev/view/static/favicon.png" />
+    <img src="view/static/favicon.png" />
   </pre-loader>
   <main-page class="bg1 c1 hidden">
     <div id="theme-popup" class="animate-bottom">
@@ -58,7 +60,8 @@
           <div class="intro-text-medium">
             <span class="wobble c1">I</span>
             <span class="wobble c1">am</span>
-            <span class="wobble intro-text-secondary-theme-color op1 inline" data-animation="upscale" id="nick_name"></span>
+            <span class="wobble intro-text-secondary-theme-color op1 inline" data-animation="upscale"
+              id="nick_name"></span>
           </div>
           <div class="intro-text-medium-2 wobble c1 inline" data-animation="spin" id="designation"></div>
           <div class="intro-text-small c1" data-animation="fade" id="intro_text"></div>
@@ -92,9 +95,9 @@
     <div id="content-gap"></div>
     <div class="main-content">
       <section id="about-section" class="nav-section">
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
         <div class="row">
           <div class="section-head wobble">Background</div>
         </div>
@@ -222,7 +225,7 @@
                             class="wobble inline">Touch</span>
                         </h5>
                       </div>
-                      <div id="info" class="more-info"></div> 
+                      <div id="info" class="more-info"></div>
                       <div id="social-contact" class="socials"></div>
                     </div>
                   </div>

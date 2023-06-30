@@ -1,6 +1,6 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
+// const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
 // const host = "http://192.168.0.103/fzs-lab-portfolio/version_1.02/backend/api";
-// const host = "https://farhanzaman.dev/backend/api";
+const host = "https://farhanzaman.dev/backend/api";
 var data = null;
 
 

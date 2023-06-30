@@ -1,6 +1,6 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.02/backend/api";
-// const host = "http://192.168.0.103/fzs-lab-portfolio/version_1.02/backend/api";
-// const host = "https://farhanzaman.dev/backend/api";
+// const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
+// const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.03/backend/api";
+const host = "https://farhanzaman.dev/backend/api";
 
 
 
@@ -80,8 +80,16 @@ fetchProfileData()
         document.getElementById('expertise-text').innerHTML = result.profile.info.expertise_preference_details;
         generateInfo('info', result.profile.info);
         generateSocialContact('social-contact', result.profile.info);
+        generateEducationHTML("education", result.profile.educations);
+        generateExperienceHTML("experiences", result.profile.experiences);
         generateAchievements('achievements', result.profile.achievements);
-        
+        window.addEventListener("scroll", skillBarAnimation(result.profile.skills));
+        createSkillCloud(result.profile.expertises);
+        createGallery(result.profile.gallery);
+        createPhotoViewer('photoContainer', result.profile.gallery);
+        startPhotoVeiwer();
+        generateWorks("works", result.profile.projects);
+
         setTimeout(function () {
                 document.querySelector("pre-loader").style.display = "none"; // hide
                 document.querySelector("main-page").style.display = "block"; // show
