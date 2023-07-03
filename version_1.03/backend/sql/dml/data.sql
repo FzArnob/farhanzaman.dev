@@ -120,16 +120,16 @@ VALUES ('JavaScript (Intermediate)',
 
 INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
 VALUES ('farhan', 1);
-INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('farhan', 2);
-INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('farhan', 3);
-INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('farhan', 4);
-INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('farhan', 5);
-INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
-VALUES ('farhan', 6);
+-- INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+-- VALUES ('farhan', 2);
+-- INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+-- VALUES ('farhan', 3);
+-- INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+-- VALUES ('farhan', 4);
+-- INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+-- VALUES ('farhan', 5);
+-- INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+-- VALUES ('farhan', 6);
 
 INSERT INTO skill_items (name, description, duration, percentage)
 VALUES ('Problem Solving', 'Proficient in identifying and analyzing problems, and developing effective solutions.', 12,

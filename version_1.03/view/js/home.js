@@ -15,7 +15,7 @@ fetchProfileData()
         generateEducationHTML("education", result.profile.educations);
         generateExperienceHTML("experiences", result.profile.experiences);
         generateAchievements('achievements', result.profile.achievements);
-        window.addEventListener("scroll", skillBarAnimation(result.profile.skills));
+        window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
         createSkillCloud(result.profile.expertises);
         createGallery(result.profile.gallery, false);
         createPhotoViewer('photoContainer', result.profile.gallery);

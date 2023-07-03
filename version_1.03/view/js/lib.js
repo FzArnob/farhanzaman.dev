@@ -1,6 +1,6 @@
-// const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
+const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
 // const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.03/backend/api";
-const host = "https://farhanzaman.dev/backend/api";
+// const host = "https://farhanzaman.dev/backend/api";
 
 // SEND MESSAGE [CONTACT] 
 function enableMessages(){
@@ -208,13 +208,15 @@ function showIntroAnimation() {
 }
 
 // SKILL BAR [EXPERTISE]
-function generateSkillBars(data) {
+function generateSkillBars(data, extended) {
     // Create the skill bars container div
     const skillBarsDiv = document.getElementById("skill-bars");
     skillBarsDiv.classList.add('skill-bars');
+    if (extended) skillBarsDiv.style.maxHeight = 'none';
     var count;
     if (window.innerWidth <= 800) count = Math.floor((window.innerWidth) / 72);
     else count = Math.floor((window.innerWidth / 4) / 72);
+    if(extended) count = data.length;
     // Create the individual skill bars
     for (let i = 0; i < count; i++) {
         const skill = data[i];
@@ -245,12 +247,12 @@ function generateSkillBars(data) {
         skillBarsDiv.appendChild(skillBarDiv);
     }
 }
-function skillBarAnimation(data) {
+function skillBarAnimation(data, extended) {
     const element = document.getElementById('skill-bars');
     if (!element.classList.contains('in-viewport')) {
         if (isInViewport(element)) {
             element.classList.add('in-viewport');
-            generateSkillBars(data);
+            generateSkillBars(data, extended);
         }
     }
 }
