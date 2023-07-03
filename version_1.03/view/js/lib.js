@@ -1,6 +1,6 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
+// const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
 // const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.03/backend/api";
-// const host = "https://farhanzaman.dev/backend/api";
+const host = "https://farhanzaman.dev/backend/api";
 
 // SEND MESSAGE [CONTACT] 
 function enableMessages(){
@@ -103,6 +103,29 @@ function fetchGalleryData() {
             });
     });
 }
+
+// GET WORKS DATA
+function fetchWorksData() {
+    const profileId = 'farhan';
+    const url = host + `/get-works-data.php?profile_id=${profileId}`;
+
+    return new Promise((resolve, reject) => {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
 // INTRO IMAGE ANIMATION [INTRO]
 function showIntroAnimation() {
     var mousePos = {};
@@ -385,18 +408,39 @@ function selectPhoto(index, gallery) {
     const thumbnailContainer = document.getElementById('thumbnailContainer');
     const photoTitle = document.getElementById('photoTitle');
     const photoSubtitle = document.getElementById('photoSubtitle');
-    largePhoto.src = selectedPhoto.image_url;
-    photoTitle.textContent = selectedPhoto.name;
-    photoSubtitle.textContent = selectedPhoto.description;
+    
     // Remove previous selection
     const previousSelectedThumbnail = thumbnailContainer.querySelector('.thumbnail.selected');
     if (previousSelectedThumbnail) {
         previousSelectedThumbnail.classList.remove('selected');
     }
+    
     // Add new selection
     const currentThumbnail = thumbnailContainer.children[index];
     currentThumbnail.classList.add('selected');
+    
+    // Show loading indicator
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.classList.add('loading-indicator');
+    largePhoto.style.display = 'none'; // Hide the large photo temporarily
+    largePhoto.parentNode.insertBefore(loadingIndicator, largePhoto);
+    
+    // Create a new image element for preloading
+    const preloadedImage = new Image();
+    preloadedImage.onload = function() {
+        // Remove the loading indicator when the image is loaded
+        loadingIndicator.remove();
+        
+        // Update the large photo source and show it
+        largePhoto.src = selectedPhoto.image_url;
+        largePhoto.style.display = 'block';
+    };
+    preloadedImage.src = selectedPhoto.image_url;
+    
+    photoTitle.textContent = selectedPhoto.name;
+    photoSubtitle.textContent = selectedPhoto.description;
 }
+
 // Start photo viewer
 function startPhotoVeiwer() {
     // Close button functionality
@@ -524,7 +568,7 @@ function startPhotoVeiwer() {
 }
 
 // WORKS [WORK]
-function generateWorks(targetElement, worksData) {
+function generateWorks(targetElement, worksData, extended) {
     const worksContainer = document.createElement("div");
     worksContainer.classList.add("works");
     var numColumn;
@@ -546,7 +590,10 @@ function generateWorks(targetElement, worksData) {
             break;
     }
     var workCardWidth = (window.innerWidth / numColumn) - 70;
-    for (let i = 0; i < numColumn * 2; i++) {
+    var len;
+    if(extended) len = worksData.length;
+    else len = numColumn * 2;
+    for (let i = 0; i < len; i++) {
         const work = worksData[i];
         const workCard = document.createElement("div");
         workCard.classList.add("work-card", "bg2");

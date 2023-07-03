@@ -34,6 +34,19 @@ class ProfileController
         header('Content-Type: application/json');
         echo $galleryDataJson;
     }
+    public function getWorksData($profile_id)
+    {
+        $worksData = $this->model->getWorksData($profile_id);
+
+        // Convert the gallery data to JSON
+        $worksDataJson = json_encode($worksData);
+
+        // Return the JSON response
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
+        header('Content-Type: application/json');
+        echo $worksDataJson;
+    }
     public function sendDirectMessage($profileId, $name, $email, $subject, $message)
     {
         $directMessage = $this->model->sendDirectMessage($profileId, $name, $email, $subject, $message);

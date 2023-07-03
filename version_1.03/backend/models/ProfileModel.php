@@ -127,7 +127,33 @@ class ProfileModel
         http_response_code(200);
         return $result;
     }
-
+public function getWorksData($profile_id)
+    {
+        $result = array();
+        $result["message"] = "Success: get";
+        // Fetch profile information
+        $query = "SELECT profile_info.full_name FROM profile_info WHERE profile_id = '$profile_id'";
+        $profile_info_result = $this->conn->query($query);
+        if ($profile_info_result) {
+            $profile_info = $profile_info_result->fetch_assoc();
+            $result['profile']['info'] = $profile_info;
+        } else {
+            $result['profile']['info'] = array();
+        }
+        // Fetch projects
+        $query = "SELECT projects.* FROM projects
+              INNER JOIN profile_projects ON projects.project_id = profile_projects.fk_project_id
+              WHERE profile_projects.fk_profile_id = '$profile_id'";
+        $projects_result = $this->conn->query($query);
+        if ($projects_result) {
+            $projects = $projects_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['projects'] = $projects;
+        } else {
+            $result['profile']['projects'] = array();
+        }
+        http_response_code(200);
+        return $result;
+    }
     public function sendDirectMessage($profileId, $name, $email, $subject, $message)
     {
         $result = array();

@@ -20,7 +20,7 @@ fetchProfileData()
         createGallery(result.profile.gallery, false);
         createPhotoViewer('photoContainer', result.profile.gallery);
         startPhotoVeiwer();
-        generateWorks("works", result.profile.projects);
+        generateWorks("works", result.profile.projects, false);
         enableMessages();
         setTimeout(function () {
                 document.querySelector("pre-loader").style.display = "none"; // hide
