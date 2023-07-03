@@ -61,7 +61,7 @@ INSERT INTO experience_items (institute_name, institute_std, institute_url, star
                               project_details, project_text_1, project_text_2, project_text_3, project_url_1,
                               project_url_2, project_url_3, created_date, updated_date, delete_flag)
 VALUES ('Doodle Inc.', null, 'https://www.thedoodleinc.com/', '2021-09-01', '2022-02-28', 0,
-        'Former Full Stack Software Engineer and Developer', 'Serverless System Architect', 'Tribel (Social Platform)',
+        'Former Full Stack Software Engineer and Developer', 'Serverless System Architect', 'Tribel',
         null, null, 'https://www.tribel.com/', null, null, '2023-06-26 01:23:40', '2023-06-26 01:23:40', 0);
 INSERT INTO experience_items (institute_name, institute_std, institute_url, start_date, end_date, is_present, position,
                               project_details, project_text_1, project_text_2, project_text_3, project_url_1,
@@ -263,7 +263,27 @@ VALUES ('farhan', 1),
 
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2, additional_image_3)
-VALUES ('Moviease / Developer', 'Cross-Platform', 'Java/React Native',
+VALUES ('Pocketalk Console / Backend Engineer', 'Enterprise', 'Java Spring Boot',
+        'Pocketalk is translation device and Console is a new administration panel that allows for fleet management and confirmation of intended use for major business users.',
+        'https://bjitgroup.com/software-development-case-studies/pocketalk', null,
+        'https://live.staticflickr.com/65535/53020376333_2b5719fc2e.jpg', 1,
+        'https://drive.google.com/uc?export=view&id=1KNuuqWz09Le1deRa1u68WGF5RbSnvQua',
+        'https://drive.google.com/uc?export=view&id=1H4NNhZ5oy1Zsyw46HIgKgDzqsViuv-V4',
+        'https://drive.google.com/uc?export=view&id=1x6nK6sp3nq-D3e1krNo7zfRHmOxjOmV_');
+
+INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
+                      additional_image_2, additional_image_3)
+VALUES ('Tribel / Full Stack', 'Cross', 'React & Node',
+        'Tribel is the SMARTER social network where your posts immediately reach the right audience, you finally get the recognition you deserve for making great posts.',
+        'https://www.tribel.com/', null,
+        'https://live.staticflickr.com/65535/53020285535_915ef0dc8d.jpg', 1,
+        'https://drive.google.com/uc?export=view&id=1KNuuqWz09Le1deRa1u68WGF5RbSnvQua',
+        'https://drive.google.com/uc?export=view&id=1H4NNhZ5oy1Zsyw46HIgKgDzqsViuv-V4',
+        'https://drive.google.com/uc?export=view&id=1x6nK6sp3nq-D3e1krNo7zfRHmOxjOmV_');
+
+INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
+                      additional_image_2, additional_image_3)
+VALUES ('Moviease / Developer', 'Cross', 'React Native',
         'Moviease is a platform for online movie and TV show streaming. Students can create an account to participate in exams, where scores are recorded to prevent cheating. It is a cross-platform app under development science January 2022.',
         'https://fzs-lab.com/Moviease/', null,
         'https://live.staticflickr.com/65535/53011645857_38cec70212.jpg', 1,
@@ -280,7 +300,7 @@ VALUES ('Simba Chatbot / Developer', 'Machine Learning', 'Python',
 
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2, additional_image_3)
-VALUES ('NinjaHopper / Developer', 'Web App', 'JavaScript',
+VALUES ('NinjaHopper / Developer', 'Web', 'JavaScript',
         'NinjaHopper is a simple and fun 2D arcade game suitable for both kids and adults. The game is built using HTML, CSS, JavaScript, and 2D SVG images. A future version is planned to include a multiplayer mode. Development of NinjaHopper took place in June 2021 over a duration of 1 month.',
         'https://fzs-lab.com/NinjaHopper/', null,
         'https://live.staticflickr.com/65535/53012233046_5d91731867.jpg', 1,
@@ -290,7 +310,7 @@ VALUES ('NinjaHopper / Developer', 'Web App', 'JavaScript',
 
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2)
-VALUES ('CovidEase / Team Leader', 'Mobile App', 'Java/React Native',
+VALUES ('CovidEase / Team Leader', 'Mobile', 'React Native',
         'CovidEase is a mobile app developed as part of the ICT Innovation Fest. It provides Corona Virus related service information to the people of Bangladesh, collecting and presenting data from private and government health service institutions. The project utilizes Java Script, React, Firebase Real-Time Database, React Animation Add-ons, and Google Maps API. It was developed over a period of 2 months starting from June 2020.',
         null, 'https://www.youtube.com/watch?v=eRuBO6WmqV4',
         'https://live.staticflickr.com/65535/53012710548_c1b97d9f48.jpg', 2,
@@ -299,7 +319,7 @@ VALUES ('CovidEase / Team Leader', 'Mobile App', 'Java/React Native',
 
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2, additional_image_3)
-VALUES ('Examiner / Developer', 'Web App', 'PHP/JS/HTML/CSS',
+VALUES ('Examiner / Developer', 'Web', 'PHP',
         'Examiner is a real-time virtual platform for taking MCQ-based exams. It is designed for ease of use by both teachers and students. The project, developed using PHP, CSS, HTML, and JavaScript, follows the MVC pattern and incorporates object-oriented programming principles. Features include account creation, submission of answers, automated completion, live score assessment, and more. Development spanned 3 months, starting from September 2020.',
         'https://fzs-lab.com/Examiner', null,
         'https://live.staticflickr.com/65535/53012612545_7553f6762f.jpg', 3,
@@ -309,7 +329,7 @@ VALUES ('Examiner / Developer', 'Web App', 'PHP/JS/HTML/CSS',
 
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2, additional_image_3)
-VALUES ('QR Queen / Developer', 'Mobile App', 'Kodular/Block Coding',
+VALUES ('QR Queen / Developer', 'Mobile', 'Kodular',
         'QR Queen is a versatile app for creating QR codes with customizable colors and sizes. It allows saving results in various image formats, including vector art formats. The app records all scanned codes and offers scan history. Other features include code encryption, sharing, barcode conversion, and offline scan storage. QR Queen is a mobile app developed over a month, starting from May 2020.',
         'https://play.google.com/store/apps/details?id=com.sunny.qr', null,
         'https://live.staticflickr.com/65535/53012396049_ce14507917.jpg', 1,
@@ -324,4 +344,6 @@ VALUES ('farhan', 1),
        ('farhan', 3),
        ('farhan', 4),
        ('farhan', 5),
-       ('farhan', 6);
+       ('farhan', 6),
+       ('farhan', 7),
+       ('farhan', 8);

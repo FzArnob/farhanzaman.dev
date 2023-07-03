@@ -1131,7 +1131,11 @@ a {
   margin: 20px;
   display: flex;
 }
-
+.work-card-tag {
+  text-align: center;
+  align-items: center;
+  display: flex;
+}
 .work-card .work-card-tags .work-card-tag {
   margin-right: 10px;
   width: fit-content;
@@ -2359,7 +2363,7 @@ textarea.form-control {
 }
 
 #largePhoto {
-  transition: all 0.1s;
+  /* transition: all 0.1s; */
   cursor: grab;
   position: absolute;
   max-width: 100%;
@@ -2422,6 +2426,7 @@ textarea.form-control {
 }
 
 .pc_buttons{
+  z-index: 115;
   background: rgba(0, 0, 0, .4);
   border-radius: 6px;
   display: flex;
@@ -2486,4 +2491,11 @@ textarea.form-control {
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.alt-footer{
+  background-color: rgba(0, 0, 0, .4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+  padding-top: 50px;
+  margin-top: 20px;
 }

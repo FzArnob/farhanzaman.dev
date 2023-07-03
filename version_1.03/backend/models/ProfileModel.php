@@ -99,6 +99,35 @@ class ProfileModel
         http_response_code(200);
         return $result;
     }
+
+    public function getGalleryData($profile_id)
+    {
+        $result = array();
+        $result["message"] = "Success: get";
+        // Fetch profile information
+        $query = "SELECT profile_info.full_name FROM profile_info WHERE profile_id = '$profile_id'";
+        $profile_info_result = $this->conn->query($query);
+        if ($profile_info_result) {
+            $profile_info = $profile_info_result->fetch_assoc();
+            $result['profile']['info'] = $profile_info;
+        } else {
+            $result['profile']['info'] = array();
+        }
+        // Fetch gallery items
+        $query = "SELECT gallery_items.* FROM gallery_items
+              INNER JOIN profile_gallery_items ON gallery_items.item_id = profile_gallery_items.fk_item_id
+              WHERE profile_gallery_items.fk_profile_id = '$profile_id'";
+        $gallery_items_result = $this->conn->query($query);
+        if ($gallery_items_result) {
+            $gallery_items = $gallery_items_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['gallery'] = $gallery_items;
+        } else {
+            $result['profile']['gallery'] = array();
+        }
+        http_response_code(200);
+        return $result;
+    }
+
     public function sendDirectMessage($profileId, $name, $email, $subject, $message)
     {
         $result = array();
