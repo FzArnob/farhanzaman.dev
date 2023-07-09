@@ -28,7 +28,6 @@ create table
         delete_flag tinyint (1) default 0 null,
         constraint email unique (email)
     );
-
 create table
     education_items (
         education_id int auto_increment primary key,
@@ -44,19 +43,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_education (
-        fk_profile_id varchar(20) null,
-        fk_education_id int null,
-        constraint profile_education_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_education_ibfk_2 foreign key (fk_education_id) references education_items (education_id)
-    );
-
-create index fk_education_id on profile_education (fk_education_id);
-
-create index fk_profile_id on profile_education (fk_profile_id);
-
 create table
     experience_items (
         experience_id int auto_increment primary key,
@@ -78,19 +64,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_experience (
-        fk_profile_id varchar(20) null,
-        fk_experience_id int null,
-        constraint profile_experience_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_experience_ibfk_2 foreign key (fk_experience_id) references experience_items (experience_id)
-    );
-
-create index fk_experience_id on profile_experience (fk_experience_id);
-
-create index fk_profile_id on profile_experience (fk_profile_id);
-
 create table
     achievement_items (
         achievement_id int auto_increment primary key,
@@ -105,19 +78,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_achievement (
-        fk_profile_id varchar(20) null,
-        fk_achievement_id int null,
-        constraint profile_achievement_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_achievement_ibfk_2 foreign key (fk_achievement_id) references achievement_items (achievement_id)
-    );
-
-create index fk_achievement_id on profile_achievement (fk_achievement_id);
-
-create index fk_profile_id on profile_achievement (fk_profile_id);
-
 create table
     expertise_items (
         expertise_id int auto_increment primary key,
@@ -129,22 +89,9 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_expertise (
-        fk_profile_id varchar(20) null,
-        fk_expertise_id int null,
-        constraint profile_expertise_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_expertise_ibfk_2 foreign key (fk_expertise_id) references expertise_items (expertise_id)
-    );
-
-create index fk_expertise_id on profile_expertise (fk_expertise_id);
-
-create index fk_profile_id on profile_expertise (fk_profile_id);
-
 create table
     gallery_items (
-        item_id int auto_increment primary key,
+        gallery_item_id int auto_increment primary key,
         name varchar(255) null,
         description text null,
         category varchar(100) null,
@@ -154,19 +101,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_gallery_items (
-        fk_profile_id varchar(20) null,
-        fk_item_id int null,
-        constraint profile_gallery_items_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_gallery_items_ibfk_2 foreign key (fk_item_id) references gallery_items (item_id)
-    );
-
-create index fk_item_id on profile_gallery_items (fk_item_id);
-
-create index fk_profile_id on profile_gallery_items (fk_profile_id);
-
 create table
     projects (
         project_id int auto_increment primary key,
@@ -187,19 +121,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_projects (
-        fk_profile_id varchar(20) null,
-        fk_project_id int null,
-        constraint profile_projects_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_projects_ibfk_2 foreign key (fk_project_id) references projects (project_id)
-    );
-
-create index fk_profile_id on profile_projects (fk_profile_id);
-
-create index fk_project_id on profile_projects (fk_project_id);
-
 create table
     skill_items (
         skill_id int auto_increment primary key,
@@ -211,19 +132,6 @@ create table
         updated_date timestamp default current_timestamp() not null on update current_timestamp(),
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_skill (
-        fk_profile_id varchar(20) null,
-        fk_skill_id int null,
-        constraint profile_skill_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_skill_ibfk_2 foreign key (fk_skill_id) references skill_items (skill_id)
-    );
-
-create index fk_profile_id on profile_skill (fk_profile_id);
-
-create index fk_skill_id on profile_skill (fk_skill_id);
-
 create table
     direct_messages (
         message_id int auto_increment primary key,
@@ -234,19 +142,6 @@ create table
         created timestamp default current_timestamp() not null,
         delete_flag tinyint (1) default 0 null
     );
-
-create table
-    profile_direct_messages (
-        fk_profile_id varchar(20) null,
-        fk_message_id int null,
-        constraint profile_direct_messages_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
-        constraint profile_direct_messages_ibfk_2 foreign key (fk_message_id) references direct_messages (message_id)
-    );
-
-create index fk_message_id on profile_direct_messages (fk_message_id);
-
-create index fk_profile_id on profile_direct_messages (fk_profile_id);
-
 create table
     visitors (
         visitor_id int auto_increment primary key,
@@ -262,4 +157,80 @@ create table
         created_date timestamp default current_timestamp not null,
         updated_date timestamp null on update current_timestamp,
         foreign key (fk_profile_id) references profile_info (profile_id)
+    );
+
+
+
+
+
+create table
+    profile_education (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_education_id int null,
+        constraint profile_education_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_education_ibfk_2 foreign key (fk_education_id) references education_items (education_id)
+    );
+
+create table
+    profile_experience (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_experience_id int null,
+        constraint profile_experience_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_experience_ibfk_2 foreign key (fk_experience_id) references experience_items (experience_id)
+    );
+
+create table
+    profile_achievement (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_achievement_id int null,
+        constraint profile_achievement_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_achievement_ibfk_2 foreign key (fk_achievement_id) references achievement_items (achievement_id)
+    );
+
+create table
+    profile_expertise (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_expertise_id int null,
+        constraint profile_expertise_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_expertise_ibfk_2 foreign key (fk_expertise_id) references expertise_items (expertise_id)
+    );
+
+create table
+    profile_gallery_items (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_item_id int null,
+        constraint profile_gallery_items_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_gallery_items_ibfk_2 foreign key (fk_item_id) references gallery_items (gallery_item_id)
+    );
+
+create table
+    profile_projects (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_project_id int null,
+        constraint profile_projects_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_projects_ibfk_2 foreign key (fk_project_id) references projects (project_id)
+    );
+
+create table
+    profile_skill (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_skill_id int null,
+        constraint profile_skill_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_skill_ibfk_2 foreign key (fk_skill_id) references skill_items (skill_id)
+    );
+
+create table
+    profile_direct_messages (
+        id int auto_increment primary key,
+        fk_profile_id varchar(20) null,
+        fk_message_id int null,
+        constraint profile_direct_messages_ibfk_1 foreign key (fk_profile_id) references profile_info (profile_id),
+        constraint profile_direct_messages_ibfk_2 foreign key (fk_message_id) references direct_messages (message_id)
     );
