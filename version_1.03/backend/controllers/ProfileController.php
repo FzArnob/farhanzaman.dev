@@ -11,6 +11,7 @@ class ProfileController
     public function getProfileData($profile_id)
     {
         $profileData = $this->model->getProfileData($profile_id);
+        $this->model->saveVisitorData($profile_id);
 
         // Convert the profile data to JSON
         $profileDataJson = json_encode($profileData);
@@ -74,4 +75,3 @@ class ProfileController
         echo $directMessageJson;
     }
 }
-?>

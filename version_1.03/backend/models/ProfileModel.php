@@ -6,6 +6,142 @@ class ProfileModel
     {
         $this->conn = $conn;
     }
+
+    function parseUserAgent($userAgent)
+    {
+        $browserNames = array('Chrome', 'Firefox', 'Safari', 'Internet Explorer');
+        $operatingSystems = array('Windows', 'Macintosh', 'Linux', 'iOS', 'Android');
+        $deviceTypes = array(
+            'Desktop' => array('Windows', 'Macintosh', 'Linux', 'X11', 'CrOS'),
+            'Mobile' => array('iPhone', 'Android', 'Windows Phone', 'BlackBerry', 'Mobile'),
+            'Tablet' => array('iPad', 'Android', 'Tablet'),
+            'SmartTV' => array('SMART-TV'),
+            'Console' => array('PlayStation', 'Xbox', 'Nintendo'),
+            'Wearable' => array('SmartWatch', 'Wearable'),
+            'Bot' => array('bot', 'spider', 'crawl', 'googlebot')
+        );
+
+        $info = array(
+            'browser_name' => '',
+            'browser_version' => '',
+            'operating_system' => '',
+            'device_type' => '',
+            'device_details' => '',
+            'rendering_engine' => '',
+            'mobile_specific_info' => ''
+        );
+
+        // Extract browser name and version
+        foreach ($browserNames as $browser) {
+            if (strpos($userAgent, $browser) !== false) {
+                $info['browser_name'] = $browser;
+                $info['browser_version'] = $this->getBrowserVersion($userAgent, $browser);
+                break;
+            }
+        }
+
+        // Extract operating system
+        foreach ($operatingSystems as $os) {
+            if (strpos($userAgent, $os) !== false) {
+                $info['operating_system'] = $os;
+                break;
+            }
+        }
+
+        // Extract device type
+        foreach ($deviceTypes as $device => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (stripos($userAgent, $keyword) !== false) {
+                    $info['device_type'] = $device;
+                    break 2; // Break both loops
+                }
+            }
+        }
+
+        // Extract device details (formerly DeviceManufacturer)
+        $info['device_details'] = $this->getDeviceManufacturer($userAgent);
+
+        // Extract rendering engine (if available)
+        $info['rendering_engine'] = $this->getRenderingEngine($userAgent);
+
+        // Extract mobile-specific information (if available)
+        if ($info['device_type'] === 'Mobile') {
+            $info['mobile_specific_info'] = $this->getMobileSpecificInfo($userAgent);
+        }
+
+        return $info;
+    }
+
+
+    // Helper function to extract browser version
+    function getBrowserVersion($userAgent, $browser)
+    {
+        $startPos = strpos($userAgent, $browser) + strlen($browser) + 1;
+        $endPos = strpos($userAgent, ' ', $startPos);
+        $version = substr($userAgent, $startPos, $endPos - $startPos);
+        return $version;
+    }
+
+    // Helper function to extract device manufacturer
+    function getDeviceManufacturer($userAgent)
+    {
+        $startPos = strpos($userAgent, '(') + 1;
+        $endPos = strpos($userAgent, ')', $startPos);
+        $manufacturer = substr($userAgent, $startPos, $endPos - $startPos);
+        return $manufacturer;
+    }
+
+    // Helper function to extract rendering engine
+    function getRenderingEngine($userAgent)
+    {
+        $startPos = strpos($userAgent, 'AppleWebKit/') + strlen('AppleWebKit/');
+        $endPos = strpos($userAgent, ' ', $startPos);
+        $engine = substr($userAgent, $startPos, $endPos - $startPos);
+        return $engine;
+    }
+
+    // Helper function to extract mobile-specific information
+    function getMobileSpecificInfo($userAgent)
+    {
+        $info = '';
+        if (strpos($userAgent, 'Mobile') !== false) {
+            // Extract additional mobile-specific info, such as screen resolution or pixel density
+            // Modify this section as per your requirements
+            $info = 'Some mobile-specific information';
+        }
+        return $info;
+    }
+    public function saveVisitorData($profile_id)
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $result = $this->parseUserAgent($userAgent);
+
+        $query = "INSERT INTO visitors (visitor_ip, fk_profile_id, browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param(
+            "sssssssss",
+            $_SERVER['REMOTE_ADDR'],
+            $profile_id,
+            $result['browser_name'],
+            $result['browser_version'],
+            $result['operating_system'],
+            $result['device_type'],
+            $result['device_details'],
+            $result['rendering_engine'],
+            $result['mobile_specific_info']
+        );
+        if ($_SERVER['REMOTE_ADDR'] == "::1") return false;
+        if ($stmt->execute()) {
+            // Insertion successful
+            return true;
+        } else {
+            // Insertion failed
+            return false;
+        }
+    }
+
     public function getProfileData($profile_id)
     {
         $result = array();
@@ -99,8 +235,17 @@ class ProfileModel
         http_response_code(200);
         return $result;
     }
+    public function getVisitorCount($profile_id)
+    {
+        // Fetch visitor count
+        $query = "SELECT count(*) as count FROM visitors
+                  WHERE fk_profile_id = '$profile_id'";
+        $result = $this->conn->query($query);
+        $row = $result->fetch_assoc();
+        return strval($row['count']);
+    }
 
-public function getExpertiseData($profile_id)
+    public function getExpertiseData($profile_id)
     {
         $result = array();
         $result["message"] = "Success: get";
@@ -177,7 +322,7 @@ public function getExpertiseData($profile_id)
         http_response_code(200);
         return $result;
     }
-public function getWorksData($profile_id)
+    public function getWorksData($profile_id)
     {
         $result = array();
         $result["message"] = "Success: get";
