@@ -86,7 +86,7 @@ VALUES ('Java Selenium',
         '2023-06-26 00:14:18', 0);
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag)
-VALUES ('IELTS', 'IELTS is the world’s most popular English language test.', '2022-02-21',
+VALUES ('IELTS', 'IELTS Score: 7.0 - Strong proficiency in English language demonstrated.', '2022-02-21',
         'https://www.britishcouncil.org.bd/en/exam/ielts', 'view/static/svg/ielts.svg', 1,
         'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0);
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,

@@ -223,7 +223,7 @@ class ProfileModel
         }
         // Fetch gallery items
         $query = "SELECT gallery_items.* FROM gallery_items
-              INNER JOIN profile_gallery_items ON gallery_items.item_id = profile_gallery_items.fk_item_id
+              INNER JOIN profile_gallery_items ON gallery_items.gallery_item_id = profile_gallery_items.fk_item_id
               WHERE profile_gallery_items.fk_profile_id = '$profile_id'";
         $gallery_items_result = $this->conn->query($query);
         if ($gallery_items_result) {
@@ -310,7 +310,7 @@ class ProfileModel
         }
         // Fetch gallery items
         $query = "SELECT gallery_items.* FROM gallery_items
-              INNER JOIN profile_gallery_items ON gallery_items.item_id = profile_gallery_items.fk_item_id
+              INNER JOIN profile_gallery_items ON gallery_items.gallery_item_id = profile_gallery_items.fk_item_id
               WHERE profile_gallery_items.fk_profile_id = '$profile_id'";
         $gallery_items_result = $this->conn->query($query);
         if ($gallery_items_result) {
