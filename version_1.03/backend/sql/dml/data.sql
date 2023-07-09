@@ -117,6 +117,11 @@ VALUES ('JavaScript (Intermediate)',
         '2022-02-15', 'https://www.hackerrank.com/certificates/ed1793e0e97a',
         'view/static/svg/js.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
         '2023-06-26 00:14:18', 0);
+INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
+                               level, created_date, updated_date, delete_flag)
+VALUES ('Git', 'Efficiently manage Git projects, ensuring collaboration, version control, and seamless workflow for enhanced productivity.', '2022-02-21',
+        'https://github.com/FzArnob?tab=achievements', 'view/static/svg/git.svg', 1,
+        'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0);
 
 INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
 VALUES ('farhan', 1);
@@ -130,6 +135,8 @@ INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
 VALUES ('farhan', 5);
 INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
 VALUES ('farhan', 6);
+INSERT INTO profile_achievement (fk_profile_id, fk_achievement_id)
+VALUES ('farhan', 7);
 
 INSERT INTO skill_items (name, description, duration, percentage)
 VALUES ('Problem Solving', 'Proficient in identifying and analyzing problems, and developing effective solutions.', 12,
