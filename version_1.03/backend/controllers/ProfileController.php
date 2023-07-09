@@ -11,6 +11,7 @@ class ProfileController
     public function getProfileData($profile_id)
     {
         $profileData = $this->model->getProfileData($profile_id);
+        $this->model->saveVisitorData($profile_id);
 
         // Convert the profile data to JSON
         $profileDataJson = json_encode($profileData);
@@ -33,6 +34,19 @@ class ProfileController
         header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
         header('Content-Type: application/json');
         echo $galleryDataJson;
+    }
+    public function getExpertiseData($profile_id)
+    {
+        $expertiseData = $this->model->getExpertiseData($profile_id);
+
+        // Convert the gallery data to JSON
+        $expertiseDataJson = json_encode($expertiseData);
+
+        // Return the JSON response
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
+        header('Content-Type: application/json');
+        echo $expertiseDataJson;
     }
     public function getWorksData($profile_id)
     {
@@ -61,4 +75,3 @@ class ProfileController
         echo $directMessageJson;
     }
 }
-?>

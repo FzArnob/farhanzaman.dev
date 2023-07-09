@@ -104,6 +104,28 @@ function fetchGalleryData() {
     });
 }
 
+// GET EXPERTISE DATA
+function fetchExpertiseData() {
+    const profileId = 'farhan';
+    const url = host + `/get-expertise-data.php?profile_id=${profileId}`;
+
+    return new Promise((resolve, reject) => {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
 // GET WORKS DATA
 function fetchWorksData() {
     const profileId = 'farhan';
@@ -125,6 +147,39 @@ function fetchWorksData() {
             });
     });
 }
+
+// EXPERTISE CARDS [EXPERTISE]
+
+function generateExpertiseCards(targetElement, cardData) {
+    const target = document.getElementById(targetElement);
+    if (!target) {
+      console.error("Target element not found.");
+      return;
+    }
+  
+    cardData.forEach((card) => {
+      const cardElement = document.createElement("div");
+      cardElement.className = "card bg2 c1";
+  
+      const heading = document.createElement("h2");
+      heading.className = "heading c1";
+      heading.textContent = card.name;
+  
+      const subheading = document.createElement("h3");
+      subheading.className = "subheading c2";
+      subheading.textContent = `${card.level} (${card.duration} months)`;
+  
+      const details = document.createElement("p");
+      details.className = "details c3";
+      details.textContent = card.description;
+  
+      cardElement.appendChild(heading);
+      cardElement.appendChild(subheading);
+      cardElement.appendChild(details);
+  
+      target.appendChild(cardElement);
+    });
+  }
 
 // INTRO IMAGE ANIMATION [INTRO]
 function showIntroAnimation() {
@@ -540,7 +595,7 @@ function startPhotoVeiwer() {
     }
 
     function zoomOut() {
-        scale -= 0.1;
+        if(scale > 0.5) scale -= 0.1;
         swipeImage.style.transform = `scale(${scale}) translate(${currentTranslateX}px, ${currentTranslateY}px)`;
     }
 
