@@ -100,6 +100,56 @@ class ProfileModel
         return $result;
     }
 
+public function getExpertiseData($profile_id)
+    {
+        $result = array();
+        $result["message"] = "Success: get";
+        // Fetch profile information
+        $query = "SELECT * FROM profile_info WHERE profile_id = '$profile_id'";
+        $profile_info_result = $this->conn->query($query);
+        if ($profile_info_result) {
+            $profile_info = $profile_info_result->fetch_assoc();
+            $result['profile']['info'] = $profile_info;
+        } else {
+            $result['profile']['info'] = array();
+        }
+        // Fetch expertise items
+        $query = "SELECT expertise_items.* FROM expertise_items
+              INNER JOIN profile_expertise ON expertise_items.expertise_id = profile_expertise.fk_expertise_id
+              WHERE profile_expertise.fk_profile_id = '$profile_id'";
+        $expertise_items_result = $this->conn->query($query);
+        if ($expertise_items_result) {
+            $expertise_items = $expertise_items_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['expertises'] = $expertise_items;
+        } else {
+            $result['profile']['expertises'] = array();
+        }
+        // Fetch skill items
+        $query = "SELECT skill_items.* FROM skill_items
+              INNER JOIN profile_skill ON skill_items.skill_id = profile_skill.fk_skill_id
+              WHERE profile_skill.fk_profile_id = '$profile_id'";
+        $skill_items_result = $this->conn->query($query);
+        if ($skill_items_result) {
+            $skill_items = $skill_items_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['skills'] = $skill_items;
+        } else {
+            $result['profile']['skills'] = array();
+        }
+        // Fetch achievement items
+        $query = "SELECT achievement_items.* FROM achievement_items
+              INNER JOIN profile_achievement ON achievement_items.achievement_id = profile_achievement.fk_achievement_id
+              WHERE profile_achievement.fk_profile_id = '$profile_id'";
+        $achievement_items_result = $this->conn->query($query);
+        if ($achievement_items_result) {
+            $achievement_items = $achievement_items_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['achievements'] = $achievement_items;
+        } else {
+            $result['profile']['achievements'] = array();
+        }
+        http_response_code(200);
+        return $result;
+    }
+
     public function getGalleryData($profile_id)
     {
         $result = array();
