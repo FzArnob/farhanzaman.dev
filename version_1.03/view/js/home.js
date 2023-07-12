@@ -18,8 +18,8 @@ fetchProfileData()
         window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
         createSkillCloud(result.profile.expertises);
         createGallery(result.profile.gallery, false);
-        createPhotoViewer('photoContainer', result.profile.gallery);
-        startPhotoVeiwer();
+        // createPhotoViewer('photoContainer', result.profile.gallery);
+        // startPhotoVeiwer();
         generateWorks("works", result.profile.projects, false);
         enableMessages();
         setTimeout(function () {
