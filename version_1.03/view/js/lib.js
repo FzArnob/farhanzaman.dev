@@ -702,7 +702,7 @@ function generateSocialContact(targetElement, data) {
         a.href = link.href;
         a.target = '_blank';
         const span = document.createElement('span');
-        span.className = 'ico-circle material-symbols-outlined';
+        span.className = 'ico-circle';
         span.textContent = link.text;
 
         a.appendChild(span);
