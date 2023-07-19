@@ -1,1 +1,0 @@
-console.log("Head Start: ", new Date().getTime());

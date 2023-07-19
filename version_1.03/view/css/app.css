@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300&family=Ubuntu:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web&family=Ubuntu&display=swap');
 
 @font-face {
   font-family: icons-font;
@@ -18,7 +18,7 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale
 }
@@ -85,7 +85,7 @@ a {
   color: var(--theme-color);
   font-size: 18px;
   font-weight: 600;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   padding: 10px 40px;
   width: fit-content;
   border: 2px solid var(--theme-color);
@@ -161,7 +161,7 @@ a {
 
 .intro-text-small {
   font-size: 18px;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-weight: 400;
   max-width: 405px;
 }
@@ -726,7 +726,7 @@ a {
 }
 
 .tagcloud {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   margin: auto;
 }
 
@@ -2176,7 +2176,7 @@ textarea.form-control {
 }
 
 .popup-text {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-size: 13px;
   text-align: left;
 }
