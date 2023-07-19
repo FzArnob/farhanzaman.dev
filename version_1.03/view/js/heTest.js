@@ -1,1 +1,0 @@
-console.log("Head End: ", new Date().getTime());

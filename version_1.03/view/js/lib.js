@@ -383,10 +383,10 @@ function createGallery(gallery, extended) {
         image.style.height = imageSide + 'px';
         const zoomIcon = document.createElement('div');
         zoomIcon.classList.add('zoom-icon');
-        zoomIcon.classList.add('material-symbols-outlined');
-        zoomIcon.classList.add('c-theme');
-        zoomIcon.style.fontSize = '50px';
-        zoomIcon.innerHTML = 'add_circle';
+        zoomIcon.classList.add('ico-gen');
+        zoomIcon.classList.add('c1');
+        zoomIcon.style.fontSize = '70px';
+        zoomIcon.innerHTML = 'O';
         const background = document.createElement('div');
         background.classList.add('gallery-image-back');
         const imageContainer = document.createElement('div');
@@ -702,7 +702,7 @@ function generateSocialContact(targetElement, data) {
         a.href = link.href;
         a.target = '_blank';
         const span = document.createElement('span');
-        span.className = 'ico-circle material-symbols-outlined';
+        span.className = 'ico-circle';
         span.textContent = link.text;
 
         a.appendChild(span);
@@ -726,15 +726,15 @@ function generateInfo(targetElement, data) {
     ul.className = 'list-ico';
 
     const listItems = [
-        { text: data.address, icon: 'home_pin' },
-        { text: data.phone, icon: 'call' },
-        { text: data.email, icon: 'mail' }
+        { text: data.address, icon: 'K' },
+        { text: data.phone, icon: 'L' },
+        { text: data.email, icon: 'M' }
     ];
 
     listItems.forEach(item => {
         const li = document.createElement('li');
         const span = document.createElement('span');
-        span.className = 'material-symbols-outlined text-icon';
+        span.className = 'ico-gen text-icon';
         span.textContent = item.icon;
 
         li.appendChild(span);
@@ -871,7 +871,7 @@ function generateExperienceHTML(targetElement, experienceData) {
     resumeButton.className = "button button-a button-big button-rouded reverse-color";
     resumeButton.style.marginLeft = "50%";
     resumeButton.style.transform = "translateX(-50%)";
-    resumeButton.innerHTML = '<span class="material-symbols-outlined resume">description</span> Resume';
+    resumeButton.innerHTML = '<span class="ico-gen resume">N</span> Resume';
     columnContainer.appendChild(resumeButton);
 }
 
