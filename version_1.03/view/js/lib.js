@@ -324,7 +324,7 @@ function createSkillCloud(data) {
     const skillTags = data.map(item => item.name);
     TagCloud(".skillTags", skillTags, {
         radius: radius,
-        maxSpeed: "fast",
+        maxSpeed: "normal",
         initSpeed: "normal",
         direction: 135,
         keep: true,
