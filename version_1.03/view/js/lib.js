@@ -399,6 +399,10 @@ function createGallery(gallery, extended) {
         });
         imageContainer.addEventListener('click', () => {
             selectPhoto(i, gallery);
+            var thumbnails = document.querySelectorAll('.thumbnail-g');
+            for (let i = 0; i < gallery.length; i++) {
+                thumbnails[i].src = gallery[i].thumb_url;
+            }
             document.getElementById('photoContainer').style.display = 'flex';
             document.querySelector("main-page").style.visibility = "hidden";
         });
@@ -445,17 +449,15 @@ function createPhotoViewer(targetElement, gallery) {
     photoContainer.classList.add('bg1');
     // Populate thumbnail images
     for (let i = 0; i < gallery.length; i++) {
-        var art = gallery[i];
         const thumbnail = document.createElement('img');
-        thumbnail.classList.add('thumbnail');
-        thumbnail.src = art.thumb_url;
+        thumbnail.classList.add('thumbnail-g');
+        thumbnail.classList.add('animate-opacity');
         thumbnail.alt = `Thumbnail ${i + 1}`;
         thumbnail.addEventListener('click', () => selectPhoto(i, gallery));
         thumbnailContainer.appendChild(thumbnail);
     }
     // Set initial selection
-    selectPhoto(0, gallery);
-
+    startPhotoVeiwer();
 }
 
 // Select a photo
@@ -479,20 +481,18 @@ function selectPhoto(index, gallery) {
     // Show loading indicator
     const loadingIndicator = document.createElement('div');
     loadingIndicator.classList.add('loading-indicator');
+    largePhoto.classList.add('animate-opacity');
     largePhoto.style.display = 'none'; // Hide the large photo temporarily
     largePhoto.parentNode.insertBefore(loadingIndicator, largePhoto);
-    
-    // Create a new image element for preloading
-    const preloadedImage = new Image();
-    preloadedImage.onload = function() {
+    largePhoto.src = selectedPhoto.image_url;
+    console.log("onload started");
+    largePhoto.onload = function() {
         // Remove the loading indicator when the image is loaded
         loadingIndicator.remove();
-        
+        console.log("onload");
         // Update the large photo source and show it
-        largePhoto.src = selectedPhoto.image_url;
         largePhoto.style.display = 'block';
     };
-    preloadedImage.src = selectedPhoto.image_url;
     
     photoTitle.textContent = selectedPhoto.name;
     photoSubtitle.textContent = selectedPhoto.description;

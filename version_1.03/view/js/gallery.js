@@ -7,7 +7,6 @@ fetchGalleryData()
         document.getElementById('footer_name').innerHTML = result.profile.info.full_name; 
         createGallery(result.profile.gallery, true);
         createPhotoViewer('photoContainer', result.profile.gallery);
-        startPhotoVeiwer();
         setTimeout(function () {
                 document.querySelector("pre-loader").style.display = "none"; // hide
                 document.querySelector("main-page").style.display = "block"; // show
