@@ -1,0 +1,85 @@
+.bg1 {
+  transition: all 0.5s;
+  background-color: #ffffff;
+}
+
+.bg2 {
+  transition: all 0.5s;
+  background-color: #f6f6f6;
+}
+
+.bg2-change {
+  transition: all 0.5s;
+  background-color: #fdfeff;
+}
+
+.c1 {
+  transition: all 0.5s;
+  color: #252525;
+}
+
+.c2 {
+  transition: all 0.5s;
+  color: #343434;
+}
+
+.bg-theme {
+  transition: all 0.5s;
+  background-color: #00d3b4;
+}
+
+.c-theme {
+  transition: all 0.5s;
+  color: #00d3b4;
+}
+
+.bg-theme-second {
+  transition: all 0.5s;
+  background-color: #fd2155;
+}
+
+.c-theme-second {
+  transition: all 0.5s;
+  color: #fd2155;
+}
+
+.op1 {
+  opacity: 0.8;
+}
+
+.c3 {
+  transition: all 0.5s;
+  color: #7f7f7f;
+}
+
+.cross-theme {
+  transition: all 0.5s;
+  color: #fd2155;
+}
+
+.bottom-gradient-bg {
+
+  background: rgb(37, 37, 37);
+  background: linear-gradient(to bottom, rgba(37, 37, 37, 0) 0%, rgba(37, 37, 37, 1) 100%);
+  border-bottom: 1px solid #00d3b4;
+}
+#back-to-top-btn:hover{
+  color: #fff;
+  box-shadow: 0 0 15px #00d3b4;
+}
+.triangle {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #f6f6f6;
+}
+.button-a {
+  color: #fff;
+}
+.reverse-color {
+  color: #fff;
+}
+@media screen and (max-width: 600px) {
+  .intro-text {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
