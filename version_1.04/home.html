@@ -18,8 +18,11 @@
         </div>
         <img src="view/static/favicon.svg" />
       </pre-loader>
-
+      <script src="view/js/profile_data.js"></script>
       <script src="view/js/lib.js"></script>
       <script src="view/js/util.js"></script>
+      <script>
+        document.title = result.profile.info.full_name+' - '+result.profile.info.name_subtitle+' '+result.profile.info.name_subtitle_highlight;
+      </script>
 </body>
 </html>
