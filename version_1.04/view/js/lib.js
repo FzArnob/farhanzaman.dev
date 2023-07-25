@@ -1,5 +1,5 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.03/backend/api";
-// const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.03/backend/api";
+const host = "http://localhost/fzs-lab-portfolio/version_1.04/backend/api";
+// const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.04/backend/api";
 // const host = "https://farhanzaman.dev/backend/api";
 
 // SEND MESSAGE [CONTACT] 
@@ -60,93 +60,6 @@ document.getElementById("direct-message").addEventListener("submit", function (e
         });
 });
 }
-// GET PROFILE DATA
-function fetchProfileData() {
-    const profileId = 'farhan';
-    const url = host + `/get-profile-data.php?profile_id=${profileId}`;
-
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// GET GALLERY DATA
-function fetchGalleryData() {
-    const profileId = 'farhan';
-    const url = host + `/get-gallery-data.php?profile_id=${profileId}`;
-
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// GET EXPERTISE DATA
-function fetchExpertiseData() {
-    const profileId = 'farhan';
-    const url = host + `/get-expertise-data.php?profile_id=${profileId}`;
-
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
-
-// GET WORKS DATA
-function fetchWorksData() {
-    const profileId = 'farhan';
-    const url = host + `/get-works-data.php?profile_id=${profileId}`;
-
-    return new Promise((resolve, reject) => {
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                resolve(result);
-            })
-            .catch(error => {
-                reject(error);
-            });
-    });
-}
 
 // EXPERTISE CARDS [EXPERTISE]
 
@@ -204,9 +117,7 @@ function showIntroAnimation() {
     document.getElementById("wrap").addEventListener("mousemove", function (e) {
         mousePos.x = e.pageX;
         mousePos.y = e.pageY;
-        var rangex = 15;
-        var rangey = 15;
-        var sizeInt = getRandomInt(20, 30);
+        var sizeInt = 20;
         if (mousePos.x > 0 && mousePos.y > 0) {
             var colorList = [
                 "#80ffec",
@@ -234,12 +145,12 @@ function showIntroAnimation() {
             var size = "height: " + sizeInt + "px; width: " + sizeInt + "px;";
             var left =
                 "left: " +
-                getRandomInt(mousePos.x - rangex - sizeInt, mousePos.x + rangex) +
+                getRandomInt(mousePos.x, mousePos.x) +
                 "px;";
 
             var top =
                 "top: " +
-                getRandomInt(mousePos.y - rangey - sizeInt, mousePos.y + rangey) +
+                getRandomInt(mousePos.y, mousePos.y) +
                 "px;";
             var style = left + top + color + size;
             const ball = document.createElement("div");
