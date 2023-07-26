@@ -87,7 +87,7 @@ a {
   position: relative;
   color: var(--theme-color);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px 40px;
   width: fit-content;
   border: 2px solid var(--theme-color);
@@ -112,12 +112,7 @@ a {
   margin-top: 30px;
 }
 
-.bottom-gradient {
-  height: 100px;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
+
 
 
 /* Intro */
@@ -149,22 +144,26 @@ a {
 
 .intro-text-large {
   font-weight: 600;
-  font-size: 180px;
+  font-size: 40px;
+  transform: translateY(30px);
 }
 
 .intro-text-medium {
   font-weight: 600;
   font-size: 120px;
+  transform: translateX(-5px);
 }
 
 .intro-text-medium-2 {
-  font-size: 45px;
+  font-size: 50px;
+  transform: translateY(-25px);
 }
 
 .intro-text-small {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
   max-width: 405px;
+  transform: translateY(-15px);
 }
 
 .section-head {
@@ -212,15 +211,17 @@ a {
   }
 
   .intro-text-large {
-    font-size: 120px;
+    font-size: 25px;
+    transform: translateY(20px);
   }
 
   .intro-text-medium {
-    font-size: 60px;
+    font-size: 80px;
   }
 
   .intro-text-medium-2 {
-    font-size: 29px;
+    font-size: 30px;
+    transform: translateY(-20px);
   }
 
   .section-head {
@@ -239,7 +240,7 @@ a {
   }
 
   .intro-text-small {
-    font-size: 14px;
+    font-size: 16px;
     max-width: 400px;
   }
 }
@@ -290,19 +291,23 @@ a {
   width: 5px;
   height: 5px;
   border-radius: 10px;
-  animation: implode 0.7s ease-in-out;
+  animation: implode 0.9s ease-in-out;
   animation-fill-mode: both;
   opacity: .5;
+  background: transparent;
 }
 
 @keyframes implode {
   0%  {
+    border: 2px solid #fd1c51;
     transform: scale(0);
   }
   50% {
+    border: 2px solid #c4c4c4;
     transform: scale(1);
   }
   100% {
+    border: 2px solid #00e6c4;
     transform: scale(0);
   }
 }
@@ -1502,7 +1507,7 @@ footer .credits a {
 }
 
 .button-a {
-  font-weight: 700;
+  font-weight: 500;
   background-color: var(--theme-color);
   border-color: var(--theme-color)
 }

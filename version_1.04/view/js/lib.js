@@ -152,7 +152,7 @@ function showIntroAnimation() {
                 "top: " +
                 getRandomInt(mousePos.y, mousePos.y) +
                 "px;";
-            var style = left + top + color + size;
+            var style = left + top + size;
             const ball = document.createElement("div");
             ball.classList.add("ball");
             ball.setAttribute("style", style);
