@@ -97,60 +97,18 @@ function generateExpertiseCards(targetElement, cardData) {
 // INTRO IMAGE ANIMATION [INTRO]
 function showIntroAnimation() {
     var mousePos = {};
-    function getRandomInt(min, max) {
-        return Math.round(Math.random() * (max - min + 1)) + min;
-    }
-    function hexToRgb(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result
-            ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16),
-            }
-            : {
-                r: null,
-                g: null,
-                b: null,
-            }
-    }
     document.getElementById("wrap").addEventListener("mousemove", function (e) {
         mousePos.x = e.pageX;
         mousePos.y = e.pageY;
-        var sizeInt = 20;
+        var sizeInt = 15;
         if (mousePos.x > 0 && mousePos.y > 0) {
-            var colorList = [
-                "#80ffec",
-                "#4dffe5",
-                "#00e6c4",
-
-                "#fe819e",
-                "#fd4e78",
-                "#fd1c51",
-
-                "#c4c4c4",
-            ];
-            var colorCode = colorList[getRandomInt(0, colorList.length - 1)];
-            var colorRGB = hexToRgb(colorCode);
-            var color =
-                "background: transparent; border: 2px solid " +
-                colorCode +
-                "; box-shadow: 0 0 14px rgba(" +
-                colorRGB.r +
-                ", " +
-                colorRGB.g +
-                ", " +
-                colorRGB.b +
-                ", 0.6);";
             var size = "height: " + sizeInt + "px; width: " + sizeInt + "px;";
             var left =
-                "left: " +
-                getRandomInt(mousePos.x, mousePos.x) +
+                "left: " + mousePos.x +
                 "px;";
 
             var top =
-                "top: " +
-                getRandomInt(mousePos.y, mousePos.y) +
+                "top: " + mousePos.y +
                 "px;";
             var style = left + top + size;
             const ball = document.createElement("div");
@@ -163,14 +121,20 @@ function showIntroAnimation() {
         }
     });
 
+    var typing = new Typed("#designation", {
+        strings: ["", "Software Engineer", "Researcher", "Programmer", "System Architect", "Designer"],
+        typeSpeed: 150,
+        backSpeed: 40,
+        loop: true,
+    });
     // INTRO IMAGE ANIMATION [INTRO]
-    var introImageEle = document.getElementById("intro-image");
-    introImageEle.addEventListener("mousemove", function (e) {
-        introImageEle.style.opacity = 0.8;
-    });
-    introImageEle.addEventListener("mouseleave", function (e) {
-        introImageEle.style.opacity = 0.4;
-    });
+    // var introImageEle = document.getElementById("intro-image");
+    // introImageEle.addEventListener("mousemove", function (e) {
+    //     introImageEle.style.opacity = 0.4;
+    // });
+    // introImageEle.addEventListener("mouseleave", function (e) {
+    //     introImageEle.style.opacity = 0.2;
+    // });
 }
 
 // SKILL BAR [EXPERTISE]
@@ -777,13 +741,6 @@ function generateExperienceHTML(targetElement, experienceData) {
         columnContainer.appendChild(pointBox);
     });
 
-    var resumeButton = document.createElement("button");
-    resumeButton.type = "submit";
-    resumeButton.className = "button button-a button-big button-rouded reverse-color";
-    resumeButton.style.marginLeft = "50%";
-    resumeButton.style.transform = "translateX(-50%)";
-    resumeButton.innerHTML = '<span class="ico-gen resume">N</span> Resume';
-    columnContainer.appendChild(resumeButton);
 }
 
 // EDUCATION [ABOUT]

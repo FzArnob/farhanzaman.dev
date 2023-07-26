@@ -63,22 +63,27 @@
   background: linear-gradient(to bottom, rgba(37, 37, 37, 0) 0%, rgb(37, 37, 37));
   border-bottom: 1px solid #00d3b4;
 }
-#back-to-top-btn:hover{
+
+#back-to-top-btn:hover {
   color: #00d3b4;
   box-shadow: 0 0 15px #00d3b4;
 }
+
 .triangle {
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 10px solid #343434;
 }
+
 .button-a {
   color: #252525;
   font-weight: 500;
 }
+
 .reverse-color {
   color: #fff;
 }
+
 .bottom-gradient {
   height: 50px;
   position: absolute;
@@ -86,8 +91,10 @@
   width: 100%;
   background: linear-gradient(to bottom, rgba(37, 37, 37, 0) 0%, rgb(37, 37, 37));
 }
-@media screen and (max-width: 600px) {
-  .intro-text {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+
+.intro-text {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+body{
+  cursor: url('../../static/cursor-b.png'), auto;
 }

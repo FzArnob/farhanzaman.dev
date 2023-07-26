@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link href="view/css/app.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"> </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js"></script>
 </head>
 
 <body class="bg1">
@@ -85,14 +86,19 @@
             <span class="wobble intro-text-secondary-theme-color op1 inline" data-animation="upscale"
               id="nick_name"></span>
           </div>
-          <div class="intro-text-medium-2 wobble c1 inline" data-animation="spin" id="designation"></div>
+          <div class="intro-designation-text c1">
+            <div class="intro-text-medium-1 c1"></div>
+            <div class="intro-text-medium-2" id="designation"></div>
+          </div>
           <div class="intro-text-small c1" data-animation="fade" id="intro_text"></div>
           <br />
+          <div class="intro-btn">
           <div class="button-basic bg1 animate-left"><a href="#contact-section">Contact Me</a></div>
-          <div class="button-basic bg1 animate-left"><a href="#contact-section"><span class="ico-gen resume">N</span> Resume</a></div>
+          <div class="button-basic-fill animate-right"><a href="#"><span class="ico-gen">N</span> Resume</a></div>
+        </div>
         </div>
 
-        <img alt="" id="intro-image" src="view/static/intro.png" />
+        <!-- <img alt="" id="intro-image" src="view/static/intro.png" /> -->
       </div>
       <div class="bottom-gradient"></div>
     </div>
@@ -261,7 +267,6 @@
   <script>
     document.title = result.profile.info.full_name + ' - ' + result.profile.info.name_subtitle + ' ' + result.profile.info.name_subtitle_highlight;
     document.getElementById('nick_name').innerHTML = result.profile.info.nick_name;
-    document.getElementById('designation').innerHTML = result.profile.info.designation;
     document.getElementById('intro_text').innerHTML = result.profile.info.intro_text;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
     document.getElementById('expertise-text').innerHTML = result.profile.info.expertise_preference_details;
