@@ -690,28 +690,34 @@ function generateExperienceHTML(targetElement, experienceData) {
         var boxHeader = document.createElement("div");
         boxHeader.className = "box-header";
         boxHeader.textContent = header;
+        boxHeader.addEventListener('click', () => {
+            window.open(companyLink);
+        });
         pointBox.appendChild(boxHeader);
 
         var boxSubHeader = document.createElement("div");
         boxSubHeader.className = "box-sub-header";
         var companyLinkElement = document.createElement("a");
-        companyLinkElement.href = companyLink;
-        companyLinkElement.target = "_blank";
         companyLinkElement.innerHTML =
             '<span class="cross-theme wobble" data-animation="upscale">' + companyLinkText + "</span>";
         boxSubHeader.appendChild(companyLinkElement);
         boxSubHeader.innerHTML = boxSubHeader.innerHTML + "<br />" + dates;
+        boxSubHeader.addEventListener('click', () => {
+            window.open(companyLink);
+        });
         pointBox.appendChild(boxSubHeader);
 
         var boxDescription = document.createElement("div");
         boxDescription.className = "box-description";
         var descriptionLinkElement = document.createElement("a");
-        descriptionLinkElement.href = descriptionLink;
-        descriptionLinkElement.target = "_blank";
         descriptionLinkElement.innerHTML =
             '<span class="cross-theme wobble" data-animation="upscale">' + descriptionLinkText + "</span>";
         boxDescription.innerHTML = description;
         boxDescription.appendChild(descriptionLinkElement);
+        boxDescription.addEventListener('click', () => {
+            if(descriptionLink) window.open(descriptionLink);
+            else window.open(companyLink);
+        });
         pointBox.appendChild(boxDescription);
 
         return pointBox;
@@ -767,8 +773,6 @@ function generateEducationHTML(targetElement, educationData) {
         var boxSubHeader = document.createElement("div");
         boxSubHeader.className = "box-sub-header";
         var institutionLinkElement = document.createElement("a");
-        institutionLinkElement.href = institutionLink;
-        institutionLinkElement.target = "_blank";
         institutionLinkElement.innerHTML =
             '<span class="cross-theme wobble" data-animation="upscale">' + institution + "</span>";
         boxSubHeader.appendChild(institutionLinkElement);
@@ -779,6 +783,9 @@ function generateEducationHTML(targetElement, educationData) {
         boxDescription.className = "box-description";
         boxDescription.textContent = description;
         pointBox.appendChild(boxDescription);
+        pointBox.addEventListener('click', () => {
+            window.open(institutionLink);
+        });
 
         return pointBox;
     }

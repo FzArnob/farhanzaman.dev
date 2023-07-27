@@ -232,7 +232,7 @@ a {
   width: 100%;
   text-align: center;
   font-weight: 600;
-  font-size: 120px;
+  font-size: 80px;
 }
 .typed-cursor{
   font-size: 40px;
@@ -251,10 +251,12 @@ a {
 
 .intro-text-small {
   width: 100%;
+  margin-left: 50%;
   text-align: center;
+  max-width: 550px;
   font-size: 20px;
   font-weight: 400;
-  transform: translateY(-15px);
+  transform: translate(-50%, -15px);
 }
 
 .section-head {
@@ -307,7 +309,7 @@ a {
   }
 
   .intro-text-medium {
-    font-size: 80px;
+    font-size: 70px;
   }
 
   .intro-text-medium-2 {
@@ -337,8 +339,13 @@ a {
   }
 
   .intro-text-small {
+    max-width: 450px;
     font-size: 16px;
-    max-width: 400px;
+  }
+  .intro-designation-text {
+    transform: translateY(-20px);
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 }
 @media screen and (max-width:550px) {
@@ -365,23 +372,26 @@ a {
   }
 
   .intro-text-medium {
-    font-size: 60px;
+    font-size: 45px;
   }
   .button-basic {
     padding: 10px 25px;
   }
   .button-basic-fill {
-    padding: 10px 25px;
+    padding: 8px 20px;
+  }
+  .btn-5 {
+    padding: 8px 20px;
   }
   .intro-text-medium-2 {
-    font-size: 30px;
+    font-size: 25px;
   }
 
   .typed-cursor{
-    font-size: 30px;
+    font-size: 25px;
   }
   .intro-text-medium-1 {
-    font-size: 30px;
+    font-size: 25px;
   }
 
   .section-head {
@@ -400,8 +410,13 @@ a {
   }
 
   .intro-text-small {
+    max-width: 280px;
     font-size: 16px;
-    max-width: 300px;
+  }
+  .intro-designation-text {
+    transform: translateY(-15px);
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 }
 
@@ -712,11 +727,33 @@ a {
   }
 
   .fa-logo {
-    margin-left: 10px;
-    margin-top: 5px;
-    width: 2.5rem;
-    height: 2.5rem;
+    margin-top: -5px;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 3px
+  }
+  .nav-corner {
+    width: 300px;
+    height: 300px;
+    position: fixed;
+    transform: rotate(40deg);
+    left: -270px;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, .3);
+    top: -100px;
+    border-radius: 2px;
+    z-index: -1;
+   }
+  
+  @keyframes float {
+    0% {
+      transform: translatey(0px);
+    }
+    50% {
+      transform: translatey(-10px);
+    }
+    100% {
+      transform: translatey(0px);
+    }
   }
 
   .fa-logo-text {
