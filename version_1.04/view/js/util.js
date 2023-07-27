@@ -82,6 +82,21 @@ window.addEventListener('scroll', handleNavScroll);
 
 
 function wobbleAnimation() {
+
+    // NAV Bar back color change
+    const navbar = document.getElementById('navbar');
+    const scrollHeight = 70;
+
+    if (window.scrollY > scrollHeight) {
+        navbar.classList.add('bg2');
+        navbar.classList.add('nav-shadow');
+    } else {
+        navbar.classList.remove('bg2');
+        navbar.classList.remove('nav-shadow');
+
+    }
+
+    
     var wobbleElements = document.querySelectorAll(".wobble:not([data-animate-once])");
     wobbleElements.forEach(function (el) {
         if (isInViewport(el)) {
@@ -288,7 +303,6 @@ wobbleElements.forEach(function (el) {
 })
 
 window.addEventListener("scroll", wobbleAnimation);
-
 
 // back to top button
 window.addEventListener('scroll', function () {
