@@ -13,9 +13,10 @@ $param1 = isset($parts[1]) ? $parts[1] : 'none';
 // Define the valid routes and their corresponding HTML files
 $routes = array(
     ''         => 'home.html',    // Home page
-    'works'    => 'about.html',
-    'hobbies'  => 'contact.html',
-    'services' => 'services.html'
+    'about'    => 'about.html',
+    'works'    => 'works.html',
+    'hobbies'  => 'hobbies.html',
+    'expertise' => 'expertise.html'
 );
 
 // echo '<br/>'.$path;

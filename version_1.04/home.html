@@ -78,7 +78,8 @@
       </div>
     </div>
     <div class="intro-animation">
-      <div id="wrap">
+      
+      <div class="particle-network-animation" id="wrap">
         <div class="intro-text">
           <!-- <div class="intro-text-large c1 wobble inline">Hey</div>
           <div style="padding-left: 10px;" class="intro-text-large c1 wobble inline">there,</div> -->
@@ -94,13 +95,17 @@
           <div class="intro-text-small c1" data-animation="fade" id="intro_text"></div>
           <br />
           <div class="intro-btn">
-          <div class="button-basic bg1 animate-left"><a href="#contact-section">Contact Me</a></div>
+            <div id="button-3">
+              <div id="circle"></div>
+              <a href="#contact-section">Contact Me</a>
+            </div>
           <div class="btn-5 btn-5a icon-resume"><a href="#">Resume</a></div>
         </div>
         </div>
 
         <!-- <img alt="" id="intro-image" src="view/static/intro.png" /> -->
       </div>
+      <div id="mobile-wrap"></div>
       <div class="bottom-gradient"></div>
     </div>
     <div id="content-gap"></div>
@@ -116,6 +121,11 @@
           <div class="column-2" id="education"></div>
           <div class="column-2" id="experiences"></div>
         </div>
+        <div class="row">
+          <a href="/about"
+            style="z-index: 10; margin-left: 50%; transform: translate(-50%, 85px); margin-bottom: 40px;"
+            class="button button-a button-big button-rouded back-color">About Me</a>
+        </div>
       </section>
       <section id="expertise-section" class="nav-section">
         <div id="content-gap"></div>
@@ -129,7 +139,7 @@
             </div>
             <div id="skill-bars" class="expertize-bar">
             </div>
-            <a href="expertise.html"
+            <a href="/expertise"
               style="z-index: 10; margin-left: 50%; transform: translate(-50%,-50%); margin-top: 20px;"
               class="button button-b button-big button-rouded back-color">More</a>
           </div>
@@ -147,20 +157,20 @@
         <div class="row" id="works">
         </div>
         <div class="row">
-          <a href="works.html" style="margin-left: 50%; transform: translateX(-50%); margin-bottom: 40px;"
+          <a href="/works" style="margin-left: 50%; transform: translateX(-50%); margin-bottom: 40px;"
             class="button button-a button-big button-rouded">View Projects</a>
         </div>
       </section>
       <section id="gallery-section" class="nav-section">
         <div id="content-gap"></div>
         <div class="row">
-          <div class="section-head wobble">Gallery</div>
+          <div class="section-head wobble">Hobbies</div>
         </div>
         <div class="row">
           <div id="gallery"></div>
         </div>
         <div class="row">
-          <a href="gallery.html"
+          <a href="/hobbies"
             style="z-index: 10; margin-left: 50%; transform: translate(-50%,-51%); margin-bottom: 40px;"
             class="button button-a button-big button-rouded back-color">Explore</a>
         </div>
@@ -273,8 +283,8 @@
     generateInfo('info', result.profile.info);
     showIntroAnimation();
     generateSocialContact('social-contact', result.profile.info);
-    generateEducationHTML("education", result.profile.educations);
-    generateExperienceHTML("experiences", result.profile.experiences);
+    generateEducationHTML("education", result.profile.educations, false);
+    generateExperienceHTML("experiences", result.profile.experiences, false);
     generateAchievements('achievements', result.profile.achievements);
     window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
     createSkillCloud(result.profile.expertises);

@@ -672,7 +672,7 @@ function generateAchievements(targetElement, achievementData) {
 }
 
 // EXPERIENCES [ABOUT]
-function generateExperienceHTML(targetElement, experienceData) {
+function generateExperienceHTML(targetElement, experienceData, extended) {
     function createPointBox(header, companyLinkText, dates, description, companyLink, descriptionLink, descriptionLinkText) {
         var pointBox = document.createElement("div");
         pointBox.className = "point-box";
@@ -733,8 +733,9 @@ function generateExperienceHTML(targetElement, experienceData) {
     columnContainer.appendChild(experienceTopic);
     columnContainer.appendChild(document.createElement("br"));
     columnContainer.appendChild(document.createElement("br"));
-
-    experienceData.forEach(function (experience) {
+    var len = (extended) ? experienceData.length : 2;
+    for (let i = 0; i < len; i++) {
+        var experience = experienceData[i];
         var pointBox = createPointBox(
             experience.position,
             experience.institute_name,
@@ -745,12 +746,12 @@ function generateExperienceHTML(targetElement, experienceData) {
             experience.project_text_1 ? experience.project_text_1 : ''
         );
         columnContainer.appendChild(pointBox);
-    });
+    };
 
 }
 
 // EDUCATION [ABOUT]
-function generateEducationHTML(targetElement, educationData) {
+function generateEducationHTML(targetElement, educationData, extended) {
     function createPointBox(header, institution, institutionLink, dates, description) {
         var pointBox = document.createElement("div");
         pointBox.className = "point-box";
@@ -800,8 +801,9 @@ function generateEducationHTML(targetElement, educationData) {
     columnContainer.appendChild(educationTopic);
     columnContainer.appendChild(document.createElement("br"));
     columnContainer.appendChild(document.createElement("br"));
-
-    educationData.forEach(function (education) {
+    var len = (extended) ? educationData.length : 2;
+    for (let i = 0; i < len; i++) {
+        var education = educationData[i];
         var pointBox = createPointBox(
             education.subject,
             education.institute_name,
@@ -810,5 +812,5 @@ function generateEducationHTML(targetElement, educationData) {
             education.activity
         );
         columnContainer.appendChild(pointBox);
-    });
+    }
 }  
