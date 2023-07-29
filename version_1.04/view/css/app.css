@@ -53,11 +53,11 @@ body {
 
 ::-webkit-scrollbar-track {
   border-radius: 9px;
-  background: rgba(219, 219, 219, .7)
+  background: rgba(0, 0, 0, 0.1)
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, .4);
+  background-image: linear-gradient(125deg, var(--theme-color) 0%, var(--theme-secondary-color) 100%);
   border-radius: 9px
 }
 
