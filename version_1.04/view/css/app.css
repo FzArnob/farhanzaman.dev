@@ -83,7 +83,7 @@ a {
   position: relative;
   color: var(--theme-color);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px 40px;
   width: fit-content;
   border: 2px solid var(--theme-color);

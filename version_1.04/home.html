@@ -276,7 +276,7 @@
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
   <script>
-    document.title = result.profile.info.full_name + ' - ' + result.profile.info.name_subtitle + ' ' + result.profile.info.name_subtitle_highlight;
+    document.title = result.profile.info.full_name;
     document.getElementById('intro_text').innerHTML = result.profile.info.intro_text;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
     document.getElementById('expertise-text').innerHTML = result.profile.info.expertise_preference_details;
@@ -311,8 +311,8 @@
       }).catch((error) => {
         console.error('Font loading failed:', error);
       });
-
     });
+
   </script>
 </body>
 

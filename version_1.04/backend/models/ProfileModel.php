@@ -145,6 +145,7 @@ class ProfileModel
     public function getProfileData($profile_id)
     {
         $result = array();
+    
         // Fetch profile information
         $query = "SELECT * FROM profile_info WHERE profile_id = '$profile_id'";
         $profile_info_result = $this->conn->query($query);
@@ -154,10 +155,9 @@ class ProfileModel
         } else {
             $result['profile']['info'] = array();
         }
+    
         // Fetch education items
-        $query = "SELECT education_items.* FROM education_items
-              INNER JOIN profile_education ON education_items.education_id = profile_education.fk_education_id
-              WHERE profile_education.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM education_items WHERE fk_profile_id = '$profile_id'";
         $education_items_result = $this->conn->query($query);
         if ($education_items_result) {
             $education_items = $education_items_result->fetch_all(MYSQLI_ASSOC);
@@ -165,10 +165,9 @@ class ProfileModel
         } else {
             $result['profile']['educations'] = array();
         }
+    
         // Fetch experience items
-        $query = "SELECT experience_items.* FROM experience_items
-              INNER JOIN profile_experience ON experience_items.experience_id = profile_experience.fk_experience_id
-              WHERE profile_experience.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM experience_items WHERE fk_profile_id = '$profile_id'";
         $experience_items_result = $this->conn->query($query);
         if ($experience_items_result) {
             $experience_items = $experience_items_result->fetch_all(MYSQLI_ASSOC);
@@ -176,10 +175,9 @@ class ProfileModel
         } else {
             $result['profile']['experiences'] = array();
         }
+    
         // Fetch expertise items
-        $query = "SELECT expertise_items.* FROM expertise_items
-              INNER JOIN profile_expertise ON expertise_items.expertise_id = profile_expertise.fk_expertise_id
-              WHERE profile_expertise.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM expertise_items WHERE fk_profile_id = '$profile_id'";
         $expertise_items_result = $this->conn->query($query);
         if ($expertise_items_result) {
             $expertise_items = $expertise_items_result->fetch_all(MYSQLI_ASSOC);
@@ -187,10 +185,9 @@ class ProfileModel
         } else {
             $result['profile']['expertises'] = array();
         }
+    
         // Fetch skill items
-        $query = "SELECT skill_items.* FROM skill_items
-              INNER JOIN profile_skill ON skill_items.skill_id = profile_skill.fk_skill_id
-              WHERE profile_skill.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM skill_items WHERE fk_profile_id = '$profile_id'";
         $skill_items_result = $this->conn->query($query);
         if ($skill_items_result) {
             $skill_items = $skill_items_result->fetch_all(MYSQLI_ASSOC);
@@ -198,10 +195,9 @@ class ProfileModel
         } else {
             $result['profile']['skills'] = array();
         }
+    
         // Fetch achievement items
-        $query = "SELECT achievement_items.* FROM achievement_items
-              INNER JOIN profile_achievement ON achievement_items.achievement_id = profile_achievement.fk_achievement_id
-              WHERE profile_achievement.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM achievement_items WHERE fk_profile_id = '$profile_id'";
         $achievement_items_result = $this->conn->query($query);
         if ($achievement_items_result) {
             $achievement_items = $achievement_items_result->fetch_all(MYSQLI_ASSOC);
@@ -209,10 +205,9 @@ class ProfileModel
         } else {
             $result['profile']['achievements'] = array();
         }
+    
         // Fetch projects
-        $query = "SELECT projects.* FROM projects
-              INNER JOIN profile_projects ON projects.project_id = profile_projects.fk_project_id
-              WHERE profile_projects.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM projects WHERE fk_profile_id = '$profile_id'";
         $projects_result = $this->conn->query($query);
         if ($projects_result) {
             $projects = $projects_result->fetch_all(MYSQLI_ASSOC);
@@ -220,10 +215,9 @@ class ProfileModel
         } else {
             $result['profile']['projects'] = array();
         }
+    
         // Fetch gallery items
-        $query = "SELECT gallery_items.* FROM gallery_items
-              INNER JOIN profile_gallery_items ON gallery_items.gallery_item_id = profile_gallery_items.fk_item_id
-              WHERE profile_gallery_items.fk_profile_id = '$profile_id'";
+        $query = "SELECT * FROM gallery_items WHERE fk_profile_id = '$profile_id'";
         $gallery_items_result = $this->conn->query($query);
         if ($gallery_items_result) {
             $gallery_items = $gallery_items_result->fetch_all(MYSQLI_ASSOC);
@@ -231,8 +225,20 @@ class ProfileModel
         } else {
             $result['profile']['gallery'] = array();
         }
+    
+        // Fetch eca items
+        $query = "SELECT * FROM eca_items WHERE fk_profile_id = '$profile_id'";
+        $eca_items_result = $this->conn->query($query);
+        if ($eca_items_result) {
+            $eca_items = $eca_items_result->fetch_all(MYSQLI_ASSOC);
+            $result['profile']['eca'] = $eca_items;
+        } else {
+            $result['profile']['eca'] = array();
+        }
+    
         return $result;
     }
+    
 
     public function getVisitorCount($profile_id)
     {

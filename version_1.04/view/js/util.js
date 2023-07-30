@@ -401,13 +401,24 @@ document.getElementById('back-to-top-btn').addEventListener('click', function ()
     };
   
     var ParticleNetwork = function (parent) {
-      this.options = {
-        velocity: 1, // the higher the faster
-        density: 15000, // the lower the denser
-        netLineDistance: 200,
-        netLineColor: "#929292",
-        particleColors: ["#aaa"], // ['#6D4E5C', '#aaa', '#FFC458' ]
-      };
+      if (getCookie("theme") === "dark") {
+        this.options = {
+          velocity: 1, // the higher the faster
+          density: 15000, // the lower the denser
+          netLineDistance: 200,
+          netLineColor: "#aaa",
+          particleColors: ["#aaa"], // ['#6D4E5C', '#aaa', '#FFC458' ]
+        };
+  } else {
+    this.options = {
+      velocity: 1, // the higher the faster
+      density: 15000, // the lower the denser
+      netLineDistance: 200,
+      netLineColor: "#505050",
+      particleColors: ["#505050"], // ['#6D4E5C', '#aaa', '#FFC458' ]
+    };
+  }
+      
       this.canvas = parent.canvas;
       this.ctx = parent.ctx;
   
