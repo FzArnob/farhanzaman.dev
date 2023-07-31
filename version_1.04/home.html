@@ -44,12 +44,11 @@
   <main-page class="bg1 c1 hidden">
     <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
       <div class="nav-container">
-        <a class="nav-logo c1 active" href="index.html"><img alt="logo" src="view/static/favicon.svg"
-            class="fa-logo" />
-            <!-- <span class="fa-logo-text"> Farhan Zaman <span class="fa-logo-sub-text">A curious <span
+        <a class="nav-logo c1 active" href="index.html"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
+          <!-- <span class="fa-logo-text"> Farhan Zaman <span class="fa-logo-sub-text">A curious <span
                 class="c-theme-second">S O U L</span></span></span> -->
-                <span class="nav-corner bg2 animate-top"></span>
-              </a>
+          <span class="nav-corner bg2 animate-top"></span>
+        </a>
         <ul class="nav-menu animate-right" id="nav-menu">
           <li class="nav-item"><a class="nav-links c1" href="#about-section">About</a></li>
           <li class="nav-item"><a class="nav-links c1" href="#expertise-section">Expertise</a></li>
@@ -78,7 +77,7 @@
       </div>
     </div>
     <div class="intro-animation">
-      
+
       <div class="particle-network-animation" id="wrap">
         <div class="intro-text">
           <!-- <div class="intro-text-large c1 wobble inline">Hey</div>
@@ -99,8 +98,8 @@
               <div id="circle"></div>
               <a href="#contact-section">Contact Me</a>
             </div>
-          <div class="btn-5 btn-5a icon-resume"><a href="#">Resume</a></div>
-        </div>
+            <div class="btn-5 btn-5a icon-resume"><a href="#">Resume</a></div>
+          </div>
         </div>
 
         <!-- <img alt="" id="intro-image" src="view/static/intro.png" /> -->
@@ -122,8 +121,7 @@
           <div class="column-2" id="experiences"></div>
         </div>
         <div class="row">
-          <a href="/about"
-            style="z-index: 10; margin-left: 50%; transform: translate(-50%, 85px); margin-bottom: 40px;"
+          <a href="/about" style="z-index: 10; margin-left: 50%; transform: translate(-50%, 85px); margin-bottom: 40px;"
             class="button button-a button-big button-rouded back-color">About Me</a>
         </div>
       </section>
@@ -281,7 +279,7 @@
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
     document.getElementById('expertise-text').innerHTML = result.profile.info.expertise_preference_details;
     generateInfo('info', result.profile.info);
-    showIntroAnimation();
+    showIntroAnimation(result.profile.info);
     generateSocialContact('social-contact', result.profile.info);
     generateEducationHTML("education", result.profile.educations, false);
     generateExperienceHTML("experiences", result.profile.experiences, false);
@@ -305,6 +303,13 @@
           document.querySelector("pre-loader").style.display = "none"; // hide
           document.querySelector("main-page").style.display = "block"; // show
           wobbleAnimation();
+          synchronizeInfo()
+            .then(result => {
+              console.log('Data Synchronized');
+            })
+            .catch(error => {
+              console.error(error); // Handle any errors here
+            });
         }, 1000);
 
         // You can also apply any further logic here if needed.

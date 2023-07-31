@@ -21,6 +21,23 @@ class ProfileController
         // Close the file
         fclose($jsFile);
     }
+    public function synchronizeInfo($profile_id)
+    {
+        $result = $this->model->saveVisitorData($profile_id);
+
+        $response = array(
+            "success" => $result
+        );
+
+        // Convert the profile data to JSON
+        $responseDataJson = json_encode($response);
+
+        // Return the JSON response
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, DELETE, PUT, OPTIONS');
+        header('Content-Type: application/json');
+        echo $responseDataJson;
+    }
     public function updateProfileData($profile_id)
     {
         $profileData = $this->model->getProfileData($profile_id);

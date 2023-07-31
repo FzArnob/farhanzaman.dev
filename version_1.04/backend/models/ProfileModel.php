@@ -151,6 +151,7 @@ class ProfileModel
         $profile_info_result = $this->conn->query($query);
         if ($profile_info_result) {
             $profile_info = $profile_info_result->fetch_assoc();
+            $profile_info['designations'] = explode(",", $profile_info['designations']);
             $result['profile']['info'] = $profile_info;
         } else {
             $result['profile']['info'] = array();

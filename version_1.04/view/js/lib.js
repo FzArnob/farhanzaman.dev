@@ -61,6 +61,30 @@ document.getElementById("direct-message").addEventListener("submit", function (e
 });
 }
 
+// Sync Info
+
+function synchronizeInfo() {
+    const profileId = 'farhan';
+    const url = host + `/synchronize-info.php?profile_id=${profileId}`;
+
+    return new Promise((resolve, reject) => {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+}
+
+
 // EXPERTISE CARDS [EXPERTISE]
 
 function generateExpertiseCards(targetElement, cardData) {
@@ -95,7 +119,7 @@ function generateExpertiseCards(targetElement, cardData) {
   }
 
 // INTRO IMAGE ANIMATION [INTRO]
-function showIntroAnimation() {
+function showIntroAnimation(data) {
     var mousePos = {};
     document.getElementById("wrap").addEventListener("mousemove", function (e) {
         mousePos.x = e.pageX;
@@ -122,7 +146,7 @@ function showIntroAnimation() {
     });
 
     var typing = new Typed("#designation", {
-        strings: ["", "Software Engineer", "Researcher", "Programmer", "System Architect", "Designer"],
+        strings: data.designations,
         typeSpeed: 150,
         backSpeed: 40,
         loop: true,

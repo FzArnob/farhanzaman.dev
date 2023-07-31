@@ -2,7 +2,7 @@ INSERT INTO profile_info (profile_id, full_name, first_name, last_name, nick_nam
                           intro_text, intro_image_url, resume_url, expertise_preference_details, website_base_url, website_domain_name,
                           contact_preference_details, address, phone, secondary_phone, email, alternative_email,
                           facebook_url, github_url, linkedin_url, whatsapp_url, created_date, updated_date, delete_flag)
-VALUES ('farhan', 'Farhan Zaman', 'Farhan', 'Zaman', 'Arnob', 'Software Engineer', 'A tech enthusiast, always ready for new challenges and
+VALUES ('farhan', 'Farhan Zaman', 'Farhan', 'Zaman', 'Arnob', 'Software Engineer,Researcher,Programmer,System Architect,Designer', 'A tech enthusiast, always ready for new challenges and
             quick learner. To know more about my works and interests check out my details.',
         'view/static/intro.png', 'view/static/resume.pdf', 'Drawing upon a wide range of skills and technical proficiencies, I excel in
                 problem solving, critical thinking, and effective teamwork. My expertise extends to encompass business
