@@ -854,8 +854,8 @@ a {
 }
 
 .hotspot.dot1 {
-  width: 7px;
-  height: 7px;
+  width: 10px;
+  height: 10px;
   border: 5px solid var(--theme-color);
   background-color: transparent;
   z-index: 1;
@@ -878,7 +878,13 @@ a {
   z-index: 3;
   animation: dot3 1s alternate infinite;
 }
-
+.hotspot.dot4 {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--theme-color);
+  z-index: 3;
+  animation: dot3 1s alternate infinite;
+}
 @keyframes dot1 {
   0% {
     opacity: 0.2;
@@ -962,6 +968,27 @@ a {
   padding-bottom: 20px;
   cursor: pointer;
   transition: all 0.5s;
+}
+.extended-box-left{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.extended-point-box {
+  max-width: 500px;
+  position: relative;
+  margin-top: -6px;
+  text-align: right;
+  opacity: 0.7;
+  padding-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.extended-box-pointer-left{
+  position: absolute;
+  right: -15px;
+  top: 15px;
 }
 
 .point-box:hover {

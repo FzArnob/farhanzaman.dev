@@ -44,16 +44,14 @@
   <main-page class="bg1 c1 hidden">
     <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
       <div class="nav-container">
-        <a class="nav-logo c1 active" href="index.html"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
-          <!-- <span class="fa-logo-text"> Farhan Zaman <span class="fa-logo-sub-text">A curious <span
-                class="c-theme-second">S O U L</span></span></span> -->
+        <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
           <span class="nav-corner bg2 animate-top"></span>
         </a>
         <ul class="nav-menu animate-right" id="nav-menu">
           <li class="nav-item"><a class="nav-links c1" href="#about-section">About</a></li>
           <li class="nav-item"><a class="nav-links c1" href="#expertise-section">Expertise</a></li>
           <li class="nav-item"><a class="nav-links c1" href="#works-section">Works</a></li>
-          <li class="nav-item"><a class="nav-links c1" href="#gallery-section">Gallery</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="#gallery-section">Hobbies</a></li>
         </ul>
         <div class="nav-icon animate-top" id="nav-menu-button">
           <span class="ico-gen mobile-menu-icon">G</span>
@@ -260,7 +258,7 @@
                 <div class="copyright-box">
                   <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
                   <div class="credits">
-                    Designed by <a href="https://farhanzaman.com/" id="footer_name"></a>
+                    Designed by <a href="https://farhanzaman.dev/" id="footer_name"></a>
                   </div>
                 </div>
               </div>
@@ -273,6 +271,7 @@
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
+  <script src="view/js/pna.js"></script>
   <script>
     document.title = result.profile.info.full_name;
     document.getElementById('intro_text').innerHTML = result.profile.info.intro_text;

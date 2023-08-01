@@ -801,15 +801,17 @@ function generateEducationHTML(targetElement, educationData, extended) {
     description
   ) {
     var pointBox = document.createElement("div");
-    pointBox.className = "point-box";
+    pointBox.className = extended ? "extended-point-box" : "point-box";
 
     var point = document.createElement("div");
+    var dotDesign = extended ? '<span class="hotspot dot4"></span>' : '<span class="hotspot dot3"></span>';
+    point.className = extended ? "extended-box-pointer-left" : "box-pointer";
     point.innerHTML =
       '<span class="hotspot main-wrapper">' +
       '<span class="hotspot dots-container">' +
       '<span class="hotspot dot1"></span>' +
       '<span class="hotspot dot2"></span>' +
-      '<span class="hotspot dot3"></span>' +
+      dotDesign +
       "</span>" +
       "</span>";
     pointBox.appendChild(point);
