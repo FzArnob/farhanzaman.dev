@@ -131,3 +131,26 @@ body {
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
+.ex-point-box-left {
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  position: relative;
+  border-right: 10px solid #404040;
+}
+.ex-point-box-right {
+  border-left: 10px solid #404040;
+}
+.ex-point-box-left::before {
+  border-color: transparent transparent transparent #404040;
+}
+.ex-point-box-right::before {
+  border-color: transparent #404040 transparent transparent;
+}
+.work-card-tag {
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+footer .credits a {
+  color: #00d3b4;
+}

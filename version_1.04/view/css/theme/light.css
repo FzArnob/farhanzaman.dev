@@ -125,3 +125,23 @@ body {
   -moz-transition: all 0.3s;
   transition: all 0.3s;
 }
+.ex-point-box-left {
+  border-right: 10px solid #c4c4c4;
+}
+.ex-point-box-right {
+  border-left: 10px solid #c4c4c4;
+}
+.ex-point-box-left::before {
+  border-color: transparent transparent transparent #c4c4c4;
+}
+.ex-point-box-right::before {
+  border-color: transparent #c4c4c4 transparent transparent;
+}
+.work-card-tag {
+  background-color: rgba(0, 0, 0, 0.02);
+  border: 2px solid rgba(0, 0, 0, 0.04);
+}
+footer .credits a {
+  color: #000;
+  font-weight: 600;
+}
