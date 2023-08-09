@@ -51,14 +51,27 @@
         </div>
       </div>
     </div>
-    <!-- <img alt="" id="intro-image" src="view/static/intro.png" /> -->
     <div class="main-content">
       <section id="about-section" class="nav-section">
         <br />
         <br />
         <br />
         <br />
+        <div class="row" style="position: absolute; height: 100%;">
+          <div class="column-2">
+            <span class="nav-corner-ex bg2 animate-top"></span>
+            <div style="margin: 10px; margin-left: 40px;" class="topic">My Story</div>
+            <div class="box-description">Specialization in Operation Management Specialization in Operation Management Specialization in Operation Management Specialization in Operation Management Specialization in Operation ManagementSpecialization in Operation Management Specialization in Operation Management Specialization in Operation ManagementSpecialization in Operation Management Specialization in Operation Managementvv</div>
+          </div>
+          <div class="column-2">
+        
+            <img alt="" id="intro-image" src="view/static/intro.png" />
+
+          </div>
+        </div>
         <br />
+    <div id="content-gap"></div>
+
         <div class="row">
           <div class="section-head wobble">Qualifications</div>
         </div>
@@ -195,6 +208,8 @@
     document.title = 'About - ' + result.profile.info.full_name;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
 
+    document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
+    document.getElementById("content-gap").style.border = "none";
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
