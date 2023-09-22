@@ -284,17 +284,53 @@ function createGallery(gallery, extended) {
     zoomIcon.classList.add("zoom-icon");
     zoomIcon.classList.add("ico-gen");
     zoomIcon.classList.add("c1");
-    zoomIcon.style.fontSize = "70px";
+    zoomIcon.style.fontSize = "40px";
     zoomIcon.innerHTML = "O";
     const background = document.createElement("div");
     background.classList.add("gallery-image-back");
     const imageContainer = document.createElement("div");
     imageContainer.style.width = imageSide + "px";
     imageContainer.style.height = imageSide + "px";
-    imageContainer.addEventListener("mouseover", () => {
-      imageContainer.classList.add("zoomed");
+    imageContainer.style.transition = "none";
+    imageContainer.addEventListener("mousemove", function rotate3DOnHover(event) {
       zoomIcon.style.display = "block";
       background.style.display = "block";
+
+      const divRect = imageContainer.getBoundingClientRect();
+      const divCenterX = divRect.left + divRect.width / 2;
+      const divCenterY = divRect.top + divRect.height / 2;
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+
+      // Calculate the distance between the mouse pointer and the center of the div
+      const distanceX = mouseX - divCenterX;
+      const distanceY = mouseY - divCenterY;
+      const maxDistanceX = Math.abs(divRect.left - divCenterX);
+      const maxDistanceY = Math.abs(divRect.top - divCenterY);
+      const ratioX = (distanceX / maxDistanceX) * -1;
+      const ratioY = distanceY / maxDistanceY;
+      // console.log(`distanceX: ${distanceX}, distanceY: ${distanceY}, maxDistanceX: ${maxDistanceX}, maxDistanceY: ${maxDistanceY}, ratioX: ${ratioX}, ratioY: ${ratioY}`);
+      // Calculate the overall distance using the Pythagorean theorem
+      const distanceFromCenter = Math.sqrt(
+        distanceX * distanceX + distanceY * distanceY
+      );
+      const maxDistanceFromCenter = Math.sqrt(
+        maxDistanceX * maxDistanceX + maxDistanceY * maxDistanceY
+      );
+      // console.log('Distance from center:', distanceFromCenter, " max:"+ maxDistanceFromCenter);
+      const maxRotation = 8; // Maximum rotation angle in degrees
+      const minRotation = 0; // Minimum rotation angle in degrees
+      const rotationRange = maxRotation - minRotation;
+
+      const rotation =
+        minRotation +
+        (distanceFromCenter / maxDistanceFromCenter) * rotationRange;
+      const maxBoxShadowDepthX = Math.floor(ratioX * -4);
+      const maxBoxShadowDepthY = Math.floor(ratioY * 4);
+      imageContainer.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 5px rgba(0, 211, 180, 0.3)`;
+      imageContainer.style.transform = `perspective(600px) rotate3d(${ratioY}, ${ratioX}, 0, ${rotation}deg) scale(1.02)`;
+
+
     });
     imageContainer.addEventListener("click", () => {
       selectPhoto(i, gallery);
@@ -305,10 +341,11 @@ function createGallery(gallery, extended) {
       document.getElementById("photoContainer").style.display = "flex";
       document.querySelector("main-page").style.visibility = "hidden";
     });
-    imageContainer.addEventListener("mouseout", () => {
-      imageContainer.classList.remove("zoomed");
+    imageContainer.addEventListener("mouseleave", () => {
       zoomIcon.style.display = "none";
       background.style.display = "none";
+      imageContainer.style.boxShadow = "none";
+      imageContainer.style.transform = "none";
     });
     imageContainer.classList.add("image-container");
     imageContainer.appendChild(image);
@@ -527,27 +564,29 @@ function startPhotoVeiwer() {
 
 // WORKS [WORK]
 function generateWorks(targetElement, worksData, extended) {
-  const worksContainer = document.createElement("div");
-  worksContainer.classList.add("works");
+  const worksContainerOne = document.createElement("div");
+  worksContainerOne.classList.add("works");
+  const worksContainerTwo = document.createElement("div");
+  worksContainerTwo.classList.add("works");
   var numColumn;
   switch (true) {
-    case window.innerWidth >= 500 && window.innerWidth < 800:
+    case window.innerWidth >= 600 && window.innerWidth < 1200:
       numColumn = 2;
       break;
-    case window.innerWidth >= 800 && window.innerWidth < 1400:
-      numColumn = 2;
-      break;
-    case window.innerWidth >= 1400 && window.innerWidth < 2000:
+    case window.innerWidth >= 1200 && window.innerWidth < 1800:
       numColumn = 3;
       break;
-    case window.innerWidth >= 2000:
+    case window.innerWidth >= 1800 && window.innerWidth < 2400:
       numColumn = 4;
+      break;
+    case window.innerWidth >= 2400:
+      numColumn = 5;
       break;
     default:
       numColumn = 1;
       break;
   }
-  var workCardWidth = window.innerWidth / numColumn - 70;
+  var workCardWidth = (window.innerWidth / numColumn) - 2;
   var len;
   if (extended) len = worksData.length;
   else len = numColumn * 2;
@@ -556,6 +595,8 @@ function generateWorks(targetElement, worksData, extended) {
     const workCard = document.createElement("div");
     workCard.classList.add("work-card", "bg2");
     workCard.style.width = workCardWidth + "px";
+    if (i == 0 || i == numColumn) workCard.style.borderLeft = "none";
+    if (i >= numColumn) workCard.style.borderBottom = "none";
     const image = document.createElement("img");
     image.classList.add("work-card-image");
     image.src = work.logo_image;
@@ -574,69 +615,17 @@ function generateWorks(targetElement, worksData, extended) {
     title.textContent = work.name;
     const details = document.createElement("div");
     details.classList.add("work-card-details", "c2");
-    details.textContent = work.details;
-    workCard.style.transition = "none";
-    workCard.addEventListener("mousemove", function rotate3DOnHover(event) {
-    const divRect = workCard.getBoundingClientRect();
-    const divCenterX = divRect.left + divRect.width / 2;
-    const divCenterY = divRect.top + divRect.height / 2;
-      const mouseX = event.clientX;
-      const mouseY = event.clientY;
-
-      // Calculate the distance between the mouse pointer and the center of the div
-      const distanceX = mouseX - divCenterX;
-      const distanceY = mouseY - divCenterY;
-      const maxDistanceX = Math.abs(divRect.left-divCenterX);
-      const maxDistanceY = Math.abs(divRect.top-divCenterY);
-      const ratioX = (distanceX / maxDistanceX) * -1;
-      const ratioY = distanceY / maxDistanceY;
-      // console.log(`distanceX: ${distanceX}, distanceY: ${distanceY}, maxDistanceX: ${maxDistanceX}, maxDistanceY: ${maxDistanceY}, ratioX: ${ratioX}, ratioY: ${ratioY}`);
-      // Calculate the overall distance using the Pythagorean theorem
-      const distanceFromCenter = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-      const maxDistanceFromCenter = Math.sqrt(maxDistanceX * maxDistanceX + maxDistanceY * maxDistanceY);
-
-      // console.log('Distance from center:', distanceFromCenter, " max:"+ maxDistanceFromCenter);
-  
-      const maxRotation = 8; // Maximum rotation angle in degrees
-      const minRotation = 0; // Minimum rotation angle in degrees
-      const rotationRange = maxRotation - minRotation;
-  
-      const rotation = minRotation + (distanceFromCenter / maxDistanceFromCenter) * rotationRange;
-      const maxShadowDepthX = Math.floor(ratioX*-2);
-      const maxShadowDepthY = Math.floor(ratioY*2);
-      const maxBoxShadowDepthX = Math.floor(ratioX*-8);
-      const maxBoxShadowDepthY = Math.floor(ratioY*8);
-      // console.log(maxBoxShadowDepthX,  maxBoxShadowDepthY);
-      typeTag.style.transition = "none";
-      stackTag.style.transition = "none";
-      title.style.transition = "all 0.01s";
-      details.style.transition = "all 0.01s";
-      workCard.style.transition = "all 0.01s";
-      // tagsContainer.style.transform = `translate(${}, ${})`;
-      workCard.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 10px rgba(0,0,0, 0.2)`;
-      stackTag.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 2px rgba(0,0,0, 0.2)`;
-      typeTag.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 2px rgba(0,0,0, 0.2)`;
-      // title.style.textShadow = `${maxShadowDepthX}px ${maxShadowDepthY}px 0px rgba(0,0,0, 0.4)`;
-      // details.style.textShadow = `${maxShadowDepthX}px ${maxShadowDepthY}px 0px rgba(0,0,0, 0.4)`;
-      // console.log("rotation: "+ rotation);
-      workCard.style.transform = `perspective(600px) rotate3d(${ratioY}, ${ratioX}, 0, ${rotation}deg)`;
-    });
-    workCard.addEventListener("mouseleave", function resetRotation() {
-      workCard.style.transform = "none";
-      workCard.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.2)";
-      typeTag.style.boxShadow = "none";
-      stackTag.style.boxShadow = "none";
-      // title.style.textShadow = "none";
-      // details.style.textShadow = "none";
-    });
+    details.textContent = work.details;    
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
     workCard.appendChild(title);
-    workCard.appendChild(details);
-    worksContainer.appendChild(workCard);
+    // workCard.appendChild(details);
+    if(i < numColumn) worksContainerOne.appendChild(workCard);
+    else worksContainerTwo.appendChild(workCard);
   }
   const parentElement = document.getElementById(targetElement);
-  parentElement.appendChild(worksContainer);
+  parentElement.appendChild(worksContainerOne);
+  parentElement.appendChild(worksContainerTwo);
 }
 
 // SOCIAL CONTACTS [CONTACT]

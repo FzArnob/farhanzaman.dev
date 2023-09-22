@@ -148,8 +148,12 @@ body {
   border-color: transparent #404040 transparent transparent;
 }
 .work-card-tag {
-  border: 2px solid rgba(0, 0, 0, 0.08);
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(35, 35, 35, 0.9);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.work-card {
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.5);
+  border-left: 2px dashed rgba(255, 255, 255, 0.5);
 }
 footer .credits a {
   color: #00d3b4;

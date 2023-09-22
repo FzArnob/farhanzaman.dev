@@ -47,8 +47,8 @@ body {
 
 /* scrollbar design */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1488,13 +1488,10 @@ a {
 }
 
 .work-card {
-  margin: 20px;
-  width: calc(100% - 40px);
-  padding-bottom: 20px;
   display: flex;
+  position: relative;
   flex-direction: column;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
   cursor: pointer;
 }
 
@@ -1505,14 +1502,15 @@ a {
   height: 15rem;
   object-fit: cover;
   vertical-align: top;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   flex-shrink: 0;
 }
 
 .work-card .work-card-tags {
-  margin: 20px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
   display: flex;
+  justify-content: right;
 }
 
 .work-card-tag {
@@ -1522,19 +1520,21 @@ a {
 }
 
 .work-card .work-card-tags .work-card-tag {
-  margin-right: 10px;
+  margin-left: 10px;
   width: fit-content;
-  padding: 3px 10px;
+  padding: 1px 8px;
   font-size: 16px;
-  font-weight: 500;
-  border-radius: 10px;
+  font-weight: 100;
+  border-radius: 6px;
 }
 
 .work-card .work-card-title {
   font-size: 18px;
-  font-weight: 700;
-  margin-left: 20px;
-  margin-right: 20px;
+  font-weight: 500;
+  text-align: center;
+  margin: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .work-card .work-card-details {
@@ -1543,13 +1543,15 @@ a {
   font-size: 16px;
   font-weight: 300;
 }
+#works {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
 
 .works {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  overflow-x: hidden;
 }
 
 #gallery {
@@ -2796,6 +2798,7 @@ textarea.form-control {
   z-index: 115;
   color: #fff;
   cursor: pointer;
+  padding-left: 15px;
 }
 
 #zoomButtons {
@@ -3011,4 +3014,31 @@ textarea.form-control {
   opacity: 1;
   transition: all .4s;
   transform : translateX(-20px);
+}
+
+
+
+
+@-webkit-keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-250px * 7));
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-250px * 7));
+  }
+}
+.slide-track {
+  -webkit-animation: scroll-left 40s linear infinite;
+          animation: scroll-left 40s linear infinite;
+  display: flex;
+  width: calc(250px * 14);
 }
