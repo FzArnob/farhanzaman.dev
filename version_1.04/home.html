@@ -148,7 +148,7 @@
         <div class="row">
           <div class="section-head wobble">Works</div>
         </div>
-        <div class="row" id="works">
+        <div class="marquee" id="works">
         </div>
         <div class="row">
           <a href="/works" style="margin-left: 50%; transform: translateX(-50%); margin-bottom: 40px;"
@@ -285,7 +285,8 @@
     createSkillCloud(result.profile.expertises);
     createGallery(result.profile.gallery, false);
     createPhotoViewer('photoContainer', result.profile.gallery);
-    generateWorks("works", result.profile.projects, false);
+    // generateWorks("works", result.profile.projects, false);
+    generateWorksMarquee("works", result.profile.projects);
     enableMessages();
     document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
     document.getElementById("content-gap").style.border = "none";

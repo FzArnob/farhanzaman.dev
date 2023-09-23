@@ -615,19 +615,102 @@ function generateWorks(targetElement, worksData, extended) {
     title.textContent = work.name;
     const details = document.createElement("div");
     details.classList.add("work-card-details", "c2");
-    details.textContent = work.details;    
+    details.textContent = work.details;
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
     workCard.appendChild(title);
     // workCard.appendChild(details);
-    if(i < numColumn) worksContainerOne.appendChild(workCard);
+    if (i < numColumn) worksContainerOne.appendChild(workCard);
     else worksContainerTwo.appendChild(workCard);
   }
   const parentElement = document.getElementById(targetElement);
   parentElement.appendChild(worksContainerOne);
   parentElement.appendChild(worksContainerTwo);
 }
-
+function generateWorkCard(workCard, work) {
+  const image = document.createElement("img");
+  image.classList.add("work-card-image");
+  image.src = work.logo_image;
+  const tagsContainer = document.createElement("div");
+  tagsContainer.classList.add("work-card-tags");
+  const typeTag = document.createElement("div");
+  typeTag.classList.add("work-card-tag", "c-theme");
+  typeTag.textContent = work.type;
+  tagsContainer.appendChild(typeTag);
+  const stackTag = document.createElement("div");
+  stackTag.classList.add("work-card-tag", "c-theme-second");
+  stackTag.textContent = work.stack;
+  tagsContainer.appendChild(stackTag);
+  const title = document.createElement("div");
+  title.classList.add("work-card-title", "c1");
+  title.textContent = work.name;
+  const details = document.createElement("div");
+  details.classList.add("work-card-details", "c2");
+  details.textContent = work.details;
+  workCard.appendChild(image);
+  workCard.appendChild(tagsContainer);
+  workCard.appendChild(title);
+  return workCard;
+}
+function createCardHolder(work, workBottom, workCardWidth, i) {
+  var workCard = document.createElement("div");
+  workCard.classList.add("work-card", "bg2");
+  workCard.style.width = workCardWidth + "px";
+  if (i == 0) workCard.style.borderLeft = "none";
+  var workCardBottom = document.createElement("div");
+  workCardBottom.classList.add("work-card", "bg2");
+  workCardBottom.style.width = workCardWidth + "px";
+  if (i == 0) workCardBottom.style.borderLeft = "none";
+  workCard = generateWorkCard(workCard, work);
+  workCardBottom = generateWorkCard(workCardBottom, workBottom);
+  var cardHolder = document.createElement("div");
+  cardHolder.classList.add("work-card-holder");
+  cardHolder.appendChild(workCard);
+  cardHolder.appendChild(workCardBottom);
+  return cardHolder;
+}
+function generateWorksMarquee(targetElement, worksData) {
+  const worksContainer = document.createElement("div");
+  worksContainer.classList.add("marquee-inner");
+  const worksSpanOne = document.createElement("span");
+  const worksSpanTwo = document.createElement("span");
+  var numColumn;
+  switch (true) {
+    case window.innerWidth >= 600 && window.innerWidth < 1200:
+      numColumn = 2;
+      break;
+    case window.innerWidth >= 1200 && window.innerWidth < 1800:
+      numColumn = 3;
+      break;
+    case window.innerWidth >= 1800 && window.innerWidth < 2400:
+      numColumn = 4;
+      break;
+    case window.innerWidth >= 2400:
+      numColumn = 5;
+      break;
+    default:
+      numColumn = 1;
+      break;
+  }
+  var buff = 2 * (numColumn);
+  var workCardWidth = Math.round((window.innerWidth / numColumn) - (buff / numColumn));
+  var len = (numColumn+1) * 2;
+  var parentWidth = (workCardWidth * (numColumn+1)) + buff;
+  console.log((workCardWidth * numColumn) + buff, innerWidth)
+  for (let i = 0; i < len; i += 2) {
+    const work = worksData[i];
+    const workBottom = worksData[i + 1];
+    var cardHolderOne = createCardHolder(work, workBottom, workCardWidth, i);
+    var cardHolderTwo = createCardHolder(work, workBottom, workCardWidth, i);
+    worksSpanOne.appendChild(cardHolderOne);
+    worksSpanTwo.appendChild(cardHolderTwo);
+  }
+  worksContainer.appendChild(worksSpanOne);
+  worksContainer.appendChild(worksSpanTwo);
+  const parentElement = document.getElementById(targetElement);
+  parentElement.style.width = parentWidth + "px";
+  parentElement.appendChild(worksContainer);
+}
 // SOCIAL CONTACTS [CONTACT]
 function generateSocialContact(targetElement, data) {
   const ul = document.createElement("ul");
