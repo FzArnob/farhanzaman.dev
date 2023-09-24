@@ -283,7 +283,6 @@ function createGallery(gallery, extended) {
     const zoomIcon = document.createElement("div");
     zoomIcon.classList.add("zoom-icon");
     zoomIcon.classList.add("ico-gen");
-    zoomIcon.classList.add("c1");
     zoomIcon.style.fontSize = "40px";
     zoomIcon.innerHTML = "O";
     const background = document.createElement("div");
@@ -563,11 +562,9 @@ function startPhotoVeiwer() {
 }
 
 // WORKS [WORK]
-function generateWorks(targetElement, worksData, extended) {
-  const worksContainerOne = document.createElement("div");
-  worksContainerOne.classList.add("works");
-  const worksContainerTwo = document.createElement("div");
-  worksContainerTwo.classList.add("works");
+function generateWorks(targetElement, worksData) {
+  const worksContainer = document.createElement("div");
+  worksContainer.classList.add("works");
   var numColumn;
   switch (true) {
     case window.innerWidth >= 600 && window.innerWidth < 1200:
@@ -587,58 +584,67 @@ function generateWorks(targetElement, worksData, extended) {
       break;
   }
   var workCardWidth = (window.innerWidth / numColumn) - 2;
-  var len;
-  if (extended) len = worksData.length;
-  else len = numColumn * 2;
+  var len = worksData.length;
   for (let i = 0; i < len; i++) {
     const work = worksData[i];
     const workCard = document.createElement("div");
-    workCard.classList.add("work-card", "bg2");
+    workCard.classList.add("work-card-full", "bg2", "work-card");
     workCard.style.width = workCardWidth + "px";
-    if (i == 0 || i == numColumn) workCard.style.borderLeft = "none";
-    if (i >= numColumn) workCard.style.borderBottom = "none";
     const image = document.createElement("img");
-    image.classList.add("work-card-image");
+    image.classList.add("work-card-image-full");
     image.src = work.logo_image;
     const tagsContainer = document.createElement("div");
     tagsContainer.classList.add("work-card-tags");
     const typeTag = document.createElement("div");
-    typeTag.classList.add("work-card-tag", "c-theme");
+    typeTag.classList.add("work-card-tag", "c-theme", "animate-slide-down");
     typeTag.textContent = work.type;
     tagsContainer.appendChild(typeTag);
     const stackTag = document.createElement("div");
-    stackTag.classList.add("work-card-tag", "c-theme-second");
+    stackTag.classList.add("work-card-tag", "c-theme-second", "animate-slide-down");
     stackTag.textContent = work.stack;
     tagsContainer.appendChild(stackTag);
     const title = document.createElement("div");
-    title.classList.add("work-card-title", "c1");
+    title.classList.add("work-card-title-full", "c1");
     title.textContent = work.name;
     const details = document.createElement("div");
     details.classList.add("work-card-details", "c2");
     details.textContent = work.details;
+    workCard.addEventListener('mouseover', () => {
+      workCard.classList.add("animate-infinite-tossing");
+      image.style.filter = 'blur(0px)';
+      typeTag.style.display = "flex";
+      stackTag.style.display = "flex";
+    });
+    workCard.addEventListener('mouseleave', () => {
+      workCard.classList.remove("animate-infinite-tossing");
+      image.style.filter = 'blur(1px)';
+      typeTag.style.display = "none";
+      stackTag.style.display = "none";
+    });
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
     workCard.appendChild(title);
-    // workCard.appendChild(details);
-    if (i < numColumn) worksContainerOne.appendChild(workCard);
-    else worksContainerTwo.appendChild(workCard);
+    workCard.appendChild(details);
+    worksContainer.appendChild(workCard);
   }
   const parentElement = document.getElementById(targetElement);
-  parentElement.appendChild(worksContainerOne);
-  parentElement.appendChild(worksContainerTwo);
+  parentElement.appendChild(worksContainer);
 }
-function generateWorkCard(workCard, work) {
+function generateWorkCard(work, workCardWidth) {
+  var workCard = document.createElement("div");
+  workCard.classList.add("work-card", "bg2");
+  workCard.style.width = workCardWidth + "px";
   const image = document.createElement("img");
   image.classList.add("work-card-image");
   image.src = work.logo_image;
   const tagsContainer = document.createElement("div");
   tagsContainer.classList.add("work-card-tags");
   const typeTag = document.createElement("div");
-  typeTag.classList.add("work-card-tag", "c-theme");
+  typeTag.classList.add("work-card-tag", "c-theme", "animate-right");
   typeTag.textContent = work.type;
   tagsContainer.appendChild(typeTag);
   const stackTag = document.createElement("div");
-  stackTag.classList.add("work-card-tag", "c-theme-second");
+  stackTag.classList.add("work-card-tag", "c-theme-second", "animate-right");
   stackTag.textContent = work.stack;
   tagsContainer.appendChild(stackTag);
   const title = document.createElement("div");
@@ -647,22 +653,27 @@ function generateWorkCard(workCard, work) {
   const details = document.createElement("div");
   details.classList.add("work-card-details", "c2");
   details.textContent = work.details;
+  workCard.addEventListener('mouseover', () => {
+    image.style.filter = 'grayscale(0%)'; // Set grayscale to 0% (full color)
+    typeTag.style.display = "flex";
+    stackTag.style.display = "flex";
+    title.classList.add("work-card-text-style");
+  });
+  workCard.addEventListener('mouseleave', () => {
+    image.style.filter = 'grayscale(20%) blur(2px) saturate(70%)'; // Set grayscale to 0% (full color)
+    typeTag.style.display = "none";
+    stackTag.style.display = "none";
+    title.classList.remove("work-card-text-style");
+  });
   workCard.appendChild(image);
   workCard.appendChild(tagsContainer);
   workCard.appendChild(title);
   return workCard;
 }
 function createCardHolder(work, workBottom, workCardWidth, i) {
-  var workCard = document.createElement("div");
-  workCard.classList.add("work-card", "bg2");
-  workCard.style.width = workCardWidth + "px";
-  if (i == 0) workCard.style.borderLeft = "none";
-  var workCardBottom = document.createElement("div");
-  workCardBottom.classList.add("work-card", "bg2");
-  workCardBottom.style.width = workCardWidth + "px";
-  if (i == 0) workCardBottom.style.borderLeft = "none";
-  workCard = generateWorkCard(workCard, work);
-  workCardBottom = generateWorkCard(workCardBottom, workBottom);
+  var workCard = generateWorkCard(work, workCardWidth);
+  var workCardBottom = generateWorkCard(workBottom, workCardWidth);
+  workCardBottom.style.borderBottom = "none";
   var cardHolder = document.createElement("div");
   cardHolder.classList.add("work-card-holder");
   cardHolder.appendChild(workCard);
@@ -683,16 +694,16 @@ function generateWorksMarquee(targetElement, worksData) {
       numColumn = 3;
       break;
     case window.innerWidth >= 1800 && window.innerWidth < 2400:
-      numColumn = 4;
+      numColumn = 3;
       break;
     case window.innerWidth >= 2400:
-      numColumn = 5;
+      numColumn = 3;
       break;
     default:
-      numColumn = 1;
+      numColumn = 2;
       break;
   }
-  var buff = 2 * (numColumn);
+  var buff = 2 * (numColumn+1);
   var workCardWidth = Math.round((window.innerWidth / numColumn) - (buff / numColumn));
   var len = (numColumn+1) * 2;
   var parentWidth = (workCardWidth * (numColumn+1)) + buff;
@@ -707,6 +718,7 @@ function generateWorksMarquee(targetElement, worksData) {
   }
   worksContainer.appendChild(worksSpanOne);
   worksContainer.appendChild(worksSpanTwo);
+  worksContainer.style.width = (parentWidth*2) + "px";
   const parentElement = document.getElementById(targetElement);
   parentElement.style.width = parentWidth + "px";
   parentElement.appendChild(worksContainer);

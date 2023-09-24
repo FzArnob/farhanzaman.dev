@@ -86,7 +86,9 @@
 .reverse-color {
   color: #fff;
 }
-
+.zoom-icon {
+  color: #fff;
+}
 .bottom-gradient {
   height: 50px;
   position: absolute;
@@ -154,6 +156,9 @@ body {
 .work-card {
   border-bottom: 2px dashed rgba(255, 255, 255, 0.5);
   border-left: 2px dashed rgba(255, 255, 255, 0.5);
+}
+.work-card-full {
+  border: none;
 }
 footer .credits a {
   color: #00d3b4;

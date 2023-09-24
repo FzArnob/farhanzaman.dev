@@ -259,6 +259,7 @@ navLinks.forEach((link) => {
   });
 });
 
+
 //animation text
 function addListenerMulti(element, eventNames, listener) {
   var events = eventNames.split(" ");

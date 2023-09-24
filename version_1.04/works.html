@@ -29,7 +29,7 @@
                 <ul class="nav-menu animate-right" id="nav-menu">
                     <li class="nav-item"><a class="nav-links c1" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-links c1" href="/expertise">Expertise</a></li>
-                    <li class="nav-item"><a class="nav-links c1" href="/works">Works</a></li>
+                    <li class="nav-item"><a class="nav-links c1 active" href="/works">Works</a></li>
                     <li class="nav-item"><a class="nav-links c1" href="/hobbies">Hobbies</a></li>
                 </ul>
                 <div class="nav-icon animate-top" id="nav-menu-button">
@@ -88,7 +88,7 @@
   <script>
     document.title = 'Works - ' + result.profile.info.full_name;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
-    generateWorks("works", result.profile.projects, true);
+    generateWorks("works", result.profile.projects);
     document.getElementById("content-gap").style.border = "none";
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');

@@ -2981,19 +2981,22 @@ textarea.form-control {
   display: flex;
   position: relative;
   flex-direction: column;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 
 
 
 .work-card .work-card-image {
+  filter: grayscale(20%) blur(2px) saturate(70%);
+  transition: filter 0.3s ease;
   width: 100%;
-  height: 15rem;
+  height: 225px;
   object-fit: cover;
   vertical-align: top;
   flex-shrink: 0;
 }
+
 
 .work-card .work-card-tags {
   position: absolute;
@@ -3004,9 +3007,9 @@ textarea.form-control {
 }
 
 .work-card-tag {
+  display: none;
   text-align: center;
   align-items: center;
-  display: flex;
 }
 
 .work-card .work-card-tags .work-card-tag {
@@ -3020,25 +3023,47 @@ textarea.form-control {
 
 .work-card .work-card-title {
   font-size: 18px;
+  height: 60px;
   font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  margin: 10px;
+  padding: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.work-card-text-style{
+  overflow: hidden;
+  background: linear-gradient(to right, #fd2155, #fd2155, #fd2155 35%, #00d3b4 45%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: background-position 10s ease-in-out;
+  text-decoration: none;
+}
+.work-card-text-style:hover{
+  background-position: 0 100%;
+}
+
+
+#works {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.works {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.work-card .work-card-details {
-  margin-right: 20px;
-  margin-left: 20px;
-  font-size: 16px;
-  font-weight: 300;
-}
-#works {
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
 .marquee {
-  height: 200px;
+  height: 652px;
   overflow: hidden;
   position: relative;
   background-color: aqua;
@@ -3062,7 +3087,125 @@ textarea.form-control {
   animation-play-state: paused;
 }
 
+.work-card-full {
+  border-radius: 6px;
+  margin: 20px;
+  position: relative;
+}
+
+.work-card .work-card-title-full {
+  font-size: 16px;
+  text-align: left;
+  font-weight: 500;
+  padding: 20px;
+  padding-bottom: 0;
+}
+.work-card .work-card-image-full {
+  filter: blur(1px);
+  transition: filter 0.3s ease;
+  width: 100%;
+  height: 225px;
+  object-fit: cover;  
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  vertical-align: top;
+  flex-shrink: 0;
+}
+
+.work-card .work-card-details {
+  text-align: left;
+  padding: 20px;
+  margin-bottom: 20px;
+  height: 3.6em; /* Three lines of text (line height may vary) */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Number of lines to display */
+            -webkit-box-orient: vertical;
+  font-size: 16px;
+  font-weight: 300;
+}
+
 @keyframes marquee {
   0% { left: 0; }
   100% { left: -100%; }
+}
+
+@keyframes moveit{
+  from { margin-top:  0px; opacity:0; }
+  25%  { margin-top: 80px; opacity:1; }
+  50%  { margin-top: 40px; opacity:1; }
+  75%  { margin-top: 80px; opacity:1; }
+  to   { margin-top:  0px; opacity:0; }
+}
+
+.animate-arrow-down{
+  -webkit-animation: moveit 2.5s infinite;
+          animation: moveit 2.5s infinite;
+}
+
+.animate-infinite-tossing {
+  animation-name: tossing;
+  -webkit-animation-name: tossing;
+  animation-duration: 2.5s;
+  -webkit-animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+}
+
+@keyframes tossing {
+  0% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+  100% {
+    transform: rotate(-4deg);
+  }
+}
+
+@-webkit-keyframes tossing {
+  0% {
+    -webkit-transform: rotate(-4deg);
+  }
+  50% {
+    -webkit-transform: rotate(4deg);
+  }
+  100% {
+    -webkit-transform: rotate(-4deg);
+  }
+}
+
+.animate-slide-down {
+  animation-name: slide-down;
+  -webkit-animation-name: slide-down;
+  animation-duration: 200ms;
+  -webkit-animation-duration: 200ms;
+  animation-iteration-count: 1;
+  -webkit-animation-iteration-count: 1;
+}
+
+@keyframes slide-down {
+  0% {
+    margin-top: -20px; opacity: 0;
+  }
+  50% {
+    margin-top: -10px; opacity: 0.5;
+  }
+  100% {
+    margin-top: 0px; opacity: 1;
+  }
+}
+
+@-webkit-keyframes slide-down {
+  0% {
+    margin-top: -20px; opacity: 0;
+  }
+  50% {
+    margin-top: -10px; opacity: 0.5;
+  }
+  100% {
+    margin-top: 0px; opacity: 1;
+  }
 }
