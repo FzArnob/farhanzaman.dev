@@ -282,12 +282,32 @@
     generateExperienceHTML("experiences", result.profile.experiences, false);
     generateAchievements('achievements', result.profile.achievements);
     window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
-    createSkillCloud(result.profile.expertises);
-    createGallery(result.profile.gallery, false);
+    createSkillCloud("skill-canvas", result.profile.expertises);
+    createGallery("gallery", result.profile.gallery, false);
     createPhotoViewer('photoContainer', result.profile.gallery);
-    // generateWorks("works", result.profile.projects, false);
     generateWorksMarquee("works", result.profile.projects);
     enableMessages();
+    window.addEventListener('resize', function () {
+      if (document.getElementById("works") != null) {
+        const worksElement = document.getElementById("works");
+        worksElement.innerHTML = "";
+        generateWorksMarquee("works", result.profile.projects);
+      }
+
+      if (document.getElementById("skill-canvas") != null) {
+
+        const skillElement = document.getElementById("skill-canvas");
+        skillElement.innerHTML = "";
+        createSkillCloud("skill-canvas", result.profile.expertises);
+      }
+
+      if (document.getElementById("gallery") != null) {
+
+        const galleryElement = document.getElementById("gallery");
+        galleryElement.innerHTML = "";
+        createGallery("gallery", result.profile.gallery, false);
+      }
+    });
     document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
     document.getElementById("content-gap").style.border = "none";
     document.addEventListener("DOMContentLoaded", function () {

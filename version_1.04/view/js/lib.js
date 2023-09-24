@@ -155,6 +155,23 @@ function showIntroAnimation(data) {
   //     introImageEle.style.opacity = 0.2;
   // });
 }
+function getExpertiseLevel(percentage) {
+  if (percentage >= 0 && percentage < 16) {
+      return "Novice";
+     }   else if (percentage >= 16 && percentage < 31) {
+        return "Fundamental";
+  } else if (percentage >= 31 && percentage < 46) {
+      return "Intermediate";
+  }else if (percentage >= 46 && percentage < 61) {
+    return "Competent";
+}  else if (percentage >= 61 && percentage < 76) {
+      return "Advanced";
+} else if (percentage >= 76 && percentage <= 91) {
+      return "Expert";
+  } else {
+      return "Mastery"; 
+  }
+}
 
 // SKILL BAR [EXPERTISE]
 function generateSkillBars(data, extended) {
@@ -188,7 +205,7 @@ function generateSkillBars(data, extended) {
     spanElement2.style.width = skill.percentage + "%";
     spanElement2.setAttribute(
       "data-value",
-      (skill.percentage * 5) / 100 + "/5"
+      getExpertiseLevel(skill.percentage)
     );
     // Append the span element to the progress line div
     progressLineDiv.appendChild(spanElement2);
@@ -210,7 +227,7 @@ function skillBarAnimation(data, extended) {
 }
 
 // SKILL CLOUD [EXPERTISE]
-function createSkillCloud(data) {
+function createSkillCloud(targetElement, data) {
   var radius;
   if (window.innerWidth <= 800) {
     radius = window.innerWidth / 2;
@@ -232,12 +249,12 @@ function createSkillCloud(data) {
   } else {
     textSize = Math.floor((22 * radius) / 300);
   }
-  document.getElementById("skill-canvas").firstChild.style.fontSize =
+  document.getElementById(targetElement).firstChild.style.fontSize =
     textSize + "px";
 }
 
 // GALLERY BOXES [GALLERY]
-function createGallery(gallery, extended) {
+function createGallery(targetElement, gallery, extended) {
   const container = document.createElement("div");
   container.style.overflow = "hidden";
   container.classList.add("gallery-container");
@@ -353,7 +370,7 @@ function createGallery(gallery, extended) {
     container.appendChild(imageContainer);
   }
   if (!extended) container.appendChild(containerShadow);
-  document.getElementById("gallery").appendChild(container);
+  document.getElementById(targetElement).appendChild(container);
 }
 
 // GALLERY PHOTO VIEW
@@ -660,7 +677,7 @@ function generateWorkCard(work, workCardWidth) {
     title.classList.add("work-card-text-style");
   });
   workCard.addEventListener('mouseleave', () => {
-    image.style.filter = 'grayscale(20%) blur(2px) saturate(70%)'; // Set grayscale to 0% (full color)
+    image.style.filter = 'grayscale(20%) blur(1px) saturate(70%)'; // Set grayscale to 0% (full color)
     typeTag.style.display = "none";
     stackTag.style.display = "none";
     title.classList.remove("work-card-text-style");

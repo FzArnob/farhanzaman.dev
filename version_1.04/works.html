@@ -7,8 +7,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link href="view/css/app.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"> </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js"></script>
 </head>
 
 <body class="bg1">
@@ -54,7 +52,7 @@
             </div>
         </div>
         <div class="main-content">
-            <section id="works-section" class="nav-section">
+            <section class="nav-section">
                 <div id="content-gap"></div>
                 <div class="row">
                     <div class="section-head wobble">Projects</div>
@@ -89,6 +87,13 @@
     document.title = 'Works - ' + result.profile.info.full_name;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
     generateWorks("works", result.profile.projects);
+    window.addEventListener('resize', function () {
+      if (document.getElementById("works") != null) {
+        const worksElement = document.getElementById("works");
+        worksElement.innerHTML = "";
+        generateWorksMarquee("works", result.profile.projects);
+      }
+    });
     document.getElementById("content-gap").style.border = "none";
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
