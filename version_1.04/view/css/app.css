@@ -690,6 +690,7 @@ a {
 }
 
 .nav-item .active {
+  transition: all 0s;
   color: var(--theme-color);
   border: 1px solid var(--theme-color);
 }
