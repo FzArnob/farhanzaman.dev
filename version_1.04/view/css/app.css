@@ -3205,3 +3205,15 @@ textarea.form-control {
     margin-top: 0px; opacity: 1;
   }
 }
+
+.about-footer {
+  background-image: url("https://live.staticflickr.com/65535/53210341151_2ed1cbb57c_h.jpg");
+  background-size: cover;
+  opacity: 0.2;
+  filter: blur(1px);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+}
+
