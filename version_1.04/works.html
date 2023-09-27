@@ -91,7 +91,7 @@
       if (document.getElementById("works") != null) {
         const worksElement = document.getElementById("works");
         worksElement.innerHTML = "";
-        generateWorksMarquee("works", result.profile.projects);
+        generateWorks("works", result.profile.projects);
       }
     });
     document.getElementById("content-gap").style.border = "none";

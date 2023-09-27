@@ -600,7 +600,7 @@ function generateWorks(targetElement, worksData) {
       numColumn = 1;
       break;
   }
-  var workCardWidth = (window.innerWidth / numColumn) - 2;
+  var workCardWidth = (window.innerWidth / numColumn) - 70;
   var len = worksData.length;
   for (let i = 0; i < len; i++) {
     const work = worksData[i];

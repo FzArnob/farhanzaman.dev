@@ -154,7 +154,6 @@ footer .credits a {
   color: #353535;
 }
 .fade-colors{
-  padding-top: 360px; 
+  padding-top: 40px; 
   position: relative; 
-  background: linear-gradient(180deg, #ffffff, rgba(0,0,0,0), #00ffd9);
-}
+  background: linear-gradient(15deg, #fd2155, #00ffd9);}
