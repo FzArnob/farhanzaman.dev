@@ -100,6 +100,17 @@
     rgb(37, 37, 37)
   );
 }
+.left-gradient {
+  width: 50px;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(
+    to left,
+    rgba(52, 52, 52, 0) 0%,
+    rgb(52, 52, 52)
+  );
+}
 .top-gradient {
   height: 100px;
   background: linear-gradient(to top, rgba(37, 37, 37, 0) 0%, rgb(37, 37, 37));
@@ -166,5 +177,4 @@ footer .credits a {
 .fade-colors{
   position: relative; 
   padding-top: 40px;
-  background: linear-gradient(15deg, #fd2155, #00ffd9);
 }
