@@ -53,39 +53,33 @@
     </div>
     <div class="main-content">
       <div class="about-top-container">
-        <div class="about-top-spliter"  style="left: 50%;">
-          <div class="about-image-back-effect"></div>
-          <div class="about-image-border-effect-primary"></div>
-          <div class="about-image-border-effect-secondary"></div>
-          <div class="about-image bg2"></div>
-        </div>
-        <div class="about-top-spliter">
-          <div class="about-title">
-              Get To Know Me
+        <div class="about-top-section">
+          <div class="about-title c1 wobble">
+            Get To Know Me
           </div>
-          <div class="about-description">
-
+          <div class="about-description c1 animate-left">
+            From a young age, my curiosity for technology and mathematics has been the driving force that led me to
+            the world of programming and problem-solving, where challenges fuel my passion. Programming is my forte,
+            and I have delved into the realms of Machine Learning and Artificial intelligence, contributing to
+            research in Human Posture Classification. As a software engineer, I aspire to fuse AI and Computer Vision
+            into the software industry, anticipating a future where AI revolutionizes software solutions. Beyond tech,
+            I indulge in arts, digital arts, and photography. In college, I took on the role of General Secretary for
+            the Dhaka College Science Club (DCSC), organizing science fairs, while in university, I passionately
+            contributed to impactful social initiatives as a Sr. Executive of the Brac University Community Service
+            Club (BUCSC).
+          </div>
+          <div class="socials-cen">
+          <div id="social-contact" class="socials"></div>
           </div>
         </div>
-      <div class="bottom-gradient" style="height: 30%;"></div>
+        <div class="about-image-back">
+          <div class="about-image-border-effect-primary animate-top"></div>
+          <div class="about-image-border-effect-secondary animate-left"></div>
+          <div class="about-image bg2 animate-opacity"></div>
+        </div>
+        <div class="bottom-gradient" style="height: 200px;"></div>
       </div>
-      <!-- <br />
-        <br />
-        <br />
-        <div class="row" style="position: absolute; height: 100%;">
-          <div class="column-2">
-            <span class="nav-corner-ex bg2 animate-top"></span>
-            <div style="margin: 10px; margin-left: 40px;" class="topic">My Story</div>
-            <div class="box-description">Specialization in Operation Management Specialization in Operation Management Specialization in Operation Management Specialization in Operation Management Specialization in Operation ManagementSpecialization in Operation Management Specialization in Operation Management Specialization in Operation ManagementSpecialization in Operation Management Specialization in Operation Managementvv</div>
-          </div>
-          <div class="column-2">
-        
-            <img alt="" id="intro-image" src="view/static/intro.png" />
-
-          </div>
-        </div>
-        <br /> -->
-      <div id="content-gap"></div>
+      <div id="about-gap"></div>
       <section id="about-section" class="nav-section">
         <div class="row">
           <div class="section-head wobble">Qualifications</div>
@@ -223,9 +217,9 @@
   <script>
     document.title = 'About - ' + result.profile.info.full_name;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
-
-    document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
-    document.getElementById("content-gap").style.border = "none";
+    generateSocialContact('social-contact', result.profile.info);
+    document.getElementById("about-gap").style.marginTop = window.innerHeight + "px";
+    document.getElementById("about-gap").style.border = "none";
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');

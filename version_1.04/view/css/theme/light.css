@@ -168,3 +168,12 @@ footer .credits a {
   padding-top: 40px; 
   position: relative; 
 }
+.about-top-container {
+  background: linear-gradient(
+    220deg,
+    rgba(253, 33, 85, 0),
+    rgba(253, 33, 85, 0.6),
+    rgba(253, 33, 85, 0),
+    rgba(0, 211, 180, 1)
+  );
+}
