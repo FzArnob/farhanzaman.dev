@@ -2596,6 +2596,16 @@ textarea.form-control {
   max-height: calc(25vw - 85px);
   overflow-y: auto;
 }
+.expertize-full {
+  margin: auto;
+  max-width: 75%;
+  padding: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  margin-top: 5vw;
+  height: fit-content;
+}
 
 .expertize-bar {
   padding: 40px;
