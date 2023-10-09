@@ -85,9 +85,6 @@ function calculateVisiblePercentage(element) {
   return (visibleHeight / element.offsetHeight) * 100;
 }
 
-// Add scroll event listener to the window
-window.addEventListener("scroll", handleNavScroll);
-
 function wobbleAnimation() {
   // NAV Bar back color change
   const navbar = document.getElementById("navbar");

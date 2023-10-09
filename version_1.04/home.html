@@ -281,12 +281,14 @@
     generateEducationHTML("education", result.profile.educations, false);
     generateExperienceHTML("experiences", result.profile.experiences, false);
     generateAchievements('achievements', result.profile.achievements);
-    window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
     createSkillCloud("skill-canvas", result.profile.expertises);
     createGallery("gallery", result.profile.gallery, false);
     createPhotoViewer('photoContainer', result.profile.gallery);
     generateWorksMarquee("works", result.profile.projects);
     enableMessages();
+    // Add scroll event listener to the window
+    window.addEventListener("scroll", handleNavScroll);
+    window.addEventListener("scroll", skillBarAnimation(result.profile.skills, false));
     window.addEventListener('resize', function () {
       if (document.getElementById("works") != null) {
         const worksElement = document.getElementById("works");

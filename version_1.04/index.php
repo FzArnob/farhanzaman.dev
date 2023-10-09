@@ -8,7 +8,7 @@ $parts = explode("/", $path);
 
 $route = isset($parts[0]) ? $parts[0] : 'none';
 $param1 = isset($parts[1]) ? $parts[1] : 'none';
-// echo $route.', '.$param1;
+echo $route.', '.$param1;
 
 // Define the valid routes and their corresponding HTML files
 $routes = array(
@@ -16,7 +16,8 @@ $routes = array(
     'about'    => 'about.html',
     'works'    => 'works.html',
     'hobbies'  => 'hobbies.html',
-    'expertise' => 'expertise.html'
+    'expertise' => 'expertise.html',
+    'work' => 'work.html'
 );
 
 // echo '<br/>'.$path;
@@ -28,8 +29,12 @@ if (isset($routes[$route])) {
     if (file_exists($file)) {
         // Set the appropriate content type
         header('Content-Type: text/html');
-        // Read and output the HTML file
-        readfile($file);
+        // // Read and output the HTML file
+        // readfile($file);
+        $content = file_get_contents($file);
+
+        // Output the modified HTML content
+        echo $content;
         exit;
     }
 }
