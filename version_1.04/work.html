@@ -3,6 +3,8 @@
 
 <head>
     <title></title>
+    <!-- required in production  -->
+    <!-- <base href="https://farhanzaman.dev/" /> -->
     <link href="view/static/favicon.svg" rel="icon" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -27,7 +29,7 @@
                 <ul class="nav-menu animate-right" id="nav-menu">
                     <li class="nav-item"><a class="nav-links c1" href="/about">About</a></li>
                     <li class="nav-item"><a class="nav-links c1" href="/expertise">Expertise</a></li>
-                    <li class="nav-item"><a class="nav-links c1 active" href="/works">Works</a></li>
+                    <li class="nav-item"><a class="nav-links c1" href="/works">Works</a></li>
                     <li class="nav-item"><a class="nav-links c1" href="/hobbies">Hobbies</a></li>
                 </ul>
                 <div class="nav-icon animate-top" id="nav-menu-button">
@@ -80,7 +82,10 @@
     <script src="view/js/lib.js"></script>
     <script src="view/js/util.js"></script>
     <script>
-        var work = result.profile.projects[{work_index}];
+        // required in production
+        // var work_id = window.location.pathname.split('/')[2];
+        // var work = result.profile.projects[work_id-1];
+        var work = result.profile.projects[1];
         document.title = 'Work - ' + work.name;
         document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
         document.getElementById("content-gap").style.border = "none";

@@ -7,20 +7,17 @@ $path = trim(parse_url($requestUri, PHP_URL_PATH), '/');
 $parts = explode("/", $path);
 
 $route = isset($parts[0]) ? $parts[0] : 'none';
-$param1 = isset($parts[1]) ? $parts[1] : 'none';
-echo $route.', '.$param1;
 
 // Define the valid routes and their corresponding HTML files
 $routes = array(
     ''         => 'home.html',    // Home page
     'about'    => 'about.html',
     'works'    => 'works.html',
+    'work' => 'work.html',
     'hobbies'  => 'hobbies.html',
-    'expertise' => 'expertise.html',
-    'work' => 'work.html'
+    'expertise' => 'expertise.html'
 );
 
-// echo '<br/>'.$path;
 
 // Check if the requested route exists in the defined routes
 if (isset($routes[$route])) {
@@ -30,11 +27,7 @@ if (isset($routes[$route])) {
         // Set the appropriate content type
         header('Content-Type: text/html');
         // // Read and output the HTML file
-        // readfile($file);
-        $content = file_get_contents($file);
-
-        // Output the modified HTML content
-        echo $content;
+        readfile($file);
         exit;
     }
 }
