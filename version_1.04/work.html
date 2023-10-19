@@ -56,7 +56,9 @@
         <div class="main-content">
             <section class="nav-section">
                 <div id="content-gap"></div>
-
+                <div class="row">
+                    <div class="section-head wobble" id="work-title"></div>
+                </div>
             </section>
             </br>
             </br>
@@ -87,6 +89,7 @@
         // var work = result.profile.projects[work_id-1];
         var work = result.profile.projects[1];
         document.title = 'Work - ' + work.name;
+        document.getElementById('work-title').innerHTML = work.name;
         document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
         document.getElementById("content-gap").style.border = "none";
         document.addEventListener("DOMContentLoaded", function () {
