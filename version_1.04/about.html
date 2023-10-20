@@ -68,8 +68,14 @@
             contributed to impactful social initiatives as a Sr. Executive of the Brac University Community Service
             Club (BUCSC).
           </div>
+          <div class="about-contact">
+            <div id="button-3">
+              <div id="circle"></div>
+              <a href="#contact-section">Contact Me</a>
+            </div>
+          </div>
           <div class="socials-cen">
-          <div id="social-contact" class="socials"></div>
+            <div id="social-contact" class="socials"></div>
           </div>
         </div>
         <div class="about-image-back">
@@ -194,21 +200,94 @@
       </br>
       </br>
       </br>
-      <footer class="fade-colors">
-        <div class="about-footer"></div>
-        <div class="container c1">
+      </br>
+      </br>
+      </br>
+    </br>
+      <section id="contact-section" class="paralax-mf footer-paralax bg-image sect-mt4 route"
+        style="background-image: url(https://live.staticflickr.com/65535/53223738139_ab18a8886e_o.jpg);">
+        <div class="row">
+          <div style="z-index: 10;" class="section-head wobble">Contact</div>
+        </div>
+        <div class="overlay-mf" style="filter: blur(10px);"></div>
+        <div class="container">
           <div class="row">
             <div class="col-sm-12">
-              <div class="copyright-box">
-                <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
-                <div class="credits">
-                  Designed by <a href="/about" id="footer_name"></a>
+              <div class="contact-mf">
+                <div id="contact" class="box-shadow-full bg2" style="max-width: 500px; margin: auto; margin-bottom: 60px;">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="title-box-2">
+                        <h5 class="title-left">
+                          <span class="wobble inline">Send </span> <span class="wobble inline">Direct </span> <span
+                            class="wobble inline">Message</span>
+                        </h5>
+                      </div>
+                      <div>
+                        <form action="" method="post" role="form" id="direct-message" class="contactForm">
+                          <div class="row">
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="text" name="name" class="form-control" id="message-name"
+                                  placeholder="Your Name" data-rule="minlen:4"
+                                  data-msg="Please enter at least 4 chars" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="email" class="form-control" name="email" id="message-email"
+                                  placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="subject" id="message-subject"
+                                  placeholder="Subject" data-rule="minlen:4"
+                                  data-msg="Please enter at least 8 chars of subject" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <textarea class="form-control" name="message" rows="5" data-rule="required"
+                                  data-msg="Please write something for us" placeholder="Message"
+                                  id="message"></textarea>
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div id="sendmessage">Your message has been sent. Thank you!</div>
+                            <div id="errormessage"></div>
+                            <div class="col-md-12">
+                              <button type="submit" class="button button-a button-big button-rouded">Send
+                                Message</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </footer>
+        <footer>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="copyright-box">
+                  <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
+                  <div class="credits">
+                    Designed by <a href="/about" id="footer_name" style="background-color: rgba(0,0,0, 0.2); border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </section>
     </div>
   </main-page>
   <script src="view/js/profile_data.js"></script>
