@@ -3070,7 +3070,7 @@ textarea.form-control {
 .marquee-inner {
   display: block;
   position: absolute;
-  animation: marquee 20s linear infinite;
+  animation: marquee 60s linear infinite;
 }
 .work-card-holder {
   display: flex;
