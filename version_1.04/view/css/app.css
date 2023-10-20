@@ -3062,24 +3062,13 @@ textarea.form-control {
   margin-bottom: 40px;
 }
 
-.works {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
 .marquee {
   height: 652px;
   overflow: hidden;
   position: relative;
-  background-color: aqua;
 }
 .marquee-inner {
   display: block;
-  background-color: chartreuse;
-  width: 200%;
   position: absolute;
   animation: marquee 20s linear infinite;
 }
