@@ -3409,3 +3409,50 @@ textarea.form-control {
     margin-top: 10px;
   }
 }
+
+.img-float-left {
+  float: left;
+  width: 25%;
+}
+.img-float-right {
+  float: right;
+  width: 25%;
+}
+.work-left{
+width: calc(100% - 300px);
+max-width: 1200px;
+}
+.work-right{
+width: 300px;
+}
+.work-details{
+  margin: 20px 40px 20px 40px;
+  text-align: justify;
+  font-size: 18px;
+}
+.work-stats{
+  margin: 20px;
+}
+.work-gallery{
+  
+}
+.work-learning{
+  
+}
+.work-logo{
+ width: 40%;
+ max-width: 400px;
+ height: auto;
+ object-fit: cover;
+ aspect-ratio: 1/1;
+ margin: 10px 30px 10px 0px;
+}
+
+@media screen and (max-width: 800px) {
+  .work-left{
+    width: 100%;
+    }
+    .work-right{
+    width: 100%;
+    }
+}
