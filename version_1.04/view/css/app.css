@@ -1034,7 +1034,7 @@ a {
   position: absolute;
   width: 16px;
   height: 16px;
-  top: 29px;
+  top: 27px;
   border: 3px solid var(--theme-color);
   border-radius: 16px;
   transform: translateX(-50%);
@@ -1045,7 +1045,7 @@ a {
   position: absolute;
   width: 16px;
   height: 16px;
-  top: 29px;
+  top: 27px;
   border: 3px solid var(--theme-color);
   border-radius: 16px;
   transform: translateX(50%);
@@ -2011,6 +2011,7 @@ h5 {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
 }
+
 
 .col-sm-12,
 .col-md-6,
@@ -3076,7 +3077,7 @@ textarea.form-control {
 .marquee-inner {
   display: block;
   position: absolute;
-  animation: marquee 60s linear infinite;
+  animation: marquee 45s linear infinite;
 }
 .work-card-holder {
   display: flex;
@@ -3369,5 +3370,42 @@ textarea.form-control {
 
 
 @media screen and (max-width: 800px) {
+  .about-qua{
+    display: none;
+  }
+  .about-line-left{
+    left: 30px;
+  }
+  .about-line-right{
+    left: auto;
+    right: 30px;
+  }
+  .ex-point-box-left {
+    margin-right: 20px;
+  }
+  .ex-point-box-right {
+    margin-left: 20px;
+  }
+  .move-right:hover {
+    transform: translateX(0px);
+  }
   
+  .move-left:hover {
+    transform: translateX(0px);
+  }
+  .about-card-right {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+  }
+  .about-card-left {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+  }
+  .ex{
+    border-top: 1px solid var(--theme-color);
+    border-bottom: 1px solid var(--theme-secondary-color);
+    margin-top: 10px;
+  }
 }
