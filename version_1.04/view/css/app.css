@@ -3061,7 +3061,13 @@ textarea.form-control {
   margin-top: 20px;
   margin-bottom: 40px;
 }
-
+.works {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 .marquee {
   height: 652px;
   overflow: hidden;
