@@ -183,3 +183,8 @@ footer .credits a {
     rgba(0, 211, 180, 1)
   );
 }
+.work-image{
+  padding: 2px;
+  margin: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+}

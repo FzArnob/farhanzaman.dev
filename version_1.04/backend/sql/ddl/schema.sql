@@ -92,15 +92,6 @@ create table expertise_items (
   fk_profile_id varchar(20) not null, 
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
-create table eca_items (
-  eca_id int auto_increment primary key, 
-  details_html text null, 
-  created_date timestamp default current_timestamp() not null, 
-  updated_date timestamp default current_timestamp() not null on update current_timestamp(), 
-  delete_flag tinyint (1) default 0 null, 
-  fk_profile_id varchar(20) not null, 
-  foreign key (fk_profile_id) references profile_info (profile_id)
-);
 create table gallery_items (
   gallery_item_id int auto_increment primary key, 
   name varchar(255) null, 

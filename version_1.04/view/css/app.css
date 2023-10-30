@@ -3431,13 +3431,19 @@ width: 300px;
   font-size: 18px;
 }
 .work-stats{
-  margin: 20px;
+  margin: 20px 40px 20px 40px;
 }
 .work-gallery{
   margin: 20px 40px 20px 40px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
-.work-learning{
-  
+.work-image{
+  object-fit: contain;
+  width: calc(50% - 50px);
+  aspect-ratio: 16/9;
+  border-radius: 8px;
 }
 .work-logo{
  width: 40%;

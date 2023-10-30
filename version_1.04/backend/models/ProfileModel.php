@@ -227,16 +227,6 @@ class ProfileModel
             $result['profile']['gallery'] = array();
         }
     
-        // Fetch eca items
-        $query = "SELECT * FROM eca_items WHERE fk_profile_id = '$profile_id'";
-        $eca_items_result = $this->conn->query($query);
-        if ($eca_items_result) {
-            $eca_items = $eca_items_result->fetch_all(MYSQLI_ASSOC);
-            $result['profile']['eca'] = $eca_items;
-        } else {
-            $result['profile']['eca'] = array();
-        }
-    
         return $result;
     }
     
