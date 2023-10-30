@@ -145,7 +145,7 @@ class ProfileModel
     public function getProfileData($profile_id)
     {
         $result = array();
-    
+
         // Fetch profile information
         $query = "SELECT * FROM profile_info WHERE profile_id = '$profile_id'";
         $profile_info_result = $this->conn->query($query);
@@ -156,7 +156,7 @@ class ProfileModel
         } else {
             $result['profile']['info'] = array();
         }
-    
+
         // Fetch education items
         $query = "SELECT * FROM education_items WHERE fk_profile_id = '$profile_id'";
         $education_items_result = $this->conn->query($query);
@@ -166,7 +166,7 @@ class ProfileModel
         } else {
             $result['profile']['educations'] = array();
         }
-    
+
         // Fetch experience items
         $query = "SELECT * FROM experience_items WHERE fk_profile_id = '$profile_id'";
         $experience_items_result = $this->conn->query($query);
@@ -176,7 +176,7 @@ class ProfileModel
         } else {
             $result['profile']['experiences'] = array();
         }
-    
+
         // Fetch expertise items
         $query = "SELECT * FROM expertise_items WHERE fk_profile_id = '$profile_id'";
         $expertise_items_result = $this->conn->query($query);
@@ -186,7 +186,7 @@ class ProfileModel
         } else {
             $result['profile']['expertises'] = array();
         }
-    
+
         // Fetch skill items
         $query = "SELECT * FROM skill_items WHERE fk_profile_id = '$profile_id'";
         $skill_items_result = $this->conn->query($query);
@@ -196,7 +196,7 @@ class ProfileModel
         } else {
             $result['profile']['skills'] = array();
         }
-    
+
         // Fetch achievement items
         $query = "SELECT * FROM achievement_items WHERE fk_profile_id = '$profile_id'";
         $achievement_items_result = $this->conn->query($query);
@@ -206,17 +206,35 @@ class ProfileModel
         } else {
             $result['profile']['achievements'] = array();
         }
-    
+
         // Fetch projects
         $query = "SELECT * FROM projects WHERE fk_profile_id = '$profile_id'";
         $projects_result = $this->conn->query($query);
         if ($projects_result) {
             $projects = $projects_result->fetch_all(MYSQLI_ASSOC);
+
+            // Iterate through each project to fetch associated media
+            foreach ($projects as &$project) {
+                $project_id = $project['project_id'];
+
+                // Fetch media data for the current project
+                $media_query = "SELECT * FROM project_media WHERE project_id = '$project_id'";
+                $media_result = $this->conn->query($media_query);
+
+                if ($media_result) {
+                    $media = $media_result->fetch_all(MYSQLI_ASSOC);
+                    $project['media'] = $media;
+                } else {
+                    $project['media'] = array();
+                }
+            }
+
             $result['profile']['projects'] = $projects;
         } else {
             $result['profile']['projects'] = array();
         }
-    
+
+
         // Fetch gallery items
         $query = "SELECT * FROM gallery_items WHERE fk_profile_id = '$profile_id'";
         $gallery_items_result = $this->conn->query($query);
@@ -226,10 +244,10 @@ class ProfileModel
         } else {
             $result['profile']['gallery'] = array();
         }
-    
+
         return $result;
     }
-    
+
 
     public function getVisitorCount($profile_id)
     {

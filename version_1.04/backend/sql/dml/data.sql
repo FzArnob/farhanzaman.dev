@@ -199,10 +199,58 @@ VALUES ('Bottom Line', 'A striking photograph with a profound message.', 'Photog
 
 
 
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, work_plan, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('Pocketalk Ventana', 
+        'Backend Engineer', 
+        'https://live.staticflickr.com/65535/53020376333_2b5719fc2e.jpg', 
+        'Enterprise', 
+        'Web', 
+        'The Pocketalk Ventana project represents a significant endeavor in the realm of web applications, tailored to meet the specific needs of corporate users seeking enhanced business communication and cost reduction through the management of Pocketalk translation devices. Developed in collaboration with Sourcenext, a prominent software publisher in Japan, this application stands as a pivotal tool in streamlining the management and control of Pocketalk devices.<br /> At its core, Pocketalk Ventana offers an array of essential features that empower users to maximize their Pocketalk device investments. The application boasts an aesthetically pleasing and informative dashboard that serves as a focal point for users, presenting a wealth of statistics crucial for effective device management. In addition, the Device Manager provides a comprehensive device information panel along with a translation history section, enabling users to delve deep into the performance of their devices.<br /> The Group Manager feature simplifies the task of organizing Pocketalk devices by offering a user-friendly group list and a group creation panel. This bulk management capability ensures that corporate users can efficiently configure and control multiple devices simultaneously, saving both time and effort. Furthermore, the Group Remote Settings feature enables remote configuration of group settings, adding to the convenience of managing large fleets of devices.<br /> For in-depth insights, the application offers a Report Section encompassing a variety of data frequency reports, including Times Translated, Translation From, Translation To, and Export Log Data. These reports provide essential information for businesses to make informed decisions and assess the return on investment from using Pocketalk devices.<br /> User profile management and the presence of both individual and corporate profiles within the application emphasize personalization and usability, as users can tailor the application to their specific needs. Moreover, the notification features, consisting of both bell and email notifications, serve as a vital component for keeping users informed about critical events and updates within the application.<br /> Ensuring the highest level of data security, the implementation of a dynamic role-based security system offers administrators the ability to control feature-wise access limits, protecting sensitive information and safeguarding the integrity of the application.<br /> All these features are underpinned by a robust technological infrastructure that includes Java, Spring Boot, JWT, OAuth, GCP (Google Cloud Platform), CloudSQL, BigQuery, Firestore, PubSub, AWS (Amazon Web Services), SES (Simple Email Service), SQS (Simple Queue Service), and S3 (Simple Storage Service). This amalgamation of cutting-edge technologies and versatile features culminates in the creation of the Pocketalk Ventana application, a powerful solution that equips corporate users to harness the full potential of Pocketalk devices, optimizing their business communications and driving significant cost savings.', 
+        'Visit Web', 
+        'https://console.pocketalk.com/login', 
+        'Scope of Work', 
+        'Work Plan', 
+        '2022-10-03', 
+        'In Deployment', 
+        'Scrum (2 weeks/sprint)', 
+        '2023-10-30', 
+        'Java,Spring Boot,JWT,OAuth,CSRF,GCP,CloudSQL,BigQuery,Firestore,PubSub,AWS SES,AWS SQS,AWS S3,Kubernetes', 
+        'Scalability,Dynamic Security Implementation', 
+        'Voice and Speech Recognition,Accessibility Features,Global Localization', 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_hero.webp'),
+(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_device_setup_v2.webp'),
+(@project_id, 'Vimeo', 'https://player.vimeo.com/video/846133318?dnt=1&app_id=122963&controls=1&hd=1&autohide=1'),
+(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_reports.webp'),
+(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_transcript_history.webp');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 INSERT INTO projects (name, type, stack, details, live_url, demo_url, logo_image, duration, additional_image_1,
                       additional_image_2, additional_image_3, fk_profile_id)
 VALUES ('Pocketalk Console / Backend Engineer', 'Enterprise', 'Java Spring Boot',
-        'Pocketalk is translation device and Console is a new administration panel that allows for fleet management and confirmation of intended use for major business users.',
+        'Pocketalk is translation device and ventana is a new administration panel that allows for fleet management and confirmation of intended use for major business users.',
         'https://bjitgroup.com/software-development-case-studies/pocketalk', null,
         'https://live.staticflickr.com/65535/53020376333_2b5719fc2e.jpg', 1,
         'https://drive.google.com/uc?export=view&id=1KNuuqWz09Le1deRa1u68WGF5RbSnvQua',
