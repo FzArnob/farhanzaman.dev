@@ -3439,7 +3439,7 @@ width: 300px;
   justify-content: center;
   flex-wrap: wrap;
 }
-.work-image{
+.work-media{
   object-fit: contain;
   width: calc(50% - 50px);
   aspect-ratio: 16/9;
