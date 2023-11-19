@@ -199,23 +199,23 @@ VALUES ('Bottom Line', 'A striking photograph with a profound message.', 'Photog
 
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, work_plan, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
 VALUES ('Pocketalk Ventana', 
         'Backend Engineer', 
         'https://live.staticflickr.com/65535/53020376333_2b5719fc2e.jpg', 
         'Enterprise', 
-        'Web', 
+        'Web App', 
         'The Pocketalk Ventana project represents a significant endeavor in the realm of web applications, tailored to meet the specific needs of corporate users seeking enhanced business communication and cost reduction through the management of Pocketalk translation devices. Developed in collaboration with Sourcenext, a prominent software publisher in Japan, this application stands as a pivotal tool in streamlining the management and control of Pocketalk devices.<br /> At its core, Pocketalk Ventana offers an array of essential features that empower users to maximize their Pocketalk device investments. The application boasts an aesthetically pleasing and informative dashboard that serves as a focal point for users, presenting a wealth of statistics crucial for effective device management. In addition, the Device Manager provides a comprehensive device information panel along with a translation history section, enabling users to delve deep into the performance of their devices.<br /> The Group Manager feature simplifies the task of organizing Pocketalk devices by offering a user-friendly group list and a group creation panel. This bulk management capability ensures that corporate users can efficiently configure and control multiple devices simultaneously, saving both time and effort. Furthermore, the Group Remote Settings feature enables remote configuration of group settings, adding to the convenience of managing large fleets of devices.<br /> For in-depth insights, the application offers a Report Section encompassing a variety of data frequency reports, including Times Translated, Translation From, Translation To, and Export Log Data. These reports provide essential information for businesses to make informed decisions and assess the return on investment from using Pocketalk devices.<br /> User profile management and the presence of both individual and corporate profiles within the application emphasize personalization and usability, as users can tailor the application to their specific needs. Moreover, the notification features, consisting of both bell and email notifications, serve as a vital component for keeping users informed about critical events and updates within the application.<br /> Ensuring the highest level of data security, the implementation of a dynamic role-based security system offers administrators the ability to control feature-wise access limits, protecting sensitive information and safeguarding the integrity of the application.<br /> All these features are underpinned by a robust technological infrastructure that includes Java, Spring Boot, JWT, OAuth, GCP (Google Cloud Platform), CloudSQL, BigQuery, Firestore, PubSub, AWS (Amazon Web Services), SES (Simple Email Service), SQS (Simple Queue Service), and S3 (Simple Storage Service). This amalgamation of cutting-edge technologies and versatile features culminates in the creation of the Pocketalk Ventana application, a powerful solution that equips corporate users to harness the full potential of Pocketalk devices, optimizing their business communications and driving significant cost savings.', 
         'Goto App', 
         'https://console.pocketalk.com/login', 
         'Scope of Work', 
-        'Work Plan', 
+        null, 
         '2022-10-03', 
         'In Deployment', 
         'Scrum (2 weeks/sprint)', 
         '2023-10-30', 
         'Java,Spring Boot,JWT,OAuth,CSRF,GCP,CloudSQL,BigQuery,Firestore,PubSub,AWS SES,AWS SQS,AWS S3,Kubernetes', 
-        'Scalability,Dynamic Security Implementation', 
+        'Pubsub Integration,Dynamic Role Based Security Implementation', 
         'Voice and Speech Recognition,Accessibility Features,Global Localization', 
         'farhan');
 SET @project_id = LAST_INSERT_ID();
@@ -228,22 +228,22 @@ VALUES
 (@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_transcript_history.webp');
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, work_plan, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
 VALUES ('Tribel', 
         'Full Stack Engineer', 
         'https://live.staticflickr.com/65535/53020285535_915ef0dc8d.jpg', 
         'Social', 
         'Cross-Platform', 
-        'Tribel is a groundbreaking social network that redefines the way users connect and share content. With a mission to provide immediate content reach to the right audience, Tribel empowers users to gain the recognition they deserve for their exceptional posts. The platform offers a dynamic experience with four distinct feed categories, facilitating personalized content discovery. Users can create, edit, and engage with their posts, manage their connections, and establish and administer groups.<br/><b>Contributions to the Project:</b><br/>Over a period of six months, I have actively contributed to the development of various features that have enriched the functionality, providing users with a unique and enhanced social networking experience.<br/>Multiple Feed Categories: I spearheaded the creation of a dynamic feed system that segments content into four distinct categories: Friends, Following, Breaking, and Trending. This categorization ensures that users can effortlessly engage with content that aligns with their interests.<br/>Category-wise Search Mechanism: To enhance user experience, I introduced a category-wise search mechanism that empowers users to quickly locate content relevant to their preferences.<br/>User Profile Wall Posts: I designed and implemented a comprehensive user profile management system, enabling users to create, edit, view, delete, like, and comment on their own posts. This feature empowers users to maintain control over their content and interactions.<br/>User Security with AWS Cognito: Security and user authentication are of paramount importance. I integrated AWS Cognito for robust user security and privacy protection.<br/>Group Management: I established a robust group management system that permits users to create, delete, and manage groups seamlessly. Users can add, remove, or block other members, fostering community building.<br/>User Relationship Management: My contributions extended to user relationship management, allowing users to efficiently manage their connections on the platform. Users can add friends, follow other users, or block individuals as per their preferences.<br/><b>Technologies Utilized:</b><br/>AWS Lambda and DynamoDB: I leveraged AWS Lambda for serverless backend development, ensuring scalability and cost-efficiency. DynamoDB served as the database for efficient data storage and management using GSI.<br/>AWS AppSync and GraphQL: The combination of AWS AppSync and GraphQL enabled real-time data synchronization, providing users with a seamless and responsive experience.<br/>Node.js: For serverless backend development, I utilized Node.js, capitalizing on its performance and developer-friendly environment.<br/>React.js and Redux: For the frontend, I chose React.js and integrated Redux for state management, delivering a dynamic and interactive user interface.', 
+        'Tribel is a groundbreaking social network that redefines the way users connect and share content. With a mission to provide immediate content reach to the right audience, Tribel empowers users to gain the recognition they deserve for their exceptional posts. The platform offers a dynamic experience with four distinct feed categories, facilitating personalized content discovery. Users can create, edit, and engage with their posts, manage their connections, and establish and administer groups.<br/><b>Contributions to the Project:</b><br/>Over a period of six months, I have actively contributed to the development of various features that have enriched the functionality, providing users with a unique and enhanced social networking experience.<br/>Multiple Feed Categories: I spearheaded the creation of a dynamic feed system that segments content into four distinct categories: Friends, Following, Breaking, and Trending. This categorization ensures that users can effortlessly engage with content that aligns with their interests.<br/>Category-wise Search Mechanism: To enhance user experience, I introduced a category-wise search mechanism that empowers users to quickly locate content relevant to their preferences.<br/>User Profile Wall Posts: I designed and implemented a comprehensive user profile management system, enabling users to create, edit, view, delete, like, and comment on their own posts. This feature empowers users to maintain control over their content and interactions.<br/>User Security with AWS Cognito: Security and user authentication are of paramount importance. I integrated AWS Cognito for robust user security and privacy protection.<br/>Group Management: I established a robust group management system that permits users to create, delete, and manage groups seamlessly. Users can add, remove, or block other members, fostering community building.<br/>User Relationship Management: My contributions extended to user relationship management, allowing users to efficiently manage their connections on the platform. Users can add friends, follow other users, or block individuals as per their preferences.<br/><b>Technologies Utilized:</b><br/>AWS Lambda and DynamoDB: I leveraged AWS Lambda for serverless backend development, ensuring scalability and cost-efficiency. DynamoDB served as the database for efficient data storage and management using GSI.<br/>AWS AppSync and GraphQL: The combination of AWS AppSync and GraphQL enabled real-time data synchronization, providing users with a seamless and responsive experience.<br/>Node.js: For serverless backend development, I utilized Node.js, capitalizing on its performance and developer-friendly environment.<br/>React.js and Redux: For the frontend, React.js is used and integrated Redux for state management, delivering a dynamic and interactive user interface.', 
         'Developer Profile', 
         'https://www.tribel.com/farhanzaman/wall', 
         'Scope of Work', 
-        'Work Plan', 
+        null, 
         '2022-10-03', 
         'In Deployment', 
         'Agile', 
         '2023-10-30', 
-        'Java,Spring Boot,JWT,OAuth,CSRF,GCP,CloudSQL,BigQuery,Firestore,PubSub,AWS SES,AWS SQS,AWS S3,Kubernetes', 
+        'Node JS,React JS,CSS,Redux,GraphQL,AWS Lambda,AWS AppSync,AWS DynamoDB,AWS Cognito', 
         'Scalability,Using GSI properly', 
         null, 
         'farhan');
@@ -253,20 +253,125 @@ VALUES
 (@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
 (@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
 (@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_reports.webp'),
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_transcript_history.webp');
+(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
 
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('CovidEase', 
+        'Team Leader', 
+        'https://live.staticflickr.com/65535/53012710548_c1b97d9f48.jpg', 
+        'Health', 
+        'Android App', 
+        'CovidEase stands as a mobile app born out of the ICT Innovation Fest, a testament to technological innovation aimed at addressing the challenges posed by the COVID-19 pandemic in Bangladesh. Developed with a keen focus on providing vital Coronavirus-related service information, CovidEase serves as a comprehensive resource, amalgamating data from both private and government health service institutions.<br/><b>Backend Technology Stack:</b><br/>I employed Java for Android development, ensuring a seamless and efficient mobile experience. For data scraping, PHP was utilized, enabling the app to collect and present information from various sources. The integration of Firebase Realtime Database facilitated real-time updates, crucial for delivering accurate and timely information to users. Additionally, Google Maps API was harnessed to provide a location-based and visually intuitive representation of medical service information.<br/><b>Frontend Technology Stack:</b><br/>On the frontend, I utilized HTML, Vanilla CSS Library, and JavaScript to craft an engaging user interface. The use of Kodular Creator, a visual programming platform, streamlined the development process, contributing to the app's overall accessibility and ease of use.<br/><b>Key Features:</b><br/>CovidEase encompasses several key features designed to meet the diverse needs of its users:<br/>Map View with Filtered Medical Service Info: The app offers a map view with filters for various medical service statuses, including the availability of corona units, testing places, lockdown status, and more. This feature ensures users can access specific information tailored to their requirements.<br/>Emergency Contacts: Users can swiftly access all essential emergency contacts, providing a quick reference in critical situations.<br/>Visualizing Disease Status: The app provides a comprehensive visual representation of the overall status of the disease. This feature aids users in understanding the current situation at a glance.<br/>Latest News Updates: CovidEase keeps users informed with the latest news, fostering an environment of awareness and preparedness.<br/>Learnings:<br/>My journey with CovidEase not only allowed me to contribute to a socially impactful project but also provided valuable learning experiences. The integration of diverse technologies, from Java and PHP to Firebase and Google Maps API, enriched my technical skill set. Crafting the frontend with HTML, CSS, and JavaScript honed my abilities in creating intuitive user interfaces. The collaborative nature of the project within the ICT Innovation Fest further enhanced my teamwork and problem-solving skills. This experience solidified my belief in technology's potential to address real-world challenges and ignited a passion for contributing to projects with a societal impact.', 
+        'App Demo', 
+        'https://player.vimeo.com/video/879670605', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/Covidease', 
+        '2022-10-03', 
+        'Contest Ended', 
+        'Prototyping', 
+        '2023-10-30', 
+        'Block Coding,Firebase,Java,HTML,CSS,PHP,Scraping', 
+        'Real-Time Data Collection', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615880_faf739ba72_h.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615835_d860723031_h.jpg'),
+(@project_id, 'Vimeo', 'https://player.vimeo.com/video/879670605'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53011648862_2b908e4f52_h.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53323030189_51ada478c3_h.jpg');
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53323030179_0cc2065caf_h.jpg');
 
 
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('C Academy TMS', 
+        'Developer', 
+        'https://live.staticflickr.com/65535/53324609719_205bc13f8b_w.jpg', 
+        'Education', 
+        'Web App', 
+        'The Training Management System (TMS) project was an innovative initiative aimed at revolutionizing the training industry by streamlining daily operations and delivering efficient training. The system was designed for a hypothetical corporation, “C Academy”, and was built using a robust technology stack.</br>The <b>backend</b> of the TMS was developed using Spring Boot, with Spring Security and JWT Tokens ensuring secure user authentication. The system followed a REST architecture, with JPA and Lombok simplifying database operations. Hibernate ORM was used for object-relational mapping, and Multipart Rest enabled handling of multipart/form-data requests.</br>The <b>frontend</b> was built using React JS, with the Vanilla CSS Library providing styling. React Router, React Hooks, React Events, and React Functional Components were used to create a dynamic and interactive user interface. Cookies and Redux were used for state management, while Axios handled HTTP requests. Regex validation ensured data integrity.</br><b>Key Features:</b></br>The TMS boasts several key features aimed at optimizing training operations:</br>Trainee Selection (Application): I played a crucial role in simplifying the trainee application process, streamlining onboarding for efficient and quick integration into the training program.</br>User Management: The system centralizes user data, providing administrators with a comprehensive tool for seamless control and organization.</br>Profile Management: I contributed to the development of personalized profiles, enabling trainees to track and manage their individual progress and information.</br>Course Management: The system allows for easy administration of courses, ensuring a structured and organized training curriculum.</br>Batch Management: I streamlined the handling of training batches, optimizing scheduling and coordination for enhanced efficiency.</br>Assignment and Performance Evaluation: My contributions extend to the development of effective tracking and evaluation tools for assignments and trainee performance.</br>Training Data Management: The TMS offers comprehensive management of both previous and upcoming training data, providing valuable insights for informed decision-making.</br>Working on this project was a significant learning experience. It provided me with hands-on experience in developing a full-stack application, and allowed me to gain a deep understanding of both frontend and backend technologies. I learned how to effectively manage and organize user data, and how to create a dynamic and interactive user interface. I also gained valuable insights into the importance of secure user authentication and data integrity. This project was a testament to the power of modern technology in transforming industries and driving efficiency. It was a challenging yet rewarding experience that has significantly contributed to my growth as a developer.', 
+        'Project Bundle', 
+        'https://github.com/FzArnob/Training-Management-System', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/Training-Management-System', 
+        '2022-10-03', 
+        'Open Source', 
+        'Scrum', 
+        '2023-10-30', 
+        'Spring Boot,Spring Security,Jwt Token,Rest Architecture,JPA,Lombok,Hibernate ORM,Multipart,Java AOP,Selenium,React Js,Vanila CSS Library,React Router,React Hooks,React Events,React Functional Components,Cookies,Redux,Axios,Regex validation', 
+        'Architecture Design', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
+(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
+(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
+(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
 
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('Examiner', 
+        'Developer', 
+        'https://live.staticflickr.com/65535/53012612545_7553f6762f.jpg', 
+        'Education', 
+        'Web App', 
+        'Examiner is a real-time, virtual platform tailored for Multiple-Choice Question (MCQ) based exams, I assumed a pivotal role as the primary developer. This dynamic solution caters specifically to the needs of educational institutions, furnishing students with a secure and streamlined environment for exam participation. Simultaneously, it equips administrators with robust tools for efficient exam management.</br>Contributions to the Project:</br>In this project, I utilized a combination of PHP, CSS, HTML, and JavaScript/jQuery to create a robust and user-friendly platform. The key features I worked on include:</br>User Account Creation and Exam Participation: I implemented a user account system, allowing students to create accounts for exam participation. This feature ensures a personalized experience, with exam scores recorded for future reference and analysis.</br>Anti-Cheating Measures: To maintain the integrity of exams, I developed a system to allow students to submit their answers only once, preventing any attempts to cheat. This ensures a fair and secure examination process.</br>Automatic Submission on Time Expiry: I implemented a time-bound automatic submission feature, ensuring that once the allocated time slot for an exam concludes, submissions are completed automatically. This not only streamlines the process but also prevents any discrepancies due to delayed submissions.</br>Live Score Assessment: The platform provides real-time score assessment, allowing students to track their performance instantly. This feature enhances the exam experience, providing immediate feedback to participants.</br>Question Attempts Recording: I integrated a system to record and track students attempts at each question. This feature serves as a valuable resource for both students and educators, offering insights into areas that may require further attention.</br>Admin Access for Exam Management: A special admin access system was developed to facilitate the scheduling and management of exams. Admins have the capability to oversee the entire exam process, ensuring smooth execution.</br>Score Viewing for Admins: Admins are equipped with a comprehensive feature that enables them to view scores for each student. This functionality streamlines the evaluation process and allows for efficient score monitoring.</br>Teacher-Uploaded Questions: Teachers can effortlessly upload questions by simply providing a photo. This feature simplifies the question-setting process, making it accessible and efficient for educators.</br>MCQ Standard Question Pattern: The question pattern follows the Multiple-Choice Question standard, ensuring familiarity for both students and educators. This standardization contributes to a streamlined and effective exam experience.</br>Responsive User-Friendly Design: I focused on creating a responsive and user-friendly design to ensure accessibility across various devices. This approach enhances the user experience, making the platform accessible to a broader audience.</br>Learnings:</br>Working on this project has significantly enhanced my proficiency in web development technologies, particularly PHP, HTML, CSS, and JavaScript/jQuery. Designing and implementing anti-cheating measures deepened my understanding of security considerations in virtual examination systems. The real-time aspects of the platform and features like automatic submission and live score assessment enriched my knowledge of creating dynamic and responsive web applications. Developing admin access functionalities enhanced my skills in building comprehensive systems for efficient exam management. Overall, this project not only contributed to my technical skill set but also provided valuable insights into the practical considerations of creating secure and user-friendly virtual exam platforms.', 
+        'Goto App', 
+        'https://farhanzaman.dev/examiner', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/Examiner', 
+        '2022-10-03', 
+        'Open Source', 
+        'Prototyping', 
+        '2023-10-30', 
+        'PHP,CSS,HTML,Java Script,jQuery', 
+        'Anti-Cheating System Integration', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
+(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
+(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
+(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
 
-
-
-
-
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('Examiner', 
+        'Developer', 
+        'https://live.staticflickr.com/65535/53012612545_7553f6762f.jpg', 
+        'Education', 
+        'Web App', 
+        'Examiner is a real-time, virtual platform tailored for Multiple-Choice Question (MCQ) based exams, I assumed a pivotal role as the primary developer. This dynamic solution caters specifically to the needs of educational institutions, furnishing students with a secure and streamlined environment for exam participation. Simultaneously, it equips administrators with robust tools for efficient exam management.</br>Contributions to the Project:</br>In this project, I utilized a combination of PHP, CSS, HTML, and JavaScript/jQuery to create a robust and user-friendly platform. The key features I worked on include:</br>User Account Creation and Exam Participation: I implemented a user account system, allowing students to create accounts for exam participation. This feature ensures a personalized experience, with exam scores recorded for future reference and analysis.</br>Anti-Cheating Measures: To maintain the integrity of exams, I developed a system to allow students to submit their answers only once, preventing any attempts to cheat. This ensures a fair and secure examination process.</br>Automatic Submission on Time Expiry: I implemented a time-bound automatic submission feature, ensuring that once the allocated time slot for an exam concludes, submissions are completed automatically. This not only streamlines the process but also prevents any discrepancies due to delayed submissions.</br>Live Score Assessment: The platform provides real-time score assessment, allowing students to track their performance instantly. This feature enhances the exam experience, providing immediate feedback to participants.</br>Question Attempts Recording: I integrated a system to record and track students attempts at each question. This feature serves as a valuable resource for both students and educators, offering insights into areas that may require further attention.</br>Admin Access for Exam Management: A special admin access system was developed to facilitate the scheduling and management of exams. Admins have the capability to oversee the entire exam process, ensuring smooth execution.</br>Score Viewing for Admins: Admins are equipped with a comprehensive feature that enables them to view scores for each student. This functionality streamlines the evaluation process and allows for efficient score monitoring.</br>Teacher-Uploaded Questions: Teachers can effortlessly upload questions by simply providing a photo. This feature simplifies the question-setting process, making it accessible and efficient for educators.</br>MCQ Standard Question Pattern: The question pattern follows the Multiple-Choice Question standard, ensuring familiarity for both students and educators. This standardization contributes to a streamlined and effective exam experience.</br>Responsive User-Friendly Design: I focused on creating a responsive and user-friendly design to ensure accessibility across various devices. This approach enhances the user experience, making the platform accessible to a broader audience.</br>Learnings:</br>Working on this project has significantly enhanced my proficiency in web development technologies, particularly PHP, HTML, CSS, and JavaScript/jQuery. Designing and implementing anti-cheating measures deepened my understanding of security considerations in virtual examination systems. The real-time aspects of the platform and features like automatic submission and live score assessment enriched my knowledge of creating dynamic and responsive web applications. Developing admin access functionalities enhanced my skills in building comprehensive systems for efficient exam management. Overall, this project not only contributed to my technical skill set but also provided valuable insights into the practical considerations of creating secure and user-friendly virtual exam platforms.', 
+        'Goto App', 
+        'https://farhanzaman.dev/examiner', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/Examiner', 
+        '2022-10-03', 
+        'Open Source', 
+        'Prototyping', 
+        '2023-10-30', 
+        'PHP,CSS,HTML,Java Script,jQuery', 
+        'Anti-Cheating System Integration', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
+(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
+(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
+(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
 
 

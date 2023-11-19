@@ -116,7 +116,7 @@ create table projects (
   live_text varchar(255) null,
   live_url varchar(255) null,
   scope_of_work text null,
-  work_plan text null,
+  source_url varchar(255) null,
   start_date date null,
   current_status varchar(100) null,
   methodology varchar(100) null,
