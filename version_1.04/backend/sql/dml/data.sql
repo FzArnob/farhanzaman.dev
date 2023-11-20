@@ -346,22 +346,22 @@ VALUES
 
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Examiner', 
+VALUES ('Space Ninja', 
         'Developer', 
-        'https://live.staticflickr.com/65535/53012612545_7553f6762f.jpg', 
-        'Education', 
+        'https://live.staticflickr.com/65535/53012233046_5d91731867.jpg', 
+        'Game', 
         'Web App', 
-        'Examiner is a real-time, virtual platform tailored for Multiple-Choice Question (MCQ) based exams, I assumed a pivotal role as the primary developer. This dynamic solution caters specifically to the needs of educational institutions, furnishing students with a secure and streamlined environment for exam participation. Simultaneously, it equips administrators with robust tools for efficient exam management.</br>Contributions to the Project:</br>In this project, I utilized a combination of PHP, CSS, HTML, and JavaScript/jQuery to create a robust and user-friendly platform. The key features I worked on include:</br>User Account Creation and Exam Participation: I implemented a user account system, allowing students to create accounts for exam participation. This feature ensures a personalized experience, with exam scores recorded for future reference and analysis.</br>Anti-Cheating Measures: To maintain the integrity of exams, I developed a system to allow students to submit their answers only once, preventing any attempts to cheat. This ensures a fair and secure examination process.</br>Automatic Submission on Time Expiry: I implemented a time-bound automatic submission feature, ensuring that once the allocated time slot for an exam concludes, submissions are completed automatically. This not only streamlines the process but also prevents any discrepancies due to delayed submissions.</br>Live Score Assessment: The platform provides real-time score assessment, allowing students to track their performance instantly. This feature enhances the exam experience, providing immediate feedback to participants.</br>Question Attempts Recording: I integrated a system to record and track students attempts at each question. This feature serves as a valuable resource for both students and educators, offering insights into areas that may require further attention.</br>Admin Access for Exam Management: A special admin access system was developed to facilitate the scheduling and management of exams. Admins have the capability to oversee the entire exam process, ensuring smooth execution.</br>Score Viewing for Admins: Admins are equipped with a comprehensive feature that enables them to view scores for each student. This functionality streamlines the evaluation process and allows for efficient score monitoring.</br>Teacher-Uploaded Questions: Teachers can effortlessly upload questions by simply providing a photo. This feature simplifies the question-setting process, making it accessible and efficient for educators.</br>MCQ Standard Question Pattern: The question pattern follows the Multiple-Choice Question standard, ensuring familiarity for both students and educators. This standardization contributes to a streamlined and effective exam experience.</br>Responsive User-Friendly Design: I focused on creating a responsive and user-friendly design to ensure accessibility across various devices. This approach enhances the user experience, making the platform accessible to a broader audience.</br>Learnings:</br>Working on this project has significantly enhanced my proficiency in web development technologies, particularly PHP, HTML, CSS, and JavaScript/jQuery. Designing and implementing anti-cheating measures deepened my understanding of security considerations in virtual examination systems. The real-time aspects of the platform and features like automatic submission and live score assessment enriched my knowledge of creating dynamic and responsive web applications. Developing admin access functionalities enhanced my skills in building comprehensive systems for efficient exam management. Overall, this project not only contributed to my technical skill set but also provided valuable insights into the practical considerations of creating secure and user-friendly virtual exam platforms.', 
-        'Goto App', 
-        'https://farhanzaman.dev/examiner', 
+        'Space Ninja is an engaging 2D arcade game that brings the charm of classic arcade gaming to the modern era. Designed to be accessible and enjoyable for both children and adults, the game is built using HTML, CSS, JavaScript, and 2D SVG images. The development of Space Ninja is a testament to the timeless appeal of simple 2D arcade games, and its alignment with modern online multiplayer games showcases the evolution of the gaming industry.<br/>The game’s design is simple yet captivating, with the use of 2D SVG images adding a unique visual appeal. The gameplay mechanics are straightforward, making it easy for players of all ages to pick up and play. Despite its simplicity, the game offers a fun and challenging experience that keeps players engaged and entertained.<br/>One of the key features of Space Ninja is its planned multiplayer mode. This feature, which is currently under development, aims to bring the excitement and competitiveness of online multiplayer games to the simple 2D arcade format. This will not only enhance the gameplay experience but also broaden the game’s appeal to a wider audience.<br/>Working on Space Ninja has been a rewarding experience. It has provided me with valuable insights into game development and the use of web technologies in creating interactive experiences. I have gained hands-on experience in using HTML, CSS, and JavaScript in a practical project, and have learned how to create engaging visuals using 2D SVG images.<br/>Moreover, the development process has taught me the importance of planning and foresight in game design, particularly with regard to the implementation of the multiplayer mode. It has also highlighted the importance of aligning a game with current trends in the gaming industry to ensure its relevance and appeal.<br/>Overall, Space Ninja has been a significant project in my development journey, providing me with practical skills and knowledge that I will carry forward into future projects. It has been a testament to the power of simplicity in game design, and the potential of web technologies in creating engaging and enjoyable gaming experiences.', 
+        'Launch Game', 
+        'https://farhanzaman.dev/spaceninja/play', 
         'Scope of Work', 
-        'https://github.com/FzArnob/Examiner', 
+        'https://github.com/FzArnob/SpaceNinja', 
         '2022-10-03', 
-        'Open Source', 
-        'Prototyping', 
+        'Development', 
+        'Prototype cycle', 
         '2023-10-30', 
-        'PHP,CSS,HTML,Java Script,jQuery', 
-        'Anti-Cheating System Integration', 
+        '2D svg,CSS,HTML,Java Script,jQuery', 
+        'Multiplayer support', 
         null, 
         'farhan');
 SET @project_id = LAST_INSERT_ID();
@@ -372,6 +372,36 @@ VALUES
 (@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
 (@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
 (@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('Space Ninja', 
+        'Developer', 
+        'https://live.staticflickr.com/65535/53012233046_5d91731867.jpg', 
+        'Game', 
+        'Web App', 
+        'Space Ninja is an engaging 2D arcade game that brings the charm of classic arcade gaming to the modern era. Designed to be accessible and enjoyable for both children and adults, the game is built using HTML, CSS, JavaScript, and 2D SVG images. The development of Space Ninja is a testament to the timeless appeal of simple 2D arcade games, and its alignment with modern online multiplayer games showcases the evolution of the gaming industry.<br/>The game’s design is simple yet captivating, with the use of 2D SVG images adding a unique visual appeal. The gameplay mechanics are straightforward, making it easy for players of all ages to pick up and play. Despite its simplicity, the game offers a fun and challenging experience that keeps players engaged and entertained.<br/>One of the key features of Space Ninja is its planned multiplayer mode. This feature, which is currently under development, aims to bring the excitement and competitiveness of online multiplayer games to the simple 2D arcade format. This will not only enhance the gameplay experience but also broaden the game’s appeal to a wider audience.<br/>Working on Space Ninja has been a rewarding experience. It has provided me with valuable insights into game development and the use of web technologies in creating interactive experiences. I have gained hands-on experience in using HTML, CSS, and JavaScript in a practical project, and have learned how to create engaging visuals using 2D SVG images.<br/>Moreover, the development process has taught me the importance of planning and foresight in game design, particularly with regard to the implementation of the multiplayer mode. It has also highlighted the importance of aligning a game with current trends in the gaming industry to ensure its relevance and appeal.<br/>Overall, Space Ninja has been a significant project in my development journey, providing me with practical skills and knowledge that I will carry forward into future projects. It has been a testament to the power of simplicity in game design, and the potential of web technologies in creating engaging and enjoyable gaming experiences.', 
+        'Launch Game', 
+        'https://farhanzaman.dev/spaceninja/play', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/SpaceNinja', 
+        '2022-10-03', 
+        'Development', 
+        'Prototype cycle', 
+        '2023-10-30', 
+        '2D svg,CSS,HTML,Java Script,jQuery', 
+        'Multiplayer support', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
+(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
+(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
+(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+
+
 
 
 
