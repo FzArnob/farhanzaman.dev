@@ -374,32 +374,32 @@ VALUES
 (@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Space Ninja', 
+VALUES ('QR Queen', 
         'Developer', 
-        'https://live.staticflickr.com/65535/53012233046_5d91731867.jpg', 
-        'Game', 
-        'Web App', 
-        'Space Ninja is an engaging 2D arcade game that brings the charm of classic arcade gaming to the modern era. Designed to be accessible and enjoyable for both children and adults, the game is built using HTML, CSS, JavaScript, and 2D SVG images. The development of Space Ninja is a testament to the timeless appeal of simple 2D arcade games, and its alignment with modern online multiplayer games showcases the evolution of the gaming industry.<br/>The game’s design is simple yet captivating, with the use of 2D SVG images adding a unique visual appeal. The gameplay mechanics are straightforward, making it easy for players of all ages to pick up and play. Despite its simplicity, the game offers a fun and challenging experience that keeps players engaged and entertained.<br/>One of the key features of Space Ninja is its planned multiplayer mode. This feature, which is currently under development, aims to bring the excitement and competitiveness of online multiplayer games to the simple 2D arcade format. This will not only enhance the gameplay experience but also broaden the game’s appeal to a wider audience.<br/>Working on Space Ninja has been a rewarding experience. It has provided me with valuable insights into game development and the use of web technologies in creating interactive experiences. I have gained hands-on experience in using HTML, CSS, and JavaScript in a practical project, and have learned how to create engaging visuals using 2D SVG images.<br/>Moreover, the development process has taught me the importance of planning and foresight in game design, particularly with regard to the implementation of the multiplayer mode. It has also highlighted the importance of aligning a game with current trends in the gaming industry to ensure its relevance and appeal.<br/>Overall, Space Ninja has been a significant project in my development journey, providing me with practical skills and knowledge that I will carry forward into future projects. It has been a testament to the power of simplicity in game design, and the potential of web technologies in creating engaging and enjoyable gaming experiences.', 
-        'Launch Game', 
-        'https://farhanzaman.dev/spaceninja/play', 
+        'https://live.staticflickr.com/65535/53012396049_ce14507917.jpg', 
+        'Accessibility', 
+        'Hybrid App', 
+        'QR Queen is a versatile QR code solution offering an array of customization options. It not only allows you to create QR codes with personalized colors and sizes but also ensures secure storage and sharing of your scanned codes. With its seamless interface and reliable features, QR Queen simplifies code scanning, generation, and management.<br/><b>Key Features:</b><br/>- <b>Scan Recording:</b> Automatically stores all scanned results for convenient access in the scan history.<br/>- <b>Local Storage:</b> Save scanned QR images directly to your devices storage.<br/>- <b>Server Security:</b> Ensures the safety and security of your QR codes through server connectivity.<br/>- <b>Code Sharing:</b> Easily share QR codes with others at any time.<br/>- <b>Encryption:</b> Provides encrypted QR codes for enhanced security.<br/>- <b>Internet Connection:</b> Requires an internet connection for optimal functionality.<br/>- <b>Custom Color Design:</b> Customize QR codes with a range of colors for a personalized touch.<br/>- <b>Barcode Conversion:</b> Seamlessly convert barcodes to QR codes through scanning.<br/>- <b>Ad-Free Experience:</b> Enjoy using the app without any intrusive advertisements.<br/>- <b>Scan History:</b> Maintains a comprehensive history of all scanned items for reference.<br/><b>Contributions and Tech Learnings:</b><br/>My tenure at QR Queen has been an enriching experience, allowing me to contribute significantly to the apps development and further my technical expertise. As part of the team, I was involved in various aspects that contributed to the apps success and usability.<br/>One of the primary areas of my contribution was in enhancing the user experience by implementing a robust scan recording feature. This feature automatically captures and stores all scanned results, offering users easy access to their scan history at any time. I was responsible for architecting and implementing this functionality, ensuring its seamless integration into the apps interface. This involved a deep dive into database management and data storage techniques, honing my skills in data handling and management within mobile applications.<br/>Additionally, I played a pivotal role in implementing local storage capabilities, enabling users to save their scanned QR images directly onto their devices. This involved working with file management systems and optimizing storage solutions within the app. Through this, I gained valuable insights into optimizing app performance while managing local data storage efficiently.<br/>Furthermore, I actively contributed to the security aspects of QR Queen. I collaborated on implementing server connectivity to ensure the safekeeping of user-generated QR codes. Understanding and implementing encryption techniques to safeguard sensitive data within the QR codes expanded my knowledge in data security and encryption practices.<br/>Moreover, I engaged in refining the user interface to facilitate seamless code sharing and customization. This involved learning about UI/UX design principles and implementing custom color options for QR code generation, enhancing the apps visual appeal and user customization options.<br/>My tenure at QR Queen has been instrumental in expanding my technical proficiency in mobile app development, database management, security protocols, and user-centric design. Working within a dynamic team environment has fostered my collaboration skills and reinforced the importance of user feedback in refining product features for optimal user experience.', 
+        'Download App', 
+        'https://farhanzaman.dev/qrqueen/qrqueen.apk', 
         'Scope of Work', 
-        'https://github.com/FzArnob/SpaceNinja', 
+        null, 
         '2022-10-03', 
-        'In Progress', 
-        'Prototype cycle', 
+        'Released', 
+        'Agile', 
         '2023-10-30', 
-        '2D svg,CSS,HTML,Java Script,jQuery', 
-        'Multiplayer support', 
+        'Java,JavaScript,HTML,CSS', 
+        'History management', 
         null, 
         'farhan');
 SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
-(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
-(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53345791837_5a002ec296_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988424_1dc668ae5a_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988404_b397bc88df_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988449_eff7b675b4_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615945_43b55b922c_o.png');
 
 
 
