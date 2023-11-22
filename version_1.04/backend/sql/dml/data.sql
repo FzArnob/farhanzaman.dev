@@ -309,11 +309,26 @@ VALUES ('C Academy TMS',
 SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
-(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
-(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141401_0398b1eea0_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590390_76746b2982_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348462934_ed083875df_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348462944_c6d87f262d_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265247_6ab0f068f9_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141406_f5ee3ef84b_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265262_c7a7f25a53_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265287_698e6ee68a_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371643_e87f02de81_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371653_c568c87be4_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141456_b75bc62227_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590485_0184a1d27f_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348463024_b87afd60da_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590475_f25e66456d_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265347_70d55dc7ab_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265342_dab057333a_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371718_9024fa914c_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590510_6aa9db24d9_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141506_c26ba73f56_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265372_63a94c2cdb_o.png');
 
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
@@ -338,11 +353,12 @@ VALUES ('Examiner',
 SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
-(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
-(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348016786_b3316a30b8_o.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348339129_f571100eeb_o.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348246893_9fc4ec5c0c_o.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348339099_8bf914415a_o.jpg'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347140942_f121331f20_o.jpg');
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347140952_a469c8a4a2_o.jpg');
 
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
