@@ -256,6 +256,30 @@ VALUES
 (@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
 (@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
+INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ('Simba(CSA)', 
+        'Researcher', 
+        'https://live.staticflickr.com/65535/53012612530_3747ce77e1.jpg', 
+        'NLP', 
+        'Language Model', 
+        'Simba (CSA) stands as a novel NLP venture, primarily centered on enhancing the performance of the microsoft/DialoGPT-large pretrained model. This endeavor aims to tailor the model for a specific niche: serving as a Consumer Support Agent (CSA) in the domain of e-commerce platforms. Its blueprint involves a meticulous sequence of stages to fine-tune the model using a bespoke dataset derived from authentic customer support conversations.<br/>The journey commences by loading the DialoGPT-large model alongside its tokenizer. Subsequently, the dataset, meticulously crafted from real-life e-commerce support dialogues, undergoes preprocessing. Each entry in the dataset encapsulates a conversation context and the corresponding response, ensuring it is structured suitably for training.<br/>Tokenization becomes the gateway to transforming the dataset into a format compatible with the model. Leveraging the tokenizer, the conversational data is tokenized, setting the stage for the subsequent fine-tuning phase.<br/>Fine-tuning, a pivotal stage in this development, unfolds through the application of the Trainer API from the transformers library. Here, the model delves into the intricacies of the custom dataset, adjusting its parameters and weights to better comprehend and generate responses aligned with e-commerce customer support nuances. Configurable training arguments such as batch size, learning rate, and epochs are fine-tuned themselves to optimize the adaptation of the model to specific support context.<br/>The culmination of this arduous process results in a fine-tuned model, now imbued with a specialized understanding of e-commerce customer support dialogues. Saving this refined model preserves its acquired knowledge for future utilization.<br/>Post-fine-tuning, a rigorous testing phase ensues. The saved model is loaded along with its tokenizer for inference testing. Simulating real-world scenarios, the model is put to the test with new information, gauging its proficiency in comprehending and generating appropriate responses in the e-commerce support landscape.<br/>In essence, Simba (CSA) represents an ambitious journey of customizing a powerful pretrained model, arming it with the adeptness to serve as a dedicated e-commerce Customer Support Agent through meticulous dataset curation, fine-tuning, and rigorous testing protocols.', 
+        'Findings', 
+        'https://github.com/FzArnob/Chatbot-Simba', 
+        'Scope of Work', 
+        'https://github.com/FzArnob/Chatbot-Simba', 
+        '2022-10-03', 
+        'On Going', 
+        'R & D', 
+        '2023-10-30', 
+        'Python,pandas,csv,torch,transformers lib', 
+        'Data Variance', 
+        null, 
+        'farhan');
+SET @project_id = LAST_INSERT_ID();
+INSERT INTO project_media (project_id, media_type, media_link)
+VALUES
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012399104_3f8662c960_o.png'),
+(@project_id, 'Image', 'https://live.staticflickr.com/65535/53352915259_21828b6a56_o.jpg');
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
 VALUES ('CovidEase', 
@@ -383,11 +407,7 @@ VALUES ('Space Ninja',
 SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
-(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
-(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png');
 
 INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
 VALUES ('QR Queen', 
