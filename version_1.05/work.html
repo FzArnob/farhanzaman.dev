@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <!-- required in production  -->
+    <!-- <base href="https://farhanzaman.dev/" /> -->
+    <link href="view/static/favicon.svg" rel="icon" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link href="view/css/app.css" rel="stylesheet" />
+</head>
+
+<body class="bg1">
+    <button id="back-to-top-btn">
+        <span class="ico-gen">
+            H
+        </span>
+    </button>
+    <pre-loader class="pre-loader">
+        <img src="view/static/favicon.svg" />
+    </pre-loader>
+    <main-page class="bg1 c1 hidden">
+        <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
+            <div class="nav-container">
+                <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
+                    <span class="nav-corner bg2 animate-top"></span>
+                </a>
+                <ul class="nav-menu animate-right" id="nav-menu">
+                    <li class="nav-item"><a class="nav-links c1" href="/about">About</a></li>
+                    <li class="nav-item"><a class="nav-links c1" href="/expertise">Expertise</a></li>
+                    <li class="nav-item"><a class="nav-links c1" href="/works">Works</a></li>
+                    <li class="nav-item"><a class="nav-links c1" href="/hobbies">Hobbies</a></li>
+                </ul>
+                <div class="nav-icon animate-top" id="nav-menu-button">
+                    <span class="ico-gen mobile-menu-icon">G</span>
+                </div>
+                <div class="themeBtn animate-right" id="theme-toogle-button">
+                    <span class="ico-gen themeBtn-icon" id="theme-btn">E</span>
+                </div>
+            </div>
+        </div>
+        <div id="theme-popup" class="animate-bottom">
+            <div class="popup-box bg2 c2">
+                <div class="popup-content">
+                    <div class="triangle"></div>
+                    <div class="popup-text">You can switch <span class="c-theme">theme</span> here.</div>
+                    <div class="popup-button">
+                        <span class="ico-gen">
+                            F
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <section class="nav-section">
+                <div id="content-gap"></div>
+                <div class="row">
+                    <div class="section-head wobble" id="work-title"></div>
+                </div>
+                <div class="row" style="justify-content: center;">
+                    <div class="work-left">
+                        <div class="work-details">
+                            <img class="img-float-left work-logo"
+                                src="https:\/\/live.staticflickr.com\/65535\/53020285535_915ef0dc8d.jpg"
+                                alt="Logo Image">
+                            The Pocketalk Ventana project represents a significant endeavor in the realm of web applications, tailored to meet the specific needs of corporate users seeking enhanced business communication and cost reduction through the management of Pocketalk translation devices. Developed in collaboration with Sourcenext, a prominent software publisher in Japan, this application stands as a pivotal tool in streamlining the management and control of Pocketalk devices.<br /> At its core, Pocketalk Ventana offers an array of essential features that empower users to maximize their Pocketalk device investments. The application boasts an aesthetically pleasing and informative dashboard that serves as a focal point for users, presenting a wealth of statistics crucial for effective device management. In addition, the Device Manager provides a comprehensive device information panel along with a translation history section, enabling users to delve deep into the performance of their devices.<br /> The Group Manager feature simplifies the task of organizing Pocketalk devices by offering a user-friendly group list and a group creation panel. This bulk management capability ensures that corporate users can efficiently configure and control multiple devices simultaneously, saving both time and effort. Furthermore, the Group Remote Settings feature enables remote configuration of group settings, adding to the convenience of managing large fleets of devices.<br /> For in-depth insights, the application offers a Report Section encompassing a variety of data frequency reports, including Times Translated, Translation From, Translation To, and Export Log Data. These reports provide essential information for businesses to make informed decisions and assess the return on investment from using Pocketalk devices.<br /> User profile management and the presence of both individual and corporate profiles within the application emphasize personalization and usability, as users can tailor the application to their specific needs. Moreover, the notification features, consisting of both bell and email notifications, serve as a vital component for keeping users informed about critical events and updates within the application.<br /> Ensuring the highest level of data security, the implementation of a dynamic role-based security system offers administrators the ability to control feature-wise access limits, protecting sensitive information and safeguarding the integrity of the application.<br /> All these features are underpinned by a robust technological infrastructure that includes Java, Spring Boot, JWT, OAuth, GCP (Google Cloud Platform), CloudSQL, BigQuery, Firestore, PubSub, AWS (Amazon Web Services), SES (Simple Email Service), SQS (Simple Queue Service), and S3 (Simple Storage Service). This amalgamation of cutting-edge technologies and versatile features culminates in the creation of the Pocketalk Ventana application, a powerful solution that equips corporate users to harness the full potential of Pocketalk devices, optimizing their business communications and driving significant cost savings.
+                        </div>
+                        <div class="work-gallery">
+                            <img class="work-media" src="https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_hero.webp" />
+                            <iframe src="https://player.vimeo.com/video/846133318" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>
+                            <iframe src="https://player.vimeo.com/video/879670605" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>
+                            <video class="work-media" controls> <source src="https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda" type="video/mp4"> Your browser does not support the video tag. </video>
+                            <img class="work-media" src="https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png" />
+                            <img class="work-media" src="https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1" />
+                        </div>
+                    </div>
+                    <div class="work-right">
+                        <div class="work-stats">
+                            <b>Start Date:</b> 2023-01-15<br /><br />
+                            <b>End Date:</b> 2023-06-30<br /><br />
+                            <b>Scope of Work:</b> Develop a mobile app for task management<br /><br />
+                            <b>Project Plan:</b> Phase 1 - Design, Phase 2 - Development, Phase 3 - Testing<br /><br />
+                            <b>Tech Stack:</b> React Native, Node.js, MongoDB<br /><br />
+                            <b>Methodology:</b> Agile<br /><br />
+                            <b>Project Type:</b> Mobile App Development<br /><br />
+                            <b>Current Status:</b> In Development<br /><br />
+                            <b>Challenges and Risks:</b> Resource constraints, Scope creep<br /><br />
+                            <b>Metrics and KPIs:</b> User engagement, Bug resolution time<br /><br />
+                            <b>Quality Assurance:</b> Automated testing, Code reviews<br /><br />
+                            <b>Documentation:</b> Design specifications, User manual<br /><br />
+                            <b>Deployment Plan:</b> App Store and Google Play submission<br /><br />
+                            <b>Maintenance and Support:</b> Monthly updates, Email support<br /><br />
+                            <b>Future Scope:</b> Integrate AI for task recommendations<br /><br />
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </br>
+            </br>
+            </br>
+            <footer>
+                <div class="container c1">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="copyright-box">
+                                <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights
+                                    Reserved</p>
+                                <div class="credits c1">
+                                    Designed by <a href="/about" id="footer_name"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </main-page>
+    <script src="view/js/profile_data.js"></script>
+    <script src="view/js/lib.js"></script>
+    <script src="view/js/util.js"></script>
+    <script>
+        // required in production
+        // var work_id = window.location.pathname.split('/')[2];
+        // var work = result.profile.projects[work_id-1];
+        var work = result.profile.projects[1];
+        document.title = 'Work - ' + work.name;
+        document.getElementById('work-title').innerHTML = work.name;
+        document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
+        document.getElementById("content-gap").style.border = "none";
+        document.addEventListener("DOMContentLoaded", function () {
+            const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
+            const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
+
+            const fonts = [titillium.load(), icons.load()];
+
+            Promise.all(fonts).then(() => {
+                setTimeout(function () {
+                    document.querySelector("pre-loader").style.display = "none"; // hide
+                    document.querySelector("main-page").style.display = "block"; // show
+                    wobbleAnimation();
+                }, 1000);
+
+                // You can also apply any further logic here if needed.
+            }).catch((error) => {
+                console.error('Font loading failed:', error);
+            });
+        });
+    </script>
+</body>
+
+</html>

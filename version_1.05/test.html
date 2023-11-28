@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donut Chart Generator</title>
+    <style>
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
+
+        .donut-chart .chart {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0, 200px, 200px, 100px);
+            background-color: #f1f1f1;
+            transform: rotate(0deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="donut-chart" id="chartContainer"></div>
+
+    <script>
+        var data = [
+            { label: "Category A", value: 25, color: "#E74C3C" },
+            { label: "Category B", value: 30, color: "#27AE60" },
+            { label: "Category C", value: 20, color: "#2980B9" },
+            { label: "Category D", value: 25, color: "#F39C12" }
+        ];
+
+        function createDonutChart(data, containerId) {
+            var container = document.getElementById(containerId);
+            var totalValue = data.reduce(function(sum, entry) {
+                return sum + entry.value;
+            }, 0);
+            
+            var chart = document.createElement('div');
+            chart.classList.add('chart');
+
+            var angle = 0;
+            data.forEach(function(entry) {
+                var slice = document.createElement('div');
+                slice.style.background = entry.color;
+                slice.style.transform = `rotate(${angle}deg)`;
+                slice.style.transform += `skewY(${(entry.value / totalValue) * 360}deg)`;
+                chart.appendChild(slice);
+                angle += (entry.value / totalValue) * 360;
+            });
+
+            container.appendChild(chart);
+        }
+
+        createDonutChart(data, "chartContainer");
+    </script>
+</body>
+</html>

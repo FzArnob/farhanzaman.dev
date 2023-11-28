@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <link href="view/static/favicon.svg" rel="icon" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link href="view/css/app.css" rel="stylesheet" />
+</head>
+
+<body class="bg1">
+  <button id="back-to-top-btn">
+    <span class="ico-gen">
+      H
+    </span>
+  </button>
+  <pre-loader class="pre-loader">
+    <img src="view/static/favicon.svg" />
+  </pre-loader>
+  <main-page class="bg1 c1 hidden">
+    <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
+      <div class="nav-container">
+        <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
+          <span class="nav-corner bg2 animate-top"></span>
+        </a>
+        <ul class="nav-menu animate-right" id="nav-menu">
+          <li class="nav-item"><a class="nav-links c1 active" href="/about">About</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/expertise">Expertise</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/works">Works</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/hobbies">Hobbies</a></li>
+        </ul>
+        <div class="nav-icon animate-top" id="nav-menu-button">
+          <span class="ico-gen mobile-menu-icon">G</span>
+        </div>
+        <div class="themeBtn animate-right" id="theme-toogle-button">
+          <span class="ico-gen themeBtn-icon" id="theme-btn">E</span>
+        </div>
+      </div>
+    </div>
+    <div id="theme-popup" class="animate-bottom">
+      <div class="popup-box bg2 c2">
+        <div class="popup-content">
+          <div class="triangle"></div>
+          <div class="popup-text">You can switch <span class="c-theme">theme</span> here.</div>
+          <div class="popup-button">
+            <span class="ico-gen">
+              F
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="about-top-container">
+        <div class="about-top-section">
+          <div class="about-title c1 wobble">
+            Get To Know Me
+          </div>
+          <div class="about-description c1 animate-left">
+            From a young age, my curiosity for technology and mathematics has been the driving force that led me to
+            the world of programming and problem-solving, where challenges fuel my passion. Programming is my forte,
+            and I have delved into the realms of Machine Learning and Artificial intelligence, contributing to
+            research in Human Posture Classification. As a software engineer, I aspire to fuse AI and Computer Vision
+            into the software industry, anticipating a future where AI revolutionizes software solutions. Beyond tech,
+            I indulge in arts, digital arts, and photography. In college, I took on the role of General Secretary for
+            the Dhaka College Science Club (DCSC), organizing science fairs, while in university, I passionately
+            contributed to impactful social initiatives as a Sr. Executive of the Brac University Community Service
+            Club (BUCSC).
+          </div>
+          <div class="about-contact">
+            <div id="button-3">
+              <div id="circle"></div>
+              <a href="#contact-section">Contact Me</a>
+            </div>
+          </div>
+          <div class="socials-cen">
+            <div id="social-contact" class="socials"></div>
+          </div>
+        </div>
+        <div class="about-image-back">
+          <div class="about-image-border-effect-primary animate-top"></div>
+          <div class="about-image-border-effect-secondary animate-left"></div>
+          <div class="about-image bg2 animate-opacity"></div>
+        </div>
+        <div class="bottom-gradient" style="height: 200px;"></div>
+      </div>
+      <div id="about-gap"></div>
+      <section id="about-section" class="nav-section">
+        <div class="row">
+          <div class="section-head wobble">Qualifications</div>
+        </div>
+        <div class="row ex">
+          <div class="ex-box-line about-line-left"></div>
+          <div class="ex-box-line about-line-right"></div>
+          <div class="row about-qua">
+            <div class="column-2 right-align about-edu">
+              <div style="margin: 10px; margin-right: 40px;" class="topic">Education</div>
+            </div>
+            <div class="column-2 left-align about-exp">
+              <div style="margin: 10px; margin-left: 40px;" class="topic">Experience</div><br><br><br><br>
+            </div>
+          </div>
+          <div class="row about-card-right">
+            <div class="column-2 right-align">
+              <div class="ex-point-box-left bg2 move-right">
+                <div class="box-header">Studies MBA - Master in Business Administration</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">BRAC
+                      University</span></a><br>2022-05-29 - Present</div>
+                <div class="box-description">Specialization in Operation Management</div>
+              </div>
+              <div class="ex-point-right bg1"></div>
+            </div>
+            <div class="column-2 left-align">
+            </div>
+          </div>
+          <div class="row about-card-left">
+            <div class="column-2 right-align">
+            </div>
+            <div class="column-2 left-align">
+              <div class="ex-point-box-right bg2 move-left">
+                <div class="box-header">Software Engineer</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">BJIT
+                      Group</span></a><br>2022-03-29 - Present</div>
+                <div class="box-description">Core Backend Engineer, <a><span class="cross-theme wobble"
+                      data-animation="upscale">Pocketalk</span></a></div>
+              </div>
+              <div class="ex-point-left bg1"></div>
+
+            </div>
+          </div>
+          <div class="row about-card-right">
+            <div class="column-2 right-align">
+              <div class="ex-point-box-left bg2 move-right">
+                <div class="box-header">Studied Bachelor of Science in Computer Science and Engineering (CSE)</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">BRAC
+                      University</span></a><br>Graduation year of 2022</div>
+                <div class="box-description">Former Senior Executive at BRAC University Community Service Club (BUCSC)
+                </div>
+              </div>
+              <div class="ex-point-right bg1"></div>
+            </div>
+            <div class="column-2 left-align">
+            </div>
+          </div>
+          <div class="row about-card-left">
+            <div class="column-2 right-align">
+            </div>
+            <div class="column-2 left-align">
+              <div class="ex-point-box-right bg2 move-left">
+                <div class="box-header">Former Full Stack Software Engineer and Developer</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">Doodle
+                      Inc.</span></a><br>2021-09-01 - 2022-02-28</div>
+                <div class="box-description">Serverless System Architect, <a><span class="cross-theme wobble"
+                      data-animation="upscale">Tribel</span></a></div>
+              </div>
+              <div class="ex-point-left bg1"></div>
+            </div>
+          </div>
+          <div class="row about-card-right">
+            <div class="column-2 right-align">
+              <div class="ex-point-box-left bg2 move-right">
+                <div class="box-header">Studied Science: High School (12th Grade)</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">Dhaka
+                      College</span></a><br>Graduation year of 2016</div>
+                <div class="box-description">Former General Secretary at Dhaka College Science Club (DCSC)</div>
+              </div>
+              <div class="ex-point-right bg1"></div>
+            </div>
+            <div class="column-2 left-align">
+            </div>
+          </div>
+          <div class="row about-card-left">
+            <div class="column-2 right-align">
+            </div>
+            <div class="column-2 left-align">
+              <div class="ex-point-box-right bg2 move-left">
+                <div class="box-header">Former Lecturer</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble"
+                      data-animation="upscale">Forecast</span></a><br>2018-04-15 - 2021-03-31</div>
+                <div class="box-description">Higher Mathematics Instructor and Physics Coordinator<a><span
+                      class="cross-theme wobble" data-animation="upscale"></span></a></div>
+              </div>
+              <div class="ex-point-left bg1"></div>
+            </div>
+          </div>
+          <div class="row about-card-right">
+            <div class="column-2 right-align">
+              <div class="ex-point-box-left bg2 move-right">
+                <div class="box-header">Studied Science: Secondary School (10th Grade)</div>
+                <div class="box-sub-header"><a><span class="cross-theme wobble" data-animation="upscale">Ideal School
+                      &amp; College</span></a><br>Graduation year of 2014</div>
+                <div class="box-description">Received JSC Government Scholarship 2011</div>
+              </div>
+              <div class="ex-point-right bg1"></div>
+            </div>
+            <div class="column-2 left-align">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="about-contact-section" class="paralax-mf footer-paralax bg-image route"
+        style="background-image: url(https://live.staticflickr.com/65535/53223738139_ab18a8886e_o.jpg);">
+        <div class="row">
+          <div style="z-index: 10;" class="section-head wobble">Contact</div>
+        </div>
+        <div class="overlay-mf"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="contact-mf">
+                <div id="contact" class="box-shadow-full bg2" style="max-width: 500px; margin: auto; margin-bottom: 60px;">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="title-box-2">
+                        <h5 class="title-left">
+                          <span class="wobble inline">Send </span> <span class="wobble inline">Direct </span> <span
+                            class="wobble inline">Message</span>
+                        </h5>
+                      </div>
+                      <div>
+                        <form action="" method="post" role="form" id="direct-message" class="contactForm">
+                          <div class="row">
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="text" name="name" class="form-control" id="message-name"
+                                  placeholder="Your Name" data-rule="minlen:4"
+                                  data-msg="Please enter at least 4 chars" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="email" class="form-control" name="email" id="message-email"
+                                  placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <input type="text" class="form-control" name="subject" id="message-subject"
+                                  placeholder="Subject" data-rule="minlen:4"
+                                  data-msg="Please enter at least 8 chars of subject" />
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                <textarea class="form-control" name="message" rows="5" data-rule="required"
+                                  data-msg="Please write something for us" placeholder="Message"
+                                  id="message"></textarea>
+                                <div class="validation"></div>
+                              </div>
+                            </div>
+                            <div id="sendmessage">Your message has been sent. Thank you!</div>
+                            <div id="errormessage"></div>
+                            <div class="col-md-12">
+                              <button type="submit" class="button button-a button-big button-rouded">Send
+                                Message</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="copyright-box">
+                  <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
+                  <div class="credits">
+                    Designed by <a href="/about" id="footer_name" style="background-color: rgba(0,0,0, 0.2); border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </section>
+    </div>
+  </main-page>
+  <script src="view/js/profile_data.js"></script>
+  <script src="view/js/lib.js"></script>
+  <script src="view/js/util.js"></script>
+  <script>
+    document.title = 'About - ' + result.profile.info.full_name;
+    document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
+    generateSocialContact('social-contact', result.profile.info);
+    document.getElementById("about-gap").style.marginTop = window.innerHeight + "px";
+    document.getElementById("about-gap").style.border = "none";
+    document.addEventListener("DOMContentLoaded", function () {
+      const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
+      const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
+
+      const fonts = [titillium.load(), icons.load()];
+
+      Promise.all(fonts).then(() => {
+        setTimeout(function () {
+          document.querySelector("pre-loader").style.display = "none"; // hide
+          document.querySelector("main-page").style.display = "block"; // show
+          wobbleAnimation();
+        }, 1000);
+
+        // You can also apply any further logic here if needed.
+      }).catch((error) => {
+        console.error('Font loading failed:', error);
+      });
+    });
+  </script>
+
+</body>
+
+</html>
