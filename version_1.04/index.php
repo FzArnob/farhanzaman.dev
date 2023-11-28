@@ -15,7 +15,10 @@ $routes = array(
     'works'    => 'works.html',
     'work' => 'work.html',
     'hobbies'  => 'hobbies.html',
-    'expertise' => 'expertise.html'
+    'expertise' => 'expertise.html',
+    '403' => '403.html',
+    '404' => '404.html',
+    '500' => '500.html'
 );
 
 
@@ -30,8 +33,7 @@ if (isset($routes[$route])) {
         readfile($file);
         exit;
     }
+} else {
+    header('Location: /404');
+    exit;
 }
-
-// If the requested route is not found, serve a 404 HTML file
-http_response_code(404);
-include('404.html');

@@ -1,13 +1,6 @@
 RewriteEngine On
-RewriteBase /
-RewriteCond %{REQUEST_URI} !/backend/api
-RewriteCond %{REQUEST_URI} !/backend/cornjob
-RewriteCond %{REQUEST_URI} !/check
-RewriteCond %{REQUEST_URI} !/view
-RewriteCond %{REQUEST_URI} !/examiner
-RewriteCond %{REQUEST_URI} !/qrqueen
-RewriteCond %{REQUEST_URI} !/spaceninja
-RewriteRule ^(.*)$ /index.php [L]
+RewriteCond %{REQUEST_URI} !(backend|check|view|examiner|qrqueen|spaceninja)
+RewriteRule ^ index.php [L]
 Header set Access-Control-Allow-Origin "*"
 Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
 Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept"
