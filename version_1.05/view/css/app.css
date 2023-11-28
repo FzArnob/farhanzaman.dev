@@ -15,8 +15,8 @@
   --color-1-rgba: rgba(0, 0, 0, 0.3);
   --theme-color-rbga: rgba(0, 211, 180, 0.8);
   --theme-secondary-color-rbga: rgba(253, 33, 85, 0.8);
-  --theme-color-shadow: rgba(0, 211, 180, 0.3);
-  --theme-secondary-color-shadow: rgba(253, 33, 85, 0.3);
+  --theme-color-shadow: rgba(0, 211, 180, 0.4);
+  --theme-secondary-color-shadow: rgba(253, 33, 85, 0.4);
 }
 
 /* theme */
@@ -2449,8 +2449,8 @@ textarea.form-control {
 .popup-button {
   position: absolute;
   font-size: 12px;
-  top: -8px;
-  right: -3px;
+  top: -14px;
+  right: -8px;
   cursor: pointer;
 }
 
@@ -2472,7 +2472,7 @@ textarea.form-control {
 }
 
 .popup-text {
-  font-size: 13px;
+  font-size: 15px;
   text-align: left;
 }
 
@@ -3098,7 +3098,7 @@ textarea.form-control {
 }
 
 .work-card .work-card-title-full {
-  font-size: 16px;
+  font-size: 18px;
   text-align: left;
   font-weight: 500;
   padding: 20px;
@@ -3115,7 +3115,15 @@ textarea.form-control {
   vertical-align: top;
   flex-shrink: 0;
 }
-
+.work-card .work-card-des-full {
+  font-size: 15px;
+  text-align: left;
+  font-weight: 400;
+  padding: 20px;
+  color: var(--theme-color-rbga);
+  padding-bottom: 0;
+  padding-top: 0;
+}
 .work-card .work-card-details {
   text-align: left;
   padding: 20px;

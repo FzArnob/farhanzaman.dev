@@ -211,8 +211,8 @@ VALUES ('Bottom Line', 'A striking photograph with a profound message.', 'Photog
 
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Pocketalk Ventana', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 1, 'Pocketalk Ventana', 
         'Backend Engineer', 
         'https://live.staticflickr.com/65535/53020376333_2b5719fc2e.jpg', 
         'Enterprise', 
@@ -230,18 +230,17 @@ VALUES ('Pocketalk Ventana',
         'Pubsub Integration,Dynamic Role Based Security Implementation', 
         'Voice and Speech Recognition,Accessibility Features,Global Localization', 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_hero.webp'),
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_device_setup_v2.webp'),
-(@project_id, 'Vimeo', 'https://player.vimeo.com/video/846133318?dnt=1&app_id=122963&controls=1&hd=1&autohide=1'),
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_reports.webp'),
-(@project_id, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_transcript_history.webp');
+(1, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_hero.webp'),
+(1, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/07/pocketalk_ventana_device_setup_v2.webp'),
+(1, 'Vimeo', 'https://player.vimeo.com/video/846133318?dnt=1&app_id=122963&controls=1&hd=1&autohide=1'),
+(1, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_reports.webp'),
+(1, 'Image', 'https://www.pocketalk.com/wp-content/uploads/2023/06/pocketalk_ventana_transcript_history.webp');
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Tribel', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 2, 'Tribel', 
         'Full Stack Engineer', 
         'https://live.staticflickr.com/65535/53020285535_915ef0dc8d.jpg', 
         'Social', 
@@ -259,17 +258,16 @@ VALUES ('Tribel',
         'Scalability,Using GSI properly', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
-(@project_id, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
-(@project_id, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
-(@project_id, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
+(2, 'Image', 'https://www.searchlogistics.com/wp-content/uploads/2023/05/tribel-social-app.png'),
+(2, 'Image', 'https://a.fsdn.com/con/app/proj/tribel.s/screenshots/Screen%20Shot%202022-10-27%20at%2012.18.45%20PM.png/1000/auto/1'),
+(2, 'Video', 'https://dcd73ta2suabk.cloudfront.net/rw2ykeh6e78t3t977cyljssrpbda'),
+(2, 'Image', 'https://assets-global.website-files.com/6503827bcc02f7772d249bf0/650ac6c1b4c46618d7137faa_2.png'),
+(2, 'Image', 'https://live.staticflickr.com/65535/53307126345_e4cd895199_c.jpg');
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Simba(CSA)', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 3, 'Simba(CSA)', 
         'Researcher', 
         'https://live.staticflickr.com/65535/53012612530_3747ce77e1.jpg', 
         'NLP', 
@@ -287,14 +285,13 @@ VALUES ('Simba(CSA)',
         'Data Variance', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012399104_3f8662c960_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53352915259_21828b6a56_o.jpg');
+(3, 'Image', 'https://live.staticflickr.com/65535/53012399104_3f8662c960_o.png'),
+(3, 'Image', 'https://live.staticflickr.com/65535/53352915259_21828b6a56_o.jpg');
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('CovidEase', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 4, 'CovidEase', 
         'Team Leader', 
         'https://live.staticflickr.com/65535/53012710548_c1b97d9f48.jpg', 
         'Health', 
@@ -312,19 +309,18 @@ VALUES ('CovidEase',
         'Real-Time Data Collection', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615880_faf739ba72_h.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615835_d860723031_h.jpg'),
-(@project_id, 'Vimeo', 'https://player.vimeo.com/video/879670605'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53011648862_2b908e4f52_h.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53323030189_51ada478c3_h.jpg');
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53323030179_0cc2065caf_h.jpg');
+(4, 'Image', 'https://live.staticflickr.com/65535/53012615880_faf739ba72_h.jpg'),
+(4, 'Image', 'https://live.staticflickr.com/65535/53012615835_d860723031_h.jpg'),
+(4, 'Vimeo', 'https://player.vimeo.com/video/879670605'),
+(4, 'Image', 'https://live.staticflickr.com/65535/53011648862_2b908e4f52_h.jpg'),
+(4, 'Image', 'https://live.staticflickr.com/65535/53323030189_51ada478c3_h.jpg'),
+(4, 'Image', 'https://live.staticflickr.com/65535/53323030179_0cc2065caf_h.jpg');
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('C Academy TMS', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 5, 'C Academy TMS', 
         'Developer', 
         'https://live.staticflickr.com/65535/53324609719_205bc13f8b_w.jpg', 
         'Education', 
@@ -342,33 +338,32 @@ VALUES ('C Academy TMS',
         'Architecture Design', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141401_0398b1eea0_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590390_76746b2982_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348462934_ed083875df_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348462944_c6d87f262d_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265247_6ab0f068f9_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141406_f5ee3ef84b_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265262_c7a7f25a53_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265287_698e6ee68a_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371643_e87f02de81_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371653_c568c87be4_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141456_b75bc62227_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590485_0184a1d27f_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348463024_b87afd60da_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590475_f25e66456d_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265347_70d55dc7ab_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265342_dab057333a_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348371718_9024fa914c_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348590510_6aa9db24d9_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348141506_c26ba73f56_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347265372_63a94c2cdb_o.png');
+(5, 'Image', 'https://live.staticflickr.com/65535/53348141401_0398b1eea0_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348590390_76746b2982_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348462934_ed083875df_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348462944_c6d87f262d_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265247_6ab0f068f9_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348141406_f5ee3ef84b_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265262_c7a7f25a53_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265287_698e6ee68a_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348371643_e87f02de81_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348371653_c568c87be4_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348141456_b75bc62227_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348590485_0184a1d27f_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348463024_b87afd60da_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348590475_f25e66456d_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265347_70d55dc7ab_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265342_dab057333a_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348371718_9024fa914c_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348590510_6aa9db24d9_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53348141506_c26ba73f56_o.png'),
+(5, 'Image', 'https://live.staticflickr.com/65535/53347265372_63a94c2cdb_o.png');
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Examiner', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 6, 'Examiner', 
         'Developer', 
         'https://live.staticflickr.com/65535/53012612545_7553f6762f.jpg', 
         'Education', 
@@ -386,19 +381,18 @@ VALUES ('Examiner',
         'Anti-Cheating System Integration', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348016786_b3316a30b8_o.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348339129_f571100eeb_o.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348246893_9fc4ec5c0c_o.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53348339099_8bf914415a_o.jpg'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347140942_f121331f20_o.jpg');
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53347140952_a469c8a4a2_o.jpg');
+(6, 'Image', 'https://live.staticflickr.com/65535/53348016786_b3316a30b8_o.jpg'),
+(6, 'Image', 'https://live.staticflickr.com/65535/53348339129_f571100eeb_o.jpg'),
+(6, 'Image', 'https://live.staticflickr.com/65535/53348246893_9fc4ec5c0c_o.jpg'),
+(6, 'Image', 'https://live.staticflickr.com/65535/53348339099_8bf914415a_o.jpg'),
+(6, 'Image', 'https://live.staticflickr.com/65535/53347140942_f121331f20_o.jpg'),
+(6, 'Image', 'https://live.staticflickr.com/65535/53347140952_a469c8a4a2_o.jpg');
 
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('Space Ninja', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 7, 'Space Ninja', 
         'Developer', 
         'https://live.staticflickr.com/65535/53012233046_5d91731867.jpg', 
         'Game', 
@@ -416,16 +410,15 @@ VALUES ('Space Ninja',
         'Multiplayer support', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53361526621_67f11b5823_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53361848914_200a5c11d4_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53360644942_f6dd5b8984_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53361526626_dcc6ac814b_o.png');
+(7, 'Image', 'https://live.staticflickr.com/65535/53361526621_67f11b5823_o.png'),
+(7, 'Image', 'https://live.staticflickr.com/65535/53361848914_200a5c11d4_o.png'),
+(7, 'Image', 'https://live.staticflickr.com/65535/53360644942_f6dd5b8984_o.png'),
+(7, 'Image', 'https://live.staticflickr.com/65535/53361526626_dcc6ac814b_o.png');
 
-INSERT INTO projects (name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
-VALUES ('QR Queen', 
+INSERT INTO projects (project_id, name, work_role, logo_image, type, stack, details, live_text, live_url, scope_of_work, source_url, start_date, current_status, methodology, last_contribution_date, tech_stack, challenges, future_scope, fk_profile_id)
+VALUES ( 8, 'QR Queen', 
         'Developer', 
         'https://live.staticflickr.com/65535/53012396049_ce14507917.jpg', 
         'Accessibility', 
@@ -443,11 +436,10 @@ VALUES ('QR Queen',
         'History management', 
         null, 
         'farhan');
-SET @project_id = LAST_INSERT_ID();
 INSERT INTO project_media (project_id, media_type, media_link)
 VALUES
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53345791837_5a002ec296_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988424_1dc668ae5a_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988404_b397bc88df_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53346988449_eff7b675b4_o.png'),
-(@project_id, 'Image', 'https://live.staticflickr.com/65535/53012615945_43b55b922c_o.png');
+(8, 'Image', 'https://live.staticflickr.com/65535/53345791837_5a002ec296_o.png'),
+(8, 'Image', 'https://live.staticflickr.com/65535/53346988424_1dc668ae5a_o.png'),
+(8, 'Image', 'https://live.staticflickr.com/65535/53346988404_b397bc88df_o.png'),
+(8, 'Image', 'https://live.staticflickr.com/65535/53346988449_eff7b675b4_o.png'),
+(8, 'Image', 'https://live.staticflickr.com/65535/53012615945_43b55b922c_o.png');

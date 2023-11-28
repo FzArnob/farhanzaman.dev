@@ -623,6 +623,9 @@ function generateWorks(targetElement, worksData) {
     const title = document.createElement("div");
     title.classList.add("work-card-title-full", "c1");
     title.textContent = work.name;
+    const des = document.createElement("div");
+    des.classList.add("work-card-des-full");
+    des.textContent = work.work_role;
     const details = document.createElement("div");
     details.classList.add("work-card-details", "c2");
     details.textContent = work.details;
@@ -638,16 +641,20 @@ function generateWorks(targetElement, worksData) {
       typeTag.style.display = "none";
       stackTag.style.display = "none";
     });
+    workCard.addEventListener('click', () => {
+      window.location.href = "/work/"+ (i+1);
+    });
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
     workCard.appendChild(title);
+    workCard.appendChild(des);
     workCard.appendChild(details);
     worksContainer.appendChild(workCard);
   }
   const parentElement = document.getElementById(targetElement);
   parentElement.appendChild(worksContainer);
 }
-function generateWorkCard(work, workCardWidth) {
+function generateWorkCard(work, workCardWidth, i) {
   var workCard = document.createElement("div");
   workCard.classList.add("work-card", "bg2");
   workCard.style.width = workCardWidth + "px";
@@ -667,6 +674,9 @@ function generateWorkCard(work, workCardWidth) {
   const title = document.createElement("div");
   title.classList.add("work-card-title", "c1");
   title.textContent = work.name;
+  title.addEventListener('click', () => {
+    window.location.href = "/work/"+ (i+1);
+  });
   const details = document.createElement("div");
   details.classList.add("work-card-details", "c2");
   details.textContent = work.details;
@@ -688,8 +698,8 @@ function generateWorkCard(work, workCardWidth) {
   return workCard;
 }
 function createCardHolder(work, workBottom, workCardWidth, i) {
-  var workCard = generateWorkCard(work, workCardWidth);
-  var workCardBottom = generateWorkCard(workBottom, workCardWidth);
+  var workCard = generateWorkCard(work, workCardWidth, i);
+  var workCardBottom = generateWorkCard(workBottom, workCardWidth, i);
   workCardBottom.style.borderBottom = "none";
   var cardHolder = document.createElement("div");
   cardHolder.classList.add("work-card-holder");
@@ -729,7 +739,7 @@ function generateWorksMarquee(targetElement, worksData) {
     const work = worksData[i];
     const workBottom = worksData[i + 1];
     var cardHolderOne = createCardHolder(work, workBottom, workCardWidth, i);
-    var cardHolderTwo = createCardHolder(work, workBottom, workCardWidth, i);
+    var cardHolderTwo = createCardHolder(work, workBottom, workCardWidth, (i+1));
     worksSpanOne.appendChild(cardHolderOne);
     worksSpanTwo.appendChild(cardHolderTwo);
   }
