@@ -121,7 +121,7 @@ create table projects (
   start_date date null,
   current_status varchar(100) null,
   methodology varchar(100) null,
-  last_contribution_date date null,
+  last_contribution_date varchar(30) null,
   tech_stack text null,
   challenges text null,
   future_scope text null,
