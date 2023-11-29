@@ -3480,3 +3480,40 @@ width: 300px;
     width: 100%;
     }
 }
+.work-links-view {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.work-link-view {
+  background-color: var(--theme-color);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-align: center;
+  align-items: center;
+}
+.work-link-view:hover {
+  color: white;
+  background-color: var(--theme-color-rbga);
+}
+.tech-stack{
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+}
+.tech{
+  padding: 0px 5px;
+  border: 1px solid var(--theme-color);
+  display: inline-block;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+#work-role{
+  width: fit-content;
+  font-weight: 600;
+  font-size: 18px;
+  margin: auto;
+  transform: translate(-10px, -10px);
+}

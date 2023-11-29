@@ -1,9 +1,9 @@
 INSERT INTO profile_info (profile_id, full_name, first_name, last_name, nick_name, designations,
-                          intro_text, intro_image_url, resume_url, expertise_preference_details, website_base_url, website_domain_name,
+                          intro_text, about_text, intro_image_url, resume_url, expertise_preference_details, website_base_url, website_domain_name,
                           contact_preference_details, address, phone, secondary_phone, email, alternative_email,
                           facebook_url, github_url, linkedin_url, whatsapp_url, created_date, updated_date, delete_flag)
 VALUES ('farhan', 'Farhan Zaman', 'Farhan', 'Zaman', 'Arnob', 'Software Engineer,Researcher,Programmer,System Architect,Designer', 'A tech enthusiast, always ready for new challenges and
-            quick learner. To know more about my works and interests check out my details.',
+            quick learner. To know more about my works and interests check out my details.', 'From a young age, my curiosity for technology and mathematics has been the driving force that led me tothe world of programming and problem-solving, where challenges fuel my passion. Programming is my forte,and I have delved into the realms of Machine Learning and Artificial intelligence, contributing toresearch in Human Posture Classification. As a software engineer, I aspire to fuse AI and Computer Visioninto the software industry, anticipating a future where AI revolutionizes software solutions. Beyond tech,I indulge in arts, digital arts, and photography. In college, I took on the role of General Secretary forthe Dhaka College Science Club (DCSC), organizing science fairs, while in university, I passionatelycontributed to impactful social initiatives as a Sr. Executive of the Brac University Community ServiceClub (BUCSC).',
         'view/static/intro.png', 'view/static/resume.pdf', 'Drawing upon a wide range of skills and technical proficiencies, I excel in
                 problem solving, critical thinking, and effective teamwork. My expertise extends to encompass business
                 communication, interpersonal skills, and adaptability in dynamic environments. Additionally, I possess
@@ -226,7 +226,7 @@ VALUES ( 1, 'Pocketalk Ventana',
         'In Deployment', 
         'Scrum (2 weeks/sprint)', 
         '2023-10-30', 
-        'Java,Spring Boot,JWT,OAuth,CSRF,GCP,CloudSQL,BigQuery,Firestore,PubSub,AWS SES,AWS SQS,AWS S3,Kubernetes', 
+        'Java,Spring Boot,JWT,OAuth,CSRF,GCP CloudSQL,GCP BigQuery,GCP Firestore,GCP PubSub,AWS SES,AWS SQS,AWS S3,Kubernetes', 
         'Pubsub Integration,Dynamic Role Based Security Implementation', 
         'Voice and Speech Recognition,Accessibility Features,Global Localization', 
         'farhan');

@@ -157,19 +157,19 @@ function showIntroAnimation(data) {
 }
 function getExpertiseLevel(percentage) {
   if (percentage >= 0 && percentage < 16) {
-      return "Novice";
-     }   else if (percentage >= 16 && percentage < 31) {
-        return "Fundamental";
+    return "Novice";
+  } else if (percentage >= 16 && percentage < 31) {
+    return "Fundamental";
   } else if (percentage >= 31 && percentage < 46) {
-      return "Intermediate";
-  }else if (percentage >= 46 && percentage < 61) {
+    return "Intermediate";
+  } else if (percentage >= 46 && percentage < 61) {
     return "Competent";
-}  else if (percentage >= 61 && percentage < 76) {
-      return "Advanced";
-} else if (percentage >= 76 && percentage <= 91) {
-      return "Expert";
+  } else if (percentage >= 61 && percentage < 76) {
+    return "Advanced";
+  } else if (percentage >= 76 && percentage <= 91) {
+    return "Expert";
   } else {
-      return "Mastery"; 
+    return "Mastery";
   }
 }
 
@@ -308,46 +308,47 @@ function createGallery(targetElement, gallery, extended) {
     imageContainer.style.width = imageSide + "px";
     imageContainer.style.height = imageSide + "px";
     imageContainer.style.transition = "none";
-    imageContainer.addEventListener("mousemove", function rotate3DOnHover(event) {
-      zoomIcon.style.display = "block";
-      background.style.display = "block";
+    imageContainer.addEventListener(
+      "mousemove",
+      function rotate3DOnHover(event) {
+        zoomIcon.style.display = "block";
+        background.style.display = "block";
 
-      const divRect = imageContainer.getBoundingClientRect();
-      const divCenterX = divRect.left + divRect.width / 2;
-      const divCenterY = divRect.top + divRect.height / 2;
-      const mouseX = event.clientX;
-      const mouseY = event.clientY;
+        const divRect = imageContainer.getBoundingClientRect();
+        const divCenterX = divRect.left + divRect.width / 2;
+        const divCenterY = divRect.top + divRect.height / 2;
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
 
-      // Calculate the distance between the mouse pointer and the center of the div
-      const distanceX = mouseX - divCenterX;
-      const distanceY = mouseY - divCenterY;
-      const maxDistanceX = Math.abs(divRect.left - divCenterX);
-      const maxDistanceY = Math.abs(divRect.top - divCenterY);
-      const ratioX = (distanceX / maxDistanceX) * -1;
-      const ratioY = distanceY / maxDistanceY;
-      // console.log(`distanceX: ${distanceX}, distanceY: ${distanceY}, maxDistanceX: ${maxDistanceX}, maxDistanceY: ${maxDistanceY}, ratioX: ${ratioX}, ratioY: ${ratioY}`);
-      // Calculate the overall distance using the Pythagorean theorem
-      const distanceFromCenter = Math.sqrt(
-        distanceX * distanceX + distanceY * distanceY
-      );
-      const maxDistanceFromCenter = Math.sqrt(
-        maxDistanceX * maxDistanceX + maxDistanceY * maxDistanceY
-      );
-      // console.log('Distance from center:', distanceFromCenter, " max:"+ maxDistanceFromCenter);
-      const maxRotation = 8; // Maximum rotation angle in degrees
-      const minRotation = 0; // Minimum rotation angle in degrees
-      const rotationRange = maxRotation - minRotation;
+        // Calculate the distance between the mouse pointer and the center of the div
+        const distanceX = mouseX - divCenterX;
+        const distanceY = mouseY - divCenterY;
+        const maxDistanceX = Math.abs(divRect.left - divCenterX);
+        const maxDistanceY = Math.abs(divRect.top - divCenterY);
+        const ratioX = (distanceX / maxDistanceX) * -1;
+        const ratioY = distanceY / maxDistanceY;
+        // console.log(`distanceX: ${distanceX}, distanceY: ${distanceY}, maxDistanceX: ${maxDistanceX}, maxDistanceY: ${maxDistanceY}, ratioX: ${ratioX}, ratioY: ${ratioY}`);
+        // Calculate the overall distance using the Pythagorean theorem
+        const distanceFromCenter = Math.sqrt(
+          distanceX * distanceX + distanceY * distanceY
+        );
+        const maxDistanceFromCenter = Math.sqrt(
+          maxDistanceX * maxDistanceX + maxDistanceY * maxDistanceY
+        );
+        // console.log('Distance from center:', distanceFromCenter, " max:"+ maxDistanceFromCenter);
+        const maxRotation = 8; // Maximum rotation angle in degrees
+        const minRotation = 0; // Minimum rotation angle in degrees
+        const rotationRange = maxRotation - minRotation;
 
-      const rotation =
-        minRotation +
-        (distanceFromCenter / maxDistanceFromCenter) * rotationRange;
-      const maxBoxShadowDepthX = Math.floor(ratioX * -4);
-      const maxBoxShadowDepthY = Math.floor(ratioY * 4);
-      imageContainer.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 5px rgba(0, 211, 180, 0.3)`;
-      imageContainer.style.transform = `perspective(600px) rotate3d(${ratioY}, ${ratioX}, 0, ${rotation}deg) scale(1.02)`;
-
-
-    });
+        const rotation =
+          minRotation +
+          (distanceFromCenter / maxDistanceFromCenter) * rotationRange;
+        const maxBoxShadowDepthX = Math.floor(ratioX * -4);
+        const maxBoxShadowDepthY = Math.floor(ratioY * 4);
+        imageContainer.style.boxShadow = `${maxBoxShadowDepthX}px ${maxBoxShadowDepthY}px 5px rgba(0, 211, 180, 0.3)`;
+        imageContainer.style.transform = `perspective(600px) rotate3d(${ratioY}, ${ratioX}, 0, ${rotation}deg) scale(1.02)`;
+      }
+    );
     imageContainer.addEventListener("click", () => {
       selectPhoto(i, gallery);
       var thumbnails = document.querySelectorAll(".thumbnail-g");
@@ -600,7 +601,7 @@ function generateWorks(targetElement, worksData) {
       numColumn = 1;
       break;
   }
-  var workCardWidth = (window.innerWidth / numColumn) - 70;
+  var workCardWidth = window.innerWidth / numColumn - 70;
   var len = worksData.length;
   for (let i = 0; i < len; i++) {
     const work = worksData[i];
@@ -617,7 +618,11 @@ function generateWorks(targetElement, worksData) {
     typeTag.textContent = work.type;
     tagsContainer.appendChild(typeTag);
     const stackTag = document.createElement("div");
-    stackTag.classList.add("work-card-tag", "c-theme-second", "animate-slide-down");
+    stackTag.classList.add(
+      "work-card-tag",
+      "c-theme-second",
+      "animate-slide-down"
+    );
     stackTag.textContent = work.stack;
     tagsContainer.appendChild(stackTag);
     const title = document.createElement("div");
@@ -629,20 +634,20 @@ function generateWorks(targetElement, worksData) {
     const details = document.createElement("div");
     details.classList.add("work-card-details", "c2");
     details.textContent = work.details;
-    workCard.addEventListener('mouseover', () => {
+    workCard.addEventListener("mouseover", () => {
       workCard.classList.add("animate-infinite-tossing");
-      image.style.filter = 'blur(0px)';
+      image.style.filter = "blur(0px)";
       typeTag.style.display = "flex";
       stackTag.style.display = "flex";
     });
-    workCard.addEventListener('mouseleave', () => {
+    workCard.addEventListener("mouseleave", () => {
       workCard.classList.remove("animate-infinite-tossing");
-      image.style.filter = 'blur(1px)';
+      image.style.filter = "blur(1px)";
       typeTag.style.display = "none";
       stackTag.style.display = "none";
     });
-    workCard.addEventListener('click', () => {
-      window.location.href = "/work/"+ (i+1);
+    workCard.addEventListener("click", () => {
+      window.location.href = "/work/" + (i + 1);
     });
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
@@ -674,20 +679,20 @@ function generateWorkCard(work, workCardWidth, i) {
   const title = document.createElement("div");
   title.classList.add("work-card-title", "c1");
   title.textContent = work.name;
-  title.addEventListener('click', () => {
-    window.location.href = "/work/"+ (i+1);
+  title.addEventListener("click", () => {
+    window.location.href = "/work/" + (i + 1);
   });
   const details = document.createElement("div");
   details.classList.add("work-card-details", "c2");
   details.textContent = work.details;
-  workCard.addEventListener('mouseover', () => {
-    image.style.filter = 'grayscale(0%)'; // Set grayscale to 0% (full color)
+  workCard.addEventListener("mouseover", () => {
+    image.style.filter = "grayscale(0%)"; // Set grayscale to 0% (full color)
     typeTag.style.display = "flex";
     stackTag.style.display = "flex";
     title.classList.add("work-card-text-style");
   });
-  workCard.addEventListener('mouseleave', () => {
-    image.style.filter = 'grayscale(20%) blur(1px) saturate(70%)'; // Set grayscale to 0% (full color)
+  workCard.addEventListener("mouseleave", () => {
+    image.style.filter = "grayscale(20%) blur(1px) saturate(70%)"; // Set grayscale to 0% (full color)
     typeTag.style.display = "none";
     stackTag.style.display = "none";
     title.classList.remove("work-card-text-style");
@@ -730,22 +735,29 @@ function generateWorksMarquee(targetElement, worksData) {
       numColumn = 2;
       break;
   }
-  var buff = 2 * (numColumn+1);
-  var workCardWidth = Math.round((window.innerWidth / numColumn) - (buff / numColumn));
-  var len = (numColumn+1) * 2;
-  var parentWidth = (workCardWidth * (numColumn+1)) + buff;
-  console.log((workCardWidth * numColumn) + buff, innerWidth)
+  var buff = 2 * (numColumn + 1);
+  var workCardWidth = Math.round(
+    window.innerWidth / numColumn - buff / numColumn
+  );
+  var len = (numColumn + 1) * 2;
+  var parentWidth = workCardWidth * (numColumn + 1) + buff;
+  console.log(workCardWidth * numColumn + buff, innerWidth);
   for (let i = 0; i < len; i += 2) {
     const work = worksData[i];
     const workBottom = worksData[i + 1];
     var cardHolderOne = createCardHolder(work, workBottom, workCardWidth, i);
-    var cardHolderTwo = createCardHolder(work, workBottom, workCardWidth, (i+1));
+    var cardHolderTwo = createCardHolder(
+      work,
+      workBottom,
+      workCardWidth,
+      i + 1
+    );
     worksSpanOne.appendChild(cardHolderOne);
     worksSpanTwo.appendChild(cardHolderTwo);
   }
   worksContainer.appendChild(worksSpanOne);
   worksContainer.appendChild(worksSpanTwo);
-  worksContainer.style.width = (parentWidth*2) + "px";
+  worksContainer.style.width = parentWidth * 2 + "px";
   const parentElement = document.getElementById(targetElement);
   parentElement.style.width = parentWidth + "px";
   parentElement.appendChild(worksContainer);
@@ -1030,4 +1042,255 @@ function generateEducationHTML(targetElement, educationData, extended) {
     );
     columnContainer.appendChild(pointBox);
   }
+}
+// COMBINE QUALIFICATION [ABOUT]
+function combineAndLabel(educations, experiences) {
+  const combinedArray = [];
+  let educationIndex = 0;
+  let experienceIndex = 0;
+
+  while (
+    educationIndex < educations.length ||
+    experienceIndex < experiences.length
+  ) {
+    if (educationIndex < educations.length) {
+      combinedArray.push({ ...educations[educationIndex], type: "education" });
+      educationIndex++;
+    }
+
+    if (experienceIndex < experiences.length) {
+      combinedArray.push({
+        ...experiences[experienceIndex],
+        type: "experience",
+      });
+      experienceIndex++;
+    }
+  }
+
+  return combinedArray;
+}
+
+// QUALIFICATION [ABOUT]
+
+function generateQualification(targetElementId, combinedData) {
+  // Create div elements with respective classes and styles
+  const divExBoxLineLeft = document.createElement("div");
+  divExBoxLineLeft.classList.add("ex-box-line", "about-line-left");
+
+  const divExBoxLineRight = document.createElement("div");
+  divExBoxLineRight.classList.add("ex-box-line", "about-line-right");
+
+  combinedData.forEach((data, index) => {
+    if (index % 2 === 0) {
+      generateLeftSideCard(targetElementId, data);
+    } else {
+      generateRightSideCard(targetElementId, data);
+    }
+  });
+  const targetElement = document.getElementById(targetElementId);
+  targetElement.appendChild(divExBoxLineLeft);
+  targetElement.appendChild(divExBoxLineRight);
+}
+
+// QUALIFICATION LEFT [ABOUT]
+
+function generateLeftSideCard(targetElementId, data) {
+  const divRowAboutCardRight = document.createElement("div");
+  divRowAboutCardRight.classList.add("row", "about-card-right");
+
+  const divColumn2RightAlign = document.createElement("div");
+  divColumn2RightAlign.classList.add("column-2", "right-align");
+
+  const divExPointBoxLeft = document.createElement("div");
+  divExPointBoxLeft.classList.add("ex-point-box-left", "bg2", "move-right");
+
+  divExPointBoxLeft.appendChild(generateQualificationData(data));
+
+  const divExPointRight = document.createElement("div");
+  divExPointRight.classList.add("ex-point-right", "bg1");
+
+  divColumn2RightAlign.appendChild(divExPointBoxLeft);
+  divColumn2RightAlign.appendChild(divExPointRight);
+
+  divRowAboutCardRight.appendChild(divColumn2RightAlign);
+  const targetElement = document.getElementById(targetElementId);
+  targetElement.appendChild(divRowAboutCardRight);
+}
+
+// QUALIFICATION RIGHT [ABOUT]
+
+function generateRightSideCard(targetElementId, data) {
+  const divRowAboutCardLeft = document.createElement("div");
+  divRowAboutCardLeft.classList.add("row", "about-card-left");
+
+  const divColumn2RightAlign = document.createElement("div");
+  divColumn2RightAlign.classList.add("column-2", "right-align");
+
+  const divColumn2LeftAlign = document.createElement("div");
+  divColumn2LeftAlign.classList.add("column-2", "left-align");
+
+  const divExPointBoxRight = document.createElement("div");
+  divExPointBoxRight.classList.add("ex-point-box-right", "bg2", "move-left");
+
+  divExPointBoxRight.appendChild(generateQualificationData(data));
+
+  const divExPointLeft = document.createElement("div");
+  divExPointLeft.classList.add("ex-point-left", "bg1");
+
+  divColumn2LeftAlign.appendChild(divExPointBoxRight);
+  divColumn2LeftAlign.appendChild(divExPointLeft);
+
+  divRowAboutCardLeft.appendChild(divColumn2RightAlign);
+  divRowAboutCardLeft.appendChild(divColumn2LeftAlign);
+  const targetElement = document.getElementById(targetElementId);
+  targetElement.appendChild(divRowAboutCardLeft);
+}
+
+// QUALIFICATION DATA [ABOUT]
+
+function generateQualificationData(data) {
+  if (data.type == "education") {
+    const divBoxHeader = document.createElement("div");
+    divBoxHeader.classList.add("box-header");
+    divBoxHeader.textContent = data.subject;
+
+    const divBoxSubHeader = document.createElement("div");
+    divBoxSubHeader.classList.add("box-sub-header");
+    const instituteLink = document.createElement("a");
+    instituteLink.href = data.institute_url;
+    instituteLink.target = "_blank";
+    const spanInstituteName = document.createElement("span");
+    spanInstituteName.classList.add("cross-theme", "wobble");
+    spanInstituteName.setAttribute("data-animation", "upscale");
+    spanInstituteName.textContent = data.institute_name;
+    instituteLink.appendChild(spanInstituteName);
+    divBoxSubHeader.appendChild(instituteLink);
+    divBoxSubHeader.innerHTML +=
+      "<br>" +
+      data.start_date +
+      " - " +
+      (data.is_present === "1" ? "Present" : data.end_date);
+
+    const divBoxDescription = document.createElement("div");
+    divBoxDescription.classList.add("box-description");
+    divBoxDescription.textContent = data.activity;
+
+    const divHolder = document.createElement("div");
+
+    divHolder.appendChild(divBoxHeader);
+    divHolder.appendChild(divBoxSubHeader);
+    divHolder.appendChild(divBoxDescription);
+    return divHolder;
+  } else if (data.type == "experience") {
+    const divBoxHeader = document.createElement("div");
+    divBoxHeader.classList.add("box-header");
+    divBoxHeader.textContent = data.position;
+
+    const divBoxSubHeader = document.createElement("div");
+    divBoxSubHeader.classList.add("box-sub-header");
+    const instituteLink = document.createElement("a");
+    instituteLink.href = data.institute_url;
+    instituteLink.target = "_blank";
+    const spanInstituteName = document.createElement("span");
+    spanInstituteName.classList.add("cross-theme", "wobble");
+    spanInstituteName.setAttribute("data-animation", "upscale");
+    spanInstituteName.textContent = data.institute_name;
+    instituteLink.appendChild(spanInstituteName);
+    divBoxSubHeader.appendChild(instituteLink);
+    divBoxSubHeader.innerHTML +=
+      "<br>" +
+      data.start_date +
+      " - " +
+      (data.is_present === "1" ? "Present" : data.end_date);
+
+    const divBoxDescription = document.createElement("div");
+    divBoxDescription.classList.add("box-description");
+    divBoxDescription.textContent = `${data.project_details}, `;
+
+    const projectLink = document.createElement("a");
+    projectLink.href = data.project_url_1;
+    projectLink.target = "_blank";
+    const spanProjectText = document.createElement("span");
+    spanProjectText.classList.add("cross-theme", "wobble");
+    spanProjectText.setAttribute("data-animation", "upscale");
+    spanProjectText.textContent = data.project_text_1;
+    projectLink.appendChild(spanProjectText);
+    divBoxDescription.appendChild(projectLink);
+
+    const divHolder = document.createElement("div");
+    divHolder.appendChild(divBoxHeader);
+    divHolder.appendChild(divBoxSubHeader);
+    divHolder.appendChild(divBoxDescription);
+    return divHolder;
+  } else {
+    return null;
+  }
+}
+
+
+// SINGLE PAGE [WORK]
+
+function generateProjectHTML(data) {
+  let html = `
+      <div class="row" style="justify-content: center;">
+          <div class="work-left">
+              <div class="work-details">
+                  <img class="img-float-left work-logo animate-left" src="${data.logo_image}" alt="Logo Image">
+                  ${data.details}
+              </div>
+              <div class="work-gallery animate-left">`;
+
+  // Loop through media data to add the right media links
+  data.media.forEach((item) => {
+      if (item.media_type === "Image") {
+          html += `<img class="work-media" src="${item.media_link}" />`;
+      } else if (item.media_type === "Vimeo") {
+          html += `<iframe src="${item.media_link}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>`;
+      } else {
+          html += `<video class="work-media" controls><source src="${item.media_link}" type="video/mp4"> Your browser does not support the video tag.</video>`;
+      }
+  });
+
+  html += `
+              </div>
+          </div>
+          <div class="work-right">
+              <div class="work-stats animate-top">
+                  <div class="work-card-tags-view">
+                      <div class="work-card-tag-view c-theme">${data.type}</div>
+                      <div class="work-card-tag-view c-theme-second">${data.stack}</div>
+                  </div>
+                  <b>Start Date:</b> ${data.start_date}<br /><br />
+                  <b>Last Contribution Date:</b> ${data.last_contribution_date}<br /><br />
+                  <b>Scope of Work:</b> ${data.scope_of_work}<br /><br />`;
+
+  // Check and add live and source links if they exist
+  if (data.live_url) {
+      html += `<div class="work-links-view">
+                  <a href="${data.live_url}" style="margin-bottom: 10px;" class="work-link-view c1">Goto App</a>`;
+  }
+
+  if (data.source_url) {
+      html += `<a href="${data.source_url}" style="margin-bottom: 10px;" class="work-link-view c1">Source</a>`;
+  }
+
+  html += `</div>
+                  <b>Current Status:</b> ${data.current_status}<br /><br />
+                  <b>Methodology:</b> ${data.methodology}<br /><br />
+                  <b>Tech Stack:</b><br/>`;
+
+  // Split tech stack value to get the list
+  const techStackList = data.tech_stack.split(",");
+  techStackList.forEach((tech) => {
+      html += `<div class="tech c1">${tech.trim()}</div>`;
+  });
+
+  html += `<br/>
+                  <b>Challenges and Risks:</b> ${data.challenges}<br /><br />
+                  <b>Future Scope:</b> ${data.future_scope}<br /><br />
+              </div>
+          </div>
+      </div>`;
+
+  return html;
 }

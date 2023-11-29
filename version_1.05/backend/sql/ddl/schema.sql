@@ -6,6 +6,7 @@ create table profile_info (
   nick_name varchar(50) null, 
   designations text null, 
   intro_text text null, 
+  about_text text null, 
   intro_image_url varchar(255) null, 
   resume_url varchar(255) null, 
   expertise_preference_details text null, 

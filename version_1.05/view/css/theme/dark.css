@@ -188,3 +188,6 @@ footer .credits a {
   margin: 20px;
   background-color: rgba(0, 0, 0, 0.5);
 }
+.work-card-tag-view {
+  background-color: rgba(0, 0, 0, 0.2);
+}
