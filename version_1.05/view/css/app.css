@@ -3009,13 +3009,23 @@ textarea.form-control {
   display: flex;
   justify-content: right;
 }
-
+.work-card-tags-view {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
 .work-card-tag {
   display: none;
   text-align: center;
   align-items: center;
 }
-
+.work-card-tag-view {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-align: center;
+  align-items: center;
+}
 .work-card .work-card-tags .work-card-tag {
   margin-left: 10px;
   width: fit-content;
