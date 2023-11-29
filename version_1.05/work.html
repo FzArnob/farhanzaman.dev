@@ -4,7 +4,7 @@
 <head>
     <title></title>
     <!-- required in production  -->
-    <!-- <base href="https://farhanzaman.dev/" /> -->
+    <base href="https://farhanzaman.dev/" />
     <link href="view/static/favicon.svg" rel="icon" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -88,9 +88,9 @@
     <script src="view/js/util.js"></script>
     <script>
         // required in production
-        // var work_id = window.location.pathname.split('/')[2];
-        // var work = result.profile.projects[work_id-1];
-        var work = result.profile.projects[0];
+        var work_id = window.location.pathname.split('/')[2];
+        var work = result.profile.projects[work_id-1];
+        // var work = result.profile.projects[0];
         document.title = 'Work - ' + work.name;
         document.getElementById('work-title').innerHTML = work.name;
         document.getElementById('work-role').innerHTML = work.work_role;
