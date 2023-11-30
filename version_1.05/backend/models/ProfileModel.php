@@ -261,8 +261,9 @@ class ProfileModel
     public function sendDirectMessage($profileId, $name, $email, $subject, $message)
     {
         $result = array();
-        $stmt = $this->conn->prepare("INSERT INTO direct_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        $stmt = $this->conn->prepare("INSERT INTO direct_messages (name, email, subject, message, fk_profile_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $name, $email, $subject, $message, $profileId);
+
         if ($stmt->execute()) {
             // Data inserted successfully
             $data = array();
@@ -270,30 +271,16 @@ class ProfileModel
             $data["name"] = $name;
             $data["email"] = $email;
             $data["subject"] = $subject;
-            $sql = "INSERT INTO profile_direct_messages (fk_profile_id, fk_message_id) VALUES (?, ?)";
-            // Prepare and bind the parameters
-            $stmt1 = $this->conn->prepare($sql);
-            $fk_profile_id = $profileId;
-            $fk_message_id = $stmt->insert_id;
-            $stmt1->bind_param("ss", $fk_profile_id, $fk_message_id);
-            // Execute the prepared statement
-            if ($stmt1->execute()) {
-                http_response_code(200);
-                $result["message"] = "Success: add";
-                $result["data"] = $data;
-            } else {
-                // Failed to insert data
-                http_response_code(500);
-                $this->conn->rollback();
-                $result["message"] = "Error: " . $stmt1->error;
-            }
-            $stmt1->close();
+
+            http_response_code(200);
+            $result["message"] = "Success: add";
+            $result["data"] = $data;
         } else {
             // Failed to insert data
             http_response_code(500);
-            $this->conn->rollback();
             $result["message"] = "Error: " . $stmt->error;
         }
+
         $stmt->close();
         return $result;
     }
