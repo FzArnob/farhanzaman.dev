@@ -182,6 +182,7 @@
     document.getElementById("about-gap").style.marginTop = window.innerHeight + "px";
     document.getElementById("about-gap").style.border = "none";
     generateQualification('qualification', combineAndLabel(result.profile.educations, result.profile.experiences));
+    enableMessages();
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
