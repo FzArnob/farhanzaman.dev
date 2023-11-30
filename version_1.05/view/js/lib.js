@@ -704,7 +704,7 @@ function generateWorkCard(work, workCardWidth, i) {
 }
 function createCardHolder(work, workBottom, workCardWidth, i) {
   var workCard = generateWorkCard(work, workCardWidth, i);
-  var workCardBottom = generateWorkCard(workBottom, workCardWidth, i);
+  var workCardBottom = generateWorkCard(workBottom, workCardWidth, i+1);
   workCardBottom.style.borderBottom = "none";
   var cardHolder = document.createElement("div");
   cardHolder.classList.add("work-card-holder");
@@ -750,7 +750,7 @@ function generateWorksMarquee(targetElement, worksData) {
       work,
       workBottom,
       workCardWidth,
-      i + 1
+      i
     );
     worksSpanOne.appendChild(cardHolderOne);
     worksSpanTwo.appendChild(cardHolderTwo);
@@ -1227,7 +1227,6 @@ function generateQualificationData(data) {
   }
 }
 
-
 // SINGLE PAGE [WORK]
 
 function generateProjectHTML(data) {
@@ -1242,13 +1241,13 @@ function generateProjectHTML(data) {
 
   // Loop through media data to add the right media links
   data.media.forEach((item) => {
-      if (item.media_type === "Image") {
-          html += `<img class="work-media" src="${item.media_link}" />`;
-      } else if (item.media_type === "Vimeo") {
-          html += `<iframe src="${item.media_link}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>`;
-      } else {
-          html += `<video class="work-media" controls><source src="${item.media_link}" type="video/mp4"> Your browser does not support the video tag.</video>`;
-      }
+    if (item.media_type === "Image") {
+      html += `<img class="work-media" src="${item.media_link}" />`;
+    } else if (item.media_type === "Vimeo") {
+      html += `<iframe src="${item.media_link}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>`;
+    } else {
+      html += `<video class="work-media" controls><source src="${item.media_link}" type="video/mp4"> Your browser does not support the video tag.</video>`;
+    }
   });
 
   html += `
@@ -1266,12 +1265,12 @@ function generateProjectHTML(data) {
 
   // Check and add live and source links if they exist
   if (data.live_url) {
-      html += `<div class="work-links-view">
+    html += `<div class="work-links-view">
                   <a href="${data.live_url}" style="margin-bottom: 10px;" class="work-link-view c1">${data.live_text}</a>`;
   }
 
   if (data.source_url) {
-      html += `<a href="${data.source_url}" style="margin-bottom: 10px;" class="work-link-view c1">Source</a>`;
+    html += `<a href="${data.source_url}" style="margin-bottom: 10px;" class="work-link-view c1">Source</a>`;
   }
 
   html += `</div>
@@ -1282,7 +1281,7 @@ function generateProjectHTML(data) {
   // Split tech stack value to get the list
   const techStackList = data.tech_stack.split(",");
   techStackList.forEach((tech) => {
-      html += `<div class="tech c1">${tech.trim()}</div>`;
+    html += `<div class="tech c1">${tech.trim()}</div>`;
   });
 
   html += `<br/>
