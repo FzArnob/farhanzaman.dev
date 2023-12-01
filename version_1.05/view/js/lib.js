@@ -679,9 +679,6 @@ function generateWorkCard(work, workCardWidth, i) {
   const title = document.createElement("div");
   title.classList.add("work-card-title", "c1");
   title.textContent = work.name;
-  title.addEventListener("click", () => {
-    window.location.href = "/work/" + (i + 1);
-  });
   const details = document.createElement("div");
   details.classList.add("work-card-details", "c2");
   details.textContent = work.details;
@@ -696,6 +693,9 @@ function generateWorkCard(work, workCardWidth, i) {
     typeTag.style.display = "none";
     stackTag.style.display = "none";
     title.classList.remove("work-card-text-style");
+  });
+  workCard.addEventListener("click", () => {
+    window.location.href = "/work/" + (i + 1);
   });
   workCard.appendChild(image);
   workCard.appendChild(tagsContainer);
@@ -1242,7 +1242,7 @@ function generateProjectHTML(data) {
   // Loop through media data to add the right media links
   data.media.forEach((item) => {
     if (item.media_type === "Image") {
-      html += `<img class="work-media" src="${item.media_link}" />`;
+      html += `<a href="${item.media_link}" target="_blank"><img class="work-media" src="${item.media_link}" /></a>`;
     } else if (item.media_type === "Vimeo") {
       html += `<iframe src="${item.media_link}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>`;
     } else {
