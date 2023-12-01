@@ -94,7 +94,7 @@
               <div id="circle"></div>
               <a href="#contact-section">Contact Me</a>
             </div>
-            <div class="btn-5 btn-5a icon-resume"><a href="#">Resume</a></div>
+            <div class="btn-5 btn-5a icon-resume"><a id="resume" href="">Resume</a></div>
           </div>
         </div>
 
@@ -312,6 +312,7 @@
     });
     document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
     document.getElementById("content-gap").style.border = "none";
+    document.getElementById("resume").href = result.profile.info.resume_url;
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
