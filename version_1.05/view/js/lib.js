@@ -704,7 +704,7 @@ function generateWorkCard(work, workCardWidth, i) {
 }
 function createCardHolder(work, workBottom, workCardWidth, i) {
   var workCard = generateWorkCard(work, workCardWidth, i);
-  var workCardBottom = generateWorkCard(workBottom, workCardWidth, i+1);
+  var workCardBottom = generateWorkCard(workBottom, workCardWidth, i + 1);
   workCardBottom.style.borderBottom = "none";
   var cardHolder = document.createElement("div");
   cardHolder.classList.add("work-card-holder");
@@ -1242,7 +1242,7 @@ function generateProjectHTML(data) {
   // Loop through media data to add the right media links
   data.media.forEach((item) => {
     if (item.media_type === "Image") {
-      html += `<a href="${item.media_link}" target="_blank"><img class="work-media" src="${item.media_link}" /></a>`;
+      html += `<a class="work-media-link" href="${item.media_link}" target="_blank"><img class="work-media" src="${item.media_link}" /></a>`;
     } else if (item.media_type === "Vimeo") {
       html += `<iframe src="${item.media_link}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" class="work-media"></iframe>`;
     } else {
