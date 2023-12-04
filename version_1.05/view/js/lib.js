@@ -1266,11 +1266,11 @@ function generateProjectHTML(data) {
   // Check and add live and source links if they exist
   if (data.live_url) {
     html += `<div class="work-links-view">
-                  <a href="${data.live_url}" style="margin-bottom: 10px;" class="work-link-view c1">${data.live_text}</a>`;
+                  <a href="${data.live_url}" target="_blank" style="margin-bottom: 10px;" class="work-link-view c1">${data.live_text}</a>`;
   }
 
   if (data.source_url) {
-    html += `<a href="${data.source_url}" style="margin-bottom: 10px;" class="work-link-view c1">Source</a>`;
+    html += `<a href="${data.source_url}" target="_blank" style="margin-bottom: 10px;" class="work-link-view c1">Source</a>`;
   }
 
   html += `</div>
