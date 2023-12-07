@@ -3393,6 +3393,7 @@ textarea.form-control {
   max-width: 45%;
   width: fit-content;
   height: fit-content;
+  z-index: 1;
 }
 
 .about-contact {
