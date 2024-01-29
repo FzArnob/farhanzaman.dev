@@ -1,2 +1,2 @@
-# fzs-lab-portfolio
+# farhanzaman.dev
  porfolio site - Md. Farhan Zaman
