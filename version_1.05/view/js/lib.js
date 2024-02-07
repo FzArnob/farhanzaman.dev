@@ -647,7 +647,7 @@ function generateWorks(targetElement, worksData) {
       stackTag.style.display = "none";
     });
     workCard.addEventListener("click", () => {
-      window.location.href = "/work/" + (i + 1);
+      window.location.href = "/work?work_id=" + (i + 1);
     });
     workCard.appendChild(image);
     workCard.appendChild(tagsContainer);
@@ -695,7 +695,7 @@ function generateWorkCard(work, workCardWidth, i) {
     title.classList.remove("work-card-text-style");
   });
   workCard.addEventListener("click", () => {
-    window.location.href = "/work/" + (i + 1);
+    window.location.href = "/work?work_id=" + (i + 1);
   });
   workCard.appendChild(image);
   workCard.appendChild(tagsContainer);

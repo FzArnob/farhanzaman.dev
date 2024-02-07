@@ -3,8 +3,6 @@
 
 <head>
     <title></title>
-    <!-- required in production  -->
-    <base href="https://farhanzaman.dev/" />
     <link href="view/static/favicon.svg" rel="icon" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -88,10 +86,14 @@
     <script src="view/js/lib.js"></script>
     <script src="view/js/util.js"></script>
     <script>
-        // required in production
-        var work_id = window.location.pathname.split('/')[2];
-        var work = result.profile.projects[work_id-1];
-        // var work = result.profile.projects[0];
+        // Get the work_id from the query parameter
+    var queryParams = new URLSearchParams(window.location.search);
+    var work_id = queryParams.get('work_id');
+
+    // Check if work_id is valid and within the array bounds
+    if (work_id && !isNaN(work_id) && work_id > 0 && work_id <= result.profile.projects.length) {
+        // Subtract 1 to match array index
+        var work = result.profile.projects[work_id - 1];
         document.title = 'Work - ' + work.name;
         document.getElementById('work-title').innerHTML = work.name;
         document.getElementById('work-role').innerHTML = work.work_role;
@@ -116,6 +118,12 @@
                 console.error('Font loading failed:', error);
             });
         });
+        // Now you can use the 'work' object as needed
+        console.log('Selected Work:', work);
+    } else {
+        console.error('Invalid or missing work_id in the query parameter. Redirecting to /404');
+        window.location.href = '/404'; // Redirect to /404
+    }
     </script>
 </body>
 
