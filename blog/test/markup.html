@@ -18,16 +18,17 @@
     <button onclick="showPreview()">Show Preview</button>
     <div id="preview"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+    <script src="./md-parser2.js"></script>
     <script>
         function showPreview() {
             var inputText = document.getElementById("markupInput").value;
             var previewDiv = document.getElementById("preview");
-            
+            let converter = new showdown.Converter();
             // Use markdown-it to render the inputText as HTML
-            var md = window.markdownit();
-            var html = md.render(inputText);
-            
+            // var md = window.markdownit();
+            // var html = md.render(inputText);
+            var html = converter.makeHtml(inputText);
+
             previewDiv.innerHTML = html;
         }
     </script>

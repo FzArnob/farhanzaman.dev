@@ -1,0 +1,194 @@
+🔥Most Optimized ||🌟0ms || Horizontal Scanning 🆚 Binary Search || Java || C++ || Python
+
+# Intuition:
+
+Both the solution below aim to find the longest common prefix among a set of strings. While the Horizontal Scanning approach iteratively reduces the prefix by comparing characters horizontally, the Binary Search approach uses a divide and conquer strategy to efficiently search for the longest common prefix.
+
+# Horizontal Scanning Approach:
+ ### **Idea:**
+The idea behind the horizontal scanning algorithm is to start with the first string in the array (`strs[0]`) as the initial prefix. Then, it iterates through the remaining strings (`strs[1]` to `strs[n]`) and checks if the current prefix is a common prefix for each string. If it's not, it shortens the prefix by removing the last character until it becomes a common prefix for all strings or becomes empty.
+
+### **Explanation:**
+1. Initialize `prefix` with the first string in the array `strs[0]`.
+2. Iterate through the array `strs` starting from the second string (index 1) up to the last string.
+3. Inside the loop, while the current string (`strs[i]`) does not start with the current prefix, remove the last character from the prefix untill it matches current string.
+    - This is done by the line `prefix = prefix.substring(0, prefix.length() - 1);`.
+4. If the prefix becomes empty, return an empty (`""`) string because there's no common prefix among all strings.
+5. After iterating through all strings, return the final prefix.
+
+### **Code:**
+Please **Upvote** if you find it useful 👍⬆️
+```java []
+class Solution {
+public String longestCommonPrefix(String[] strs) {
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+                if (prefix.isEmpty()) {
+                    return "";
+                }
+            }
+        }
+        return prefix;
+    }
+}
+```
+```C++ []
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+       string prefix = strs[0];
+        for (size_t i = 1; i < strs.size(); ++i) {
+            while (strs[i].find(prefix) != 0) {
+                prefix = prefix.substr(0, prefix.length() - 1);
+                if (prefix.empty()) return "";
+            }
+        }
+        return prefix; 
+    }
+};
+```
+```python []
+class Solution:
+    def longestCommonPrefix(self, strs):
+        prefix = strs[0]
+        for i in range(1, len(strs)):
+            while strs[i].find(prefix) != 0:
+                prefix = prefix[:-1]
+                if not prefix:
+                    return ""
+        return prefix
+```
+
+### **Complexity:** 
+  - Time Complexity: O(S), where S is the sum of all characters in all strings. In the worst case, each character of each string is compared.
+  - Space Complexity: O(1) as no additional space is used apart from the prefix variable.
+
+# Binary Search Approach:
+### Idea:
+The binary search algorithm divides the search range in half at each step, efficiently reducing the search space. In this case, the algorithm starts with the entire length of the first string as the initial range. Then, it narrows down the range by checking if the prefix of that length is a common prefix for all strings. If it is, it updates the lower bound of the range; otherwise, it updates the upper bound.
+
+### Explanation:
+1. Initialize `high` with the length of the first string in the array `strs[0]`.
+2. Iterate through the array `strs` starting from the second string (index 1) up to the last string to find the minimum length among all strings. This will be used as the upper bound (`high`) for the binary search.
+3. Initialize `low` with 1, as the minimum possible length for the common prefix.
+4. Initialize an empty string `prefix`.
+5. While `low` is less than or equal to `high`, perform binary search.
+   - Calculate the midpoint as `(low + high) / 2`.
+   - Check if the substring of length `mid` from the first string is a common prefix for all strings using the `isCommonPrefix` method.
+   - If it is a common prefix, update `prefix` with this prefix and update `low` to `mid + 1`.
+   - Otherwise, update `high` to `mid - 1`.
+6. After the binary search, return the final prefix.
+
+### **Code:**
+Please **Upvote** if you find it useful 👍⬆️
+```java []
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        int high = strs[0].length();
+        for (int i=1; i < strs.length; i++) {
+            high = Math.min(high, strs[i].length());
+        }
+        int low = 1;
+        String prefix = "";
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (isCommonPrefix(strs, mid)) {
+                prefix = strs[0].substring(0, mid);
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return prefix;
+    }
+    private boolean isCommonPrefix(String[] strs, int len) {
+        String prefix = strs[0].substring(0, len);
+        for (int i = 1; i < strs.length; i++) {
+            if (!strs[i].startsWith(prefix)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+```C++ []
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        int high = strs[0].length();
+        for (int i = 1; i < strs.size(); i++) {
+            high = min(high, (int)strs[i].length());
+        }
+        int low = 1;
+        string prefix = "";
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (isCommonPrefix(strs, mid)) {
+                prefix = strs[0].substr(0, mid);
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return prefix;
+    }
+
+private:
+    bool isCommonPrefix(vector<string>& strs, int len) {
+        string prefix = strs[0].substr(0, len);
+        for (int i = 1; i < strs.size(); i++) {
+            if (strs[i].compare(0, len, prefix) != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+```
+```python []
+class Solution:
+    def longestCommonPrefix(self, strs):
+        high = len(strs[0])
+        for i in range(1, len(strs)):
+            high = min(high, len(strs[i]))
+        
+        low = 1
+        prefix = ""
+        while low <= high:
+            mid = (low + high) // 2
+            if self.isCommonPrefix(strs, mid):
+                prefix = strs[0][:mid]
+                low = mid + 1
+            else:
+                high = mid - 1
+        
+        return prefix
+    
+    def isCommonPrefix(self, strs, length):
+        prefix = strs[0][:length]
+        for i in range(1, len(strs)):
+            if not strs[i].startswith(prefix):
+                return False
+        return True
+```
+
+### **Complexity:** 
+  - Time Complexity: O(S*log(n)), where S is the sum of all characters in all strings and n is the number of strings. Binary search is applied, so the time complexity is logarithmic. However, for each binary search step, the algorithm also compares characters, leading to a log(n) factor for each string, resulting in O(S*log(n)).
+  - Space Complexity: O(1) as no additional space is used apart from the prefix variable and loop counters.
+
+# Comparison:
+Please **Upvote** if you find it useful 👍⬆️
+| Aspect                   | Horizontal Scanning                                           | Binary Search                                                                                               |
+|--------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| Time Complexity          | O(S), where S is the sum of all characters in all strings     | O(S * log N), where S is the sum of all characters in all strings, and N is the number of strings         |
+| Space Complexity         | O(1)                                                          | O(1)                                                                                                        |
+| Efficiency               | Less efficient for large datasets and long strings              | More efficient for large datasets and long strings                                                           |
+| Simplicity               | More straightforward and easier to understand                   | More complex due to binary search logic                                                                     |
+
+
+**Note: For given Constraints, `Horizontal Scanning` is the better Option**
+
+![4 upvote.jpg](https://assets.leetcode.com/users/images/b3eefd53-d0fb-4081-86d4-488a089ed778_1712207894.5093455.jpeg)
