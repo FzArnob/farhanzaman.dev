@@ -1,0 +1,183 @@
+.bg1 {
+  transition: all 0.5s;
+  background-color: #ffffff;
+}
+
+.bg2 {
+  transition: all 0.5s;
+  background-color: #f6f6f6;
+}
+
+.bg2-change {
+  transition: all 0.5s;
+  background-color: #fdfeff;
+}
+
+.c1 {
+  transition: all 0.5s;
+  color: #252525;
+}
+
+.c2 {
+  transition: all 0.5s;
+  color: #343434;
+}
+
+.bg-theme {
+  transition: all 0.5s;
+  background-color: #00d3b4;
+}
+
+.c-theme {
+  transition: all 0.5s;
+  color: #00d3b4;
+}
+
+.bg-theme-second {
+  transition: all 0.5s;
+  background-color: #fd2155;
+}
+
+.c-theme-second {
+  transition: all 0.5s;
+  color: #fd2155;
+}
+
+.op1 {
+  opacity: 0.8;
+}
+
+.c3 {
+  transition: all 0.5s;
+  color: #7f7f7f;
+}
+
+.cross-theme {
+  transition: all 0.5s;
+  color: #fd2155;
+}
+
+.bottom-gradient-bg {
+  background: rgb(37, 37, 37);
+  background: linear-gradient(
+    to bottom,
+    rgba(37, 37, 37, 0) 0%,
+    rgba(37, 37, 37, 1) 100%
+  );
+  border-bottom: 1px solid #00d3b4;
+}
+
+#back-to-top-btn:hover {
+  color: #fff;
+  box-shadow: 0 0 15px #00d3b4;
+}
+
+.triangle {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #f6f6f6;
+}
+
+.button-a {
+  color: #fff;
+}
+
+.reverse-color {
+  color: #fff;
+}
+.zoom-icon {
+  color: #fff;
+}
+.bottom-gradient {
+  height: 50px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgb(255, 255, 255)
+  );
+}
+.left-gradient {
+  width: 50px;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgb(255, 255, 255)
+  );
+}
+
+.intro-text {
+  background-color: rgba(240, 240, 240, 0.5);
+}
+body {
+  cursor: url("../../static/cursor-w.png"), auto;
+}
+.mobile-nav-menu {
+  transition: all 0.5s;
+  background-color: #f6f6f6;
+}
+.btn-5a:hover a {
+  color: #fff;
+  transform: translateY(65px);
+}
+.btn-5 a {
+  color: #fff;
+  /*span the entire button to hide icons*/
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  /*transition parameters*/
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.ex-point-box-left {
+  border-right: 10px solid #c4c4c4;
+}
+.ex-point-box-right {
+  border-left: 10px solid #c4c4c4;
+}
+.ex-point-box-left::before {
+  border-color: transparent transparent transparent #c4c4c4;
+}
+.ex-point-box-right::before {
+  border-color: transparent #c4c4c4 transparent transparent;
+}
+.work-card-tag {
+  background-color: #ffffff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+.work-card {
+  border-bottom: 2px dashed rgba(0, 0, 0, 0.5);
+  border-left: 2px dashed rgba(0, 0, 0, 0.5);
+}
+.work-card-full {
+  border: none;
+}
+footer .credits a {
+  color: #353535;
+}
+.about-top-container {
+  background: linear-gradient(
+    220deg,
+    rgba(253, 33, 85, 0),
+    rgba(253, 33, 85, 0.6),
+    rgba(253, 33, 85, 0),
+    rgba(0, 211, 180, 1)
+  );
+}
+.work-media{
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px;
+  margin: 20px;
+}
+.work-card-tag-view {
+  background-color: rgba(0, 0, 0, 0.05);
+}
