@@ -162,17 +162,38 @@ create table direct_messages (
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
 create table visitors (
-  visitor_id int auto_increment primary key, 
-  visitor_ip varchar(45) null, 
-  browser_name varchar(255) null, 
-  browser_version varchar(50) null, 
-  operating_system varchar(255) null, 
-  device_type varchar(255) null, 
-  device_details varchar(255) null, 
-  rendering_engine varchar(255) null, 
-  mobile_specific_info text null, 
-  created_date timestamp default current_timestamp not null, 
-  updated_date timestamp null on update current_timestamp, 
-  fk_profile_id varchar(20) not null, 
+  visitor_id int auto_increment primary key,
+  visitor_ip varchar(45) unique,
+  is_tracked boolean,
+  continent varchar(255),
+  country_iso_code varchar(2),
+  country_phone_code varchar(5),
+  country_name varchar(255),
+  country_currency varchar(3),
+  location_latitude decimal(10, 8),
+  location_longitude decimal(11, 8),
+  subdivisions_name varchar(255),
+  state_name varchar(255),
+  city_name varchar(255),
+  created_date timestamp default current_timestamp not null,
+  updated_date timestamp null on update current_timestamp,
+  fk_profile_id varchar(20) not null,
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
+create table actions (
+  action_id int auto_increment primary key,
+  browser_name varchar(255),
+  browser_version varchar(50),
+  operating_system varchar(255),
+  device_type varchar(255),
+  device_details varchar(255),
+  rendering_engine varchar(255),
+  mobile_specific_info text,
+  created_date timestamp default current_timestamp not null,
+  page_tag varchar(255),
+  activity_tag varchar(255),
+  action_tag varchar(255),
+  fk_visitor_id int not null,
+  foreign key (fk_visitor_id) references visitors (visitor_id)
+);
+
