@@ -1,5 +1,5 @@
-const host = "http://localhost/fzs-lab-portfolio/version_1.06/backend/api";
-// const host = "http://192.168.0.108/fzs-lab-portfolio/version_1.06/backend/api";
+const host = "http://localhost/farhanzaman.dev/version_1.06/backend/api";
+// const host = "http://192.168.0.108/farhanzaman.dev/version_1.06/backend/api";
 // const host = "https://farhanzaman.dev/backend/api";
 
 // SEND MESSAGE [CONTACT]

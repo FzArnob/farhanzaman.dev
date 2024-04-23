@@ -17,12 +17,12 @@ $model = new ProfileModel($conn);
 $controller = new ProfileController($model);
 
 // Process the request
-if (isset($_GET['profile_id'])) {
+if (isset($_GET['profile_id']) && isset($_GET['page_tag']) && isset($_GET['activity_tag']) && isset($_GET['action_tag'])) {
     $profile_id = $_GET['profile_id'];
-    $controller->synchronizeInfo($profile_id);
+    $controller->synchronizeInfo($_GET['profile_id'], $_GET['page_tag'], $_GET['activity_tag'] ,$_GET['action_tag']);
 } else {
     http_response_code(400);
-    $result["message"] = "Error: profile_id parameter is missing.";
+    $result["message"] = "Error: some parameters are missing.";
     $errorJson = json_encode($result);
 
     // Return the JSON response

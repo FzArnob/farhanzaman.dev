@@ -62,7 +62,7 @@ function handleNavScroll() {
         mostVisiblePercentage = visiblePercentage;
       }
 
-      if (correspondingNavLink.classList.contains("active")) {
+      if (correspondingNavLink.classList?.contains("active")) {
         correspondingNavLink.classList.remove("active");
       }
     });
