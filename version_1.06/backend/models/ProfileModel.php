@@ -103,11 +103,11 @@ class ProfileModel
     // Helper function to extract mobile-specific information
     function getMobileSpecificInfo($userAgent)
     {
-        $info = '';
+        $info = 'Not_Mobile';
         if (strpos($userAgent, 'Mobile') !== false) {
             // Extract additional mobile-specific info, such as screen resolution or pixel density
             // Modify this section as per your requirements
-            $info = 'Some mobile-specific information';
+            $info = 'Mobile';
         }
         return $info;
     }
