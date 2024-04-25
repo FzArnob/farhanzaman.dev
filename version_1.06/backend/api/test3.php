@@ -1,8 +1,8 @@
 <?php
 function parseUserAgent($userAgent)
 {
-    $browserNames = array('Chrome', 'Firefox', 'Safari', 'Internet Explorer');
-    $operatingSystems = array('Windows', 'Macintosh', 'Linux', 'iOS', 'Android');
+    $browserNames = array('OPR/', 'Chrome', 'Firefox', 'Safari', 'Internet Explorer');
+    $operatingSystems = array('Windows', 'Macintosh', 'Android', 'iPhone', 'iPod', 'iPad', 'CrOS', 'iOS', '', '', '', '', '', 'Ubuntu', 'Fedora','Linux');
     $deviceTypes = array(
         'Desktop' => array('Windows', 'Macintosh', 'Linux', 'X11', 'CrOS'),
         'Mobile' => array('iPhone', 'Android', 'Windows Phone', 'BlackBerry', 'Mobile'),
