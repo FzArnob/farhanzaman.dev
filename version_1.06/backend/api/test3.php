@@ -1,12 +1,17 @@
 <?php
 function parseUserAgent($userAgent)
 {
-    $browserNames = array('OPR/', 'Chrome', 'Firefox', 'Safari', 'Internet Explorer');
-    $operatingSystems = array('Windows', 'Macintosh', 'Android', 'iPhone', 'iPod', 'iPad', 'CrOS', 'iOS', '', '', '', '', '', 'Ubuntu', 'Fedora','Linux');
+    $browserNames = array('OPR/', 'MiuiBrowser/', 'HuaweiBrowser/', 'VivoBrowser/', 'HeyTapBrowser/', 'Silk/', 'Edge/', 'Presto/', 'EdgA/', 'SamsungBrowser/', 'UCBrowser/','Brave/', 'Vivaldi/', 'YaBrowser/', 'Discord/', 'Twitter', 'LinkedIn/', 'Snapchat/', 'Pinterest/', 'WhatsApp/', 'Instagram ', 'FBAV/', 'FBAN/', 'FB_IAB/', 'FB4A/','FBIOS/', 'Chrome/', 'Firefox/', 'Safari/');
+    // Opera Browser
+    $operatingSystems = array('Windows', 'Macintosh', 'Windows Phone', 'BBE', 'Android', 'iPhone', 'iPod', 'iPad', 'CrOS', 'iOS', 'CentOS', 'RHEL', 'FreeBSD', 'PlayStation', 'Ubuntu', 'Fedora','Linux');
+    // Microsoft Windows
+    // Mac OS
+    // Red Hat Enterprise Linux
+    // Chrome OS
     $deviceTypes = array(
+        'Mobile' => array('iPhone', 'Android', 'Windows Phone', 'BBE', 'Mobile'),
         'Desktop' => array('Windows', 'Macintosh', 'Linux', 'X11', 'CrOS'),
-        'Mobile' => array('iPhone', 'Android', 'Windows Phone', 'BlackBerry', 'Mobile'),
-        'Tablet' => array('iPad', 'Android', 'Tablet'),
+        'Tablet' => array('iPad', 'Touch', 'SM-', ),
         'SmartTV' => array('SMART-TV'),
         'Console' => array('PlayStation', 'Xbox', 'Nintendo'),
         'Wearable' => array('SmartWatch', 'Wearable'),
@@ -69,7 +74,9 @@ function parseUserAgent($userAgent)
 function getBrowserVersion($userAgent, $browser)
 {
     $startPos = strpos($userAgent, $browser) + strlen($browser) + 1;
-    $endPos = strpos($userAgent, ' ', $startPos);
+    $endPos = strpos($userAgent.' ', ' ', $startPos);
+    echo $startPos;
+    echo $endPos;
     $version = substr($userAgent, $startPos, $endPos - $startPos);
     return $version;
 }
@@ -103,6 +110,6 @@ function getMobileSpecificInfo($userAgent)
     }
     return $info;
 }
-$userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36 OPR/75.0.3969.285";
+$userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36 OPR/75.0.3969.285 ";
 print_r(parseUserAgent($userAgent));
 ?>
