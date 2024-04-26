@@ -23,7 +23,7 @@ class ProfileController
     }
     public function synchronizeInfo($profile_id, $page_tag, $activity_tag, $action_tag)
     {
-        $result = $this->model->saveVisitorData($profile_id);
+        $result = $this->model->saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag);
 
         $response = array(
             "success" => $result

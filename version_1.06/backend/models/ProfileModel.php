@@ -151,36 +151,115 @@ class ProfileModel
         $engine = substr($userAgent, $startPos, $endPos - $startPos);
         return $engine;
     }
-    public function saveVisitorData($profile_id)
+    public function saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag)
     {
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
         $result = $this->parseUserAgent($userAgent);
+        $ip = $_SERVER['REMOTE_ADDR'];
 
-        $query = "INSERT INTO visitors (visitor_ip, fk_profile_id, browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Check if visitor with the same IP already exists
+        $checkQuery = "SELECT visitor_id FROM visitors WHERE visitor_ip = ?";
+        $stmt = $this->conn->prepare($checkQuery);
+        $stmt->bind_param("s", $ip);
+        $stmt->execute();
+        $stmt->store_result();
+        $visitor_id = 0;
+        if ($stmt->num_rows > 0) {
+            // Visitor already exists, get the visitor_id
+            $stmt->bind_result($visitor_id);
+            $stmt->fetch();
+            // Visitor already exists, get the visitor_id
+            $stmt->bind_result($visitor_id);
+            $stmt->fetch();
+            $stmt->close();
 
-        $stmt = $this->conn->prepare($query);
+            // Update the updated_date for the existing visitor
+            $updateQuery = "UPDATE visitors SET updated_date = NOW() WHERE visitor_id = ?";
+            $updateStmt = $this->conn->prepare($updateQuery);
+            $updateStmt->bind_param("i", $visitor_id);
+            $updateStmt->execute();
+            $updateStmt->close();
+        } else {
+            // Visitor does not exist, fetch geo info and insert new visitor
+            $api_url = "https://api.geoapify.com/v1/ipinfo?ip=$ip&apiKey=b8568cb9afc64fad861a69edbddb2658";
+            $response = file_get_contents($api_url);
+            $data = json_decode($response, true);
+
+            // Check if the API call was successful
+            $is_tracked = false;
+            if ($response !== false && isset($data["continent"])) {
+                $is_tracked = true;
+            }
+
+
+            $insertQuery = "INSERT INTO visitors (visitor_ip, is_tracked, continent, country_iso_code, country_phone_code, country_name, country_currency, location_latitude, location_longitude, subdivisions_name, state_name, city_name, fk_profile_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $this->conn->prepare($insertQuery);
+
+            $continentName = isset($data["continent"]["name"]) ? $data["continent"]["name"] : null;
+            $countryIsoCode = isset($data["country"]["iso_code"]) ? $data["country"]["iso_code"] : null;
+            $countryPhoneCode = isset($data["country"]["phone_code"]) ? $data["country"]["phone_code"] : null;
+            $countryName = isset($data["country"]["name"]) ? $data["country"]["name"] : null;
+            $countryCurrency = isset($data["country"]["currency"]) ? $data["country"]["currency"] : null;
+            $locationLatitude = isset($data["location"]["latitude"]) ? $data["location"]["latitude"] : null;
+            $locationLongitude = isset($data["location"]["longitude"]) ? $data["location"]["longitude"] : null;
+            $subdivisionsName = isset($data["subdivisions"][0]["names"]["en"]) ? $data["subdivisions"][0]["names"]["en"] : null;
+            $stateName = isset($data["state"]["name"]) ? $data["state"]["name"] : null;
+            $cityName = isset($data["city"]["names"]["en"]) ? $data["city"]["names"]["en"] : null;
+
+            $stmt->bind_param(
+                "sisssssddssss",
+                $ip,
+                $is_tracked,
+                $continentName,
+                $countryIsoCode,
+                $countryPhoneCode,
+                $countryName,
+                $countryCurrency,
+                $locationLatitude,
+                $locationLongitude,
+                $subdivisionsName,
+                $stateName,
+                $cityName,
+                $profile_id
+            );
+
+            $stmt->execute();
+            // Get the visitor_id of the newly inserted visitor
+            $visitor_id = $stmt->insert_id;
+            $stmt->close();
+        }
+
+        // Insert data into actions table
+        $actionQuery = "INSERT INTO actions (browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info, page_tag, activity_tag, action_tag, fk_visitor_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($actionQuery);
         $stmt->bind_param(
-            "sssssssss",
-            $_SERVER['REMOTE_ADDR'],
-            $profile_id,
+            "sssssssssss",
             $result['browser_name'],
             $result['browser_version'],
             $result['operating_system'],
             $result['device_type'],
             $result['device_details'],
             $result['rendering_engine'],
-            $result['mobile_specific_info']
+            $result['mobile_specific_info'],
+            $page_tag,
+            $activity_tag,
+            $action_tag,
+            $visitor_id
         );
-        if ($_SERVER['REMOTE_ADDR'] == "::1") return false;
         if ($stmt->execute()) {
+            $stmt->close();
             // Insertion successful
             return true;
         } else {
+            $stmt->close();
             // Insertion failed
             return false;
         }
     }
+
 
     public function getProfileData($profile_id)
     {
