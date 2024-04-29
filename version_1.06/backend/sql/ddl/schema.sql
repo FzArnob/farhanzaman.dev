@@ -180,7 +180,16 @@ create table visitors (
   fk_profile_id varchar(20) not null,
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
-create table actions (
+create table visitor_sessions (
+  session_id varchar(30) primary key,
+  created_date timestamp default current_timestamp not null,
+  last_active_date timestamp null,
+  action_points int default 1 not null,
+  end_date timestamp null,
+  fk_visitor_id int not null,
+  foreign key (fk_visitor_id) references visitors (visitor_id)
+);
+create table visitor_actions (
   action_id int auto_increment primary key,
   browser_name varchar(255),
   browser_version varchar(50),
@@ -188,22 +197,11 @@ create table actions (
   device_type varchar(255),
   device_details varchar(255),
   rendering_engine varchar(255),
-  mobile_specific_info text,
+  mobile_specific_info boolean default 0,
   created_date timestamp default current_timestamp not null,
   page_tag varchar(255),
   activity_tag varchar(255),
   action_tag varchar(255),
-  fk_visitor_id int not null,
-  foreign key (fk_visitor_id) references visitors (visitor_id),
   fk_session_id varchar(30) not null,
   foreign key (fk_session_id) references visitor_sessions (session_id)
-);
-create table visitor_sessions (
-  session_id varchar(30) primary key,
-  start_time timestamp default current_timestamp not null,
-  last_active_time timestamp null on update current_timestamp,
-  action_points int not null;
-  end_time timestamp null on update current_timestamp + interval 1 day,
-  fk_visitor_id int not null,
-  foreign key (fk_visitor_id) references visitors (visitor_id)
 );

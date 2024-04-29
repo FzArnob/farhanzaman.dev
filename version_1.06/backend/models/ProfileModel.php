@@ -118,8 +118,8 @@ class ProfileModel
 
         // Extract mobile-specific information (if available)
         if ($info['device_type'] === 'Mobile') {
-            $info['mobile_specific_info'] = 'true';
-        } else $info['mobile_specific_info'] = 'false';
+            $info['mobile_specific_info'] = 1;
+        } else $info['mobile_specific_info'] = 0;
 
         return $info;
     }
@@ -151,12 +151,9 @@ class ProfileModel
         $engine = substr($userAgent, $startPos, $endPos - $startPos);
         return $engine;
     }
-    public function saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag)
-    {
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $result = $this->parseUserAgent($userAgent);
-        $ip = $_SERVER['REMOTE_ADDR'];
 
+    function checkAndGetVisitorId($profile_id, $ip)
+    {
         // Check if visitor with the same IP already exists
         $checkQuery = "SELECT visitor_id FROM visitors WHERE visitor_ip = ?";
         $stmt = $this->conn->prepare($checkQuery);
@@ -230,13 +227,87 @@ class ProfileModel
             $visitor_id = $stmt->insert_id;
             $stmt->close();
         }
+        return $visitor_id;
+    }
 
+    function insertNewSession($visitor_session_id, $visitor_id)
+    {
+        // Get the current timestamp
+        $currentTimestamp = date('Y-m-d H:i:s');
+        // Calculate end time as start time + 1 day
+        $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
+        $action_points = 1;
+        // Insert new session into visitor_sessions table
+        $sessionQuery = "INSERT INTO visitor_sessions (session_id, created_date, last_active_date, action_points, end_date, fk_visitor_id) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sessionQuery);
+        // Bind parameters
+        $stmt->bind_param("sssisi", $visitor_session_id, $currentTimestamp, $currentTimestamp, $action_points, $endTime, $visitor_id);
+        // Execute query
+        $stmt->execute();
+        // Close statement
+        $stmt->close();
+    }
+    private function updateSession($visitor_session_id, $visitor_id)
+    {
+        $sessionExists = $this->checkSessionExists($visitor_session_id, $visitor_id);
+        if ($sessionExists) {
+            // Get the current timestamp
+            $currentTimestamp = date('Y-m-d H:i:s');
+            // Calculate end time as start time + 1 day
+            $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
+            // Update last_active_time and action_points in visitor_sessions table
+            $updateQuery = "UPDATE visitor_sessions SET last_active_date = ?, action_points = action_points + 1, end_date = ? WHERE session_id = ? AND fk_visitor_id = ?";
+            $stmt = $this->conn->prepare($updateQuery);
+            $stmt->bind_param("sssi", $currentTimestamp, $endTime, $visitor_session_id, $visitor_id);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            $this->insertNewSession($visitor_session_id, $visitor_id);
+        }
+    }
+    function checkSessionExists($visitor_session_id, $visitor_id)
+    {
+        $query = "SELECT COUNT(*) as count FROM visitor_sessions WHERE session_id = ? AND fk_visitor_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("si", $visitor_session_id, $visitor_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        // Return true if session exists, false otherwise
+        return $row['count'] > 0;
+    }
+
+    public function saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag)
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $visitor_id = $this->checkAndGetVisitorId($profile_id, $ip);
+        $visitor_session_id = null;
+        // Check if the visitor has a session cookie
+        if (!isset($_COOKIE['sis_track_id'])) {
+            // If no session cookie exists, generate a new session ID
+            $visitor_session_id = 'sis_' . substr(md5(uniqid()), 0, 26); // Generating unique ID of length 30 prefixed with 'sis_'
+            // Set the session ID as a cookie with an expiration time (e.g., 1 day)
+            setcookie('sis_track_id', $visitor_session_id, time() + (86400 * 1), "/");
+            // Insert new session
+            $this->insertNewSession($visitor_session_id, $visitor_id);
+        } else {
+            // If a session cookie exists, retrieve the session ID
+            $visitor_session_id = $_COOKIE['sis_track_id'];
+            // Set the session ID as a cookie with an expiration time (e.g., 1 day)
+            setcookie('sis_track_id', $visitor_session_id, time() + (86400 * 1), "/");
+            // Update session time and action count
+            $this->updateSession($visitor_session_id, $visitor_id);
+        }
+
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $result = $this->parseUserAgent($userAgent);
         // Insert data into actions table
-        $actionQuery = "INSERT INTO actions (browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info, page_tag, activity_tag, action_tag, fk_visitor_id) 
+        $actionQuery = "INSERT INTO visitor_actions (browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info, page_tag, activity_tag, action_tag, fk_session_id) 
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($actionQuery);
         $stmt->bind_param(
-            "sssssssssss",
+            "ssssssissss",
             $result['browser_name'],
             $result['browser_version'],
             $result['operating_system'],
@@ -247,7 +318,7 @@ class ProfileModel
             $page_tag,
             $activity_tag,
             $action_tag,
-            $visitor_id
+            $visitor_session_id
         );
         if ($stmt->execute()) {
             $stmt->close();
@@ -258,6 +329,7 @@ class ProfileModel
             // Insertion failed
             return false;
         }
+        return true;
     }
 
 
