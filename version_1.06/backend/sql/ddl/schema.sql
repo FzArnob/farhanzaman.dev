@@ -194,6 +194,16 @@ create table actions (
   activity_tag varchar(255),
   action_tag varchar(255),
   fk_visitor_id int not null,
+  foreign key (fk_visitor_id) references visitors (visitor_id),
+  fk_session_id varchar(30) not null,
+  foreign key (fk_session_id) references visitor_sessions (session_id)
+);
+create table visitor_sessions (
+  session_id varchar(30) primary key,
+  start_time timestamp default current_timestamp not null,
+  last_active_time timestamp null on update current_timestamp,
+  action_points int not null;
+  end_time timestamp null on update current_timestamp + interval 1 day,
+  fk_visitor_id int not null,
   foreign key (fk_visitor_id) references visitors (visitor_id)
 );
-
