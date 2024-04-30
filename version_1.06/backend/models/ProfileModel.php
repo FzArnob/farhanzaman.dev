@@ -80,7 +80,7 @@ class ProfileModel
             'device_type' => 'Other',
             'device_details' => 'N/A',
             'rendering_engine' => 'N/A',
-            'mobile_specific_info' => 'false'
+            'mobile_specific_info' => 0
         );
 
         // Extract browser name and version
@@ -115,7 +115,10 @@ class ProfileModel
 
         // Extract rendering engine (if available)
         $info['rendering_engine'] = $this->getRenderingEngine($userAgent);
-
+        // Check if rendering engine contains only integers and periods
+        if (!preg_match('/^[0-9.]+$/', $info['rendering_engine'])) {
+            $info['rendering_engine'] = 'N/A';
+        }
         // Extract mobile-specific information (if available)
         if ($info['device_type'] === 'Mobile') {
             $info['mobile_specific_info'] = 1;
@@ -184,7 +187,7 @@ class ProfileModel
 
             // Check if the API call was successful
             $is_tracked = false;
-            if ($response !== false && isset($data["continent"])) {
+            if ($response !== false && isset($data["country"])) {
                 $is_tracked = true;
             }
 
