@@ -42,30 +42,31 @@ if ($result->num_rows > 0) {
         $ip = $row["visitor_ip"];
         $visitor_id = $row["visitor_id"];
         // Fetch data from visitors_old table for the current IP address
-        $old_data_sql = "SELECT * FROM visitors_old WHERE visitor_ip = '$ip' ORDER BY created_date DESC";
+        $old_data_sql = "SELECT * FROM visitors_old WHERE visitor_ip = '$ip' ORDER BY created_date ASC";
         $old_data_result = $conn->query($old_data_sql);
 
-        $previous_created_date = null;
-        $previous_visitor_session_id = null;
+        
         if ($old_data_result->num_rows > 0) {
+            $previous_created_date = null;
+            $previous_visitor_session_id = null;
+            $visitor_session_id = null;
             $page_tag = "Home";
             $activity_tag = "Visit";
             $action_tag = "View";
             // Loop through each row of old data
             while ($old_row = $old_data_result->fetch_assoc()) {
                 $created_date = $old_row["created_date"];
-                if ($previous_created_date === null) $visitor_session_id = createSession($conn, $visitor_id, $created_date);
+                if ($visitor_session_id === null) $visitor_session_id = createSession($conn, $visitor_id, $created_date);
                 // Check if there's a gap of 1 day between consecutive records
                 if ($previous_created_date !== null && strtotime($previous_created_date) - strtotime($created_date) >= 86400) {
                     // Create a new session
                     $visitor_session_id = createSession($conn, $visitor_id, $created_date);
                 }
 
-                if ($previous_visitor_session_id === $visitor_session_id) {
-
+                if ($previous_created_date !== null && strtotime($previous_created_date) - strtotime($created_date) < 86400) {
                     $currentTimestamp = date('Y-m-d H:i:s', strtotime($created_date));
                     $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
-                    // update session
+                    // Update session
                     $updateSessionQuery = "UPDATE visitor_sessions SET last_active_date = ?, end_date = ?, action_points = action_points + 1 WHERE session_id = ?";
                     $stmt = $conn->prepare($updateSessionQuery);
                     $stmt->bind_param("sss", $currentTimestamp, $endTime, $visitor_session_id);
@@ -123,7 +124,6 @@ if ($result->num_rows > 0) {
                     echo "Failed for old id: " . $old_row['visitor_id']."<br/>";
                 }
                 $previous_created_date = $created_date;
-                $previous_visitor_session_id = $visitor_session_id;
             }
         }
     }
