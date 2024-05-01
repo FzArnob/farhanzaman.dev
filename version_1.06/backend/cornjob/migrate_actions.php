@@ -18,7 +18,7 @@ function createSession($conn, $visitor_id, $created_date)
     $sessionQuery = "INSERT INTO visitor_sessions (session_id, created_date, last_active_date, action_points, end_date, fk_visitor_id) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sessionQuery);
     // Bind parameters
-    $stmt->bind_param("sssiis", $visitor_session_id, $currentTimestamp, $currentTimestamp, $action_points, $endTime, $visitor_id);
+    $stmt->bind_param("sssisi", $visitor_session_id, $currentTimestamp, $currentTimestamp, $action_points, $endTime, $visitor_id);
     // Execute query
     $stmt->execute();
     // Close statement
@@ -58,12 +58,12 @@ if ($result->num_rows > 0) {
                 $created_date = $old_row["created_date"];
                 if ($visitor_session_id === null) $visitor_session_id = createSession($conn, $visitor_id, $created_date);
                 // Check if there's a gap of 1 day between consecutive records
-                if ($previous_created_date !== null && strtotime($previous_created_date) - strtotime($created_date) >= 86400) {
+                if ($previous_created_date !== null && strtotime($created_date) - strtotime($previous_created_date) >= 86400) {
                     // Create a new session
                     $visitor_session_id = createSession($conn, $visitor_id, $created_date);
                 }
 
-                if ($previous_created_date !== null && strtotime($previous_created_date) - strtotime($created_date) < 86400) {
+                if ($previous_created_date !== null && strtotime($created_date) - strtotime($previous_created_date) < 86400) {
                     $currentTimestamp = date('Y-m-d H:i:s', strtotime($created_date));
                     $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
                     // Update session
