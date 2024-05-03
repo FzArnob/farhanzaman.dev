@@ -40,35 +40,9 @@ $conn->close();
 
 <head>
     <title>Visitor Analytics</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Custom CSS */
-        .modal-content {
-            padding: 50px;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                padding: 30px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .modal-content {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .table-responsive {
-                display: block;
-                width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                -ms-overflow-style: -ms-autohiding-scrollbar;
-            }
-        }
     </style>
 </head>
 
@@ -76,44 +50,32 @@ $conn->close();
     <div class="container">
         <div class="row">
             <div class="col">
-                <canvas id="visitorChart" width="400" height="400"></canvas>
+                <canvas id="visitorChart"></canvas>
             </div>
             <div class="col">
-                <div id="visitorDataPopup" class="modal fade">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Visitor Data</h5>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Visitor ID</th>
-                                                <th>IP Address</th>
-                                                <th>Tracked</th>
-                                                <th>Continent</th>
-                                                <th>Country ISO Code</th>
-                                                <th>Country Phone Code</th>
-                                                <th>Country Currency</th>
-                                                <th>Latitude</th>
-                                                <th>Longitude</th>
-                                                <th>Subdivision Name</th>
-                                                <th>State Name</th>
-                                                <th>City Name</th>
-                                                <th>First Visit Date</th>
-                                                <th>Last Active Date</th>
-                                                <!-- Add more table headers as needed -->
-                                            </tr>
-                                        </thead>
-                                        <tbody id="visitorDataBody">
-                                            <!-- Visitor data rows will be inserted here dynamically -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <div id="visitorDataPopup" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="modal-title" id="visitorDataTitle"></div>
+                            <button type="button" class="modal-close" onclick="closeVisitorDataPopup()">&times;</button>
+                        </div>
+                        <div class="country-details" id="visitorDataDetails"></div>
+                        <div class="modal-body">
+                            <table class="visitor-table">
+                                <thead>
+                                    <tr>
+                                        <th>IP Address</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Subdivision Name</th>
+                                        <th>State Name</th>
+                                        <th>City Name</th>
+                                        <th>First Visit Date</th>
+                                        <th>Last Active Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitorDataBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -122,10 +84,51 @@ $conn->close();
     </div>
 
     <script>
+        function generateUniqueColors(count) {
+            var colors = [];
+            var hueStep = 360 / count; // Divide the color spectrum equally
+            for (var i = 0; i < count; i++) {
+                // Generate color based on hue
+                var hue = i * hueStep;
+                // Convert HSL to RGB
+                var rgbColor = hslToRgb(hue / 360, 0.7, 0.6); // You can adjust saturation and lightness as needed
+                // Convert RGB to rgba string
+                var color = 'rgba(' + rgbColor[2] + ',' + rgbColor[1] + ',' + rgbColor[0] + ', 0.7)';
+                colors.push(color);
+            }
+            return colors;
+        }
+
+        // Function to convert HSL to RGB
+        function hslToRgb(h, s, l) {
+            var r, g, b;
+
+            if (s == 0) {
+                r = g = b = l; // achromatic
+            } else {
+                function hue2rgb(p, q, t) {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                }
+
+                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                var p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
         // Visitor count by country pie chart
         var visitorData = <?php echo json_encode($visitorCountByCountryData); ?>;
         var visitorLabels = Object.keys(visitorData);
         var visitorValues = Object.values(visitorData);
+        var backgroundColors = generateUniqueColors(visitorLabels.length);
 
         var visitorChartCanvas = document.getElementById('visitorChart').getContext('2d');
         var visitorChart = new Chart(visitorChartCanvas, {
@@ -134,21 +137,13 @@ $conn->close();
                 labels: visitorLabels,
                 datasets: [{
                     data: visitorValues,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.7)',
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                        'rgba(75, 192, 192, 0.7)',
-                        'rgba(153, 102, 255, 0.7)',
-                        'rgba(255, 159, 64, 0.7)',
-                        // Add more colors as needed
-                    ]
+                    backgroundColor: backgroundColors
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                onClick: function (event, elements) {
+                onClick: function(event, elements) {
                     if (elements && elements.length > 0) {
                         var index = elements[0].index;
                         var label = visitorChart.data.labels[index];
@@ -156,15 +151,9 @@ $conn->close();
                         var countryVisitorData = visitorData[label];
                         var visitorDataHtml = '';
                         if (countryVisitorData) {
-                            countryVisitorData.forEach(function (visitor) {
+                            countryVisitorData.forEach(function(visitor) {
                                 visitorDataHtml += '<tr>';
-                                visitorDataHtml += '<td>' + visitor.visitor_id + '</td>';
                                 visitorDataHtml += '<td>' + visitor.visitor_ip + '</td>';
-                                visitorDataHtml += '<td>' + (visitor.is_tracked ? 'Yes' : 'No') + '</td>';
-                                visitorDataHtml += '<td>' + visitor.continent + '</td>';
-                                visitorDataHtml += '<td>' + visitor.country_iso_code + '</td>';
-                                visitorDataHtml += '<td>' + visitor.country_phone_code + '</td>';
-                                visitorDataHtml += '<td>' + visitor.country_currency + '</td>';
                                 visitorDataHtml += '<td>' + visitor.location_latitude + '</td>';
                                 visitorDataHtml += '<td>' + visitor.location_longitude + '</td>';
                                 visitorDataHtml += '<td>' + visitor.subdivisions_name + '</td>';
@@ -176,18 +165,30 @@ $conn->close();
                                 visitorDataHtml += '</tr>';
                             });
 
+                            document.getElementById('visitorDataTitle').innerHTML = 'Visitors - ' + countryVisitorData[0].country_name + ' (' + countryVisitorData[0].country_iso_code + ')';
+                            document.getElementById('visitorDataDetails').innerHTML = '<b>Continent:</b> ' + countryVisitorData[0].continent + ' | <b>Phone Code:</b> ' + countryVisitorData[0].country_phone_code + ' | <b>Currency:</b> ' + countryVisitorData[0].country_currency;
                             document.getElementById('visitorDataBody').innerHTML = visitorDataHtml;
-                            $('#visitorDataPopup').modal('show');
+                            var visitorDataPopup = document.getElementById('visitorDataPopup');
+                            visitorDataPopup.classList.remove('fadeOut');
+                            visitorDataPopup.classList.add('fadeIn');
+                            visitorDataPopup.style.display = 'block';
                         }
                     }
                 }
             }
         });
-    </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        function closeVisitorDataPopup() {
+            var visitorDataPopup = document.getElementById('visitorDataPopup');
+            visitorDataPopup.classList.remove('fadeIn');
+            visitorDataPopup.classList.add('fadeOut');
+            setTimeout(() => {
+                visitorDataPopup.style.display = 'none';
+            }, 300);
+
+        }
+    </script>
 </body>
 
 </html>

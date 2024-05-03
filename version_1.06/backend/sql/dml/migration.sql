@@ -8,4 +8,3 @@
         FALSE AS is_tracked
     FROM visitors_old
     GROUP BY visitor_ip, fk_profile_id;
-
