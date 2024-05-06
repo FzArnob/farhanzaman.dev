@@ -22,7 +22,7 @@ body{
     cursor: pointer;
     background: rgba(0, 0, 0, 0.5);
   }
-  /* restrict selection
+  /* restrict selection */
 * {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -32,7 +32,39 @@ body{
     -ms-user-select: none;
     scroll-behavior: smooth;
     user-select: none;
-  } */
+  }
+
+.container{
+    position: relative;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+    height: 100vh;
+}
+.tab {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+.row{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    height: inherit;
+}
+.col-1{
+    width: 60%;
+}
+.col-2{
+    width: 40%;
+}
+.pieChart{
+    margin: 40px;
+    width: 100%;
+    height: auto;
+    max-width: calc(100vh - 80px);
+}
 .modal {
     display: none;
     background: white;
@@ -101,6 +133,15 @@ body{
 }
 .fadeIn {
     animation: fadeIn 0.5s ease;
+}
+
+@media (max-width: 800px) {
+    .col-1{
+        width: 100%;
+    }
+    .col-2{
+        width: 100%;
+    }
 }
 
 @keyframes fadeIn {
