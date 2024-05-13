@@ -30,6 +30,15 @@ while ($row = $visitorDataByCountryResult->fetch_assoc()) {
     $visitorDataByCountry[$country][] = $row;
 }
 
+// Query to get visitor action data 
+$visitorActionsDataQuery = "SELECT * FROM visitors WHERE is_tracked = 1 ORDER BY city_name";
+$visitorActionsDataResult = $conn->query($visitorActionsDataQuery);
+$visitorActionsData = array();
+while ($row = $visitorActionsDataResult->fetch_assoc()) {
+    $country = $row['country_name'] ?? 'Others';
+    $visitorActionsData[$country][] = $row;
+}
+
 // Close connection
 $conn->close();
 ?>
@@ -47,11 +56,11 @@ $conn->close();
 </head>
 
 <body>
-    
+     
     <div class="container">
         <div class="row">
             <div class="col-1">
-
+            <canvas class="lineChart" id="visitorActionsChart"></canvas>
             </div>
             <div class="col-2">
                 <canvas class="pieChart" id="visitorChart"></canvas>
@@ -61,7 +70,6 @@ $conn->close();
                             <div class="modal-title" id="visitorDataTitle"></div>
                             <button type="button" class="modal-close" onclick="closeVisitorDataPopup()">&times;</button>
                         </div>
-                        <div class="country-details" id="visitorDataDetails"></div>
                         <div class="modal-body">
                             <div class="tabs">
                                 <button class="tablinks" onclick="openTab(event, 'barChartTab')">Bar Chart</button>
@@ -71,6 +79,7 @@ $conn->close();
                                 <canvas class="barChart" id="cityChart"></canvas>
                             </div>
                             <div id="tableTab" class="tab">
+                                <div class="country-details" id="visitorDataDetails"></div>
                                 <table class="visitor-table">
                                     <thead>
                                         <tr>
@@ -135,6 +144,7 @@ $conn->close();
 
             return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
         }
+
         // Function to open tab
         function openTab(event, tabName) {
             var i, tabcontent, tablinks;
@@ -149,6 +159,47 @@ $conn->close();
             document.getElementById(tabName).style.display = "block";
             event.currentTarget.classList.add("active");
         }
+
+
+
+
+
+
+        var visitorActionsData = <?php echo json_encode($visitorActionsData); ?>;
+        var visitorLabels = Object.keys(visitorData);
+        var visitorValues = Object.values(visitorData);
+        var visitorActionsChartCanvas = document.getElementById('visitorActionsChart').getContext('2d');
+        var existingActionsChart = Chart.getChart(visitorActionsChartCanvas);
+        // If an existing chart exists, destroy it
+        if (existingActionsChart) {
+            existingActionsChart.destroy();
+        }
+        visitorActionsChart = new Chart(visitorActionsChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Visitor Actions',
+                        data: data,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+
+
+
+
+
+
+
+
+
         // Visitor count by country pie chart
         var visitorData = <?php echo json_encode($visitorCountByCountryData); ?>;
         var visitorLabels = Object.keys(visitorData);
