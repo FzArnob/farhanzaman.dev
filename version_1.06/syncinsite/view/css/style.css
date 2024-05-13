@@ -1,0 +1,158 @@
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+/* scrollbar design */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    border-radius: 9px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 9px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  /* restrict selection */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    scroll-behavior: smooth;
+    user-select: none;
+  }
+
+.container{
+    position: relative;
+    margin-left: 200px;
+    width: calc(100% - 200px);
+    height: 100vh;
+}
+.tab {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+.row{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    height: inherit;
+}
+.col-1{
+    width: 60%;
+}
+.col-2{
+    width: 40%;
+}
+.pieChart{
+    margin: 40px;
+    width: 100%;
+    height: auto;
+    max-width: calc(100vh - 80px);
+}
+.modal {
+    display: none;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    margin: 30px;
+    border-radius: 8px;
+    width: calc(100% - 60px);
+    height: calc(100% - 60px);
+    box-shadow: 0px 0px 0px 50px rgba(0,0,0,0.5);
+}
+.modal-content{
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.modal-header{
+    margin: 0;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-close{
+    font-size: 30px;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+.modal-body{
+    position: fixed;
+    width: calc(100% - 120px);
+    height: calc(100% - 180px);
+    border-radius: 8px;
+    overflow: auto;
+}
+.visitor-table{
+    width: 100%;
+    border-collapse: collapse;
+}
+.visitor-table th {
+    font-size: 14px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    min-width: 130px
+}
+.visitor-table td {
+    border-bottom: 1px solid #ccc;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    text-align: left;
+    font-size: 14px;
+    width: max-content;
+}
+.modal-title{
+    font-size: 20px;
+    font-weight: 500;
+}
+.country-details{
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+.fadeIn {
+    animation: fadeIn 0.5s ease;
+}
+
+@media (max-width: 800px) {
+    .col-1{
+        width: 100%;
+    }
+    .col-2{
+        width: 100%;
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1;}
+}
+.fadeOut {
+    animation: fadeOut 0.5s ease;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0;}
+}
