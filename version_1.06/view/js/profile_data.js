@@ -676,6 +676,20 @@ var result  = {
                 "updated_date": "2023-06-26 00:14:18",
                 "delete_flag": "0",
                 "fk_profile_id": "farhan"
+            },
+            {
+                "achievement_id": "10",
+                "name": "LeetCode",
+                "description": "It covers advanced algorithms and core data structures like Dynamic Programming, Arrays, and Hash Tables.",
+                "certification_date": "2023-08-14",
+                "certification_url": "https:\/\/leetcode.com\/u\/farhanzamanarnob\/",
+                "certification_logo": "view\/static\/svg\/leetcode.svg",
+                "duration": "1",
+                "level": "Advanced",
+                "created_date": "2023-06-26 15:29:13",
+                "updated_date": "2023-06-26 00:14:18",
+                "delete_flag": "0",
+                "fk_profile_id": "farhan"
             }
         ],
         "projects": [

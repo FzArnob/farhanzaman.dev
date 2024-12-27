@@ -119,6 +119,11 @@ INSERT INTO achievement_items (name, description, certification_date, certificat
 VALUES ('SQL', 'It covers topics like query optimization, data modeling, Indexing, window functions, and pivots in SQL.', '2023-08-14',
         'https://www.hackerrank.com/certificates/46b43016daff', 'view/static/svg/sql.svg', 1,
         'Advanced', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
+INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
+                               level, created_date, updated_date, delete_flag, fk_profile_id)
+VALUES ('LeetCode', 'It covers advanced algorithms and core data structures like Dynamic Programming, Arrays, and Hash Tables.', '2023-08-14',
+        'https://leetcode.com/u/farhanzamanarnob/', 'view/static/svg/leetcode.svg', 1,
+        'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 
 
 INSERT INTO skill_items (name, description, duration, percentage, fk_profile_id)
