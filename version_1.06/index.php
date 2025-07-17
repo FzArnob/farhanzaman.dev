@@ -21,6 +21,7 @@ $routes = array(
     'about'    => 'about.html',
     'works'    => 'works.html',
     'work'     => 'work.html',
+    'gaming'   => 'gaming.html',
     'hobbies'  => 'hobbies.html',
     'expertise' => 'expertise.html',
     '403'      => '403.html',
