@@ -3,7 +3,7 @@
 
 <head>
   <title></title>
-  <link href="view/static/favicon.svg" rel="icon" />
+  <link href="view/static/runfzrun.png" rel="icon" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link href="view/css/app.css" rel="stylesheet" />
@@ -21,10 +21,10 @@
   <main-page class="bg1 c1 hidden">
     <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
       <div class="nav-container">
-        <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/runfzrun.png" class="fa-logo" />
+        <a class="nav-logo c1 active" href="/"><img alt="logo" style="width: 70px; height: 70px;" src="view/static/runfzrun.png" class="fa-logo" />
           <span class="nav-corner bg2 animate-top"></span>
         </a>
-        <div class="themeBtn animate-right" id="theme-toogle-button">
+        <div class="themeBtn animate-right" style="border-color: #fcba03;" id="theme-toogle-button">
           <span class="ico-gen themeBtn-icon" id="theme-btn">E</span>
         </div>
       </div>
@@ -33,7 +33,7 @@
       <div class="popup-box bg2 c2">
         <div class="popup-content">
           <div class="triangle"></div>
-          <div class="popup-text">You can switch <span class="c-theme">theme</span> here.</div>
+          <div class="popup-text">You can switch <span class="c-theme" style="color: #fcba03;">theme</span> here.</div>
           <div class="popup-button">
             <span class="ico-gen">
               F
@@ -43,14 +43,56 @@
       </div>
     </div>
     <div class="main-content">
+        <!-- First Row: Profile Info and Social Links -->
+        <div class="row gaming-profile-row" style="padding: 40px 20px; border-bottom: 1px solid rgba(252, 186, 3, 0.2);">
+          <div class="col-md-3 col-sm-12 profile-section">
+            <img src="view/static/runfzrun.png" alt="Run Fz Run Profile" class="gaming-profile-img" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #fcba03;" />
+          </div>
+          <div class="col-md-6 col-sm-12 channel-info">
+            <h2 style="color: #fcba03; margin-bottom: 10px;">Run Fz Run</h2>
+            <p style="color: #fff; margin-bottom: 15px;">Gaming content creator sharing epic gaming moments, tutorials, and entertainment. Subscribe for the latest gaming videos!</p>
+            <div class="social-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <a href="https://www.youtube.com/@runfzrun" target="_blank" class="social-btn yt-btn" style="background: #ff0000; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                <span class="ico-gen" style="margin-right: 5px;">▶</span> Subscribe
+              </a>
+              <a href="#" target="_blank" class="social-btn fb-btn" style="background: #1877f2; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                <span class="ico-gen" style="margin-right: 5px;">f</span> Follow
+              </a>
+              <a href="#" target="_blank" class="social-btn tt-btn" style="background: #000; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                <span class="ico-gen" style="margin-right: 5px;">♪</span> Follow
+              </a>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-12 discord-section" style="text-align: right;">
+            <a href="#" target="_blank" class="discord-btn" style="background: #5865F2; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+              <span class="ico-gen" style="margin-right: 8px;">💬</span> Join Discord
+            </a>
+          </div>
+        </div>
+
+        <!-- Second Row: YouTube Videos Grid -->
+        <div class="row gaming-videos-row" style="padding: 40px 20px;">
+          <div class="col-sm-12">
+            <h3 style="color: #fcba03; text-align: center; margin-bottom: 30px;">Latest Gaming Videos</h3>
+            <div class="videos-grid" id="youtube-videos-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-height: 600px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+              <!-- Videos will be loaded dynamically -->
+              <div class="video-placeholder" style="background: rgba(252, 186, 3, 0.1); border: 2px dashed #fcba03; border-radius: 10px; padding: 40px; text-align: center; color: #fcba03;">
+                <p>Loading gaming videos...</p>
+                <div class="loading-spinner" style="border: 3px solid rgba(252, 186, 3, 0.3); border-top: 3px solid #fcba03; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <footer>
           <div class="container">
+            
             <div class="row">
               <div class="col-sm-12">
                 <div class="copyright-box">
                   <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
                   <div class="credits">
-                    Designed by <a href="/about" id="footer_name" style="background-color: rgba(0,0,0, 0.2); border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
+                    Designed by <a href="/about" id="footer_name" style="background-color: rgba(0,0,0, 0.2); color: #fcba03; border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
                   </div>
                 </div>
               </div>
@@ -62,9 +104,159 @@
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
+  <style>
+    /* Gaming page specific styles */
+    .gaming-profile-row {
+      background: linear-gradient(135deg, rgba(252, 186, 3, 0.1), rgba(0,0,0,0.3));
+      border-radius: 15px;
+      width: 100%;
+    }
+    
+    .videos-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-thumb {
+      background: #fcba03;
+      border-radius: 4px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-thumb:hover {
+      background: #ffd700;
+    }
+    
+    .video-item {
+      background: rgba(0,0,0,0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(252, 186, 3, 0.3);
+    }
+    
+    .video-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(252, 186, 3, 0.3);
+    }
+    
+    .video-thumbnail {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    
+    .video-info {
+      padding: 15px;
+    }
+    
+    .video-title {
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+      overflow: hidden;
+    }
+    
+    .video-date {
+      color: #fcba03;
+      font-size: 12px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .discord-section {
+        text-align: center !important;
+        margin-top: 20px;
+      }
+      
+      .social-buttons {
+        justify-content: center;
+      }
+      
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <script>
     document.title = 'Run Fz Run';
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
+    
+    // Function to simulate loading YouTube videos
+    function loadGamingVideos() {
+      // Simulate some gaming videos (in a real scenario, you'd fetch from YouTube API)
+      const sampleVideos = [
+        {
+          title: "Epic Gaming Moments - Best Highlights",
+          thumbnail: "view/static/runfzrun.png",
+          date: "2 days ago",
+          url: "https://www.youtube.com/@runfzrun"
+        },
+        {
+          title: "Gaming Tutorial: Pro Tips & Tricks",
+          thumbnail: "view/static/runfzrun.png", 
+          date: "1 week ago",
+          url: "https://www.youtube.com/@runfzrun"
+        },
+        {
+          title: "Live Gaming Stream Highlights",
+          thumbnail: "view/static/runfzrun.png",
+          date: "2 weeks ago", 
+          url: "https://www.youtube.com/@runfzrun"
+        },
+        {
+          title: "New Game Review and Gameplay",
+          thumbnail: "view/static/runfzrun.png",
+          date: "3 weeks ago",
+          url: "https://www.youtube.com/@runfzrun"
+        },
+        {
+          title: "Gaming Challenge: Can I Beat This?",
+          thumbnail: "view/static/runfzrun.png",
+          date: "1 month ago",
+          url: "https://www.youtube.com/@runfzrun"
+        },
+        {
+          title: "Gaming Setup Tour 2024",
+          thumbnail: "view/static/runfzrun.png",
+          date: "1 month ago",
+          url: "https://www.youtube.com/@runfzrun"
+        }
+      ];
+      
+      setTimeout(() => {
+        const videosGrid = document.getElementById('youtube-videos-grid');
+        videosGrid.innerHTML = '';
+        
+        sampleVideos.forEach(video => {
+          const videoElement = document.createElement('div');
+          videoElement.className = 'video-item';
+          videoElement.innerHTML = `
+            <a href="${video.url}" target="_blank" style="text-decoration: none;">
+              <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail" />
+              <div class="video-info">
+                <div class="video-title">${video.title}</div>
+                <div class="video-date">${video.date}</div>
+              </div>
+            </a>
+          `;
+          videosGrid.appendChild(videoElement);
+        });
+      }, 2000); // Simulate loading delay
+    }
+    
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
@@ -76,6 +268,7 @@
           document.querySelector("pre-loader").style.display = "none"; // hide
           document.querySelector("main-page").style.display = "block"; // show
           wobbleAnimation();
+          loadGamingVideos(); // Load the gaming videos
         }, 1000);
 
         // You can also apply any further logic here if needed.
