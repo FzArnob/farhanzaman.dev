@@ -7,6 +7,190 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link href="view/css/app.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* scrollbar design */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(125deg, rgba(0, 0, 0, 0.2) 0%, #fcba03 100%);
+      border-radius: 9px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-image: linear-gradient(125deg, rgba(0, 0, 0, 0.3) 0%, #ca9400 100%);
+    }
+    /* Gaming page specific styles */
+    .gaming-profile-row {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-position: top;
+      object-fit: cover;
+      filter: blur(8px);
+    }
+    
+    .gaming-profile-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    
+    .videos-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-thumb {
+      background: #fcba03;
+      border-radius: 4px;
+    }
+    
+    .videos-grid::-webkit-scrollbar-thumb:hover {
+      background: #ffd700;
+    }
+    
+    .video-item {
+      background: rgba(0,0,0,0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(252, 186, 3, 0.3);
+    }
+    
+    .video-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(252, 186, 3, 0.3);
+    }
+    .profile-left-section{
+      padding: 120px 20px 20px 40px;
+      width: calc(50% - 60px);
+      position: relative;
+      z-index: 1;
+    }
+    .profile-right-section {
+      padding: 120px 40px 20px 20px;
+      width: calc(50% - 60px);
+      position: relative;
+      z-index: 1;
+    }
+    .profile-left-section > div {
+        justify-content: right;
+    }
+    .profile-left-section > p {
+        text-align: right;
+    }
+    .profile-right-section > div {
+        justify-content: left;
+    }
+    .platform-logos{
+      padding-left: 30px;
+    }
+    .video-thumbnail {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .discord-section{
+      padding: 5px 30px;
+      background: rgba(48,48,48,0.7);
+      margin-top: 20px;
+      border-radius: 100px;
+      box-shadow: 0 0 10px 5px rgba(252,186,3,0.3) inset;
+    }
+    .discord-section:hover {
+      box-shadow: 0 0 25px rgba(252, 186, 3, 0.8);
+    }
+    
+    .video-info {
+      padding: 15px;
+    }
+    
+    .video-title {
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+      overflow: hidden;
+    }
+    .themeBtn:hover {
+      color: #fff;
+    }
+    .video-date {
+      color: #fcba03;
+      font-size: 12px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .discord-section {
+        text-align: center !important;
+        margin-top: 20px;
+      }
+      
+      .social-buttons {
+        justify-content: center;
+      }
+      
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-left-section,
+      .profile-right-section {
+        width: 100% !important;
+        margin-bottom: 20px;
+      }
+      
+      .profile-left-section > div {
+        justify-content: center;
+      }
+    }
+    .platform-logo > div {
+      background: #fff;
+    }
+    .platform-logo:hover {
+      transform: scale(1.1);
+    }
+    
+    .platform-logo:hover > div {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(252, 186, 3, 0.8);
+    }
+  </style>
 </head>
 
 <body class="bg1">
@@ -44,37 +228,55 @@
     </div>
     <div class="main-content">
         <!-- First Row: Profile Info and Social Links -->
-        <div class="row gaming-profile-row" style="padding: 40px 20px; border-bottom: 1px solid rgba(252, 186, 3, 0.2);">
-          <div class="col-md-3 col-sm-12 profile-section">
-            <img src="view/static/runfzrun.png" alt="Run Fz Run Profile" class="gaming-profile-img" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #fcba03;" />
+        <div class="row gaming-profile-row">
+          <video class="background-video" autoplay muted loop>
+            <source src="view/static/demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="profile-left-section">
+            <!-- Image and Name side by side -->
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+              <img src="view/static/runfzrun-dp.png" alt="Run Fz Run Profile" class="gaming-profile-img" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid #fcba03; margin-right: 15px;" />
+              <h1 style="color: #fcba03; margin: 0; -webkit-text-fill-color: #fff;">Run Fz Run</h1>
+            </div>
+            <!-- Description below -->
+            <p style="color: #fff; margin: 0; line-height: 1.6;">Gaming content creator sharing epic gaming moments, tutorials, and entertainment. Subscribe for the latest gaming videos!</p>
           </div>
-          <div class="col-md-6 col-sm-12 channel-info">
-            <h2 style="color: #fcba03; margin-bottom: 10px;">Run Fz Run</h2>
-            <p style="color: #fff; margin-bottom: 15px;">Gaming content creator sharing epic gaming moments, tutorials, and entertainment. Subscribe for the latest gaming videos!</p>
-            <div class="social-buttons" style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <a href="https://www.youtube.com/@runfzrun" target="_blank" class="social-btn yt-btn" style="background: #ff0000; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
-                <span class="ico-gen" style="margin-right: 5px;">▶</span> Subscribe
+          
+          <div class="profile-right-section">
+            <!-- Discord logo gif and animated text -->
+            <div class="discord-section" style="text-align: center; cursor: pointer; max-width: fit-content;">
+              <div style="display: flex; align-items: center; justify-content: left;">
+                <img src="view/static/discord.gif" alt="Discord" style="width: 80px; height: 80px; margin-right: 10px;" />
+                <span class="wobble animate-infinite-tossing" style="color: #ffffff; font-weight: bold; font-size: 24px;">Join Now!</span>
+              </div>
+            </div>
+            <!-- 3 Platform logos -->
+            <div class="platform-logos" style="display: flex; justify-content: left; gap: 20px; margin-top: 40px;">
+              <a href="https://www.youtube.com/@runfzrun" target="_blank" class="platform-logo" style="display: inline-block; transition: transform 0.3s;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-icons" style="color: #ff0000; font-size: 54px;">play_circle_filled</span>
+                </div>
               </a>
-              <a href="#" target="_blank" class="social-btn fb-btn" style="background: #1877f2; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
-                <span class="ico-gen" style="margin-right: 5px;">f</span> Follow
+              <a href="#" target="_blank" class="platform-logo" style="display: inline-block; transition: transform 0.3s;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-icons" style="color: #1877f2; font-size: 54px;">facebook</span>
+                </div>
               </a>
-              <a href="#" target="_blank" class="social-btn tt-btn" style="background: #000; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold;">
-                <span class="ico-gen" style="margin-right: 5px;">♪</span> Follow
+              <a href="#" target="_blank" class="platform-logo" style="display: inline-block; transition: transform 0.3s;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <span class="material-icons" style="background: linear-gradient(135deg, #ff0050 0%, #00f2ea 100%); color: #fff; padding: 2px; border-radius: 50%; font-size: 41px; font-weight: 300;">tiktok</span>
+                </div>
               </a>
             </div>
           </div>
-          <div class="col-md-3 col-sm-12 discord-section" style="text-align: right;">
-            <a href="#" target="_blank" class="discord-btn" style="background: #5865F2; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
-              <span class="ico-gen" style="margin-right: 8px;">💬</span> Join Discord
-            </a>
-          </div>
+          <div style="z-index: 2; height: 200px; width: 100%; background: linear-gradient(to bottom, rgba(37, 37, 37, 0) 0%, rgb(37, 37, 37) 100%);"></div>
         </div>
 
         <!-- Second Row: YouTube Videos Grid -->
-        <div class="row gaming-videos-row" style="padding: 40px 20px;">
+        <div class="row gaming-videos-row">
           <div class="col-sm-12">
-            <h3 style="color: #fcba03; text-align: center; margin-bottom: 30px;">Latest Gaming Videos</h3>
-            <div class="videos-grid" id="youtube-videos-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-height: 600px; overflow-y: auto; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+            <div class="videos-grid" id="youtube-videos-grid" style="padding-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-height: 600px; overflow-y: auto; border-radius: 10px;">
               <!-- Videos will be loaded dynamically -->
               <div class="video-placeholder" style="background: rgba(252, 186, 3, 0.1); border: 2px dashed #fcba03; border-radius: 10px; padding: 40px; text-align: center; color: #fcba03;">
                 <p>Loading gaming videos...</p>
@@ -104,92 +306,6 @@
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
-  <style>
-    /* Gaming page specific styles */
-    .gaming-profile-row {
-      background: linear-gradient(135deg, rgba(252, 186, 3, 0.1), rgba(0,0,0,0.3));
-      border-radius: 15px;
-      width: 100%;
-    }
-    
-    .videos-grid::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .videos-grid::-webkit-scrollbar-track {
-      background: rgba(0,0,0,0.2);
-      border-radius: 4px;
-    }
-    
-    .videos-grid::-webkit-scrollbar-thumb {
-      background: #fcba03;
-      border-radius: 4px;
-    }
-    
-    .videos-grid::-webkit-scrollbar-thumb:hover {
-      background: #ffd700;
-    }
-    
-    .video-item {
-      background: rgba(0,0,0,0.5);
-      border-radius: 10px;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border: 1px solid rgba(252, 186, 3, 0.3);
-    }
-    
-    .video-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(252, 186, 3, 0.3);
-    }
-    
-    .video-thumbnail {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-    
-    .video-info {
-      padding: 15px;
-    }
-    
-    .video-title {
-      color: #fff;
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      line-clamp: 2;
-      overflow: hidden;
-    }
-    
-    .video-date {
-      color: #fcba03;
-      font-size: 12px;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    @media (max-width: 768px) {
-      .discord-section {
-        text-align: center !important;
-        margin-top: 20px;
-      }
-      
-      .social-buttons {
-        justify-content: center;
-      }
-      
-      .videos-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
   <script>
     document.title = 'Run Fz Run';
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
