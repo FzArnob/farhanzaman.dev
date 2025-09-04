@@ -304,72 +304,155 @@
     </div>
   </main-page>
   <script src="view/js/profile_data.js"></script>
+  <script src="view/js/gaming_yt_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
   <script>
     document.title = 'Run Fz Run';
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
     
-    // Function to simulate loading YouTube videos
+    // Function to load YouTube videos from the data file
     function loadGamingVideos() {
-      // Simulate some gaming videos (in a real scenario, you'd fetch from YouTube API)
-      const sampleVideos = [
-        {
-          title: "Epic Gaming Moments - Best Highlights",
-          thumbnail: "view/static/runfzrun.png",
-          date: "2 days ago",
-          url: "https://www.youtube.com/@runfzrun"
-        },
-        {
-          title: "Gaming Tutorial: Pro Tips & Tricks",
-          thumbnail: "view/static/runfzrun.png", 
-          date: "1 week ago",
-          url: "https://www.youtube.com/@runfzrun"
-        },
-        {
-          title: "Live Gaming Stream Highlights",
-          thumbnail: "view/static/runfzrun.png",
-          date: "2 weeks ago", 
-          url: "https://www.youtube.com/@runfzrun"
-        },
-        {
-          title: "New Game Review and Gameplay",
-          thumbnail: "view/static/runfzrun.png",
-          date: "3 weeks ago",
-          url: "https://www.youtube.com/@runfzrun"
-        },
-        {
-          title: "Gaming Challenge: Can I Beat This?",
-          thumbnail: "view/static/runfzrun.png",
-          date: "1 month ago",
-          url: "https://www.youtube.com/@runfzrun"
-        },
-        {
-          title: "Gaming Setup Tour 2024",
-          thumbnail: "view/static/runfzrun.png",
-          date: "1 month ago",
-          url: "https://www.youtube.com/@runfzrun"
-        }
-      ];
-      
       setTimeout(() => {
         const videosGrid = document.getElementById('youtube-videos-grid');
         videosGrid.innerHTML = '';
         
-        sampleVideos.forEach(video => {
-          const videoElement = document.createElement('div');
-          videoElement.className = 'video-item';
-          videoElement.innerHTML = `
-            <a href="${video.url}" target="_blank" style="text-decoration: none;">
-              <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail" />
-              <div class="video-info">
-                <div class="video-title">${video.title}</div>
-                <div class="video-date">${video.date}</div>
+        // Check if gamingYouTubeData is available and has videos
+        if (typeof gamingYouTubeData !== 'undefined' && gamingYouTubeData.pages && gamingYouTubeData.pages.length > 0) {
+          // Get all videos from all pages and sort by publish date (newest first)
+          let allVideos = [];
+          gamingYouTubeData.pages.forEach(page => {
+            if (page.videos) {
+              allVideos = allVideos.concat(page.videos);
+            }
+          });
+          
+          // Sort by publish date (newest first)
+          allVideos.sort((a, b) => new Date(b.video_publishTime) - new Date(a.video_publishTime));
+          
+          // Display first 12 videos
+          const videosToShow = allVideos.slice(0, 12);
+          
+          videosToShow.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'video-item';
+            
+            // Format the date to a more readable format
+            const publishDate = new Date(video.video_publishTime);
+            const now = new Date();
+            const diffTime = Math.abs(now - publishDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let dateString;
+            if (diffDays === 1) {
+              dateString = '1 day ago';
+            } else if (diffDays < 7) {
+              dateString = `${diffDays} days ago`;
+            } else if (diffDays < 30) {
+              const weeks = Math.floor(diffDays / 7);
+              dateString = weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+            } else if (diffDays < 365) {
+              const months = Math.floor(diffDays / 30);
+              dateString = months === 1 ? '1 month ago' : `${months} months ago`;
+            } else {
+              const years = Math.floor(diffDays / 365);
+              dateString = years === 1 ? '1 year ago' : `${years} years ago`;
+            }
+            
+            // Add video type badge
+            let typeBadge = '';
+            if (video.video_type === 'short') {
+              typeBadge = '<span style="background: #ff4444; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">SHORT</span>';
+            } else if (video.video_type === 'stream') {
+              typeBadge = '<span style="background: #ff0000; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">LIVE</span>';
+            }
+            
+            videoElement.innerHTML = `
+              <a href="${video.video_url}" target="_blank" style="text-decoration: none;">
+                <img src="${video.video_thumbnail}" alt="${video.video_title}" class="video-thumbnail" />
+                <div class="video-info">
+                  <div class="video-title">${video.video_title}${typeBadge}</div>
+                  <div class="video-date">${dateString}</div>
+                  <div style="color: #aaa; font-size: 11px; margin-top: 4px;">
+                    ${video.video_view_count.toLocaleString()} views • ${video.video_like_count.toLocaleString()} likes
+                  </div>
+                </div>
+              </a>
+            `;
+            videosGrid.appendChild(videoElement);
+          });
+          
+          // Add a "Load More" button if there are more videos
+          if (allVideos.length > 12) {
+            const loadMoreElement = document.createElement('div');
+            loadMoreElement.className = 'video-item';
+            loadMoreElement.style.cursor = 'pointer';
+            loadMoreElement.innerHTML = `
+              <div style="display: flex; align-items: center; justify-content: center; height: 180px; background: rgba(252, 186, 3, 0.1); border: 2px dashed #fcba03;">
+                <div style="text-align: center; color: #fcba03;">
+                  <span class="material-icons" style="font-size: 48px; margin-bottom: 10px;">add_circle</span>
+                  <div>Load More Videos</div>
+                  <div style="font-size: 12px; margin-top: 5px;">${allVideos.length - 12} more available</div>
+                </div>
               </div>
-            </a>
-          `;
-          videosGrid.appendChild(videoElement);
-        });
+            `;
+            
+            loadMoreElement.addEventListener('click', () => {
+              // Load all remaining videos
+              const remainingVideos = allVideos.slice(12);
+              loadMoreElement.remove();
+              
+              remainingVideos.forEach(video => {
+                const videoElement = document.createElement('div');
+                videoElement.className = 'video-item';
+                
+                const publishDate = new Date(video.video_publishTime);
+                const now = new Date();
+                const diffTime = Math.abs(now - publishDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                let dateString;
+                if (diffDays === 1) {
+                  dateString = '1 day ago';
+                } else if (diffDays < 7) {
+                  dateString = `${diffDays} days ago`;
+                } else if (diffDays < 30) {
+                  const weeks = Math.floor(diffDays / 7);
+                  dateString = weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+                } else if (diffDays < 365) {
+                  const months = Math.floor(diffDays / 30);
+                  dateString = months === 1 ? '1 month ago' : `${months} months ago`;
+                } else {
+                  const years = Math.floor(diffDays / 365);
+                  dateString = years === 1 ? '1 year ago' : `${years} years ago`;
+                }
+                
+                let typeBadge = '';
+                if (video.video_type === 'short') {
+                  typeBadge = '<span style="background: #ff4444; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">SHORT</span>';
+                } else if (video.video_type === 'stream') {
+                  typeBadge = '<span style="background: #ff0000; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">LIVE</span>';
+                }
+                
+                videoElement.innerHTML = `
+                  <a href="${video.video_url}" target="_blank" style="text-decoration: none;">
+                    <img src="${video.video_thumbnail}" alt="${video.video_title}" class="video-thumbnail" />
+                    <div class="video-info">
+                      <div class="video-title">${video.video_title}${typeBadge}</div>
+                      <div class="video-date">${dateString}</div>
+                      <div style="color: #aaa; font-size: 11px; margin-top: 4px;">
+                        ${video.video_view_count.toLocaleString()} views • ${video.video_like_count.toLocaleString()} likes
+                      </div>
+                    </div>
+                  </a>
+                `;
+                videosGrid.appendChild(videoElement);
+              });
+            });
+            
+            videosGrid.appendChild(loadMoreElement);
+          }
+        }
       }, 2000); // Simulate loading delay
     }
     
