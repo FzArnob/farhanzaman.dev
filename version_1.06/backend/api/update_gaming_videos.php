@@ -101,33 +101,33 @@ class YouTubeVideoUpdater {
     private function updateExistingData($existingData, $uploadsPlaylistId) {
         // Get the last page's nextPageToken
         $lastPage = end($existingData['pages']);
-        $lastPageToken = $lastPage['nextPageToken'] ?? null;
-        
-        if (!$lastPageToken) {
-            // No more videos to fetch
-            return $existingData;
-        }
+        // Remove the last page from existing data
+        array_pop($existingData['pages']);
+        $lastPageToken = $lastPage['pageToken'] ?? null;
         
         // Fetch new videos starting from the last page token
         $newPages = [];
         $pageToken = $lastPageToken;
         
-        while ($pageToken) {
+        $firstIteration = true;
+        while ($pageToken || $firstIteration) {
+            $firstIteration = false;
+
             $videos = $this->getPlaylistVideos($uploadsPlaylistId, $pageToken);
             
             if (empty($videos['items'])) {
-                break;
+            break;
             }
-            
+
             $videoDetails = $this->getVideoDetails($videos['items']);
-            
+
             $newPages[] = [
-                'prevPageToken' => $videos['prevPageToken'] ?? null,
-                'pageToken' => $pageToken,
-                'nextPageToken' => $videos['nextPageToken'] ?? null,
-                'videos' => $videoDetails
+            'prevPageToken' => $videos['prevPageToken'] ?? null,
+            'pageToken' => $pageToken,
+            'nextPageToken' => $videos['nextPageToken'] ?? null,
+            'videos' => $videoDetails
             ];
-            
+
             $pageToken = $videos['nextPageToken'] ?? null;
         }
         
