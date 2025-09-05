@@ -267,7 +267,7 @@ class YouTubeVideoUpdater {
             }
         }
         
-        return 'full video';
+        return 'video';
     }
     
     private function makeApiCall($url) {

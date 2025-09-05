@@ -1,5 +1,5 @@
 // Gaming YouTube Data - Generated automatically
-// Last updated: 2025-09-05 12:10:45
+// Last updated: 2025-09-05 13:25:08
 
 const gamingYouTubeData = {
     "channel_name": "Run Fz Run",
@@ -67,7 +67,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=Wd7euxc4HsQ",
                     "video_view_count": 61,
                     "video_like_count": 13,
-                    "video_type": "full video"
+                    "video_type": "video"
                 },
                 {
                     "video_title": "Iso \ud83d\udc38 #valorant",
@@ -184,7 +184,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=AzhVsFSjecA",
                     "video_view_count": 304,
                     "video_like_count": 16,
-                    "video_type": "full video"
+                    "video_type": "video"
                 },
                 {
                     "video_title": "Sweet Treat at the END \ud83d\udd25 #valorant",
@@ -695,7 +695,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=ZX3cpRI5Yug",
                     "video_view_count": 73,
                     "video_like_count": 15,
-                    "video_type": "full video"
+                    "video_type": "video"
                 },
                 {
                     "video_title": "When You Meet NoSugerJustDady in Valorant.\ud83d\udc80#chypher #dare #valorant",
@@ -749,7 +749,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=61EtTlXGHts",
                     "video_view_count": 164,
                     "video_like_count": 18,
-                    "video_type": "full video"
+                    "video_type": "video"
                 },
                 {
                     "video_title": "Phoenix Never Saw the Knife Coming \ud83d\ude08 | Valorant | Split | Clove",
@@ -758,7 +758,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=eLQC55g8a8Y",
                     "video_view_count": 97,
                     "video_like_count": 17,
-                    "video_type": "full video"
+                    "video_type": "video"
                 },
                 {
                     "video_title": "My first time playing clove in valorant\u2026",
@@ -767,7 +767,7 @@ const gamingYouTubeData = {
                     "video_url": "https://www.youtube.com/watch?v=YupcS3BNQkU",
                     "video_view_count": 71,
                     "video_like_count": 12,
-                    "video_type": "full video"
+                    "video_type": "video"
                 }
             ]
         }
