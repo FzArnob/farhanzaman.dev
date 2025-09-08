@@ -44,7 +44,7 @@ VALUES ('Ideal School & College', null, 'https://iscm.edu.bd/', '2009', '2014', 
 INSERT INTO experience_items (institute_name, institute_std, institute_url, start_date, end_date, is_present, position,
                               project_details, project_text_1, project_text_2, project_text_3, project_url_1,
                               project_url_2, project_url_3, created_date, updated_date, delete_flag, fk_profile_id)
-VALUES ('BJIT Group', null, 'https://bjitgroup.com/', '2022-03-29', null, 1, 'Software Engineer',
+VALUES ('BJIT Group', null, 'https://bjitgroup.com/', '2022-03-29', null, 1, 'Senior Software Engineer',
         'Core Backend Engineer', 'Pocketalk', null, null, 'https://www.pocketalk.com/', null, null,
         '2023-06-26 01:23:40', '2023-06-26 01:23:40', 0, 'farhan');
 INSERT INTO experience_items (institute_name, institute_std, institute_url, start_date, end_date, is_present, position,

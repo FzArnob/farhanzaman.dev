@@ -1,3 +1,4 @@
+# Active: 1757309206526@@127.0.0.1@3306@portfolio
 create table profile_info (
   profile_id varchar(20) not null primary key, 
   full_name varchar(255) null, 
@@ -161,23 +162,29 @@ create table direct_messages (
   fk_profile_id varchar(20) not null, 
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
-create table visitor_tracking (
-  tracking_id int auto_increment primary key,
-  -- Unique device fingerprint based on multiple factors
-  device_fingerprint varchar(64) not null,
-  visit_timestamp timestamp default current_timestamp not null,
-  
-  -- Network and location data
-  visitor_ip varchar(45) not null,
-  is_tracked boolean default true,
+create table visitor_locations (
+  visitor_ip varchar(45) not null primary key,
+  is_tracked tinyint(1) default 0,
   continent varchar(255),
   country_name varchar(255),
   location_latitude decimal(10, 8),
   location_longitude decimal(11, 8),
   state_name varchar(255),
   city_name varchar(255),
-  
-  -- Device and browser information
+  created_date timestamp default current_timestamp not null,
+  tracked_date timestamp null,
+  # Indexes for better performance
+  index idx_country_state_city (country_name, state_name, city_name)
+);
+
+create table visitor_tracking (
+  tracking_id int auto_increment primary key,
+  # Unique device fingerprint based on cookie handled from server side
+  device_fingerprint varchar(64) not null,
+  visit_timestamp timestamp default current_timestamp not null,
+  # Network and location data reference (first check if IP exists in visitor_locations, If not then add it and use https://api.geoapify.com to get location data for the new IP. if getting location data fails, still store the IP with null location data and tracked to false)
+  fk_visitor_ip varchar(45) not null,
+  # Device and browser information (use exact logic as in ProfileModel, recieve anything from frontend that can not be got from user agent)
   browser_name varchar(255),
   browser_version varchar(50),
   operating_system varchar(255),
@@ -187,22 +194,19 @@ create table visitor_tracking (
   timezone_offset int,
   language varchar(10),
   rendering_engine varchar(255),
-  user_agent text,
-  
-  -- Activity tracking
+  # Activity tracking (recieving these details from frontend)
   page_tag varchar(255),
+  feature_tag varchar(255),
   activity_tag varchar(255),
   action_tag varchar(255),
   referrer_url varchar(500),
-  
-  -- Profile reference
+  # Profile reference
   fk_profile_id varchar(20) not null,
-  
-  -- Indexes for better performance
+  # Indexes for better performance
   index idx_device_fingerprint (device_fingerprint),
-  index idx_visitor_ip (visitor_ip),
+  index idx_visitor_ip (fk_visitor_ip),
   index idx_visit_timestamp (visit_timestamp),
   index idx_profile_date (fk_profile_id, visit_timestamp),
-  
+  foreign key (fk_visitor_ip) references visitor_locations (visitor_ip),
   foreign key (fk_profile_id) references profile_info (profile_id)
 );

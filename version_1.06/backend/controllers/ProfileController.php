@@ -21,15 +21,16 @@ class ProfileController
         // Close the file
         fclose($jsFile);
     }
-    public function synchronizeInfo($profile_id, $page_tag, $activity_tag, $action_tag)
+    public function synchronizeInfo($profile_id, $page_tag, $feature_tag, $activity_tag, $action_tag, $additionalData = [])
     {
-        $result = $this->model->saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag);
+        $result = $this->model->saveVisitorData($profile_id, $page_tag, $feature_tag, $activity_tag, $action_tag, $additionalData);
 
         $response = array(
-            "success" => $result
+            "success" => $result,
+            "message" => $result ? "Visitor data saved successfully" : "Failed to save visitor data"
         );
 
-        // Convert the profile data to JSON
+        // Convert the response to JSON
         $responseDataJson = json_encode($response);
 
         // Return the JSON response

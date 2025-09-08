@@ -155,184 +155,181 @@ class ProfileModel
         return $engine;
     }
 
-    function checkAndGetVisitorId($profile_id, $ip)
+    // Helper function to generate UUID v7
+    function generateUuidV7()
     {
-        // Check if visitor with the same IP already exists
-        $checkQuery = "SELECT visitor_id FROM visitors WHERE visitor_ip = ?";
+        static $lastUnixMs = null;
+        static $sequence = 0;
+
+        // Get current time in milliseconds since the Unix epoch
+        $unixMs = (int)(microtime(true) * 1000);
+
+        // Handle potential collisions within the same millisecond
+        if ($unixMs === $lastUnixMs) {
+            $sequence++;
+            $sequence &= 0x3FFF; // Keep within the 14-bit sequence range
+
+            if ($sequence === 0) {
+                $unixMs++; // Bump time slightly to avoid collision if sequence overflows
+            }
+        } else {
+            $sequence = random_int(0, 0x3FFF); // Random start for sequence per millisecond
+            $lastUnixMs = $unixMs;
+        }
+
+        // Extract time components for the UUID structure
+        $time_high = ($unixMs >> 16) & 0xFFFFFFFF;
+        $time_low = $unixMs & 0xFFFF;
+
+        // Set version (0x7) and variant (0x8) bits
+        $time_hi_and_version = ($time_low & 0x0FFF) | (0x7 << 12);
+        $clock_seq_hi_and_reserved = ($sequence & 0x3FFF) | 0x8000;
+
+        // Generate 6 bytes (48 bits) of cryptographic randomness for the remaining part
+        $randBytes = random_bytes(6);
+        $randHex = bin2hex($randBytes);
+
+        // Format and return the UUID v7 string
+        return sprintf(
+            '%08x-%04x-%04x-%04x-%012s',
+            $time_high,
+            $time_low,
+            $time_hi_and_version,
+            $clock_seq_hi_and_reserved,
+            $randHex
+        );
+    }
+
+    function checkAndInsertVisitorLocation($ip)
+    {
+        // Check if visitor location with the same IP already exists
+        $checkQuery = "SELECT visitor_ip FROM visitor_locations WHERE visitor_ip = ?";
         $stmt = $this->conn->prepare($checkQuery);
         $stmt->bind_param("s", $ip);
         $stmt->execute();
         $stmt->store_result();
-        $visitor_id = 0;
+        
         if ($stmt->num_rows > 0) {
-            // Visitor already exists, get the visitor_id
-            $stmt->bind_result($visitor_id);
-            $stmt->fetch();
-            // Visitor already exists, get the visitor_id
-            $stmt->bind_result($visitor_id);
-            $stmt->fetch();
+            // IP already exists in visitor_locations
             $stmt->close();
-
-            // Update the updated_date for the existing visitor
-            $updateQuery = "UPDATE visitors SET updated_date = NOW() WHERE visitor_id = ?";
-            $updateStmt = $this->conn->prepare($updateQuery);
-            $updateStmt->bind_param("i", $visitor_id);
-            $updateStmt->execute();
-            $updateStmt->close();
+            return true;
         } else {
-            // Visitor does not exist, fetch geo info and insert new visitor
+            $stmt->close();
+            // IP does not exist, fetch geo info and insert new visitor location
             $api_url = "https://api.geoapify.com/v1/ipinfo?ip=$ip&apiKey=b8568cb9afc64fad861a69edbddb2658";
             $response = file_get_contents($api_url);
             $data = json_decode($response, true);
 
             // Check if the API call was successful
-            $is_tracked = false;
+            $is_tracked = 0;
+            $continent = null;
+            $country_name = null;
+            $location_latitude = null;
+            $location_longitude = null;
+            $state_name = null;
+            $city_name = null;
+            $tracked_date = null;
+
             if ($response !== false && isset($data["country"])) {
-                $is_tracked = true;
+                $is_tracked = 1;
+                $tracked_date = date('Y-m-d H:i:s');
+                $continent = isset($data["continent"]["name"]) ? $data["continent"]["name"] : null;
+                $country_name = isset($data["country"]["name"]) ? $data["country"]["name"] : null;
+                $location_latitude = isset($data["location"]["latitude"]) ? $data["location"]["latitude"] : null;
+                $location_longitude = isset($data["location"]["longitude"]) ? $data["location"]["longitude"] : null;
+                $state_name = isset($data["state"]["name"]) ? $data["state"]["name"] : null;
+                $city_name = isset($data["city"]["name"]) ? $data["city"]["name"] : null;
             }
 
-
-            $insertQuery = "INSERT INTO visitors (visitor_ip, is_tracked, continent, country_iso_code, country_phone_code, country_name, country_currency, location_latitude, location_longitude, subdivisions_name, state_name, city_name, fk_profile_id) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertQuery = "INSERT INTO visitor_locations (visitor_ip, is_tracked, continent, country_name, location_latitude, location_longitude, state_name, city_name, tracked_date) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             $stmt = $this->conn->prepare($insertQuery);
-
-            $continentName = isset($data["continent"]["name"]) ? $data["continent"]["name"] : null;
-            $countryIsoCode = isset($data["country"]["iso_code"]) ? $data["country"]["iso_code"] : null;
-            $countryPhoneCode = isset($data["country"]["phone_code"]) ? $data["country"]["phone_code"] : null;
-            $countryName = isset($data["country"]["name"]) ? $data["country"]["name"] : null;
-            $countryCurrency = isset($data["country"]["currency"]) ? $data["country"]["currency"] : null;
-            $locationLatitude = isset($data["location"]["latitude"]) ? $data["location"]["latitude"] : null;
-            $locationLongitude = isset($data["location"]["longitude"]) ? $data["location"]["longitude"] : null;
-            $subdivisionsName = isset($data["subdivisions"][0]["names"]["en"]) ? $data["subdivisions"][0]["names"]["en"] : null;
-            $stateName = isset($data["state"]["name"]) ? $data["state"]["name"] : null;
-            $cityName = isset($data["city"]["names"]["en"]) ? $data["city"]["names"]["en"] : null;
-
-            $stmt->bind_param(
-                "sisssssddssss",
-                $ip,
-                $is_tracked,
-                $continentName,
-                $countryIsoCode,
-                $countryPhoneCode,
-                $countryName,
-                $countryCurrency,
-                $locationLatitude,
-                $locationLongitude,
-                $subdivisionsName,
-                $stateName,
-                $cityName,
-                $profile_id
-            );
-
-            $stmt->execute();
-            // Get the visitor_id of the newly inserted visitor
-            $visitor_id = $stmt->insert_id;
-            $stmt->close();
+            $stmt->bind_param("sissdssss", $ip, $is_tracked, $continent, $country_name, $location_latitude, $location_longitude, $state_name, $city_name, $tracked_date);
+            
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            } else {
+                $stmt->close();
+                return false;
+            }
         }
-        return $visitor_id;
     }
 
-    function insertNewSession($visitor_session_id, $visitor_id)
+    function getDeviceFingerprint() 
     {
-        // Get the current timestamp
-        $currentTimestamp = date('Y-m-d H:i:s');
-        // Calculate end time as start time + 1 day
-        $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
-        $action_points = 1;
-        // Insert new session into visitor_sessions table
-        $sessionQuery = "INSERT INTO visitor_sessions (session_id, created_date, last_active_date, action_points, end_date, fk_visitor_id) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sessionQuery);
-        // Bind parameters
-        $stmt->bind_param("sssisi", $visitor_session_id, $currentTimestamp, $currentTimestamp, $action_points, $endTime, $visitor_id);
-        // Execute query
-        $stmt->execute();
-        // Close statement
-        $stmt->close();
-    }
-    private function updateSession($visitor_session_id, $visitor_id)
-    {
-        $sessionExists = $this->checkSessionExists($visitor_session_id, $visitor_id);
-        if ($sessionExists) {
-            // Get the current timestamp
-            $currentTimestamp = date('Y-m-d H:i:s');
-            // Calculate end time as start time + 1 day
-            $endTime = date('Y-m-d H:i:s', strtotime($currentTimestamp . ' + 1 day'));
-            // Update last_active_time and action_points in visitor_sessions table
-            $updateQuery = "UPDATE visitor_sessions SET last_active_date = ?, action_points = action_points + 1, end_date = ? WHERE session_id = ? AND fk_visitor_id = ?";
-            $stmt = $this->conn->prepare($updateQuery);
-            $stmt->bind_param("sssi", $currentTimestamp, $endTime, $visitor_session_id, $visitor_id);
-            $stmt->execute();
-            $stmt->close();
+        $cookieName = "device_fingerprint";
+
+        if (isset($_COOKIE[$cookieName])) {
+            // Already has device fingerprint
+            return $_COOKIE[$cookieName];
         } else {
-            $this->insertNewSession($visitor_session_id, $visitor_id);
+            // Generate new device fingerprint using UUID v7
+            $newFingerprint = $this->generateUuidV7();
+            setcookie($cookieName, $newFingerprint, time() + (10 * 365 * 24 * 60 * 60), "/", "", true, true);
+            return $newFingerprint;
         }
     }
-    function checkSessionExists($visitor_session_id, $visitor_id)
-    {
-        $query = "SELECT COUNT(*) as count FROM visitor_sessions WHERE session_id = ? AND fk_visitor_id = ?";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param("si", $visitor_session_id, $visitor_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
-        // Return true if session exists, false otherwise
-        return $row['count'] > 0;
-    }
 
-    public function saveVisitorData($profile_id, $page_tag, $activity_tag, $action_tag)
+    public function saveVisitorData($profile_id, $page_tag, $feature_tag, $activity_tag, $action_tag, $additionalData = [])
     {
         $ip = $_SERVER['REMOTE_ADDR'];
-        $visitor_id = $this->checkAndGetVisitorId($profile_id, $ip);
-        $visitor_session_id = null;
-        // Check if the visitor has a session cookie
-        if (!isset($_COOKIE['sis_track_id'])) {
-            // If no session cookie exists, generate a new session ID
-            $visitor_session_id = 'sis_' . substr(md5(uniqid()), 0, 26); // Generating unique ID of length 30 prefixed with 'sis_'
-            // Set the session ID as a cookie with an expiration time (e.g., 1 day)
-            setcookie('sis_track_id', $visitor_session_id, time() + (86400 * 1), "/");
-            // Insert new session
-            $this->insertNewSession($visitor_session_id, $visitor_id);
-        } else {
-            // If a session cookie exists, retrieve the session ID
-            $visitor_session_id = $_COOKIE['sis_track_id'];
-            // Set the session ID as a cookie with an expiration time (e.g., 1 day)
-            setcookie('sis_track_id', $visitor_session_id, time() + (86400 * 1), "/");
-            // Update session time and action count
-            $this->updateSession($visitor_session_id, $visitor_id);
-        }
-
+        $referrer_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        
+        // Ensure visitor location exists
+        $this->checkAndInsertVisitorLocation($ip);
+        
+        // Get user agent data
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $result = $this->parseUserAgent($userAgent);
-        // Insert data into actions table
-        $actionQuery = "INSERT INTO visitor_actions (browser_name, browser_version, operating_system, device_type, device_details, rendering_engine, mobile_specific_info, page_tag, activity_tag, action_tag, fk_session_id) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($actionQuery);
+        $userAgentData = $this->parseUserAgent($userAgent);
+        
+        // Get device fingerprint from cookie
+        $device_fingerprint = $this->getDeviceFingerprint();
+        
+        // Extract additional data from frontend
+        $screen_resolution = isset($additionalData['screen_resolution']) ? $additionalData['screen_resolution'] : null;
+        $color_depth = isset($additionalData['color_depth']) ? intval($additionalData['color_depth']) : null;
+        $timezone_offset = isset($additionalData['timezone_offset']) ? intval($additionalData['timezone_offset']) : null;
+        $language = isset($additionalData['language']) ? $additionalData['language'] : null;
+        
+        // Insert visitor tracking data
+        $trackingQuery = "INSERT INTO visitor_tracking (
+            device_fingerprint, fk_visitor_ip, browser_name, browser_version, 
+            operating_system, device_type, screen_resolution, color_depth, 
+            timezone_offset, language, rendering_engine, page_tag, feature_tag, 
+            activity_tag, action_tag, referrer_url, fk_profile_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        $stmt = $this->conn->prepare($trackingQuery);
         $stmt->bind_param(
-            "ssssssissss",
-            $result['browser_name'],
-            $result['browser_version'],
-            $result['operating_system'],
-            $result['device_type'],
-            $result['device_details'],
-            $result['rendering_engine'],
-            $result['mobile_specific_info'],
+            "ssssssssissssssss",
+            $device_fingerprint,
+            $ip,
+            $userAgentData['browser_name'],
+            $userAgentData['browser_version'],
+            $userAgentData['operating_system'],
+            $userAgentData['device_type'],
+            $screen_resolution,
+            $color_depth,
+            $timezone_offset,
+            $language,
+            $userAgentData['rendering_engine'],
             $page_tag,
+            $feature_tag,
             $activity_tag,
             $action_tag,
-            $visitor_session_id
+            $referrer_url,
+            $profile_id
         );
+        
         if ($stmt->execute()) {
             $stmt->close();
-            // Insertion successful
             return true;
         } else {
             $stmt->close();
-            // Insertion failed
             return false;
         }
-        return true;
     }
 
 
@@ -445,11 +442,15 @@ class ProfileModel
 
     public function getVisitorCount($profile_id)
     {
-        // Fetch visitor count
-        $query = "SELECT count(*) as count FROM visitors
-                  WHERE fk_profile_id = '$profile_id'";
-        $result = $this->conn->query($query);
+        // Fetch unique visitor count based on unique IPs for the profile
+        $query = "SELECT COUNT(DISTINCT fk_visitor_ip) as count FROM visitor_tracking 
+                  WHERE fk_profile_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("s", $profile_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
+        $stmt->close();
         return strval($row['count']);
     }
     public function sendDirectMessage($profileId, $name, $email, $subject, $message)
