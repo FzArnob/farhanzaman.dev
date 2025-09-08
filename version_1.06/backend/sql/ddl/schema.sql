@@ -161,47 +161,48 @@ create table direct_messages (
   fk_profile_id varchar(20) not null, 
   foreign key (fk_profile_id) references profile_info (profile_id)
 );
-create table visitors (
-  visitor_id int auto_increment primary key,
-  visitor_ip varchar(45) unique,
-  is_tracked boolean,
+create table visitor_tracking (
+  tracking_id int auto_increment primary key,
+  -- Unique device fingerprint based on multiple factors
+  device_fingerprint varchar(64) not null,
+  visit_timestamp timestamp default current_timestamp not null,
+  
+  -- Network and location data
+  visitor_ip varchar(45) not null,
+  is_tracked boolean default true,
   continent varchar(255),
-  country_iso_code varchar(2),
-  country_phone_code varchar(5),
   country_name varchar(255),
-  country_currency varchar(3),
   location_latitude decimal(10, 8),
   location_longitude decimal(11, 8),
-  subdivisions_name varchar(255),
   state_name varchar(255),
   city_name varchar(255),
-  created_date timestamp default current_timestamp not null,
-  updated_date timestamp null on update current_timestamp,
-  fk_profile_id varchar(20) not null,
-  foreign key (fk_profile_id) references profile_info (profile_id)
-);
-create table visitor_sessions (
-  session_id varchar(30) primary key,
-  created_date timestamp default current_timestamp not null,
-  last_active_date timestamp null,
-  action_points int default 1 not null,
-  end_date timestamp null,
-  fk_visitor_id int not null,
-  foreign key (fk_visitor_id) references visitors (visitor_id)
-);
-create table visitor_actions (
-  action_id int auto_increment primary key,
+  
+  -- Device and browser information
   browser_name varchar(255),
   browser_version varchar(50),
   operating_system varchar(255),
   device_type varchar(255),
-  device_details varchar(255),
+  screen_resolution varchar(20),
+  color_depth int,
+  timezone_offset int,
+  language varchar(10),
   rendering_engine varchar(255),
-  mobile_specific_info boolean default 0,
-  created_date timestamp default current_timestamp not null,
+  user_agent text,
+  
+  -- Activity tracking
   page_tag varchar(255),
   activity_tag varchar(255),
   action_tag varchar(255),
-  fk_session_id varchar(30) not null,
-  foreign key (fk_session_id) references visitor_sessions (session_id)
+  referrer_url varchar(500),
+  
+  -- Profile reference
+  fk_profile_id varchar(20) not null,
+  
+  -- Indexes for better performance
+  index idx_device_fingerprint (device_fingerprint),
+  index idx_visitor_ip (visitor_ip),
+  index idx_visit_timestamp (visit_timestamp),
+  index idx_profile_date (fk_profile_id, visit_timestamp),
+  
+  foreign key (fk_profile_id) references profile_info (profile_id)
 );

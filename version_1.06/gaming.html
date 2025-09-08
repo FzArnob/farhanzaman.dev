@@ -34,6 +34,7 @@
       width: 100%;
       position: relative;
       overflow: hidden;
+      display: flex;
     }
 
     .background-video {
@@ -93,6 +94,9 @@
       width: calc(50% - 60px);
       position: relative;
       z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
     }
 
     .profile-right-section {
@@ -103,11 +107,14 @@
     }
 
     .profile-left-section>div {
-      justify-content: right;
+      justify-content: flex-end;
     }
 
     .profile-left-section>p {
       text-align: right;
+      max-width: 300px;
+      margin: 0;
+      display: block;
     }
 
     .profile-right-section>div {
@@ -115,7 +122,11 @@
     }
 
     .platform-logos {
-      padding-left: 30px;
+      padding-left: 25px;
+      display: flex; 
+      justify-content: left; 
+      gap: 20px; 
+      margin-top: 40px;
     }
 
     .video-thumbnail {
@@ -180,9 +191,13 @@
     }
 
     @media (max-width: 880px) {
+      .gaming-profile-row {
+        flex-direction: column;
+      }
+      
       .discord-section {
         text-align: center !important;
-        margin-top: 20px;
+        margin: 0px auto 0px auto;
       }
       .discord-section > div {
         justify-content: center;
@@ -192,7 +207,12 @@
         width: 40px;
         height: 40px;
       }
-
+    
+      .platform-logos {
+        justify-content: center; 
+        padding: 0px;
+        margin-left: 0px;
+      }
       .social-buttons {
         justify-content: center;
       }
@@ -200,11 +220,14 @@
       .videos-grid {
         grid-template-columns: 1fr;
       }
-
+      .profile-right-section > div {
+        justify-content: center;
+      }
       .profile-left-section,
       .profile-right-section {
         width: 100% !important;
         margin-bottom: 20px;
+        align-items: center;
       }
 
       .profile-left-section > div {
@@ -213,17 +236,18 @@
       .profile-left-section > p {
         max-width: 300px;
         text-align: center;
+        margin: 0;
       }
       .profile-left-section {
-        padding: 80px 20px 0px 20px;
-        width: calc(50% - 40px);
+        padding: 80px 0px 0px 0px;
+        width: calc(100% - 40px);
         position: relative;
         z-index: 1;
       }
 
       .profile-right-section {
-        padding: 0px 20px 20px 20px;
-        width: calc(50% - 40px);
+        padding: 0px 20px 20px 0px;
+        width: calc(100% - 40px);
         position: relative;
         z-index: 1;
       }
@@ -306,19 +330,19 @@
             </div>
           </div>
           <!-- 3 Platform logos -->
-          <div class="platform-logos" style="display: flex; justify-content: left; gap: 20px; margin-top: 40px;">
-            <a href="https://www.youtube.com/@runfzrun" target="_blank" class="platform-logo"
+          <div class="platform-logos">
+            <a href="https://www.youtube.com/@runfzrun?sub_confirmation=1" target="_blank" class="platform-logo"
               style="display: inline-block; transition: transform 0.3s;">
               <div
                 style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <span class="material-icons" style="color: #ff0000; font-size: 54px;">play_circle_filled</span>
+                <span class="material-icons" style="color: #ff0000; font-size: 70px;">play_circle_filled</span>
               </div>
             </a>
             <a href="#" target="_blank" class="platform-logo"
               style="display: inline-block; transition: transform 0.3s;">
               <div
-                style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <span class="material-icons" style="color: #1877f2; font-size: 54px;">facebook</span>
+                style="width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <span class="material-icons" style="color: #1877f2; font-size: 70px;">facebook</span>
               </div>
             </a>
             <a href="#" target="_blank" class="platform-logo"
@@ -326,7 +350,7 @@
               <div
                 style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <span class="material-icons"
-                  style="background: linear-gradient(135deg, #ff0050 0%, #00f2ea 100%); color: #fff; padding: 2px; border-radius: 50%; font-size: 41px; font-weight: 300;">tiktok</span>
+                  style="background: linear-gradient(135deg, #ff0050 0%, #00f2ea 100%); color: #fff; padding: 7px; border-radius: 50%; font-size: 45px; font-weight: 300;">tiktok</span>
               </div>
             </a>
           </div>
@@ -391,7 +415,8 @@
       grid.innerHTML = '';
       for (let i = 0; i < count; i++) {
         const skeleton = document.createElement('div');
-        skeleton.className = 'video-item';
+        skeleton.className = 'video-item skeleton-item';
+        skeleton.setAttribute('data-skeleton', 'true');
         skeleton.innerHTML = `
           <div style="width: 100%; height: 180px; background: linear-gradient(90deg, #222 25%, #333 50%, #222 75%); background-size: 200% 100%; animation: skeleton-loading 1.2s infinite linear; border-radius: 10px;"></div>
           <div class="video-info">
@@ -463,20 +488,36 @@
 
       isLoading = true;
 
-      // Add skeletons for loading indication
-      addSkeletons(Math.min(4, filteredVideos.length - start));
+      // Find skeletons in the grid
+      const grid = document.getElementById('youtube-videos-grid');
+      let skeletons = Array.from(grid.querySelectorAll('[data-skeleton="true"]'));
+      // If not enough skeletons, add more
+      const needed = Math.max(0, (end - start) - skeletons.length);
+      for (let i = 0; i < needed; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'video-item skeleton-item';
+        skeleton.setAttribute('data-skeleton', 'true');
+        skeleton.innerHTML = `
+          <div style="width: 100%; height: 180px; background: linear-gradient(90deg, #222 25%, #333 50%, #222 75%); background-size: 200% 100%; animation: skeleton-loading 1.2s infinite linear; border-radius: 10px;"></div>
+          <div class="video-info">
+            <div style="width: 70%; height: 18px; background: #333; border-radius: 4px; margin-bottom: 8px; animation: skeleton-loading 1.2s infinite linear;"></div>
+            <div style="width: 40%; height: 12px; background: #333; border-radius: 4px; margin-bottom: 6px; animation: skeleton-loading 1.2s infinite linear;"></div>
+            <div style="width: 60%; height: 10px; background: #333; border-radius: 4px; animation: skeleton-loading 1.2s infinite linear;"></div>
+          </div>
+        `;
+        grid.appendChild(skeleton);
+        skeletons.push(skeleton);
+      }
 
       setTimeout(() => {
-        // Remove skeletons
-        removeSkeletons();
-
-        // Render new videos
         const videosToShow = filteredVideos.slice(start, end);
-        const grid = document.getElementById('youtube-videos-grid');
-
-        videosToShow.forEach(video => {
-          const videoElement = document.createElement('div');
-          videoElement.className = 'video-item';
+        // Replace skeletons in-place with video content
+        for (let i = 0; i < videosToShow.length; i++) {
+          const video = videosToShow[i];
+          const skeleton = skeletons[i];
+          if (!skeleton) continue;
+          skeleton.removeAttribute('data-skeleton');
+          skeleton.classList.remove('skeleton-item');
           const publishDate = new Date(video.video_publishTime);
           const now = new Date();
           const diffTime = Math.abs(now - publishDate);
@@ -502,7 +543,7 @@
           } else if (video.video_type === 'stream') {
             typeBadge = '<span style="background: #ff0000; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-left: 5px;">LIVE</span>';
           }
-          videoElement.innerHTML = `
+          skeleton.innerHTML = `
             <a href="${video.video_url}" target="_blank" style="text-decoration: none;">
               <img src="${video.video_thumbnail}" alt="${video.video_title}" class="video-thumbnail" />
               <div class="video-info">
@@ -514,11 +555,20 @@
               </div>
             </a>
           `;
-          grid.appendChild(videoElement);
-        });
-
+        }
+        // Hide any extra skeletons
+        for (let i = videosToShow.length; i < skeletons.length; i++) {
+          skeletons[i].style.display = 'none';
+        }
         isLoading = false;
         currentPage++;
+
+        // --- NEW: Check if more should be loaded (user is still at bottom) ---
+        const rect = grid.getBoundingClientRect();
+        const atBottom = (window.innerHeight + window.scrollY >= rect.top + window.scrollY + grid.offsetHeight - 300);
+        if (atBottom && (currentPage * pageSize < filteredVideos.length)) {
+          loadNextPage();
+        }
       }, 600);
     }
 
@@ -570,8 +620,6 @@
           currentPage = 0;
 
           setTimeout(() => {
-            const grid = document.getElementById('youtube-videos-grid');
-            grid.innerHTML = '';
             loadNextPage();
           }, 1000);
 
