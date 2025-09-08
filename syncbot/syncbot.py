@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 # Replace with your bot token
-TOKEN = "MTQxMzc2MTg1NDU2NzYxMjUwOA.G_3IO-.LASlvDXM8aj09Zo1YNajn4dGc0YxsfH4rzGxjw1"
+TOKEN = "Test_1"
 
 # Set prefix for commands (e.g., !help)
 intents = discord.Intents.default()
