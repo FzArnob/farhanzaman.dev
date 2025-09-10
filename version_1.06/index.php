@@ -4,11 +4,19 @@ $requestUri = $_SERVER['REQUEST_URI'];
 // Remove leading and trailing slashes and any potential query strings
 $path = trim(parse_url($requestUri, PHP_URL_PATH), '/');
 
+$basePath = 'farhanzaman.dev/version_1.06';
+if (strpos($path, $basePath) === 0) {
+    $path = substr($path, strlen($basePath));
+    $path = ltrim($path, '/');
+}
+
 // Split the path into parts
 $parts = explode("/", $path);
 
 // Get the route from the first part
 $route = isset($parts[0]) ? $parts[0] : 'none';
+
+echo "Requested route: " . $route . "\n";
 
 // If there are query parameters, remove them from the route
 if (strpos($route, '?') !== false) {
@@ -41,7 +49,7 @@ if (isset($routes[$route])) {
         exit;
     }
 } else {
-    header('Location: /404');
+    // header('Location: /404');
     exit;
 }
 ?>
