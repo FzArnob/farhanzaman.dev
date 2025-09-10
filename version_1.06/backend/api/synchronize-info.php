@@ -46,12 +46,12 @@ if ($requestMethod === 'POST') {
     }
     
     // Validate required parameters
-    if ($profile_id && $page_tag && $activity_tag && $action_tag) {
+    if ($profile_id && $page_tag && $feature_tag && $activity_tag && $action_tag) {
         $controller->synchronizeInfo($profile_id, $page_tag, $feature_tag, $activity_tag, $action_tag, $additionalData);
     } else {
         http_response_code(400);
         $result["success"] = false;
-        $result["message"] = "Error: Required parameters are missing (profile_id, page_tag, activity_tag, action_tag).";
+        $result["message"] = "Error: Required parameters are missing (profile_id, page_tag, feature_tag, activity_tag, action_tag).";
         $errorJson = json_encode($result);
 
         // Return the JSON response
