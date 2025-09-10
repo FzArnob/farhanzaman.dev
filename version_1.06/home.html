@@ -266,6 +266,7 @@
       </section>
     </div>
   </main-page>
+  <script src="view/js/sync_config.js"></script>
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
@@ -324,7 +325,12 @@
           document.querySelector("pre-loader").style.display = "none"; // hide
           document.querySelector("main-page").style.display = "block"; // show
           wobbleAnimation();
-          synchronizeInfo()
+          synchronizeInfo(
+            window.sync.home.page,
+            window.sync.home.features.full_page,
+            window.sync.home.activities.page_view,
+            window.sync.home.actions.visit
+          )
             .then(result => {
               console.log('Data Synchronized');
             })

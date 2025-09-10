@@ -63,12 +63,40 @@ function enableMessages() {
 
 // Sync Info
 
-function synchronizeInfo() {
-  const profileId = "farhan";
-  const url = host + `/synchronize-info.php?profile_id=${profileId}`;
+function synchronizeInfo(page_tag, feature_tag, activity_tag, action_tag) {
+  const profile_id = "farhan";
+  const screen_resolution = window.screen.width + "x" + window.screen.height;
+  const color_depth = window.screen.colorDepth
+    ? String(window.screen.colorDepth)
+    : "None";
+  const timezone_offset = String(new Date().getTimezoneOffset());
+  const language = navigator.language || navigator.userLanguage || "None";
+  const url = host + "/synchronize-info.php";
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    profile_id,
+    page_tag,
+    feature_tag,
+    activity_tag,
+    action_tag,
+    screen_resolution,
+    color_depth,
+    timezone_offset,
+    language,
+  });
+  console.log("Sync Data: " + raw);
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
 
   return new Promise((resolve, reject) => {
-    fetch(url)
+    fetch(url, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -746,12 +774,7 @@ function generateWorksMarquee(targetElement, worksData) {
     const work = worksData[i];
     const workBottom = worksData[i + 1];
     var cardHolderOne = createCardHolder(work, workBottom, workCardWidth, i);
-    var cardHolderTwo = createCardHolder(
-      work,
-      workBottom,
-      workCardWidth,
-      i
-    );
+    var cardHolderTwo = createCardHolder(work, workBottom, workCardWidth, i);
     worksSpanOne.appendChild(cardHolderOne);
     worksSpanTwo.appendChild(cardHolderTwo);
   }
