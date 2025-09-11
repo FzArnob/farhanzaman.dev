@@ -181,7 +181,7 @@ a {
   border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
-  color: #484848;
+  color: #373737;
   display: inline-block;
   position: relative;
   height: 30px;
@@ -194,6 +194,7 @@ a {
   display: inline-block;
   position: absolute;
   height: 100%;
+  color: #373737;
   width: 100%;
   line-height: 2.5;
   font-size: 180%;
@@ -206,8 +207,7 @@ a {
 }
 
 .btn-5a:hover:before {
-  top: -15;
-  color: #484848;
+  top: -15px;
 }
 
 .button-basic-fill a {

@@ -37,54 +37,6 @@ function isInViewport(element) {
   );
 }
 
-navClick = false;
-
-function handleNavScroll() {
-  if (!navClick) {
-    const sections = document.querySelectorAll("section.nav-section");
-    const visibleSections = Array.from(sections).filter((section) =>
-      isInViewport(section)
-    );
-
-    let mostVisibleSection = null;
-    let mostVisiblePercentage = 0;
-
-    visibleSections.forEach((section) => {
-      const sectionId = section.getAttribute("id");
-      const correspondingNavLink = document.querySelector(
-        `a[href="#${sectionId}"]`
-      );
-
-      const visiblePercentage = calculateVisiblePercentage(section);
-
-      if (visiblePercentage > mostVisiblePercentage) {
-        mostVisibleSection = section;
-        mostVisiblePercentage = visiblePercentage;
-      }
-
-      if (correspondingNavLink.classList?.contains("active")) {
-        correspondingNavLink.classList.remove("active");
-      }
-    });
-
-    if (mostVisibleSection) {
-      const mostVisibleNavLink = document.querySelector(
-        `a[href="#${mostVisibleSection.getAttribute("id")}"]`
-      );
-      mostVisibleNavLink.classList.add("active");
-    }
-  }
-}
-
-function calculateVisiblePercentage(element) {
-  const rect = element.getBoundingClientRect();
-  const windowHeight =
-    window.innerHeight || document.documentElement.clientHeight;
-  const visibleHeight =
-    Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-  return (visibleHeight / element.offsetHeight) * 100;
-}
-
 function wobbleAnimation() {
   // NAV Bar back color change
   const navbar = document.getElementById("navbar");
@@ -223,38 +175,6 @@ document
         : (menuBtn.style.display = "block");
     }, 100);
   });
-
-// nav links highlight
-
-// Get all the navigation links
-const navLinks = document.querySelectorAll(".nav-links");
-
-// Loop through each navigation link and add the event listener
-navLinks.forEach((link) => {
-  link.addEventListener("click", function (event) {
-    navClick = true;
-    // Remove the "active" class from all navigation links
-    navLinks.forEach((link) => {
-      link.classList.remove("active");
-    });
-
-    // Add the "active" class to the clicked navigation link
-    this.classList.add("active");
-
-    var menuBtn = document.querySelector(".mobile-nav-menu");
-    if (menuBtn) {
-      menuBtn.classList.toggle("mobile-nav-menu");
-      setTimeout(function () {
-        menuBtn.style.display === "block"
-          ? (menuBtn.style.display = "none")
-          : (menuBtn.style.display = "block");
-      }, 200);
-    }
-    setTimeout(function () {
-      navClick = false;
-    }, 2000);
-  });
-});
 
 
 //animation text

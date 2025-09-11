@@ -74,7 +74,8 @@ function synchronizeInfo(page_tag, feature_tag, activity_tag, action_tag) {
   const url = host + "/synchronize-info.php";
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-
+  console.log(feature_tag);
+  
   const raw = JSON.stringify({
     profile_id,
     page_tag,

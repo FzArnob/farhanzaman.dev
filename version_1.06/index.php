@@ -16,8 +16,6 @@ $parts = explode("/", $path);
 // Get the route from the first part
 $route = isset($parts[0]) ? $parts[0] : 'none';
 
-echo "Requested route: " . $route . "\n";
-
 // If there are query parameters, remove them from the route
 if (strpos($route, '?') !== false) {
     list($route, $queryString) = explode('?', $route, 2);
