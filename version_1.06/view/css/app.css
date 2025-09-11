@@ -163,7 +163,7 @@ a {
   background-color: var(--theme-color);
 }
 
-.icon-resume a:before {
+.icon-resume:before {
   font-family: "icons-font";
   content: "N";
 }
@@ -179,25 +179,34 @@ a {
   transition: all 0.5s;
   border-radius: 6px;
   cursor: pointer;
-
+  text-decoration: none;
+  color: #484848;
+  display: inline-block;
+  position: relative;
   height: 30px;
-
   text-align: center;
   overflow: hidden;
 }
 
-.btn-5 a:before {
+
+.btn-5:before {
   display: inline-block;
   position: absolute;
   height: 100%;
   width: 100%;
   line-height: 2.5;
   font-size: 180%;
+  transition: top 0.5s ease;
 }
 
-.btn-5a a:before {
+.btn-5a:before {
   left: 0;
   top: -90px;
+}
+
+.btn-5a:hover:before {
+  top: -15;
+  color: #484848;
 }
 
 .button-basic-fill a {
