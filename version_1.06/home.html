@@ -345,6 +345,18 @@
               );
             });
           }
+          // Contact Button Tracking
+          var contactLink = document.getElementById("button-3");
+          if (contactLink) {
+            contactLink.addEventListener("click", function () {
+              synchronizeInfo(
+                window.sync.home.page,
+                window.sync.home.features.contact_button,
+                window.sync.home.activities.click,
+                window.sync.home.actions.go_to_contact
+              );
+            });
+          }
         }, 1000);
 
         // You can also apply any further logic here if needed.

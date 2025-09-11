@@ -86,7 +86,7 @@ a {
   color: var(--theme-color);
   font-size: 18px;
   font-weight: 500;
-  padding: 10px 40px;
+  padding: 10px 0px;
   width: fit-content;
   border: 2px solid var(--theme-color);
   transition: all 0.5s;
@@ -99,6 +99,7 @@ a {
   transition: all 0.5s ease-Out;
   text-decoration: none;
   position: relative;
+  padding: 10px 40px;
   color: inherit;
   z-index: 20;
 }

@@ -5,33 +5,17 @@ window.sync = {
     page: "HOME",
     features: {
       full_page: "FULL_PAGE",
-      sidebar: "SIDEBAR",
-      header: "HEADER",
-      footer: "FOOTER",
-      widget: "WIDGET",
-      modal: "MODAL",
-      button: "BUTTON",
-      link: "LINK",
-      form: "FORM",
       resume_button: "RESUME_BUTTON",
+      contact_button: "CONTACT_BUTTON"
     },
     activities: {
       page_view: "PAGE_VIEW",
-      click: "CLICK",
-      hover: "HOVER",
-      scroll: "SCROLL",
-      form_submit: "FORM_SUBMIT",
+      click: "CLICK"
     },
     actions: {
       visit: "VISIT",
-      click: "CLICK",
-      submit: "SUBMIT",
-      change: "CHANGE",
-      navigate: "NAVIGATE",
-      search: "SEARCH",
-      filter: "FILTER",
-      sort: "SORT",
       download: "DOWNLOAD",
+      go_to_contact: "GO_TO_CONTACT"
     },
   },
   expertise: {
