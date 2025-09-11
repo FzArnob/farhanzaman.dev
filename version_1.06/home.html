@@ -106,9 +106,7 @@
     <div id="content-gap"></div>
     <div class="main-content">
       <section id="about-section" class="nav-section">
-        <br />
-        <br />
-        <br />
+        
         <div class="row">
           <div class="section-head wobble">Background</div>
         </div>
@@ -117,7 +115,7 @@
           <div class="column-2" id="experiences"></div>
         </div>
         <div class="row">
-          <a href="/about" style="z-index: 10; margin-left: 50%; transform: translate(-50%, 85px); margin-bottom: 40px;"
+          <a href="/about" id="about-me-btn" style="z-index: 10; margin-left: 50%; transform: translate(-50%, 85px); margin-bottom: 40px;"
             class="button button-a button-big button-rouded back-color">About Me</a>
         </div>
       </section>
@@ -133,7 +131,7 @@
             </div>
             <div id="skill-bars" class="expertize-bar">
             </div>
-            <a href="/expertise"
+            <a href="/expertise" id="expertise-more-btn" 
               style="z-index: 10; margin-left: 50%; transform: translate(-50%,-50%); margin-top: 20px;"
               class="button button-b button-big button-rouded back-color">More</a>
           </div>
@@ -151,7 +149,7 @@
         <div class="marquee" id="works">
         </div>
         <div class="row">
-          <a href="/works" style="margin-left: 50%; transform: translateX(-50%); margin-bottom: 40px;"
+          <a href="/works" id="view-projects-btn" style="margin-left: 50%; transform: translateX(-50%); margin-bottom: 40px;"
             class="button button-a button-big button-rouded">View Projects</a>
         </div>
       </section>
@@ -164,7 +162,7 @@
           <div id="gallery"></div>
         </div>
         <div class="row">
-          <a href="/hobbies"
+          <a href="/hobbies" id="explore-hobbies-btn" 
             style="z-index: 10; margin-left: 50%; transform: translate(-50%,-51%); margin-bottom: 40px;"
             class="button button-a button-big button-rouded back-color">Explore</a>
         </div>
@@ -266,11 +264,11 @@
       </section>
     </div>
   </main-page>
-  <script src="view/js/sync_config.js"></script>
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
   <script src="view/js/pna.js"></script>
+  <script src="view/js/sync_info.js"></script>
   <script>
     document.title = result.profile.info.full_name;
     document.getElementById('intro_text').innerHTML = result.profile.info.intro_text;
@@ -325,89 +323,7 @@
           document.querySelector("pre-loader").style.display = "none"; // hide
           document.querySelector("main-page").style.display = "block"; // show
           wobbleAnimation();
-          synchronizeInfo(
-            window.sync.home.page,
-            window.sync.home.features.full_page,
-            window.sync.home.activities.page_view,
-            window.sync.home.actions.visit
-          );
-
-          // Resume Download Tracking
-          var resumeLink = document.getElementById("resume");
-          if (resumeLink) {
-            resumeLink.addEventListener("click", function () {
-              synchronizeInfo(
-                window.sync.home.page,
-                window.sync.home.features.resume_button,
-                window.sync.home.activities.click,
-                window.sync.home.actions.download
-              );
-            });
-          }
-          // Contact Button Tracking
-          var contactLink = document.getElementById("button-3");
-          if (contactLink) {
-            contactLink.addEventListener("click", function () {
-              synchronizeInfo(
-                window.sync.home.page,
-                window.sync.home.features.contact_button,
-                window.sync.home.activities.click,
-                window.sync.home.actions.go_to_contact
-              );
-            });
-          }
-
-          // Navbar Navigation Tracking
-          var navLinks = document.querySelectorAll('.nav-links');
-          navLinks.forEach(function(link) {
-            link.addEventListener("click", function () {
-              var linkText = link.textContent.trim().toUpperCase();
-              var actionName = linkText + window.sync.home.actions.redirect_suffix;
-              
-              synchronizeInfo(
-                window.sync.home.page,
-                window.sync.home.features.nav_bar,
-                window.sync.home.activities.click,
-                actionName
-              );
-            });
-          });
-
-          // Logo Navigation Tracking
-          var logoLink = document.querySelector('.nav-logo');
-          if (logoLink) {
-            logoLink.addEventListener("click", function () {
-              synchronizeInfo(
-                window.sync.home.page,
-                window.sync.home.features.nav_bar,
-                window.sync.home.activities.click,
-                window.sync.home.actions.logo_redirect
-              );
-            });
-          }
-
-          // Theme Toggle Tracking
-          var themeToggleButton = document.getElementById("theme-toogle-button");
-          if (themeToggleButton) {
-            themeToggleButton.addEventListener("click", function () {
-              // Determine the theme that will be applied after this click
-              var currentTheme = getCookie("theme");
-              var actionName;
-              if (currentTheme === "dark") {
-                actionName = window.sync.home.actions.applied_light_theme;
-              } else if (currentTheme === "light") {
-                actionName = window.sync.home.actions.applied_dark_theme;
-              } else {
-                actionName = window.sync.home.actions.applied_dark_theme;
-              }
-              synchronizeInfo(
-                window.sync.home.page,
-                window.sync.home.features.theme_toggle,
-                window.sync.home.activities.click,
-                actionName
-              );
-            });
-          }
+          synchronizePage("home")
         }, 1000);
 
         // You can also apply any further logic here if needed.
