@@ -314,6 +314,7 @@
     document.getElementById("content-gap").style.marginTop = window.innerHeight + "px";
     document.getElementById("content-gap").style.border = "none";
     document.getElementById("resume").href = result.profile.info.resume_url;
+
     document.addEventListener("DOMContentLoaded", function () {
       const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
       const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
@@ -330,13 +331,20 @@
             window.sync.home.features.full_page,
             window.sync.home.activities.page_view,
             window.sync.home.actions.visit
-          )
-            .then(result => {
-              console.log('Data Synchronized');
-            })
-            .catch(error => {
-              console.error(error); // Handle any errors here
+          );
+
+          // Resume Download Tracking
+          var resumeLink = document.getElementById("resume");
+          if (resumeLink) {
+            resumeLink.addEventListener("click", function () {
+              synchronizeInfo(
+                window.sync.home.page,
+                window.sync.home.features.resume_button,
+                window.sync.home.activities.click,
+                window.sync.home.actions.download
+              );
             });
+          }
         }, 1000);
 
         // You can also apply any further logic here if needed.

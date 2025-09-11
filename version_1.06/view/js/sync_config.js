@@ -13,6 +13,7 @@ window.sync = {
       button: "BUTTON",
       link: "LINK",
       form: "FORM",
+      resume_button: "RESUME_BUTTON",
     },
     activities: {
       page_view: "PAGE_VIEW",
@@ -30,6 +31,7 @@ window.sync = {
       search: "SEARCH",
       filter: "FILTER",
       sort: "SORT",
+      download: "DOWNLOAD",
     },
   },
   expertise: {
