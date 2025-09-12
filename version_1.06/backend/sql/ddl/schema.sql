@@ -1,3 +1,4 @@
+-- Active: 1757689398488@@127.0.0.1@3306@portfolio
 # Active: 1757309206526@@127.0.0.1@3306@portfolio
 create table profile_info (
   profile_id varchar(20) not null primary key, 
