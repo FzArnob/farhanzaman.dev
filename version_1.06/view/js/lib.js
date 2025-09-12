@@ -393,6 +393,7 @@ function createGallery(targetElement, gallery, extended) {
       imageContainer.style.boxShadow = "none";
       imageContainer.style.transform = "none";
     });
+    imageContainer.setAttribute("data-name", art.name);
     imageContainer.classList.add("image-container");
     imageContainer.appendChild(image);
     imageContainer.appendChild(background);

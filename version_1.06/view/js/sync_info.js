@@ -14,6 +14,11 @@ sync = {
       expertise_more_button: "EXPERTISE_MORE_BUTTON",
       view_projects_button: "VIEW_PROJECTS_BUTTON",
       explore_hobbies_button: "EXPLORE_HOBBIES_BUTTON",
+      works_marquee: "WORKS_MARQUEE",
+      works_card: "WORKS_CARD",
+      gallery_container: "GALLERY_CONTAINER",
+      gallery_thumbnail: "GALLERY_THUMBNAIL",
+      photo_viewer: "PHOTO_VIEWER",
       direct_message_form: "DIRECT_MESSAGE_FORM",
     },
     activities: {
@@ -25,6 +30,8 @@ sync = {
       visit: "VISIT",
       download: "DOWNLOAD",
       go_to_contact: "GO_TO_CONTACT",
+      view_work: "VIEW_WORK",
+      open_gallery_photo: "OPEN_GALLERY_PHOTO",
       redirect_suffix: "_REDIRECT",
       nav_logo_redirect: "LOGO_REDIRECT",
       logo_redirect: "LOGO_REDIRECT",
@@ -207,4 +214,43 @@ function synchronizePage(pageName) {
       );
     });
   }
+
+  // WORKS: track clicks on work cards
+  var workCards = document.querySelectorAll('.work-card');
+  if (workCards && workCards.length) {
+    workCards.forEach(function (card) {
+      // avoid attaching multiple listeners
+      if (card.__sync_tracking_attached) return;
+      card.__sync_tracking_attached = true;
+
+      card.addEventListener('click', function (evt) {
+        var titleEl = card.querySelector('.work-card-title');
+        var workTitle = titleEl ? titleEl.textContent.trim() : 'UNKNOWN_WORK';
+        synchronizeInfo(
+          sync[pageName].page,
+          sync[pageName].features.works_card,
+          sync[pageName].activities.click,
+          sync[pageName].actions.view_work + ':' + workTitle
+        );
+      });
+    });
+  }
+
+  // GALLERY: track clicks on gallery thumbnails
+  var imageContainers = document.querySelectorAll('.image-container');
+  if (imageContainers && imageContainers.length) {
+    imageContainers.forEach(function (imgEl) {
+      imgEl.addEventListener('click', function (evt) {
+        // prefer data-name attribute for title
+        var title = imgEl.getAttribute('data-name') || 'UNKNOWN_PHOTO';
+        synchronizeInfo(
+          sync[pageName].page,
+          sync[pageName].features.gallery_thumbnail,
+          sync[pageName].activities.click,
+          sync[pageName].actions.open_gallery_photo + ':' + title
+        );
+      });
+    });
+  }
+
 }
