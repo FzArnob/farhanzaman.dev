@@ -203,7 +203,8 @@
         justify-content: center;
       }
       .fa-logo {
-        margin-top: -10px;
+        position: absolute;
+        top: -15px;
         width: 40px;
         height: 40px;
       }
@@ -283,22 +284,6 @@
         <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/runfzrun.png" class="fa-logo" />
           <span class="nav-corner bg2 animate-top"></span>
         </a>
-        <div class="themeBtn animate-right" style="border-color: #fcba03;" id="theme-toogle-button">
-          <span class="ico-gen themeBtn-icon" id="theme-btn">E</span>
-        </div>
-      </div>
-    </div>
-    <div id="theme-popup" class="animate-bottom">
-      <div class="popup-box bg2 c2">
-        <div class="popup-content">
-          <div class="triangle"></div>
-          <div class="popup-text">You can switch <span class="c-theme" style="color: #fcba03;">theme</span> here.</div>
-          <div class="popup-button">
-            <span class="ico-gen">
-              F
-            </span>
-          </div>
-        </div>
       </div>
     </div>
     <div class="main-content">
@@ -405,6 +390,7 @@
   <script src="view/js/gaming_yt_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
+  <script src="view/js/sync_info.js"></script>
   <script>
     document.title = 'Run Fz Run';
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
@@ -625,6 +611,7 @@
 
           window.addEventListener('scroll', handleScroll);
           setupSortButtons();
+          synchronizePage("gaming");
         }, 1000);
       }).catch((error) => {
         console.error('Font loading failed:', error);

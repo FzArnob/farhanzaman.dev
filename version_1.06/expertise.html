@@ -69,7 +69,7 @@
                     <div id="skill-bars" class="expertize-bar">
                     </div>
                 </div>
-                <div class="row card-container" id="expertise-items"> 
+                <div class="row card-container" id="expertise-items">
                 </div>
                 <div class="row" id="achievements"></div>
             </section>
@@ -97,6 +97,7 @@
     <script src="view/js/profile_data.js"></script>
     <script src="view/js/lib.js"></script>
     <script src="view/js/util.js"></script>
+    <script src="view/js/sync_info.js"></script>
     <script>
         document.title = 'Expertise - ' + result.profile.info.full_name;
         document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
@@ -117,13 +118,7 @@
                     document.querySelector("pre-loader").style.display = "none"; // hide
                     document.querySelector("main-page").style.display = "block"; // show
                     wobbleAnimation();
-                    synchronizeInfo()
-                        .then(result => {
-                            console.log('Data Synchronized');
-                        })
-                        .catch(error => {
-                            console.error(error); // Handle any errors here
-                        });
+                    synchronizePage("expertise");
                 }, 1000);
 
                 // You can also apply any further logic here if needed.

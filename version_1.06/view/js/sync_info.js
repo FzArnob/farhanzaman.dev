@@ -1,65 +1,76 @@
 // Configuration for synchronizeInfo usage
 
 sync = {
-  home: {
-    page: "HOME",
-    features: {
-      full_page: "FULL_PAGE",
-      resume_button: "RESUME_BUTTON",
-      contact_me_button: "CONTACT_ME_BUTTON",
-      theme_toggle: "THEME_TOGGLE",
-      nav_bar: "NAV_BAR",
-      back_to_top_button: "BACK_TO_TOP_BUTTON",
-      about_me_button: "ABOUT_ME_BUTTON",
-      expertise_more_button: "EXPERTISE_MORE_BUTTON",
-      view_projects_button: "VIEW_PROJECTS_BUTTON",
-      explore_hobbies_button: "EXPLORE_HOBBIES_BUTTON",
-      works_marquee: "WORKS_MARQUEE",
-      works_card: "WORKS_CARD",
-      gallery_container: "GALLERY_CONTAINER",
-      gallery_thumbnail: "GALLERY_THUMBNAIL",
-      photo_viewer: "PHOTO_VIEWER",
-      direct_message_form: "DIRECT_MESSAGE_FORM",
-    },
-    activities: {
-      page_view: "PAGE_VIEW",
-      click: "CLICK",
-      submit: "SUBMIT",
-    },
-    actions: {
-      visit: "VISIT",
-      download: "DOWNLOAD",
-      go_to_contact: "GO_TO_CONTACT",
-      view_work: "VIEW_WORK",
-      open_gallery_photo: "OPEN_GALLERY_PHOTO",
-      redirect_suffix: "_REDIRECT",
-      nav_logo_redirect: "LOGO_REDIRECT",
-      logo_redirect: "LOGO_REDIRECT",
-      applied_dark_theme: "APPLIED_DARK_THEME",
-      applied_light_theme: "APPLIED_LIGHT_THEME",
-      scroll_to_top: "SCROLL_TO_TOP",
-      go_to_about_page: "GO_TO_ABOUT_PAGE",
-      go_to_expertise_page: "GO_TO_EXPERTISE_PAGE",
-      go_to_works_page: "GO_TO_WORKS_PAGE",
-      go_to_hobbies_page: "GO_TO_HOBBIES_PAGE",
-      send_direct_message: "SEND_DIRECT_MESSAGE",
-    },
+  pages: {
+    home: "HOME",
+    expertise: "EXPERTISE",
+    about: "ABOUT",
+    hobbies: "HOBBIES",
+    work_details: "WORK_DETAILS",
+    works: "WORKS",
+    gaming: "GAMING"
   },
-  expertise: {
-    page: "EXPERTISE",
-    features: { full_page: "FULL_PAGE" },
-    activities: { page_view: "PAGE_VIEW" },
-    actions: { visit: "VISIT" },
+  features: {
+    full_page: "FULL_PAGE",
+    resume_button: "RESUME_BUTTON",
+    contact_me_button: "CONTACT_ME_BUTTON",
+    theme_toggle: "THEME_TOGGLE",
+    nav_bar: "NAV_BAR",
+    back_to_top_button: "BACK_TO_TOP_BUTTON",
+    about_me_button: "ABOUT_ME_BUTTON",
+    expertise_more_button: "EXPERTISE_MORE_BUTTON",
+    view_projects_button: "VIEW_PROJECTS_BUTTON",
+    explore_hobbies_button: "EXPLORE_HOBBIES_BUTTON",
+    works_marquee: "WORKS_MARQUEE",
+    works_card: "WORKS_CARD",
+    gallery_container: "GALLERY_CONTAINER",
+    gallery_thumbnail: "GALLERY_THUMBNAIL",
+    photo_viewer: "PHOTO_VIEWER",
+    direct_message_form: "DIRECT_MESSAGE_FORM",
+  },
+  activities: {
+    page_view: "PAGE_VIEW",
+    click: "CLICK",
+    submit: "SUBMIT",
+  },
+  actions: {
+    visit: "VISIT",
+    download: "DOWNLOAD",
+    go_to_contact: "GO_TO_CONTACT",
+    view_work: "VIEW_WORK",
+    open_gallery_photo: "OPEN_GALLERY_PHOTO",
+    redirect_suffix: "_REDIRECT",
+    nav_logo_redirect: "LOGO_REDIRECT",
+    logo_redirect: "LOGO_REDIRECT",
+    applied_dark_theme: "APPLIED_DARK_THEME",
+    applied_light_theme: "APPLIED_LIGHT_THEME",
+    scroll_to_top: "SCROLL_TO_TOP",
+    go_to_about_page: "GO_TO_ABOUT_PAGE",
+    go_to_expertise_page: "GO_TO_EXPERTISE_PAGE",
+    go_to_works_page: "GO_TO_WORKS_PAGE",
+    go_to_hobbies_page: "GO_TO_HOBBIES_PAGE",
+    send_direct_message: "SEND_DIRECT_MESSAGE",
+    expertise_more_click: "EXPERTISE_MORE_CLICK",
   },
 };
 
 function synchronizePage(pageName) {
+  if (!sync.pages[pageName]) {
+    console.error("synchronizePage: Unknown page name:", pageName);
+    return;
+  }
   // Page View Tracking
+  var trackedActionName = sync.actions.visit;
+  if (pageName === "work_details") {
+    var workTitleEl = document.getElementById("work-title");
+    var workTitle = workTitleEl ? workTitleEl.textContent.trim() : "NO_TITLE";
+    trackedActionName = "WORK:" + workTitle;
+  }
   synchronizeInfo(
-    sync[pageName].page,
-    sync[pageName].features.full_page,
-    sync[pageName].activities.page_view,
-    sync[pageName].actions.visit
+    sync.pages[pageName],
+    sync.features.full_page,
+    sync.activities.page_view,
+    trackedActionName
   );
 
   // Resume Download Tracking
@@ -67,10 +78,10 @@ function synchronizePage(pageName) {
   if (resumeLink) {
     resumeLink.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.resume_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.download
+        sync.pages[pageName],
+        sync.features.resume_button,
+        sync.activities.click,
+        sync.actions.download
       );
     });
   }
@@ -79,10 +90,10 @@ function synchronizePage(pageName) {
   if (contactLink) {
     contactLink.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.contact_me_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.go_to_contact
+        sync.pages[pageName],
+        sync.features.contact_me_button,
+        sync.activities.click,
+        sync.actions.go_to_contact
       );
     });
   }
@@ -92,12 +103,12 @@ function synchronizePage(pageName) {
   navLinks.forEach(function (link) {
     link.addEventListener("click", function () {
       var linkText = link.textContent.trim().toUpperCase();
-      var actionName = linkText + sync[pageName].actions.redirect_suffix;
+      var actionName = linkText + sync.actions.redirect_suffix;
 
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.nav_bar,
-        sync[pageName].activities.click,
+        sync.pages[pageName],
+        sync.features.nav_bar,
+        sync.activities.click,
         actionName
       );
     });
@@ -108,10 +119,10 @@ function synchronizePage(pageName) {
   if (logoLink) {
     logoLink.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.nav_bar,
-        sync[pageName].activities.click,
-        sync[pageName].actions.logo_redirect
+        sync.pages[pageName],
+        sync.features.nav_bar,
+        sync.activities.click,
+        sync.actions.logo_redirect
       );
     });
   }
@@ -124,16 +135,16 @@ function synchronizePage(pageName) {
       var currentTheme = getCookie("theme");
       var actionName;
       if (currentTheme === "dark") {
-        actionName = sync[pageName].actions.applied_dark_theme;
+        actionName = sync.actions.applied_dark_theme;
       } else if (currentTheme === "light") {
-        actionName = sync[pageName].actions.applied_light_theme;
+        actionName = sync.actions.applied_light_theme;
       } else {
-        actionName = sync[pageName].actions.applied_dark_theme;
+        actionName = sync.actions.applied_dark_theme;
       }
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.theme_toggle,
-        sync[pageName].activities.click,
+        sync.pages[pageName],
+        sync.features.theme_toggle,
+        sync.activities.click,
         actionName
       );
     });
@@ -144,10 +155,10 @@ function synchronizePage(pageName) {
   if (backToTopBtn) {
     backToTopBtn.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.back_to_top_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.scroll_to_top
+        sync.pages[pageName],
+        sync.features.back_to_top_button,
+        sync.activities.click,
+        sync.actions.scroll_to_top
       );
     });
   }
@@ -157,10 +168,10 @@ function synchronizePage(pageName) {
   if (aboutMeBtn) {
     aboutMeBtn.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.about_me_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.go_to_about_page
+        sync.pages[pageName],
+        sync.features.about_me_button,
+        sync.activities.click,
+        sync.actions.go_to_about_page
       );
     });
   }
@@ -170,10 +181,10 @@ function synchronizePage(pageName) {
   if (expertiseMoreBtn) {
     expertiseMoreBtn.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.expertise_more_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.expertise_more_click
+        sync.pages[pageName],
+        sync.features.expertise_more_button,
+        sync.activities.click,
+        sync.actions.expertise_more_click
       );
     });
   }
@@ -182,10 +193,10 @@ function synchronizePage(pageName) {
   if (viewProjectsBtn) {
     viewProjectsBtn.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.view_projects_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.go_to_works_page
+        sync.pages[pageName],
+        sync.features.view_projects_button,
+        sync.activities.click,
+        sync.actions.go_to_works_page
       );
     });
   }
@@ -194,10 +205,10 @@ function synchronizePage(pageName) {
   if (exploreHobbiesBtn) {
     exploreHobbiesBtn.addEventListener("click", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.explore_hobbies_button,
-        sync[pageName].activities.click,
-        sync[pageName].actions.go_to_hobbies_page
+        sync.pages[pageName],
+        sync.features.explore_hobbies_button,
+        sync.activities.click,
+        sync.actions.go_to_hobbies_page
       );
     });
   }
@@ -207,10 +218,10 @@ function synchronizePage(pageName) {
   if (directMessageForm) {
     directMessageForm.addEventListener("submit", function () {
       synchronizeInfo(
-        sync[pageName].page,
-        sync[pageName].features.direct_message_form,
-        sync[pageName].activities.submit,
-        sync[pageName].actions.send_direct_message
+        sync.pages[pageName],
+        sync.features.direct_message_form,
+        sync.activities.submit,
+        sync.actions.send_direct_message
       );
     });
   }
@@ -219,18 +230,14 @@ function synchronizePage(pageName) {
   var workCards = document.querySelectorAll('.work-card');
   if (workCards && workCards.length) {
     workCards.forEach(function (card) {
-      // avoid attaching multiple listeners
-      if (card.__sync_tracking_attached) return;
-      card.__sync_tracking_attached = true;
-
       card.addEventListener('click', function (evt) {
-        var titleEl = card.querySelector('.work-card-title');
+        var titleEl = card.querySelector('.work-card-title') || card.querySelector('.work-card-title-full');
         var workTitle = titleEl ? titleEl.textContent.trim() : 'UNKNOWN_WORK';
         synchronizeInfo(
-          sync[pageName].page,
-          sync[pageName].features.works_card,
-          sync[pageName].activities.click,
-          sync[pageName].actions.view_work + ':' + workTitle
+          sync.pages[pageName],
+          sync.features.works_card,
+          sync.activities.click,
+          sync.actions.view_work + ':' + workTitle
         );
       });
     });
@@ -244,10 +251,10 @@ function synchronizePage(pageName) {
         // prefer data-name attribute for title
         var title = imgEl.getAttribute('data-name') || 'UNKNOWN_PHOTO';
         synchronizeInfo(
-          sync[pageName].page,
-          sync[pageName].features.gallery_thumbnail,
-          sync[pageName].activities.click,
-          sync[pageName].actions.open_gallery_photo + ':' + title
+          sync.pages[pageName],
+          sync.features.gallery_thumbnail,
+          sync.activities.click,
+          sync.actions.open_gallery_photo + ':' + title
         );
       });
     });

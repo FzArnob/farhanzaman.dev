@@ -82,39 +82,41 @@
         </div>
     </main-page>
     <script src="view/js/profile_data.js"></script>
-  <script src="view/js/lib.js"></script>
-  <script src="view/js/util.js"></script>
-  <script>
-    document.title = 'Works - ' + result.profile.info.full_name;
-    document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
-    generateWorks("works", result.profile.projects);
-    window.addEventListener('resize', function () {
-      if (document.getElementById("works") != null) {
-        const worksElement = document.getElementById("works");
-        worksElement.innerHTML = "";
+    <script src="view/js/lib.js"></script>
+    <script src="view/js/util.js"></script>
+    <script src="view/js/sync_info.js"></script>
+    <script>
+        document.title = 'Works - ' + result.profile.info.full_name;
+        document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
         generateWorks("works", result.profile.projects);
-      }
-    });
-    document.getElementById("content-gap").style.border = "none";
-    document.addEventListener("DOMContentLoaded", function () {
-      const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
-      const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
+        window.addEventListener('resize', function () {
+            if (document.getElementById("works") != null) {
+                const worksElement = document.getElementById("works");
+                worksElement.innerHTML = "";
+                generateWorks("works", result.profile.projects);
+            }
+        });
+        document.getElementById("content-gap").style.border = "none";
+        document.addEventListener("DOMContentLoaded", function () {
+            const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
+            const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
 
-      const fonts = [titillium.load(), icons.load()];
+            const fonts = [titillium.load(), icons.load()];
 
-      Promise.all(fonts).then(() => {
-        setTimeout(function () {
-          document.querySelector("pre-loader").style.display = "none"; // hide
-          document.querySelector("main-page").style.display = "block"; // show
-          wobbleAnimation();
-        }, 1000);
+            Promise.all(fonts).then(() => {
+                setTimeout(function () {
+                    document.querySelector("pre-loader").style.display = "none"; // hide
+                    document.querySelector("main-page").style.display = "block"; // show
+                    wobbleAnimation();
+                    synchronizePage("works");
+                }, 1000);
 
-        // You can also apply any further logic here if needed.
-      }).catch((error) => {
-        console.error('Font loading failed:', error);
-      });
-    });
-  </script>
+                // You can also apply any further logic here if needed.
+            }).catch((error) => {
+                console.error('Font loading failed:', error);
+            });
+        });
+    </script>
 </body>
 
 </html>

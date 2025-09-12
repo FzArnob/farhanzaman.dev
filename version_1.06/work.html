@@ -85,45 +85,47 @@
     <script src="view/js/profile_data.js"></script>
     <script src="view/js/lib.js"></script>
     <script src="view/js/util.js"></script>
+    <script src="view/js/sync_info.js"></script>
     <script>
         // Get the work_id from the query parameter
-    var queryParams = new URLSearchParams(window.location.search);
-    var work_id = queryParams.get('work_id');
+        var queryParams = new URLSearchParams(window.location.search);
+        var work_id = queryParams.get('work_id');
 
-    // Check if work_id is valid and within the array bounds
-    if (work_id && !isNaN(work_id) && work_id > 0 && work_id <= result.profile.projects.length) {
-        // Subtract 1 to match array index
-        var work = result.profile.projects[work_id - 1];
-        document.title = 'Work - ' + work.name;
-        document.getElementById('work-title').innerHTML = work.name;
-        document.getElementById('work-role').innerHTML = work.work_role;
-        document.getElementById('work_page').innerHTML += generateProjectHTML(work);
-        document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
-        document.getElementById("content-gap").style.border = "none";
-        document.addEventListener("DOMContentLoaded", function () {
-            const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
-            const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
+        // Check if work_id is valid and within the array bounds
+        if (work_id && !isNaN(work_id) && work_id > 0 && work_id <= result.profile.projects.length) {
+            // Subtract 1 to match array index
+            var work = result.profile.projects[work_id - 1];
+            document.title = 'Work - ' + work.name;
+            document.getElementById('work-title').innerHTML = work.name;
+            document.getElementById('work-role').innerHTML = work.work_role;
+            document.getElementById('work_page').innerHTML += generateProjectHTML(work);
+            document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
+            document.getElementById("content-gap").style.border = "none";
+            document.addEventListener("DOMContentLoaded", function () {
+                const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
+                const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
 
-            const fonts = [titillium.load(), icons.load()];
+                const fonts = [titillium.load(), icons.load()];
 
-            Promise.all(fonts).then(() => {
-                setTimeout(function () {
-                    document.querySelector("pre-loader").style.display = "none"; // hide
-                    document.querySelector("main-page").style.display = "block"; // show
-                    wobbleAnimation();
-                }, 1000);
+                Promise.all(fonts).then(() => {
+                    setTimeout(function () {
+                        document.querySelector("pre-loader").style.display = "none"; // hide
+                        document.querySelector("main-page").style.display = "block"; // show
+                        wobbleAnimation();
+                        synchronizePage("work_details");
+                    }, 1000);
 
-                // You can also apply any further logic here if needed.
-            }).catch((error) => {
-                console.error('Font loading failed:', error);
+                    // You can also apply any further logic here if needed.
+                }).catch((error) => {
+                    console.error('Font loading failed:', error);
+                });
             });
-        });
-        // Now you can use the 'work' object as needed
-        console.log('Selected Work:', work);
-    } else {
-        console.error('Invalid or missing work_id in the query parameter. Redirecting to /404');
-        window.location.href = '/404'; // Redirect to /404
-    }
+            // Now you can use the 'work' object as needed
+            console.log('Selected Work:', work);
+        } else {
+            console.error('Invalid or missing work_id in the query parameter. Redirecting to /404');
+            window.location.href = '/404'; // Redirect to /404
+        }
     </script>
 </body>
 

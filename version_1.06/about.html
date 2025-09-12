@@ -83,8 +83,8 @@
         </div>
         <div class="row ex" id="qualification">
         </div>
-        <br/>
-        <br/>
+        <br />
+        <br />
       </section>
       <section id="about-contact-section" class="paralax-mf footer-paralax bg-image route"
         style="background-image: url(https://live.staticflickr.com/65535/53223738139_ab18a8886e_o.jpg);">
@@ -96,7 +96,8 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="contact-mf">
-                <div id="contact" class="box-shadow-full bg2" style="max-width: 500px; margin: auto; margin-bottom: 60px;">
+                <div id="contact" class="box-shadow-full bg2"
+                  style="max-width: 500px; margin: auto; margin-bottom: 60px;">
                   <div class="row">
                     <div class="col-md-12">
                       <div class="title-box-2">
@@ -162,7 +163,8 @@
                 <div class="copyright-box">
                   <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights Reserved</p>
                   <div class="credits">
-                    Designed by <a href="/about" id="footer_name" style="background-color: rgba(0,0,0, 0.2); border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
+                    Designed by <a href="/about" id="footer_name"
+                      style="background-color: rgba(0,0,0, 0.2); border-radius: 3px; padding: 0px 10px 2px 10px;"></a>
                   </div>
                 </div>
               </div>
@@ -175,6 +177,7 @@
   <script src="view/js/profile_data.js"></script>
   <script src="view/js/lib.js"></script>
   <script src="view/js/util.js"></script>
+  <script src="view/js/sync_info.js"></script>
   <script>
     document.title = 'About - ' + result.profile.info.full_name;
     document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
@@ -195,6 +198,7 @@
           document.querySelector("pre-loader").style.display = "none"; // hide
           document.querySelector("main-page").style.display = "block"; // show
           wobbleAnimation();
+          synchronizePage("about");
         }, 1000);
 
         // You can also apply any further logic here if needed.
