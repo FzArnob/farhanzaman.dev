@@ -8,7 +8,7 @@ var result  = {
             "nick_name": "Arnob",
             "designations": [
                 "Sr.Software Engineer",
-                "Researcher",
+                "AI  Researcher",
                 "Art Enthusiast"
             ],
             "intro_text": "I am all about tackling challenges head-on and finding creative solutions! Whether a complex issue or a simple puzzle, count me in. Know more about me below.",
