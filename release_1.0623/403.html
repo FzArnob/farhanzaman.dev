@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>403 Forbidden</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    h1 {
+      font-size: 100px;
+      color: #fd2155;
+      margin: 0;
+    }
+
+    p {
+      font-size: 20px;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #00d3b4;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #00ad93;
+    }
+  </style>
+</head>
+<body class="bg1 c1">
+  <div class="container">
+    <h1>403 Forbidden</h1>
+    <p>Sorry! You do not have the privilege to access this page.</p>
+    <a href="https://farhanzaman.dev/">Go back to farhanzaman.dev</a>
+  </div>
+  <script>
+    function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+document.addEventListener("DOMContentLoaded", function () {
+
+// preload
+if (getCookie("theme") === "") {
+    setCookie("theme", "light", 30);
+    document
+        .querySelector("head")
+        .insertAdjacentHTML(
+            "beforeend",
+            `<link type="text/css" rel="stylesheet" href="view/css/theme/light.css" />`
+        );
+} else if (getCookie("theme") === "dark") {
+    document
+        .querySelector("head")
+        .insertAdjacentHTML(
+            "beforeend",
+            `<link type="text/css" rel="stylesheet" href="view/css/theme/dark.css" />`
+        );
+} else if (getCookie("theme") === "light") {
+    document
+        .querySelector("head")
+        .insertAdjacentHTML(
+            "beforeend",
+            `<link type="text/css" rel="stylesheet" href="view/css/theme/light.css" />`
+        );
+}
+});
+  </script>
+</body>
+</html>

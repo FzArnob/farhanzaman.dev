@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <link href="view/static/favicon.svg" rel="icon" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <link href="view/css/app.css" rel="stylesheet" />
+</head>
+
+<body class="bg1">
+  <div id="photoContainer" class="animate-top">
+    <div class="pc_buttons">
+      <div id="zoomButtons">
+        <button id="zoomInButton">
+          <span class="ico-gen">
+            I
+          </span>
+        </button>
+        <button id="zoomOutButton">
+          <span class="ico-gen">
+            J
+          </span>
+        </button>
+      </div>
+      <div id="closeButton">
+        <span class="ico-gen">
+          F
+        </span>
+      </div>
+    </div>
+  </div>
+  <button id="back-to-top-btn">
+    <span class="ico-gen">
+      H
+    </span>
+  </button>
+  <pre-loader class="pre-loader">
+    <img src="view/static/favicon.svg" />
+  </pre-loader>
+  <main-page class="bg1 c1 hidden">
+    <div style="transition-duration: 0.2s;" class="navbar animate-left" id="navbar">
+      <div class="nav-container">
+        <a class="nav-logo c1 active" href="/"><img alt="logo" src="view/static/favicon.svg" class="fa-logo" />
+          <span class="nav-corner bg2 animate-top"></span>
+        </a>
+        <ul class="nav-menu animate-right" id="nav-menu">
+          <li class="nav-item"><a class="nav-links c1" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/about">About</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/expertise">Expertise</a></li>
+          <li class="nav-item"><a class="nav-links c1" href="/works">Works</a></li>
+          <li class="nav-item"><a class="nav-links c1 active" href="/hobbies">Hobbies</a></li>
+        </ul>
+        <div class="nav-icon animate-top" id="nav-menu-button">
+          <span class="ico-gen mobile-menu-icon">G</span>
+        </div>
+        <div class="themeBtn animate-right" id="theme-toogle-button">
+          <span class="ico-gen themeBtn-icon" id="theme-btn">E</span>
+        </div>
+      </div>
+    </div>
+    <div id="theme-popup" class="animate-bottom">
+      <div class="popup-box bg2 c2">
+        <div class="popup-content">
+          <div class="triangle"></div>
+          <div class="popup-text">You can switch <span class="c-theme">theme</span> here.</div>
+          <div class="popup-button">
+            <span class="ico-gen">
+              F
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-content">
+      <section class="nav-section">
+        <div id="content-gap"></div>
+        <div class="row">
+          <div class="section-head wobble">Hobbies</div>
+        </div>
+        <div id="gallery"></div>
+      </section>
+      </br>
+      </br>
+      </br>
+      <footer>
+        <div class="container c1">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="copyright-box">
+                <p class="copyright">&copy; Copyright <strong>farhanzaman.dev</strong>. All Rights
+                  Reserved</p>
+                <div class="credits c1">
+                  Designed by <a href="/about" id="footer_name"></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main-page>
+  <script src="view/js/profile_data.js"></script>
+  <script src="view/js/lib.js"></script>
+  <script src="view/js/util.js"></script>
+  <script src="view/js/sync_info.js"></script>
+  <script>
+    document.title = 'Hobbies - ' + result.profile.info.full_name;
+    document.getElementById('footer_name').innerHTML = result.profile.info.full_name;
+    createGallery("gallery", result.profile.gallery, true);
+    createPhotoViewer('photoContainer', result.profile.gallery);
+    window.addEventListener('resize', function () {
+      if (document.getElementById("gallery") != null) {
+        const galleryElement = document.getElementById("gallery");
+        galleryElement.innerHTML = "";
+        createGallery("gallery", result.profile.gallery, true);
+      }
+    });
+    document.getElementById("content-gap").style.border = "none";
+    document.addEventListener("DOMContentLoaded", function () {
+      const titillium = new FontFace('titillium-font', 'url(./view/static/TitilliumWeb-Regular.ttf)');
+      const icons = new FontFace('icons-font', 'url(./view/static/icons.ttf)');
+
+      const fonts = [titillium.load(), icons.load()];
+
+      Promise.all(fonts).then(() => {
+        setTimeout(function () {
+          document.querySelector("pre-loader").style.display = "none"; // hide
+          document.querySelector("main-page").style.display = "block"; // show
+          wobbleAnimation();
+          synchronizePage("hobbies");
+        }, 1000);
+
+        // You can also apply any further logic here if needed.
+      }).catch((error) => {
+        console.error('Font loading failed:', error);
+      });
+    });
+  </script>
+</body>
+
+</html>
