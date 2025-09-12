@@ -128,7 +128,7 @@ $result = parseUserAgent($userAgent);
 
 <head>
     <title>Check farhanzaman.dev</title>
-    <link href="../view/static/favicon.png" rel="icon" />
+    <link href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/favicon.png" rel="icon" />
 </head>
 
 <body style="padding: 0; margin: 0;">

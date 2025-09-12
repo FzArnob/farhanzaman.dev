@@ -115,7 +115,7 @@
   background-color: rgba(240, 240, 240, 0.5);
 }
 body {
-  cursor: url("../../static/cursor-w.png"), auto;
+  cursor: url("https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/cursor-w.png"), auto;
 }
 .mobile-nav-menu {
   transition: all 0.5s;

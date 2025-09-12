@@ -112,21 +112,21 @@ if (getCookie("theme") === "") {
     .querySelector("head")
     .insertAdjacentHTML(
       "beforeend",
-      `<link type="text/css" rel="stylesheet" href="view/css/theme/dark.css" data-theme="dark" />`
+      `<link type="text/css" rel="stylesheet" href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/css/theme/dark.css" data-theme="dark" />`
     );
 } else if (getCookie("theme") === "dark") {
   document
     .querySelector("head")
     .insertAdjacentHTML(
       "beforeend",
-      `<link type="text/css" rel="stylesheet" href="view/css/theme/dark.css" data-theme="dark" />`
+      `<link type="text/css" rel="stylesheet" href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/css/theme/dark.css" data-theme="dark" />`
     );
 } else if (getCookie("theme") === "light") {
   document
     .querySelector("head")
     .insertAdjacentHTML(
       "beforeend",
-      `<link type="text/css" rel="stylesheet" href="view/css/theme/light.css" data-theme="light" />`
+      `<link type="text/css" rel="stylesheet" href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/css/theme/light.css" data-theme="light" />`
     );
 }
 
@@ -150,7 +150,7 @@ if (themeButton) {
         .querySelector("head")
         .insertAdjacentHTML(
           "beforeend",
-          `<link type="text/css" rel="stylesheet" href="view/css/theme/light.css" data-theme="light" />`
+          `<link type="text/css" rel="stylesheet" href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/css/theme/light.css" data-theme="light" />`
         );
     } else if (getCookie("theme") === "light") {
       setCookie("theme", "dark", 30);
@@ -158,7 +158,7 @@ if (themeButton) {
         .querySelector("head")
         .insertAdjacentHTML(
           "beforeend",
-          `<link type="text/css" rel="stylesheet" href="view/css/theme/dark.css" data-theme="dark" />`
+          `<link type="text/css" rel="stylesheet" href="https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/css/theme/dark.css" data-theme="dark" />`
         );
     }
   });

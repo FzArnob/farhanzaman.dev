@@ -21,33 +21,42 @@ if (strpos($route, '?') !== false) {
     list($route, $queryString) = explode('?', $route, 2);
 }
 
-// Define the valid routes and their corresponding HTML files
+// Define the valid routes and their corresponding HTML files from GitHub
 $routes = array(
-    ''         => 'home.html',    // Home page
-    'about'    => 'about.html',
-    'works'    => 'works.html',
-    'work'     => 'work.html',
-    'gaming'   => 'gaming.html',
-    'hobbies'  => 'hobbies.html',
-    'expertise' => 'expertise.html',
-    '403'      => '403.html',
-    '404'      => '404.html',
-    '500'      => '500.html'
+    ''         => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/home.html',    // Home page
+    'about'    => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/about.html',
+    'works'    => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/works.html',
+    'work'     => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/work.html',
+    'gaming'   => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/gaming.html',
+    'hobbies'  => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/hobbies.html',
+    'expertise' => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/expertise.html',
+    '403'      => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/403.html',
+    '404'      => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/404.html',
+    '500'      => 'https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/500.html'
 );
 
 // Check if the requested route exists in the defined routes
 if (isset($routes[$route])) {
-    // If the route exists, serve the corresponding HTML file
-    $file = $routes[$route];
-    if (file_exists($file)) {
+    // If the route exists, fetch and serve the corresponding HTML file from GitHub
+    $fileUrl = $routes[$route];
+    
+    // Fetch the content from GitHub
+    $content = file_get_contents($fileUrl);
+    
+    if ($content !== false) {
         // Set the appropriate content type
         header('Content-Type: text/html');
-        // Read and output the HTML file
-        readfile($file);
+        // Output the HTML content
+        echo $content;
+        exit;
+    } else {
+        // If file couldn't be fetched from GitHub, redirect to 404
+        header('Location: /404');
         exit;
     }
 } else {
-    // header('Location: /404');
+    // If route doesn't exist, redirect to 404
+    header('Location: /404');
     exit;
 }
 ?>
