@@ -120,7 +120,7 @@
   background-color: rgba(22, 22, 22, 0.5);
 }
 body {
-  cursor: url("https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/cursor-b.png"), auto;
+  cursor: url("https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/cursor-b.png"), auto;
 }
 .mobile-nav-menu {
   transition: all 0.5s;

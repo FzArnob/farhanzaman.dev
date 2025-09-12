@@ -1,11 +1,11 @@
 @font-face {
   font-family: "icons-font";
-  src: url(https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/icons.ttf);
+  src: url(https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/icons.ttf);
 }
 
 @font-face {
   font-family: "titillium-font";
-  src: url(https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/TitilliumWeb-Regular.ttf);
+  src: url(https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/TitilliumWeb-Regular.ttf);
 }
 
 /* colors */
@@ -3378,7 +3378,7 @@ textarea.form-control {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-image: url("https://raw.githubusercontent.com/FzArnob/farhanzaman.dev/refs/heads/main/release_1.0623/view/static/intro.png");
+  background-image: url("https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/intro.png");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
