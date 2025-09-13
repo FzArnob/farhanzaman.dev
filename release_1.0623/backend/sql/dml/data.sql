@@ -61,62 +61,62 @@ INSERT INTO achievement_items (name, description, certification_date, certificat
 VALUES ('Java Selenium',
         'TestDome is a provider of high-quality, online skills tests that use work-sample testing methodology to screen knowledge workers. Candidates are evaluated through small samples of actual work that show how they solve problems in the real world.',
         '2022-02-21', 'https://www.testdome.com/certificates/550c055c41aa429a88d9ea52f93f2228',
-        'view/static/svg/selenium.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
+        'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/selenium.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
         '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('IELTS', 'IELTS Score: 7.0 - Strong proficiency in English language demonstrated.', '2022-02-21',
-        'https://www.britishcouncil.org.bd/en/exam/ielts', 'view/static/svg/ielts.svg', 1,
+        'https://www.britishcouncil.org.bd/en/exam/ielts', 'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/ielts.svg', 1,
         'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('BeeCrowd: Competitive Programming',
         'BeeCrowd is a global community of developers committed to keep evolving as students and professionals.',
         '2023-06-25', 'https://www.beecrowd.com.br/judge/en/profile/151481',
-        'view/static/svg/beecrowd.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
+        'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/beecrowd.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
         '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('Python',
         'Python (Basic): It covers topics like Scalar Types, Operators and Control Flow, Strings, Collections and Iteration, Modularity, Objects and Types and Classes',
         '2021-12-02', 'https://www.hackerrank.com/certificates/3859fe77dc98',
-        'view/static/svg/python.svg', 1, 'Basic', '2023-06-26 15:29:13', '2023-06-26 00:14:18',
+        'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/python.svg', 1, 'Basic', '2023-06-26 15:29:13', '2023-06-26 00:14:18',
         0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('CSS',
         'CSS: It covers topics like exploring Cascading and Inheritance, exploring text styling fundamentals, understanding the use of layouts in CSS, understand the boxing of elements in CSS, among others.',
         '2021-07-28', 'https://www.hackerrank.com/certificates/62b3d263cda5',
-        'view/static/svg/css.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
+        'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/css.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
         '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('JavaScript (Intermediate)',
         'JavaScript (Intermediate): It covers topics like Design Patterns, Memory management, concurrency model, and event loops, among others.',
         '2022-02-15', 'https://www.hackerrank.com/certificates/ed1793e0e97a',
-        'view/static/svg/js.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
+        'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/js.svg', 1, 'Intermediate', '2023-06-26 15:29:13',
         '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('Git', 'Efficiently manage Git projects, ensuring collaboration, version control, and seamless workflow for enhanced productivity.', '2022-02-21',
-        'https://github.com/FzArnob?tab=achievements', 'view/static/svg/git.svg', 1,
+        'https://github.com/FzArnob?tab=achievements', 'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/git.svg', 1,
         'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('Codeforces', 'Regularly participated in competitive problem solving contest.', '2023-11-20',
-        'https://codeforces.com/profile/farhanzamanarnob', 'view/static/svg/codeforces.svg', 1,
+        'https://codeforces.com/profile/farhanzamanarnob', 'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/codeforces.svg', 1,
         'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('SQL', 'It covers topics like query optimization, data modeling, Indexing, window functions, and pivots in SQL.', '2023-08-14',
-        'https://www.hackerrank.com/certificates/46b43016daff', 'view/static/svg/sql.svg', 1,
+        'https://www.hackerrank.com/certificates/46b43016daff', 'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/sql.svg', 1,
         'Advanced', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 INSERT INTO achievement_items (name, description, certification_date, certification_url, certification_logo, duration,
                                level, created_date, updated_date, delete_flag, fk_profile_id)
 VALUES ('LeetCode', 'It covers advanced algorithms and core data structures like Dynamic Programming, Arrays, and Hash Tables.', '2023-08-14',
-        'https://leetcode.com/u/farhanzamanarnob/', 'view/static/svg/leetcode.svg', 1,
+        'https://leetcode.com/u/farhanzamanarnob/', 'https://cdn.jsdelivr.net/gh/FzArnob/farhanzaman.dev@main/release_1.0623/view/static/svg/leetcode.svg', 1,
         'Intermediate', '2023-06-26 15:29:13', '2023-06-26 00:14:18', 0, 'farhan');
 
 
