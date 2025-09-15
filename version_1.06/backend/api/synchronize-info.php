@@ -34,16 +34,16 @@ if ($requestMethod === 'POST') {
     $additionalData = array();
     if (isset($input['screen_resolution'])) {
         $additionalData['screen_resolution'] = $input['screen_resolution'];
-    }
+    } else $additionalData['screen_resolution'] = 'N/A';
     if (isset($input['color_depth'])) {
         $additionalData['color_depth'] = $input['color_depth'];
-    }
+    } else $additionalData['color_depth'] = 0;
     if (isset($input['timezone_offset'])) {
         $additionalData['timezone_offset'] = $input['timezone_offset'];
-    }
+    } else $additionalData['timezone_offset'] = 0;
     if (isset($input['language'])) {
         $additionalData['language'] = $input['language'];
-    }
+    } else $additionalData['language'] = 'N/A';
     
     // Validate required parameters
     if ($profile_id && $page_tag && $feature_tag && $activity_tag && $action_tag) {

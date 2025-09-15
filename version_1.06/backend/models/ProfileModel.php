@@ -275,7 +275,7 @@ class ProfileModel
     public function saveVisitorData($profile_id, $page_tag, $feature_tag, $activity_tag, $action_tag, $additionalData = [])
     {
         $ip = $_SERVER['REMOTE_ADDR'];
-        $referrer_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        $referrer_url = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'N/A';
         
         // Ensure visitor location exists
         $this->checkAndInsertVisitorLocation($ip);
@@ -288,10 +288,10 @@ class ProfileModel
         $device_fingerprint = $this->getDeviceFingerprint();
         
         // Extract additional data from frontend
-        $screen_resolution = isset($additionalData['screen_resolution']) ? $additionalData['screen_resolution'] : null;
-        $color_depth = isset($additionalData['color_depth']) ? intval($additionalData['color_depth']) : null;
-        $timezone_offset = isset($additionalData['timezone_offset']) ? intval($additionalData['timezone_offset']) : null;
-        $language = isset($additionalData['language']) ? $additionalData['language'] : null;
+        $screen_resolution = isset($additionalData['screen_resolution']) ? $additionalData['screen_resolution'] : 'N/A';
+        $color_depth = isset($additionalData['color_depth']) ? intval($additionalData['color_depth']) : 0;
+        $timezone_offset = isset($additionalData['timezone_offset']) ? intval($additionalData['timezone_offset']) : 0;
+        $language = isset($additionalData['language']) ? $additionalData['language'] : 'N/A';
         
         // Insert visitor tracking data
         $trackingQuery = "INSERT INTO visitor_tracking (
