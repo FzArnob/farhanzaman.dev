@@ -1,0 +1,9 @@
+# index.php is the only entry point; everything else is included by it.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(lib|views)/ - [F,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>

@@ -1,0 +1,5 @@
+# Build output — every release_<timestamp> folder produced by build.bat.
+release_*/
+
+# Scratch file build.bat uses to read values back from PowerShell.
+.buildinfo.tmp

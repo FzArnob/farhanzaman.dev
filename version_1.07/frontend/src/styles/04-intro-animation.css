@@ -1,0 +1,55 @@
+/* Intro Animation */
+.intro-animation {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+#wrap p {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  text-align: center;
+}
+
+.ball {
+  pointer-events: none;
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 10px;
+  animation: implode 1.2s ease-in-out;
+  animation-fill-mode: both;
+  opacity: 0.5;
+  background: transparent;
+}
+
+@keyframes implode {
+  0% {
+    box-shadow: 0 0 14px var(--theme-secondary-color-shadow);
+    border: 4px solid var(--theme-secondary-color);
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+
+  100% {
+    box-shadow: 0 0 14px var(--theme-color-shadow);
+    border: 4px solid var(--theme-color);
+    transform: scale(0);
+  }
+}

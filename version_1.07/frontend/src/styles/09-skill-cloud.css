@@ -1,0 +1,50 @@
+#skill-canvas-container {
+  position: relative;
+}
+
+.tagcloud {
+  margin: auto;
+}
+
+.tagcloud--item:hover {
+  cursor: pointer;
+  color: #fd2155;
+}
+
+.tagcloud--item {
+  color: #0bc1a6;
+}
+
+.achievement-preview {
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.achievement-node {
+  margin: 20px;
+  cursor: pointer;
+}
+
+.achievement-node:hover {
+  transition: all 0.3s;
+  transform: scale(1.1);
+}
+
+.achievement-node-image {
+  width: 100px;
+}
+
+@media screen and (max-width: 800px) {
+  .achievement-node {
+    margin: 20px;
+  }
+
+  .achievement-node-image {
+    width: 80px;
+    height: 80px;
+    margin: none;
+  }
+}

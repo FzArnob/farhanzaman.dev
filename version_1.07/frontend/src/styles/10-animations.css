@@ -1,0 +1,281 @@
+/* animation */
+.animate-fading {
+  animation: fading 10s infinite;
+}
+
+@keyframes fading {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-opacity {
+  animation: opac 0.8s;
+}
+
+@keyframes opac {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-top {
+  animation: animatetop 0.4s;
+}
+
+@keyframes animatetop {
+  from {
+    margin-top: -300px;
+    opacity: 0;
+  }
+
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
+}
+
+.animate-left {
+  animation: animateleft 0.4s;
+}
+
+@keyframes animateleft {
+  from {
+    margin-left: -300px;
+    opacity: 0;
+  }
+
+  to {
+    margin-left: 0;
+    opacity: 1;
+  }
+}
+
+.animate-right {
+  animation: animateright 0.4s;
+}
+
+@keyframes animateright {
+  from {
+    margin-right: -300px;
+    opacity: 0;
+  }
+
+  to {
+    margin-right: 0;
+    opacity: 1;
+  }
+}
+
+.animate-bottom {
+  animation: animatebottom 0.4s;
+}
+
+@keyframes animatebottom {
+  from {
+    margin-bottom: -300px;
+    opacity: 0;
+  }
+
+  to {
+    margin-bottom: 0;
+    opacity: 1;
+  }
+}
+
+.animate-zoom {
+  animation: animatezoom 0.6s;
+}
+
+@keyframes animatezoom {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-input {
+  transition: width 0.4s ease-in-out;
+}
+
+.animate-input:focus {
+  width: 100% !important;
+}
+
+@-webkit-keyframes jump {
+  50% {
+    transform: translateY(-30%);
+  }
+}
+
+@keyframes jump {
+  50% {
+    transform: translateY(-30%);
+  }
+}
+
+@-webkit-keyframes upscale {
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+@keyframes upscale {
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+@-webkit-keyframes spin {
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes spin {
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@-webkit-keyframes squash {
+  50% {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes squash {
+  50% {
+    transform: scaleY(0);
+  }
+}
+
+@-webkit-keyframes skew {
+  50% {
+    transform: skew(-30deg);
+  }
+}
+
+@keyframes skew {
+  50% {
+    transform: skew(-30deg);
+  }
+}
+
+@-webkit-keyframes leap {
+  50% {
+    transform: translateY(-50%) rotate(-15deg);
+  }
+}
+
+@keyframes leap {
+  50% {
+    transform: translateY(-50%) rotate(-15deg);
+  }
+}
+
+@-webkit-keyframes fade {
+  50% {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+}
+
+@keyframes fade {
+  50% {
+    transform: translateY(50%);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes sheen {
+  50% {
+    transform: translateY(-10%);
+    color: #eee;
+  }
+}
+
+@keyframes sheen {
+  50% {
+    transform: translateY(-10%);
+    color: #eee;
+  }
+}
+
+@-webkit-keyframes xspin {
+  50% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes xspin {
+  50% {
+    transform: scaleX(0);
+  }
+}
+
+.wobble span {
+  display: inline-block;
+  pointer-events: none;
+}
+
+.wobble span.jump {
+  -webkit-animation: jump 0.5s 1;
+  animation: jump 0.5s 1;
+}
+
+.wobble span.upscale {
+  -webkit-animation: upscale 0.5s 1;
+  animation: upscale 0.5s 1;
+}
+
+.wobble span.spin {
+  -webkit-animation: spin 0.5s 1;
+  animation: spin 0.5s 1;
+}
+
+.wobble span.skew {
+  -webkit-animation: skew 0.5s 1;
+  animation: skew 0.5s 1;
+}
+
+.wobble span.squash {
+  -webkit-animation: squash 0.5s 1;
+  animation: squash 0.5s 1;
+  transform-origin: bottom;
+}
+
+.wobble span.leap {
+  -webkit-animation: leap 0.7s 1;
+  animation: leap 0.7s 1;
+}
+
+.wobble span.fade {
+  -webkit-animation: fade 0.5s 1;
+  animation: fade 0.5s 1;
+}
+
+.wobble span.sheen {
+  -webkit-animation: sheen 0.3s 1;
+  animation: sheen 0.3s 1;
+}
+
+.wobble span.xspin {
+  -webkit-animation: xspin 0.5s 1;
+  animation: xspin 0.5s 1;
+}

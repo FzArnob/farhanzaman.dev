@@ -1,0 +1,93 @@
+#contact {
+  border-radius: 8px;
+}
+
+#contact-section {
+  margin-top: -100px;
+}
+
+.reverse-color {
+  margin-top: 50px;
+  background-color: #fd2155;
+  border: 1px solid #fd2155;
+  padding-left: 60px;
+  color: #fff;
+}
+
+.reverse-color:hover {
+  background-color: #d6204a;
+  box-shadow: 0 0 0 4px rgba(255, 119, 173, 0.184);
+}
+
+#back-to-top-btn {
+  padding: 0;
+  padding-top: 3px;
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  z-index: 112;
+}
+
+#back-to-top-btn.show {
+  display: block;
+}
+
+#theme-popup {
+  display: none;
+  z-index: 102;
+  position: relative;
+}
+
+.popup-button {
+  position: absolute;
+  font-size: 12px;
+  top: -14px;
+  right: -8px;
+  cursor: pointer;
+}
+
+.popup-box {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  width: 100px;
+  border-radius: 8px;
+  padding: 20px;
+  padding-right: 15px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+  z-index: 101;
+}
+
+.popup-content {
+  position: relative;
+  width: 100%;
+}
+
+.popup-text {
+  font-size: 15px;
+  text-align: left;
+}
+
+.triangle {
+  position: absolute;
+  top: -28px;
+  right: 5px;
+  width: 0;
+  height: 0;
+}
+
+::selection {
+  color: #fff;
+  background: var(--theme-color);
+}
