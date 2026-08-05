@@ -41,7 +41,7 @@ export function AboutPage() {
             <div className="about-contact">
               <div id="button-3">
                 <div id="circle"></div>
-                <a href="#contact-section">Contact Me</a>
+                <a href="#about-contact-section">Contact Me</a>
               </div>
             </div>
             <div className="socials-cen">

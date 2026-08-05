@@ -1,4 +1,4 @@
-DirectoryIndex index.html
+DirectoryIndex index.html index.php
 
 ErrorDocument 403 /403
 ErrorDocument 404 /404
@@ -13,7 +13,7 @@ RewriteCond %{HTTP:CF-Visitor} !\{"scheme":"https"\}
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Single page app: serve real files as-is, route everything else to index.html
-RewriteCond %{REQUEST_URI} !^/(backend|admin|data|assets|view)
+RewriteCond %{REQUEST_URI} !^/(backend|admin|data|assets|view|examiner|spaceninja|tms|tally)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]

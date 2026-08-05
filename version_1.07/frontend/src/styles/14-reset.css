@@ -7,7 +7,10 @@
 
 #contact-section *,
 #contact-section *::before,
-#contact-section *::after {
+#contact-section *::after,
+#about-contact-section *,
+#about-contact-section *::before,
+#about-contact-section *::after {
   box-sizing: border-box;
 }
 
