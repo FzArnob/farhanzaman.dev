@@ -105,6 +105,7 @@ export const sync = {
     syncbot_question: 'SYNCBOT_QUESTION',
     syncbot_reset: 'SYNCBOT_RESET',
     syncbot_unavailable: 'SYNCBOT_UNAVAILABLE',
+    syncbot_voice_question: 'SYNCBOT_VOICE_QUESTION',
   },
 } as const;
 
