@@ -181,3 +181,29 @@ footer .credits a {
 .work-card-tag-view {
   background-color: rgba(0, 0, 0, 0.05);
 }
+
+/* SyncBot surfaces */
+:root {
+  --syncbot-panel: rgba(255, 255, 255, 0.78);
+  --syncbot-inset: rgba(0, 0, 0, 0.045);
+  --syncbot-hairline: rgba(0, 160, 137, 0.26);
+  --syncbot-page: radial-gradient(120% 90% at 50% 0%, #f4fbfa 0%, #ffffff 60%);
+  --syncbot-ghost: rgba(37, 37, 37, 0.05);
+  --syncbot-ghost-soft: rgba(37, 37, 37, 0.035);
+  --syncbot-shadow: rgba(0, 0, 0, 0.14);
+  --syncbot-code: rgba(0, 0, 0, 0.05);
+}
+
+/* #00d3b4 on white fails contrast; the darker teal keeps the same hue. */
+.syncbot-trigger,
+.syncbot-chip,
+.syncbot-avatar,
+.syncbot-field-ico {
+  color: #00947f;
+}
+
+/* The reset icon has no fill behind it, so white would vanish on this theme. */
+.syncbot-reset {
+  color: #252525;
+}
+

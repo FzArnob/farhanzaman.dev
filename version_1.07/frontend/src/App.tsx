@@ -9,6 +9,7 @@ import { ExpertisePage } from './pages/Expertise/ExpertisePage';
 import { GamingPage } from './pages/Gaming/GamingPage';
 import { HobbiesPage } from './pages/Hobbies/HobbiesPage';
 import { HomePage } from './pages/Home/HomePage';
+import { SyncBotPage } from './pages/SyncBot/SyncBotPage';
 import { WorkPage } from './pages/Work/WorkPage';
 import { WorksPage } from './pages/Works/WorksPage';
 import type { Profile } from './types/profile';
@@ -49,6 +50,7 @@ export function App() {
         <Route path="/work" element={<WorkPage />} />
         <Route path="/hobbies" element={<HobbiesPage />} />
         <Route path="/gaming" element={<GamingPage />} />
+        <Route path="/syncbot" element={<SyncBotPage />} />
         <Route path="/403" element={<ForbiddenPage />} />
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/500" element={<ServerErrorPage />} />

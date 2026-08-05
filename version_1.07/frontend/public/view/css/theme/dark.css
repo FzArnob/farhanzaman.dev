@@ -191,3 +191,15 @@ footer .credits a {
 .work-card-tag-view {
   background-color: rgba(0, 0, 0, 0.2);
 }
+
+/* SyncBot surfaces */
+:root {
+  --syncbot-panel: rgba(30, 32, 34, 0.72);
+  --syncbot-inset: rgba(255, 255, 255, 0.055);
+  --syncbot-hairline: rgba(0, 211, 180, 0.2);
+  --syncbot-page: radial-gradient(120% 90% at 50% 0%, #1d2022 0%, #252525 60%);
+  --syncbot-ghost: rgba(231, 231, 231, 0.05);
+  --syncbot-ghost-soft: rgba(231, 231, 231, 0.035);
+  --syncbot-shadow: rgba(0, 0, 0, 0.45);
+  --syncbot-code: rgba(0, 0, 0, 0.26);
+}

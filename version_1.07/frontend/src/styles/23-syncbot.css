@@ -1,0 +1,1326 @@
+/* SyncBot — the on-device assistant living at /syncbot, plus its intro trigger. */
+
+:root {
+  /* Surfaces are overridden per theme in view/css/theme/{dark,light}.css. */
+  --syncbot-panel: rgba(30, 32, 34, 0.72);
+  --syncbot-inset: rgba(255, 255, 255, 0.055);
+  --syncbot-hairline: rgba(0, 211, 180, 0.2);
+  --syncbot-page: radial-gradient(120% 90% at 50% 0%, #1d2022 0%, #252525 60%);
+  /* Drifting background type. Very low on purpose — it is texture, not copy. */
+  --syncbot-ghost: rgba(231, 231, 231, 0.05);
+  --syncbot-ghost-soft: rgba(231, 231, 231, 0.035);
+  --syncbot-shadow: rgba(0, 0, 0, 0.45);
+  /* Code spans and link chips sit *inside* a bubble, so they need their own
+     surface rather than reusing the bubble's. */
+  --syncbot-code: rgba(0, 0, 0, 0.26);
+}
+
+@property --syncbot-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Inline Material Symbols keep the metrics of the text they sit in. */
+.ico {
+  flex: 0 0 auto;
+  display: inline-block;
+  vertical-align: -0.16em;
+  fill: currentColor;
+}
+
+/* ============================================================== intro trigger */
+
+/* Three buttons no longer fit one row on a phone. */
+.intro-btn {
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 12px;
+}
+
+.syncbot-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 20px;
+  padding: 12px 30px;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--theme-color);
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background:
+    linear-gradient(var(--syncbot-panel), var(--syncbot-panel)) padding-box,
+    conic-gradient(
+        from var(--syncbot-angle),
+        var(--theme-color),
+        var(--theme-secondary-color),
+        var(--theme-color)
+      )
+      border-box;
+  animation: syncbot-spin-border 4s linear infinite;
+  transition: color 0.4s, box-shadow 0.4s, transform 0.4s;
+}
+
+@keyframes syncbot-spin-border {
+  to {
+    --syncbot-angle: 360deg;
+  }
+}
+
+/* Pulsing halo — the button reads as "powered up" without needing hover. */
+.syncbot-trigger-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: syncbot-emit 3.2s ease-out infinite;
+}
+
+@keyframes syncbot-emit {
+  0% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 0 var(--theme-color-shadow);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    box-shadow: 0 0 0 90px rgba(0, 211, 180, 0);
+  }
+}
+
+/* Light sweeps across the face on a loop. */
+.syncbot-trigger-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    var(--theme-color-shadow) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: syncbot-sheen 4s ease-in-out infinite;
+}
+
+@keyframes syncbot-sheen {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  85%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+.syncbot-trigger-label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.syncbot-trigger:hover {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 22px var(--theme-color-shadow), 0 0 40px var(--theme-secondary-color-shadow);
+}
+
+/* ================================================================ page shell */
+
+.syncbot-page {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  /* The navbar is 70px and fixed, and the console now opens straight onto its
+     accent line — this gap is the only thing keeping the two apart. */
+  padding: 100px 20px 16px;
+  overflow: hidden;
+  background: var(--syncbot-page);
+}
+
+/* ---------------------------------------------------------------- ambient */
+
+.syncbot-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Two slow blooms of colour so the backdrop never sits perfectly still. */
+.syncbot-aurora {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.16;
+}
+
+.syncbot-aurora-a {
+  top: -28vmax;
+  left: -18vmax;
+  background: radial-gradient(circle, var(--theme-color) 0%, transparent 65%);
+  animation: syncbot-float-a 22s ease-in-out infinite;
+}
+
+.syncbot-aurora-b {
+  right: -24vmax;
+  bottom: -30vmax;
+  background: radial-gradient(circle, var(--theme-secondary-color) 0%, transparent 65%);
+  animation: syncbot-float-b 28s ease-in-out infinite;
+}
+
+@keyframes syncbot-float-a {
+  50% {
+    transform: translate3d(9vw, 7vh, 0) scale(1.18);
+  }
+}
+
+@keyframes syncbot-float-b {
+  50% {
+    transform: translate3d(-8vw, -6vh, 0) scale(1.22);
+  }
+}
+
+.syncbot-mesh {
+  position: absolute;
+  inset: -60%;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(var(--syncbot-hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--syncbot-hairline) 1px, transparent 1px);
+  background-size: 54px 54px;
+  animation: syncbot-mesh-drift 18s linear infinite;
+}
+
+@keyframes syncbot-mesh-drift {
+  to {
+    transform: translate3d(54px, 54px, 0);
+  }
+}
+
+/* Columns of oversized type scrolling past behind the console. */
+.syncbot-drift {
+  position: absolute;
+  inset: -8% -2%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.syncbot-drift-col {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.syncbot-drift-run {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  animation: syncbot-drift-up 36s linear infinite;
+}
+
+/* Taller than the tallest the column can be, so half a run always covers it. */
+.syncbot-drift-half {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  min-height: 125vh;
+}
+
+.syncbot-drift-run span {
+  display: block;
+  font-size: clamp(24px, 4.2vw, 62px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 6px;
+  white-space: nowrap;
+  color: var(--syncbot-ghost);
+}
+
+/* Alternating speed and direction stops the columns marching in lockstep. */
+.syncbot-drift-col:nth-child(2) .syncbot-drift-run {
+  animation-duration: 48s;
+  animation-direction: reverse;
+}
+
+.syncbot-drift-col:nth-child(3) .syncbot-drift-run {
+  animation-duration: 41s;
+}
+
+.syncbot-drift-col:nth-child(4) .syncbot-drift-run {
+  animation-duration: 56s;
+  animation-direction: reverse;
+}
+
+.syncbot-drift-col:nth-child(2) .syncbot-drift-run span,
+.syncbot-drift-col:nth-child(4) .syncbot-drift-run span {
+  color: var(--syncbot-ghost-soft);
+}
+
+@keyframes syncbot-drift-up {
+  to {
+    /* The word list is rendered twice, so half a run is one seamless loop. */
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+/* One huge line of status text crawling across the middle of the page. */
+.syncbot-ticker {
+  position: absolute;
+  top: 44%;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+.syncbot-ticker-run {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: syncbot-ticker-run 30s linear infinite;
+}
+
+.syncbot-ticker-run span {
+  display: block;
+  /* nowrap trims the string's trailing space; the padding keeps the two copies
+     apart so the loop reads as one continuous sentence. Both copies carry it,
+     so the -50% translate still lands exactly one copy along. */
+  padding-right: 0.35em;
+  font-size: clamp(40px, 8vw, 116px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--syncbot-ghost-soft);
+}
+
+@keyframes syncbot-ticker-run {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ================================================================== console */
+
+.syncbot-console {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: min(940px, 100%);
+  max-height: 800px;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--syncbot-hairline);
+  border-radius: 18px;
+  background: var(--syncbot-panel);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 26px 70px var(--syncbot-shadow), 0 0 40px var(--theme-color-shadow);
+  animation: syncbot-boot-in 0.55s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+@keyframes syncbot-boot-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The console opens on its animated accent line — there is no title bar above
+   it, so the page's top padding is what keeps it clear of the fixed navbar. */
+.syncbot-console::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 4;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--theme-color),
+    var(--theme-secondary-color),
+    transparent
+  );
+  background-size: 220% 100%;
+  animation: syncbot-edge 6s linear infinite;
+}
+
+@keyframes syncbot-edge {
+  to {
+    background-position: 220% 0;
+  }
+}
+
+/* Single scanline crawling down the panel. */
+.syncbot-console::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 120px;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.14;
+  background: linear-gradient(to bottom, transparent, var(--theme-color), transparent);
+  animation: syncbot-scan 6s linear infinite;
+}
+
+@keyframes syncbot-scan {
+  from {
+    transform: translateY(-140px);
+  }
+  to {
+    transform: translateY(820px);
+  }
+}
+
+.syncbot-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+/* Its own centred row between the accent line and the first message — the
+   thread starts below it, so no bubble ever runs underneath the glyph.
+   (`.syncbot-bar` is the boot progress bar; this needs its own name.) */
+.syncbot-toolbar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 10px 14px 0;
+}
+
+.syncbot-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  transition: color 0.35s, transform 0.35s, opacity 0.35s;
+}
+
+.syncbot-reset:hover:not(:disabled) {
+  color: var(--theme-secondary-color);
+  transform: rotate(-45deg);
+}
+
+.syncbot-reset:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------- boot panel */
+
+.syncbot-boot {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 24px 26px;
+  overflow-y: auto;
+}
+
+.syncbot-reactor {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Counter-rotating rings, each showing a different arc of the palette. */
+.syncbot-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid transparent;
+}
+
+.syncbot-ring-1 {
+  inset: 0;
+  border-top-color: var(--theme-color);
+  border-right-color: var(--theme-color);
+  animation: syncbot-rotate 2.8s linear infinite;
+}
+
+.syncbot-ring-2 {
+  inset: 14px;
+  border-bottom-color: var(--theme-secondary-color);
+  border-left-color: var(--theme-secondary-color);
+  animation: syncbot-rotate 4.2s linear infinite reverse;
+}
+
+.syncbot-ring-3 {
+  inset: 30px;
+  border-style: dashed;
+  border-color: var(--theme-color-shadow);
+  opacity: 0.7;
+  animation: syncbot-rotate 11s linear infinite;
+}
+
+@keyframes syncbot-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Radar wedge sweeping the ring gap. */
+.syncbot-sweep {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--theme-color-shadow) 45deg,
+    transparent 100deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%);
+  mask: radial-gradient(circle, transparent 56%, #000 58%);
+  animation: syncbot-rotate 2.2s linear infinite;
+}
+
+/* Satellites riding the outer and inner tracks. */
+.syncbot-orbit {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  animation: syncbot-rotate 5.5s linear infinite;
+}
+
+.syncbot-orbit i {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  box-shadow: 0 0 14px var(--theme-color);
+}
+
+.syncbot-orbit-2 {
+  inset: 26px;
+  animation-duration: 3.4s;
+  animation-direction: reverse;
+}
+
+.syncbot-orbit-2 i {
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  background: var(--theme-secondary-color);
+  box-shadow: 0 0 12px var(--theme-secondary-color);
+}
+
+.syncbot-gauge {
+  position: absolute;
+  inset: 24px;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.syncbot-gauge-track {
+  fill: none;
+  stroke: var(--syncbot-inset);
+  stroke-width: 4;
+}
+
+.syncbot-gauge-value {
+  fill: none;
+  stroke: var(--theme-color);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 7px var(--theme-color));
+  transition: stroke-dashoffset 0.45s ease;
+}
+
+.syncbot-core {
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--theme-color-rbga) 0%, transparent 70%);
+  filter: blur(8px);
+  animation: syncbot-breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes syncbot-breathe {
+  50% {
+    transform: scale(1.35);
+    opacity: 0.6;
+  }
+}
+
+.syncbot-percent {
+  position: relative;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-shadow: 0 0 18px var(--theme-color-shadow);
+}
+
+.syncbot-percent i {
+  font-size: 15px;
+  font-style: normal;
+  opacity: 0.55;
+}
+
+.syncbot-bar {
+  position: relative;
+  width: min(420px, 100%);
+  height: 4px;
+  margin-top: 22px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--syncbot-inset);
+}
+
+.syncbot-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--theme-color), var(--theme-secondary-color));
+  background-size: 240% 100%;
+  box-shadow: 0 0 12px var(--theme-color-shadow);
+  transition: width 0.45s ease;
+  animation: syncbot-edge 3s linear infinite;
+}
+
+.syncbot-log {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  width: min(420px, 100%);
+  font-size: 13px;
+  letter-spacing: 0.6px;
+}
+
+.syncbot-log li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 3px 0;
+  animation: syncbot-line-in 0.45s ease-out;
+  transition: opacity 0.5s;
+}
+
+@keyframes syncbot-line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.syncbot-log li.done {
+  opacity: 0.35;
+}
+
+.syncbot-log li.active {
+  color: var(--theme-color);
+}
+
+.syncbot-log li.active .ico {
+  animation: syncbot-blink 1s steps(2) infinite;
+}
+
+.syncbot-log li.done .ico {
+  color: var(--theme-color);
+}
+
+@keyframes syncbot-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.syncbot-status {
+  margin: 18px 0 0;
+  max-width: min(520px, 100%);
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  word-break: break-word;
+  opacity: 0.55;
+}
+
+.syncbot-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+  max-width: 440px;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: left;
+  opacity: 0.42;
+}
+
+.syncbot-note .ico {
+  margin-top: 3px;
+}
+
+/* --------------------------------------------------------------- fallback */
+
+.syncbot-fallback {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.syncbot-fallback-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  color: var(--theme-secondary-color);
+  background: var(--syncbot-inset);
+  animation: syncbot-breathe 2.6s ease-in-out infinite;
+}
+
+.syncbot-fallback-title {
+  margin: 18px 0 8px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.syncbot-fallback-text {
+  margin: 0 0 8px;
+  max-width: 460px;
+  font-size: 15px;
+  line-height: 1.6;
+  opacity: 0.6;
+}
+
+.syncbot-fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ------------------------------------------------------------------- chat */
+
+.syncbot-thread {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 22px;
+  overflow-y: auto;
+  min-height: 0;
+  /* The global reset smooth-scrolls everything; token-by-token streaming needs
+     the thread pinned to the bottom instantly, not eased there. */
+  scroll-behavior: auto;
+  /* Messages dissolve at both ends instead of being sliced mid-chip by the
+     toolbar and the composer. The fade lengths match the padding above, so at
+     rest — scrolled fully up or fully down — no message is ever dimmed. */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 20px,
+    #000 calc(100% - 22px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 20px,
+    #000 calc(100% - 22px),
+    transparent 100%
+  );
+}
+
+.syncbot-turn {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  animation: syncbot-turn-in 0.4s ease-out;
+}
+
+@keyframes syncbot-turn-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.syncbot-turn-user {
+  flex-direction: row-reverse;
+}
+
+.syncbot-avatar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--theme-color-shadow);
+  color: var(--theme-color);
+}
+
+.syncbot-turn-user .syncbot-avatar {
+  border-color: var(--theme-secondary-color-shadow);
+  color: var(--theme-secondary-color);
+}
+
+/* Both sides share one surface; only the accent edge changes side. */
+.syncbot-bubble {
+  position: relative;
+  max-width: 76%;
+  padding: 12px 15px;
+  font-size: 15px;
+  line-height: 1.65;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+  background: var(--syncbot-inset);
+  border-left: 2px solid var(--theme-color);
+  /* The global reset blocks selection site-wide; answers have to be copyable. */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.syncbot-turn-user .syncbot-bubble {
+  border-left: none;
+  border-right: 2px solid var(--theme-secondary-color);
+}
+
+/* ------------------------------------------------- rendered message content */
+
+.syncbot-md > * {
+  margin: 0 0 10px;
+}
+
+.syncbot-md > *:last-child {
+  margin-bottom: 0;
+}
+
+.syncbot-md p {
+  /* The model's own line breaks inside a paragraph are meaningful. */
+  white-space: pre-wrap;
+}
+
+.syncbot-md h3 {
+  font-size: 1.02em;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--theme-color);
+}
+
+.syncbot-md strong {
+  font-weight: 700;
+  color: var(--theme-color);
+}
+
+.syncbot-md em {
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.syncbot-md code {
+  padding: 1px 6px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  border-radius: 5px;
+  background: var(--syncbot-code);
+}
+
+.syncbot-md pre {
+  margin: 10px 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: 10px;
+  border-left: 2px solid var(--theme-color-shadow);
+  background: var(--syncbot-code);
+}
+
+.syncbot-md pre code {
+  padding: 0;
+  background: none;
+  white-space: pre;
+}
+
+.syncbot-md ul,
+.syncbot-md ol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: syncbot-item;
+}
+
+.syncbot-md li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.syncbot-li-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Bullets and numbers are drawn rather than inherited — list-style markers
+   cannot be coloured independently of the text. */
+.syncbot-md ul > li::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  /* Sits on the optical centre of the first line rather than its top. */
+  margin-top: 0.62em;
+  border-radius: 2px;
+  background: var(--theme-color);
+  transform: rotate(45deg);
+}
+
+/* Full size, so its first baseline lands on the body's first baseline. */
+.syncbot-md ol > li::before {
+  counter-increment: syncbot-item;
+  content: counter(syncbot-item) ".";
+  flex: 0 0 auto;
+  min-width: 1.1em;
+  font-weight: 700;
+  text-align: right;
+  color: var(--theme-color);
+}
+
+/* ------------------------------------------------------ links and contacts */
+
+.syncbot-ent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  margin: 1px 0;
+  padding: 2px 10px;
+  font-size: 0.9em;
+  line-height: 1.6;
+  color: var(--theme-color);
+  text-decoration: none;
+  vertical-align: baseline;
+  background: var(--syncbot-code);
+  border: 1px solid var(--theme-color-shadow);
+  border-radius: 8px;
+  transition: color 0.3s, background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.syncbot-ent:hover,
+.syncbot-ent:focus-visible {
+  color: #252525;
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  box-shadow: 0 4px 14px var(--theme-color-shadow);
+  transform: translateY(-1px);
+}
+
+.syncbot-ent-label {
+  overflow-wrap: anywhere;
+}
+
+.syncbot-ent-brand {
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+/* The external-link cue is a hint, not part of the label. */
+.syncbot-ent-out {
+  opacity: 0.5;
+}
+
+/* Every chip stays on the primary accent. The secondary red reads as "the
+   visitor said this" everywhere else on the page, so it has no place inside an
+   answer the model wrote — the leading icon already separates mail from phone. */
+
+.syncbot-caret {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--theme-color);
+  animation: syncbot-blink 1s steps(2) infinite;
+}
+
+.syncbot-thinking {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.syncbot-thinking i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  animation: syncbot-bounce 1.2s ease-in-out infinite;
+}
+
+.syncbot-thinking i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.syncbot-thinking i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes syncbot-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+/* Sits directly above the composer. Capped and scrollable rather than
+   flex: 0 0 auto — eleven chips would otherwise crowd out the thread. */
+.syncbot-starters {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 0 1 auto;
+  max-height: 27vh;
+  overflow-y: auto;
+  padding: 2px 18px 12px;
+}
+
+.syncbot-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--theme-color);
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--theme-color-shadow);
+  border-radius: 20px;
+  transition: all 0.35s;
+}
+
+.syncbot-chip:hover {
+  color: #252525;
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--theme-color-shadow);
+}
+
+.syncbot-chip-action {
+  color: var(--theme-secondary-color);
+  border-color: var(--theme-secondary-color-shadow);
+}
+
+.syncbot-chip-action:hover {
+  color: #fff;
+  background: var(--theme-secondary-color);
+  border-color: var(--theme-secondary-color);
+  box-shadow: 0 6px 18px var(--theme-secondary-color-shadow);
+}
+
+.syncbot-composer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+  flex: 0 0 auto;
+  padding: 14px 18px;
+  border-top: 1px solid var(--syncbot-hairline);
+}
+
+.syncbot-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 14px;
+  background: var(--syncbot-inset);
+  border: 1px solid var(--syncbot-hairline);
+  border-radius: 10px;
+  transition: all 0.35s;
+}
+
+.syncbot-field:focus-within {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px var(--theme-color-shadow);
+}
+
+.syncbot-field-ico {
+  color: var(--theme-color);
+  opacity: 0.65;
+}
+
+.syncbot-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 13px 0;
+  font-family: inherit;
+  font-size: 15px;
+  color: inherit;
+  background: transparent;
+  border: none;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.syncbot-input::placeholder {
+  color: inherit;
+  opacity: 0.4;
+}
+
+.syncbot-send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 0 20px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  background: var(--theme-color);
+  border: none;
+  border-radius: 10px;
+  transition: all 0.35s;
+}
+
+.syncbot-send:hover:not(:disabled) {
+  box-shadow: 0 0 20px var(--theme-color-shadow);
+  transform: translateY(-1px);
+}
+
+.syncbot-send:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.syncbot-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: 11.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  opacity: 0.35;
+}
+
+/* -------------------------------------------------------------- responsive */
+
+@media screen and (max-width: 800px) {
+  /* `.intro-text` is `width: max-content`, so the button row's un-wrapped width
+     became the block's width and pushed it past both viewport edges once a third
+     button joined. Capping the block is what lets the row wrap at all. */
+  .intro-text {
+    max-width: min(600px, calc(100vw - 24px));
+  }
+
+  .syncbot-trigger {
+    margin-left: 0;
+    font-size: 16px;
+    padding: 10px 24px;
+  }
+
+  .intro-btn {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  /* The sibling buttons space themselves with margins; the gap covers it here. */
+  .btn-5 {
+    margin-left: 0;
+  }
+
+  /* Four columns of giant type is noise on a narrow screen. */
+  .syncbot-drift-col:nth-child(3),
+  .syncbot-drift-col:nth-child(4) {
+    display: none;
+  }
+}
+
+/* Three buttons only share two rows on a phone if all three get narrower. */
+@media screen and (max-width: 480px) {
+  .intro-btn {
+    gap: 10px;
+  }
+
+  #button-3 a {
+    padding: 10px 24px;
+  }
+
+  .btn-5 {
+    padding: 8px 24px;
+  }
+
+  .syncbot-trigger {
+    padding: 9px 18px;
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .syncbot-page {
+    padding: 94px 0 0;
+    gap: 0;
+  }
+
+  .syncbot-console {
+    width: 100%;
+    max-height: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .syncbot-starters {
+    max-height: 32vh;
+    padding: 2px 14px 10px;
+  }
+
+  .syncbot-bubble {
+    max-width: 84%;
+    font-size: 14px;
+  }
+
+  .syncbot-reactor {
+    width: 160px;
+    height: 160px;
+  }
+
+  .syncbot-percent {
+    font-size: 24px;
+  }
+
+  .syncbot-send-text {
+    display: none;
+  }
+
+  .syncbot-send {
+    padding: 0 18px;
+  }
+
+  .syncbot-foot {
+    display: none;
+  }
+}
+
+/* Everything above is decorative; honour the OS setting and switch it all off. */
+@media (prefers-reduced-motion: reduce) {
+  .syncbot-trigger,
+  .syncbot-trigger-core,
+  .syncbot-trigger-sheen,
+  .syncbot-aurora,
+  .syncbot-mesh,
+  .syncbot-drift-run,
+  .syncbot-ticker-run,
+  .syncbot-console,
+  .syncbot-console::before,
+  .syncbot-console::after,
+  .syncbot-ring,
+  .syncbot-sweep,
+  .syncbot-orbit,
+  .syncbot-core,
+  .syncbot-bar-fill,
+  .syncbot-log li,
+  .syncbot-turn,
+  .syncbot-thinking i,
+  .syncbot-fallback-glyph {
+    animation: none !important;
+  }
+
+  .syncbot-console::after,
+  .syncbot-trigger-sheen {
+    opacity: 0;
+  }
+}

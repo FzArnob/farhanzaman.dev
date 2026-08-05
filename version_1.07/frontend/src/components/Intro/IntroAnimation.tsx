@@ -1,7 +1,9 @@
 import { useEffect, useRef, type MouseEvent } from 'react';
+import { Link } from 'react-router-dom';
 import Typed from 'typed.js';
 import { initParticleNetwork } from '../../lib/particleNetwork';
 import type { ProfileInfo } from '../../types/profile';
+import { Icon } from '../Icon/Icon';
 
 export function IntroAnimation({ info }: { info: ProfileInfo }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -83,6 +85,14 @@ export function IntroAnimation({ info }: { info: ProfileInfo }) {
             >
               Resume
             </a>
+            <Link id="syncbot-btn" to="/syncbot" className="syncbot-trigger">
+              <span className="syncbot-trigger-sheen" aria-hidden="true"></span>
+              <span className="syncbot-trigger-core" aria-hidden="true"></span>
+              <span className="syncbot-trigger-label">
+                <Icon name="bot" size={20} />
+                Ask AI
+              </span>
+            </Link>
           </div>
         </div>
       </div>

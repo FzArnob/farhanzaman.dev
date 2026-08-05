@@ -11,6 +11,7 @@ export const sync = {
     work_details: 'WORK_DETAILS',
     works: 'WORKS',
     gaming: 'GAMING',
+    syncbot: 'SYNCBOT',
     not_found: 'NOT_FOUND',
     forbidden: 'FORBIDDEN',
     server_error: 'SERVER_ERROR',
@@ -48,6 +49,8 @@ export const sync = {
     gaming_platform_link: 'GAMING_PLATFORM_LINK',
     page_scroll: 'PAGE_SCROLL',
     page_session: 'PAGE_SESSION',
+    syncbot_button: 'SYNCBOT_BUTTON',
+    syncbot_console: 'SYNCBOT_CONSOLE',
   },
   activities: {
     page_view: 'PAGE_VIEW',
@@ -97,6 +100,11 @@ export const sync = {
     open_gaming_platform: 'OPEN_GAMING_PLATFORM',
     scroll_depth: 'SCROLL_DEPTH',
     leave_page: 'LEAVE_PAGE',
+    go_to_syncbot_page: 'GO_TO_SYNCBOT_PAGE',
+    syncbot_ready: 'SYNCBOT_READY',
+    syncbot_question: 'SYNCBOT_QUESTION',
+    syncbot_reset: 'SYNCBOT_RESET',
+    syncbot_unavailable: 'SYNCBOT_UNAVAILABLE',
   },
 } as const;
 
@@ -271,6 +279,19 @@ export function synchronizePage(pageName: SyncPage, workTitle?: string): () => v
         sync.features.explore_hobbies_button,
         sync.activities.click,
         sync.actions.go_to_hobbies_page
+      );
+    });
+  }
+
+  // SyncBot Button Tracking
+  const syncbotBtn = document.getElementById('syncbot-btn');
+  if (syncbotBtn) {
+    syncbotBtn.addEventListener('click', function () {
+      synchronizeInfo(
+        page,
+        sync.features.syncbot_button,
+        sync.activities.click,
+        sync.actions.go_to_syncbot_page
       );
     });
   }
