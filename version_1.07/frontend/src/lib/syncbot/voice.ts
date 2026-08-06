@@ -90,9 +90,15 @@ const ERROR_TEXT: Record<string, string> = {
 
 /* ------------------------------------------------------------------- input */
 
+/** Bars in the level meter. At METER_STEP_MS each, that is ~1.2s of history. */
+export const METER_BARS = 20;
+
+/** How often a fresh sample enters the meter and the older ones shuffle along. */
+const METER_STEP_MS = 60;
+
 export interface ListenHandlers {
-  /** 0..1 microphone loudness, for the level meter. */
-  onLevel: (level: number) => void;
+  /** Recent 0..1 microphone loudness, one entry per meter bar, oldest first. */
+  onLevel: (levels: number[]) => void;
   /** Best guess so far, replaced as the visitor keeps talking. */
   onInterim: (text: string) => void;
   onFinal: (text: string) => void;
@@ -113,7 +119,7 @@ export interface ListenSession {
  * expose loudness, and a panel that says "Listening…" without reacting to the
  * room gives the visitor no way to tell a dead mic from a quiet one.
  */
-async function startMeter(onLevel: (level: number) => void): Promise<() => void> {
+async function startMeter(onLevel: (levels: number[]) => void): Promise<() => void> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const Ctor =
     window.AudioContext ??
@@ -122,13 +128,17 @@ async function startMeter(onLevel: (level: number) => void): Promise<() => void>
   const source = context.createMediaStreamSource(stream);
   const analyser = context.createAnalyser();
   analyser.fftSize = 512;
-  analyser.smoothingTimeConstant = 0.65;
   source.connect(analyser);
 
   const samples = new Uint8Array(analyser.fftSize);
+  // Oldest bar first. Every step drops the leftmost one and appends the newest,
+  // so the meter scrolls the way a recorder's waveform does.
+  const history = new Array<number>(METER_BARS).fill(0);
+  let peak = 0;
+  let stepped = 0;
   let frame = 0;
 
-  const tick = () => {
+  const tick = (now: number) => {
     analyser.getByteTimeDomainData(samples);
     let sum = 0;
     for (let i = 0; i < samples.length; i += 1) {
@@ -136,7 +146,18 @@ async function startMeter(onLevel: (level: number) => void): Promise<() => void>
       sum += deviation * deviation;
     }
     // Speech RMS sits around 0.05–0.2, so it needs scaling to fill the meter.
-    onLevel(Math.min(1, Math.sqrt(sum / samples.length) * 4.5));
+    peak = Math.max(peak, Math.min(1, Math.sqrt(sum / samples.length) * 4.5));
+
+    // A bar is the loudest moment since the previous one rather than whichever
+    // instant the frame landed on: one 5ms window per step would miss the peak
+    // of most syllables and the meter would read far quieter than the room.
+    if (now - stepped >= METER_STEP_MS) {
+      stepped = now;
+      history.shift();
+      history.push(peak);
+      peak = 0;
+      onLevel(history);
+    }
     frame = requestAnimationFrame(tick);
   };
   frame = requestAnimationFrame(tick);

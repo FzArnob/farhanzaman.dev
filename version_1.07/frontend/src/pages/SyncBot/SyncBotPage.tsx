@@ -27,6 +27,7 @@ import {
   detectVoiceSupport,
   primeVoices,
   startListening,
+  METER_BARS,
   type ListenSession,
   type Speaker,
 } from '../../lib/syncbot/voice';
@@ -80,8 +81,8 @@ const TICKER_TEXT: Record<Phase, string> = {
 const RING_RADIUS = 52;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
-/** Bars in the microphone level meter; each is weighted in CSS. */
-const WAVE_BARS = [0, 1, 2, 3, 4, 5, 6];
+/** One bar per loudness sample the meter keeps; heights come from the mic. */
+const WAVE_BARS = Array.from({ length: METER_BARS }, (_, bar) => bar);
 
 export function SyncBotPage() {
   const profile = useProfile();
@@ -370,8 +371,14 @@ export function SyncBotPage() {
 
     try {
       const session = await startListening({
-        onLevel: (level) => {
-          waveRef.current?.style.setProperty('--syncbot-level', level.toFixed(2));
+        onLevel: (levels) => {
+          // Each bar carries its own level, written straight onto the element.
+          // Going through React state would re-render the page at 60fps.
+          const bars = waveRef.current?.children;
+          if (!bars) return;
+          for (let i = 0; i < bars.length && i < levels.length; i += 1) {
+            (bars[i] as HTMLElement).style.setProperty('--syncbot-level', levels[i].toFixed(2));
+          }
         },
         onInterim: (text) => aliveRef.current && setHeard(text),
         onFinal: (text) => {
@@ -703,7 +710,7 @@ export function SyncBotPage() {
                     aria-label={listening ? 'Stop listening' : 'Ask by voice'}
                     aria-pressed={listening}
                   >
-                    <Icon name={listening ? 'mic_off' : 'mic'} size={20} />
+                    <Icon name="mic" size={20} />
                   </button>
                 )}
 

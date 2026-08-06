@@ -207,3 +207,9 @@ footer .credits a {
   color: #252525;
 }
 
+/* Level-meter bars are a fill rather than text, but the same rule applies —
+   #00d3b4 over a near-white panel is too faint to read as a signal. */
+.syncbot-listen-wave i {
+  background: #00947f;
+}
+

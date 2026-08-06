@@ -1176,21 +1176,22 @@
   transform: translateY(-1px);
 }
 
-/* Recording is the one state that earns the alert colour. */
+/* Recording stays on the primary accent. The alert red read as "something went
+   wrong" when nothing had — the pulse alone carries "this is live". */
 .syncbot-mic.live {
   color: #fff;
-  background: var(--theme-secondary-color);
-  border-color: var(--theme-secondary-color);
+  background: var(--theme-color);
+  border-color: var(--theme-color);
   animation: syncbot-mic-pulse 1.6s ease-in-out infinite;
 }
 
 @keyframes syncbot-mic-pulse {
   0% {
-    box-shadow: 0 0 0 0 var(--theme-secondary-color-shadow);
+    box-shadow: 0 0 0 0 var(--theme-color-shadow);
   }
   70%,
   100% {
-    box-shadow: 0 0 0 14px rgba(253, 33, 85, 0);
+    box-shadow: 0 0 0 14px rgba(0, 211, 180, 0);
   }
 }
 
@@ -1206,50 +1207,34 @@
   gap: 12px;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0 12px 0 14px;
+  padding: 0 12px 0 12px;
   background: var(--syncbot-inset);
-  border: 1px solid var(--theme-secondary-color-shadow);
+  border: 1px solid var(--theme-color);
   border-radius: 10px;
+  box-shadow: 0 0 0 3px var(--theme-color-shadow);
   animation: syncbot-turn-in 0.3s ease-out;
 }
 
-/* The bars are driven by --syncbot-level, which the meter writes straight onto
-   this element. Going through React state would re-render the page at 60fps. */
 .syncbot-listen-wave {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   height: 46px;
   flex: 0 0 auto;
 }
 
+/* One bar per loudness sample, oldest on the left, so the row scrolls the way a
+   recorder's waveform does. Each bar's own --syncbot-level is written straight
+   onto it by the meter — through React state this would re-render at 60fps.
+   Bars scale from the middle, which is what makes a row of dots at silence grow
+   into a waveform when the visitor speaks. */
 .syncbot-listen-wave i {
   width: 3px;
-  height: 22px;
+  height: 28px;
   border-radius: 2px;
-  background: var(--theme-secondary-color);
-  transform: scaleY(calc(0.16 + var(--syncbot-level, 0) * var(--weight, 1) * 0.84));
-  transition: transform 90ms linear;
-}
-
-/* Weighted so the meter reads as a waveform rather than a row of equal bars. */
-.syncbot-listen-wave i:nth-child(1),
-.syncbot-listen-wave i:nth-child(7) {
-  --weight: 0.4;
-}
-
-.syncbot-listen-wave i:nth-child(2),
-.syncbot-listen-wave i:nth-child(6) {
-  --weight: 0.68;
-}
-
-.syncbot-listen-wave i:nth-child(3),
-.syncbot-listen-wave i:nth-child(5) {
-  --weight: 0.88;
-}
-
-.syncbot-listen-wave i:nth-child(4) {
-  --weight: 1;
+  background: var(--theme-color);
+  transform: scaleY(calc(0.09 + var(--syncbot-level, 0) * 0.91));
+  transition: transform 70ms linear;
 }
 
 .syncbot-listen-text {
@@ -1286,7 +1271,7 @@
 }
 
 .syncbot-listen-stop:hover {
-  color: var(--theme-secondary-color);
+  color: var(--theme-color);
   opacity: 1;
 }
 
@@ -1468,11 +1453,17 @@
 
   .syncbot-listen {
     gap: 9px;
-    padding: 0 8px 0 10px;
+    padding: 0 8px;
   }
 
   .syncbot-listen-wave i {
     width: 2.5px;
+  }
+
+  /* The whole window of bars would leave the transcript nowhere to go on a
+     phone, so the oldest half drops out and the meter keeps the recent end. */
+  .syncbot-listen-wave i:nth-child(-n + 9) {
+    display: none;
   }
 
   .syncbot-listen-text {
