@@ -22,6 +22,15 @@ import {
   starterQuestions,
   type ChatTurn,
 } from '../../lib/syncbot/prompt';
+import {
+  createSpeaker,
+  detectVoiceSupport,
+  primeVoices,
+  startListening,
+  METER_BARS,
+  type ListenSession,
+  type Speaker,
+} from '../../lib/syncbot/voice';
 import { RichText } from '../../components/SyncBot/RichText';
 import { sync, track } from '../../lib/sync';
 
@@ -72,6 +81,9 @@ const TICKER_TEXT: Record<Phase, string> = {
 const RING_RADIUS = 52;
 const RING_LENGTH = 2 * Math.PI * RING_RADIUS;
 
+/** One bar per loudness sample the meter keeps; heights come from the mic. */
+const WAVE_BARS = Array.from({ length: METER_BARS }, (_, bar) => bar);
+
 export function SyncBotPage() {
   const profile = useProfile();
   const { info } = profile;
@@ -88,12 +100,22 @@ export function SyncBotPage() {
   const [draft, setDraft] = useState('');
   const [streaming, setStreaming] = useState(false);
 
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState('');
+  const [speaking, setSpeaking] = useState(false);
+  const [voiceError, setVoiceError] = useState('');
+
   const engineRef = useRef<ChatEngine | null>(null);
   const startedRef = useRef(false);
   const stageRef = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const aliveRef = useRef(true);
+  const sessionRef = useRef<ListenSession | null>(null);
+  const speakerRef = useRef<Speaker | null>(null);
+  const waveRef = useRef<HTMLSpanElement>(null);
+
+  const voice = useMemo(detectVoiceSupport, []);
 
   useDocumentTitle('SyncBot - ' + info.full_name);
 
@@ -105,8 +127,25 @@ export function SyncBotPage() {
     aliveRef.current = true;
     return () => {
       aliveRef.current = false;
+      // Leaving the page must not leave the microphone open or the tab talking.
+      sessionRef.current?.abort();
+      speakerRef.current?.cancel();
     };
   }, []);
+
+  useEffect(() => {
+    if (!voice.synthesis) return;
+    primeVoices();
+    const speaker = createSpeaker({
+      onStart: () => aliveRef.current && setSpeaking(true),
+      onEnd: () => aliveRef.current && setSpeaking(false),
+    });
+    speakerRef.current = speaker;
+    return () => {
+      speaker.cancel();
+      speakerRef.current = null;
+    };
+  }, [voice.synthesis]);
 
   /**
    * The opening line is generated, not stored: the visitor's first impression of
@@ -230,10 +269,16 @@ export function SyncBotPage() {
   }, [turns, streaming]);
 
   const ask = useCallback(
-    async (question: string) => {
+    async (question: string, viaVoice = false) => {
       const engine = engineRef.current;
       const trimmed = question.trim();
       if (!engine || !trimmed || streaming) return;
+
+      // A new question always silences the previous answer, and resets the
+      // speaker's cursor whether or not this one will be read aloud.
+      const speaker = speakerRef.current;
+      speaker?.cancel();
+      const voiced = viaVoice && speaker !== null;
 
       setDraft('');
       setStreaming(true);
@@ -247,7 +292,7 @@ export function SyncBotPage() {
         'syncbot',
         sync.features.syncbot_console,
         sync.activities.submit,
-        sync.actions.syncbot_question
+        viaVoice ? sync.actions.syncbot_voice_question : sync.actions.syncbot_question
       );
 
       try {
@@ -256,6 +301,10 @@ export function SyncBotPage() {
         const messages = buildMessages(dossier, priorTurns, trimmed, info.full_name);
         const final = await streamReply(engine, messages, (text) => {
           if (!aliveRef.current) return;
+          // Speaking sentence-by-sentence as they land, rather than waiting for
+          // the full answer, is what keeps a spoken reply from starting seconds
+          // after the visitor stopped talking.
+          if (voiced) speaker?.push(text);
           setTurns((current) => {
             const next = [...current];
             next[next.length - 1] = { role: 'assistant', content: text };
@@ -263,6 +312,7 @@ export function SyncBotPage() {
           });
         });
         if (!aliveRef.current) return;
+        if (voiced) speaker?.finish(final.trim());
         setTurns((current) => {
           const next = [...current];
           next[next.length - 1] = { role: 'assistant', content: final.trim() };
@@ -270,6 +320,7 @@ export function SyncBotPage() {
         });
       } catch (error) {
         if (!aliveRef.current) return;
+        speaker?.cancel();
         setTurns((current) => {
           const next = [...current];
           next[next.length - 1] = {
@@ -285,10 +336,87 @@ export function SyncBotPage() {
     [dossier, info.full_name, streaming, turns]
   );
 
+  // The listening session captures `ask` for as long as the mic is open, so it
+  // reads the current one from a ref rather than closing over a stale copy.
+  const askRef = useRef(ask);
+  useEffect(() => {
+    askRef.current = ask;
+  }, [ask]);
+
+  // getUserMedia makes starting a session async, so a second tap can land before
+  // the first one has a session to abort. The token retires that orphan.
+  const listenTokenRef = useRef(0);
+
+  const stopListening = useCallback(() => {
+    listenTokenRef.current += 1;
+    sessionRef.current?.abort();
+    sessionRef.current = null;
+    setListening(false);
+    setHeard('');
+  }, []);
+
+  const toggleListening = useCallback(async () => {
+    if (listening) {
+      stopListening();
+      return;
+    }
+    if (streaming) return;
+
+    // Barge-in: talking over the previous answer stops it.
+    speakerRef.current?.cancel();
+    setVoiceError('');
+    setHeard('');
+    setListening(true);
+    const token = (listenTokenRef.current += 1);
+
+    try {
+      const session = await startListening({
+        onLevel: (levels) => {
+          // Each bar carries its own level, written straight onto the element.
+          // Going through React state would re-render the page at 60fps.
+          const bars = waveRef.current?.children;
+          if (!bars) return;
+          for (let i = 0; i < bars.length && i < levels.length; i += 1) {
+            (bars[i] as HTMLElement).style.setProperty('--syncbot-level', levels[i].toFixed(2));
+          }
+        },
+        onInterim: (text) => aliveRef.current && setHeard(text),
+        onFinal: (text) => {
+          if (!aliveRef.current) return;
+          sessionRef.current = null;
+          setListening(false);
+          setHeard('');
+          void askRef.current(text, true);
+        },
+        onError: (message) => aliveRef.current && setVoiceError(message),
+        onEnd: () => {
+          // Recognition closes itself after a pause. If no final result arrived
+          // the panel still has to come back down.
+          if (!aliveRef.current) return;
+          sessionRef.current = null;
+          setListening(false);
+        },
+      });
+
+      // Retired while getUserMedia was still resolving — drop it on the floor.
+      if (listenTokenRef.current !== token || !aliveRef.current) {
+        session.abort();
+        return;
+      }
+      sessionRef.current = session;
+    } catch (error) {
+      if (!aliveRef.current) return;
+      setListening(false);
+      setVoiceError(error instanceof Error ? error.message : 'Voice input is unavailable.');
+    }
+  }, [listening, stopListening, streaming]);
+
   /** Start over — including a freshly worded opening line. */
   const resetThread = useCallback(() => {
     const engine = engineRef.current;
     if (streaming || !engine) return;
+    stopListening();
+    speakerRef.current?.cancel();
     track(
       'syncbot',
       sync.features.syncbot_console,
@@ -296,7 +424,7 @@ export function SyncBotPage() {
       sync.actions.syncbot_reset
     );
     void openThread(engine);
-  }, [openThread, streaming]);
+  }, [openThread, stopListening, streaming]);
 
   const percent = Math.round(progress * 100);
 
@@ -504,6 +632,29 @@ export function SyncBotPage() {
                 </div>
               )}
 
+              {(listening || speaking || voiceError) && (
+                <div className={`syncbot-voice-note ${voiceError ? 'error' : ''}`} role="status">
+                  <Icon
+                    name={voiceError ? 'warning' : listening ? 'lock' : 'volume_up'}
+                    size={15}
+                  />
+                  <span>
+                    {voiceError ||
+                      // The model and the answers never leave the tab, but
+                      // SpeechRecognition hands the audio to the browser vendor.
+                      // Claiming otherwise on this page would be a lie.
+                      (listening
+                        ? 'Your browser handles speech-to-text — this part is not on-device.'
+                        : 'Speaking the answer…')}
+                  </span>
+                  {speaking && !listening && !voiceError && (
+                    <button type="button" onClick={() => speakerRef.current?.cancel()}>
+                      Stop
+                    </button>
+                  )}
+                </div>
+              )}
+
               <form
                 className="syncbot-composer"
                 onSubmit={(event) => {
@@ -511,20 +662,63 @@ export function SyncBotPage() {
                   void ask(draft);
                 }}
               >
-                <div className="syncbot-field">
-                  <Icon name="bolt" size={18} className="syncbot-field-ico" />
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    className="syncbot-input"
-                    value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
-                    placeholder={streaming ? 'Generating…' : `Ask about ${info.first_name}…`}
+                {listening ? (
+                  /* The text field gives way to the meter — the visitor is
+                     talking, so there is nothing to type into. */
+                  <div className="syncbot-listen">
+                    <span className="syncbot-listen-wave" ref={waveRef} aria-hidden="true">
+                      {WAVE_BARS.map((bar) => (
+                        <i key={bar} />
+                      ))}
+                    </span>
+                    <span className={`syncbot-listen-text ${heard ? 'heard' : ''}`}>
+                      {heard || 'Listening… speak now'}
+                    </span>
+                    <button
+                      type="button"
+                      className="syncbot-listen-stop"
+                      onClick={stopListening}
+                      aria-label="Cancel voice input"
+                      title="Cancel"
+                    >
+                      <Icon name="close" size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="syncbot-field">
+                    <Icon name="bolt" size={18} className="syncbot-field-ico" />
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      className="syncbot-input"
+                      value={draft}
+                      onChange={(event) => setDraft(event.target.value)}
+                      placeholder={streaming ? 'Generating…' : `Ask about ${info.first_name}…`}
+                      disabled={streaming}
+                      aria-label="Your question"
+                    />
+                  </div>
+                )}
+
+                {voice.recognition && (
+                  <button
+                    type="button"
+                    className={`syncbot-mic ${listening ? 'live' : ''}`}
+                    onClick={() => void toggleListening()}
                     disabled={streaming}
-                    aria-label="Your question"
-                  />
-                </div>
-                <button type="submit" className="syncbot-send" disabled={streaming || !draft.trim()}>
+                    title={listening ? 'Stop listening' : 'Ask by voice'}
+                    aria-label={listening ? 'Stop listening' : 'Ask by voice'}
+                    aria-pressed={listening}
+                  >
+                    <Icon name="mic" size={20} />
+                  </button>
+                )}
+
+                <button
+                  type="submit"
+                  className="syncbot-send"
+                  disabled={streaming || listening || !draft.trim()}
+                >
                   <Icon name="send" size={18} />
                   <span className="syncbot-send-text">Send</span>
                 </button>

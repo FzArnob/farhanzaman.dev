@@ -1154,6 +1154,163 @@
   opacity: 0.4;
 }
 
+/* ---------------------------------------------------------------- voice in */
+
+.syncbot-mic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  flex: 0 0 auto;
+  color: var(--theme-color);
+  cursor: pointer;
+  background: var(--syncbot-inset);
+  border: 1px solid var(--syncbot-hairline);
+  border-radius: 10px;
+  transition: all 0.35s;
+}
+
+.syncbot-mic:hover:not(:disabled) {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 16px var(--theme-color-shadow);
+  transform: translateY(-1px);
+}
+
+/* Recording stays on the primary accent. The alert red read as "something went
+   wrong" when nothing had — the pulse alone carries "this is live". */
+.syncbot-mic.live {
+  color: #fff;
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  animation: syncbot-mic-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes syncbot-mic-pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--theme-color-shadow);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 14px rgba(0, 211, 180, 0);
+  }
+}
+
+.syncbot-mic:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Replaces the text field while the microphone is open. */
+.syncbot-listen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 12px 0 12px;
+  background: var(--syncbot-inset);
+  border: 1px solid var(--theme-color);
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px var(--theme-color-shadow);
+  animation: syncbot-turn-in 0.3s ease-out;
+}
+
+.syncbot-listen-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 46px;
+  flex: 0 0 auto;
+}
+
+/* One bar per loudness sample, oldest on the left, so the row scrolls the way a
+   recorder's waveform does. Each bar's own --syncbot-level is written straight
+   onto it by the meter — through React state this would re-render at 60fps.
+   Bars scale from the middle, which is what makes a row of dots at silence grow
+   into a waveform when the visitor speaks. */
+.syncbot-listen-wave i {
+  width: 3px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--theme-color);
+  transform: scaleY(calc(0.09 + var(--syncbot-level, 0) * 0.91));
+  transition: transform 70ms linear;
+}
+
+.syncbot-listen-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  /* A long dictation must not push the stop button off the row. */
+  max-height: 2.8em;
+  overflow: hidden;
+  opacity: 0.5;
+}
+
+/* Words actually recognised read as real input, not as a placeholder. */
+.syncbot-listen-text.heard {
+  color: var(--theme-color);
+  opacity: 1;
+}
+
+.syncbot-listen-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.syncbot-listen-stop:hover {
+  color: var(--theme-color);
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------- voice out */
+
+.syncbot-voice-note {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 0 20px 10px;
+  font-size: 12.5px;
+  letter-spacing: 0.4px;
+  color: var(--theme-color);
+}
+
+.syncbot-voice-note.error {
+  color: var(--theme-secondary-color);
+}
+
+.syncbot-voice-note button {
+  padding: 3px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 20px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.syncbot-voice-note button:hover {
+  opacity: 1;
+}
+
 .syncbot-send {
   display: flex;
   align-items: center;
@@ -1251,7 +1408,7 @@
 
 @media screen and (max-width: 700px) {
   .syncbot-page {
-    padding: 94px 0 0;
+    padding: 75px 0 0;
     gap: 0;
   }
 
@@ -1290,6 +1447,29 @@
     padding: 0 18px;
   }
 
+  .syncbot-mic {
+    width: 42px;
+  }
+
+  .syncbot-listen {
+    gap: 9px;
+    padding: 0 8px;
+  }
+
+  .syncbot-listen-wave i {
+    width: 2.5px;
+  }
+
+  /* The whole window of bars would leave the transcript nowhere to go on a
+     phone, so the oldest half drops out and the meter keeps the recent end. */
+  .syncbot-listen-wave i:nth-child(-n + 9) {
+    display: none;
+  }
+
+  .syncbot-listen-text {
+    font-size: 14px;
+  }
+
   .syncbot-foot {
     display: none;
   }
@@ -1315,8 +1495,16 @@
   .syncbot-log li,
   .syncbot-turn,
   .syncbot-thinking i,
+  .syncbot-mic.live,
+  .syncbot-listen,
   .syncbot-fallback-glyph {
     animation: none !important;
+  }
+
+  /* The level meter is feedback, not decoration — it keeps moving, but without
+     the easing that makes it feel like an effect. */
+  .syncbot-listen-wave i {
+    transition: none;
   }
 
   .syncbot-console::after,
