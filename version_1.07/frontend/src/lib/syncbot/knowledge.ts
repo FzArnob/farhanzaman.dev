@@ -45,6 +45,18 @@ function clean(value: string | null | undefined): string {
     .trim();
 }
 
+/**
+ * profile.json stores the resume as a site-relative path. Left as-is it reaches
+ * the visitor as bare text — the link parser will not linkify something without
+ * a scheme or a recognised TLD, and a model quoting it produces a dead link.
+ */
+export function absoluteUrl(value: string, base: string): string {
+  const path = (value ?? '').trim();
+  if (!path) return '';
+  if (/^[a-z][a-z0-9+.-]*:/i.test(path)) return path;
+  return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+}
+
 function clip(value: string, max: number): string {
   const text = clean(value);
   if (text.length <= max) return text;
@@ -52,27 +64,141 @@ function clip(value: string, max: number): string {
   return text.slice(0, text.lastIndexOf(' ', max) || max).trimEnd() + '…';
 }
 
+/* ------------------------------------------------------------------ dates */
+
+/**
+ * Every duration in the dossier is worked out here rather than left as two dates
+ * for the model to subtract. A 0.5B model cannot do calendar arithmetic — asked
+ * for a total it will confidently add up numbers that were never meant to be
+ * added — so it is only ever handed finished phrases like "4 years 4 months".
+ */
+
+function parseDate(value: string | null | undefined): Date | null {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function monthName(value: string | null): string {
+  const date = parseDate(value);
+  if (!date) return value ?? '';
+  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
 /** "2022-03-29" + is_present "1" -> "Mar 2022 - present". */
 function period(start: string, end: string | null, isPresent: string): string {
-  const month = (value: string | null): string => {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  };
-  const from = month(start);
-  const to = isPresent === '1' ? 'present' : month(end);
+  const from = monthName(start);
+  const to = isPresent === '1' ? 'present' : monthName(end);
   if (from && to) return `${from} - ${to}`;
   return from || to || 'date not recorded';
 }
 
-function years(months: string | number | null | undefined): string {
+/** Whole months between two dates, not counting a partial final month. */
+function monthsBetween(from: Date, to: Date): number {
+  let months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+  if (to.getDate() < from.getDate()) months -= 1;
+  return Math.max(months, 0);
+}
+
+/**
+ * The end of a role, as an exclusive bound.
+ *
+ * `end_date` in profile.json is the last day *worked*, so a role recorded as
+ * 2021-09-01 to 2022-02-28 covers six months, not the five that subtracting the
+ * two dates gives. Ongoing roles end now.
+ */
+function roleEnd(item: { end_date: string | null; is_present: string }, now: Date): Date {
+  if (item.is_present === '1') return now;
+  const end = parseDate(item.end_date);
+  if (!end) return now;
+  const exclusive = new Date(end);
+  exclusive.setDate(exclusive.getDate() + 1);
+  return exclusive;
+}
+
+/** 52 -> "4 years 4 months". The one phrasing used everywhere. */
+export function formatMonths(total: number): string {
+  const months = Math.max(Math.round(total), 0);
+  if (months < 1) return 'less than a month';
+  const whole = Math.floor(months / 12);
+  const rest = months % 12;
+  const parts = [
+    whole ? `${whole} year${whole === 1 ? '' : 's'}` : '',
+    rest ? `${rest} month${rest === 1 ? '' : 's'}` : '',
+  ].filter(Boolean);
+  return parts.join(' ');
+}
+
+export interface Tenure {
+  id: string;
+  position: string;
+  employer: string;
+  span: string;
+  months: number;
+  duration: string;
+  current: boolean;
+}
+
+/** profile.json prefixes past titles with "Former"; that belongs to the timeline UI. */
+function title(position: string): string {
+  return clean(position).replace(/^former\s+/i, '');
+}
+
+/** One entry per role, newest first, each with its length already worked out. */
+export function tenures(experiences: Profile['experiences']): Tenure[] {
+  const now = new Date();
+  return experiences
+    .map((item) => {
+      const from = parseDate(item.start_date);
+      const months = from ? monthsBetween(from, roleEnd(item, now)) : 0;
+      return {
+        id: item.experience_id,
+        position: title(item.position),
+        employer: clean(item.institute_name),
+        span: period(item.start_date, item.end_date, item.is_present),
+        months,
+        duration: formatMonths(months),
+        current: item.is_present === '1',
+        sort: from?.getTime() ?? 0,
+      };
+    })
+    .sort((a, b) => b.sort - a.sort)
+    .map(({ sort: _sort, ...entry }) => entry);
+}
+
+/**
+ * Total professional experience: the union of the role periods, so that
+ * overlapping jobs are not double-counted and the gaps between them are not
+ * counted at all. This is the number the console used to get badly wrong.
+ */
+export function totalExperienceMonths(experiences: Profile['experiences']): number {
+  const now = new Date();
+  const spans = experiences
+    .map((item) => {
+      const from = parseDate(item.start_date);
+      const to = roleEnd(item, now);
+      return from ? { from, to: to < from ? from : to } : null;
+    })
+    .filter((span): span is { from: Date; to: Date } => span !== null)
+    .sort((a, b) => a.from.getTime() - b.from.getTime());
+
+  const merged: { from: Date; to: Date }[] = [];
+  for (const span of spans) {
+    const last = merged[merged.length - 1];
+    if (last && span.from <= last.to) {
+      if (span.to > last.to) last.to = span.to;
+    } else {
+      merged.push({ ...span });
+    }
+  }
+  return merged.reduce((sum, span) => sum + monthsBetween(span.from, span.to), 0);
+}
+
+/** Months a technology or soft skill has been in use — never a job duration. */
+function usedFor(months: string | number | null | undefined): string {
   const value = Number(months);
   if (!Number.isFinite(value) || value <= 0) return '';
-  if (value < 12) return `${value} months experience`;
-  const whole = Math.floor(value / 12);
-  const rest = value % 12;
-  return rest ? `${whole}y ${rest}m experience` : `${whole}y experience`;
+  return `used on and off for about ${formatMonths(value)}`;
 }
 
 function chunk(
@@ -97,9 +223,11 @@ export function buildDossier(profile: Profile): Dossier {
     profile;
   const chunks: KnowledgeChunk[] = [];
 
-  const current = experiences.find((item) => item.is_present === '1');
+  const roles = tenures(experiences);
+  const totalExperience = formatMonths(totalExperienceMonths(experiences));
+  const current = roles.find((item) => item.current);
   const currentRole = current
-    ? `${current.position} at ${current.institute_name} (since ${period(current.start_date, current.end_date, '0').split(' - ')[0]})`
+    ? `${current.position} at ${current.employer} (${current.span}, ${current.duration} so far)`
     : 'see the career history';
 
   // profile.json often repeats a value in the "alternative" field; listing the same
@@ -114,10 +242,32 @@ export function buildDossier(profile: Profile): Dossier {
     `SUBJECT: ${info.full_name} (goes by ${info.first_name}${info.nick_name && info.nick_name !== info.first_name ? `, nickname "${info.nick_name}"` : ''}).`,
     `ROLES: ${info.designations.map((role) => clean(role)).join(' / ')}.`,
     `CURRENTLY: ${currentRole}.`,
+    `TOTAL PROFESSIONAL EXPERIENCE: ${totalExperience} across ${roles.length} roles. Use this figure exactly as written.`,
     `BASED IN: ${clean(info.address) || 'not recorded'}.`,
-    `SUMMARY: ${clip(info.about_text, 620)}`,
+    `SUMMARY: ${clip(info.about_text, 420)}`,
     `CONTACT: email ${emails.join(' or ')}; phone ${phones.join(' / ')}; LinkedIn ${info.linkedin_url}; GitHub ${info.github_url}; website ${info.website_domain_name}.`,
   ].join('\n');
+
+  // The console's worst answers were all arithmetic: totals invented by adding
+  // together numbers from the technology list. Stating the totals as finished
+  // prose, at the top of the career section, leaves nothing to work out.
+  chunks.push(
+    chunk(
+      'career-summary',
+      'CAREER SUMMARY / TOTAL EXPERIENCE',
+      [
+        `${info.first_name} has ${totalExperience} of total professional experience, counted across ${roles.length} roles with the gaps between them excluded.`,
+        'Role by role:',
+        ...roles.map(
+          (role) =>
+            `- ${role.position} at ${role.employer} (${role.span}) — ${role.duration}${role.current ? ', ongoing' : ''}.`
+        ),
+        'These are the only durations that count as work experience. The month figures listed against individual technologies and skills are how long each one has been in use, they overlap heavily, and they must never be added together or reported as years of experience.',
+      ].join('\n'),
+      98,
+      'experience years total overall how long duration tenure career breakdown seniority worked employment history summary'
+    )
+  );
 
   // The core summary is clipped to keep every prompt small, so the full statement —
   // research interests, university societies — lives on as its own retrievable chunk.
@@ -136,12 +286,13 @@ export function buildDossier(profile: Profile): Dossier {
     const links = [item.project_text_1, item.project_text_2, item.project_text_3]
       .filter(Boolean)
       .join(', ');
+    const role = roles.find((entry) => entry.id === item.experience_id);
     chunks.push(
       chunk(
         `exp-${item.experience_id}`,
-        `EXPERIENCE / ${item.position} @ ${item.institute_name}`,
+        `EXPERIENCE / ${title(item.position)} @ ${item.institute_name}`,
         [
-          `${item.position} at ${item.institute_name}, ${period(item.start_date, item.end_date, item.is_present)}.`,
+          `${title(item.position)} at ${item.institute_name}, ${period(item.start_date, item.end_date, item.is_present)}${role ? ` — ${role.duration} in the role` : ''}.`,
           item.project_details ? `Focus: ${clean(item.project_details)}.` : '',
           links ? `Worked on: ${links}.` : '',
           item.is_present === '1' ? 'This is his current job.' : '',
@@ -218,7 +369,7 @@ export function buildDossier(profile: Profile): Dossier {
       chunk(
         'expertise-index',
         'TECHNOLOGY INDEX',
-        `Technologies he has worked with: ${expertises
+        `Technologies he has worked with, each with the level he claims: ${expertises
           .map((item) => `${item.name} (${item.level})`)
           .join(', ')}.`,
         88,
@@ -232,7 +383,7 @@ export function buildDossier(profile: Profile): Dossier {
       chunk(
         `expertise-${item.expertise_id}`,
         `TECHNOLOGY / ${item.name}`,
-        `${item.name} — level ${item.level}${years(item.duration) ? `, ${years(item.duration)}` : ''}. ${clean(item.description)}`,
+        `${item.name} — ${item.level} level${usedFor(item.duration) ? `, ${usedFor(item.duration)}` : ''}. ${clean(item.description)}`,
         60,
         'technology language framework tool library know experience with'
       )
@@ -249,7 +400,7 @@ export function buildDossier(profile: Profile): Dossier {
         group
           .map(
             (item) =>
-              `${item.name} (${item.percentage}%${years(item.duration) ? `, ${years(item.duration)}` : ''}): ${clean(item.description)}`
+              `${item.name} (self-rated ${item.percentage}%${usedFor(item.duration) ? `, ${usedFor(item.duration)}` : ''}): ${clean(item.description)}`
           )
           .join(' '),
         65,
@@ -306,7 +457,9 @@ export function buildDossier(profile: Profile): Dossier {
     chunk(
       'contact',
       'CONTACT',
-      `Email ${info.email}${info.alternative_email ? ` (alt ${info.alternative_email})` : ''}. Phone ${info.phone}${info.secondary_phone ? ` / ${info.secondary_phone}` : ''}. Located ${clean(info.address)}. LinkedIn ${info.linkedin_url}. GitHub ${info.github_url}. Facebook ${info.facebook_url}. WhatsApp ${info.whatsapp_url}. Resume: ${info.resume_url}. ${clean(info.contact_preference_details)}`,
+      // Deduplicated for the same reason as the core block: "email x (alt x)"
+      // reads as a mistake, and the model will faithfully repeat it.
+      `Email ${emails.join(' or ')}. Phone ${phones.join(' / ')}. Located ${clean(info.address)}. LinkedIn ${info.linkedin_url}. GitHub ${info.github_url}. Facebook ${info.facebook_url}. WhatsApp ${info.whatsapp_url}. Resume: ${absoluteUrl(info.resume_url, info.website_base_url)}. ${clip(info.contact_preference_details, 200)}`,
       72,
       'contact reach email phone hire available resume cv linkedin github whatsapp connect'
     )
@@ -345,13 +498,17 @@ function tokenize(query: string): string[] {
 }
 
 /**
- * Picks the chunks most relevant to `query`, up to `budget` characters.
+ * Ranks every chunk against `query`.
  *
  * Scoring is IDF-weighted term overlap: a term that appears in only one chunk
  * ("pocketalk") is worth far more than one that appears everywhere ("project").
  */
-export function retrieve(chunks: KnowledgeChunk[], query: string, budget = 3600): KnowledgeChunk[] {
+function rank(
+  chunks: KnowledgeChunk[],
+  query: string
+): { terms: string[]; ranked: KnowledgeChunk[] } {
   const terms = [...new Set(tokenize(query))];
+  if (!terms.length) return { terms, ranked: [] };
 
   // Document frequency and the matcher for each term are computed once, not once
   // per chunk — otherwise scoring is quadratic in the number of chunks.
@@ -359,28 +516,64 @@ export function retrieve(chunks: KnowledgeChunk[], query: string, budget = 3600)
     const pattern = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
     const documentFrequency = chunks.filter((item) => item.haystack.includes(term)).length;
     return {
-      term,
       pattern,
+      term,
       idf: Math.log(1 + chunks.length / Math.max(documentFrequency, 1)),
     };
   });
 
-  const ranked = terms.length
-    ? chunks
-        .map((item) => {
-          let score = 0;
-          for (const { term, pattern, idf } of scoring) {
-            // A whole-word hit is the strong signal; a bare substring catches
-            // plurals and compounds ("react" inside "react-native") at a discount.
-            if (pattern.test(item.haystack)) score += idf;
-            else if (item.haystack.includes(term)) score += idf * 0.4;
-          }
-          return { item, score };
-        })
-        .filter((entry) => entry.score > 0)
-        .sort((a, b) => b.score - a.score || b.item.priority - a.item.priority)
-        .map((entry) => entry.item)
-    : [];
+  const ranked = chunks
+    .map((item) => {
+      let score = 0;
+      for (const { term, pattern, idf } of scoring) {
+        // A whole-word hit is the strong signal; a bare substring catches
+        // plurals and compounds ("react" inside "react-native") at a discount.
+        if (pattern.test(item.haystack)) score += idf;
+        else if (item.haystack.includes(term)) score += idf * 0.4;
+      }
+      return { item, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || b.item.priority - a.item.priority)
+    .map((entry) => entry.item);
+
+  return { terms, ranked };
+}
+
+/**
+ * Words that carry conversation rather than subject matter. Stripped before the
+ * off-topic test only — they are still useful for *ranking*, where "details" and
+ * "projects" legitimately pull different chunks, but a question built entirely
+ * out of them ("tell me more", "anything else?") is vague, not off-topic.
+ */
+const FILLER = new Set<string>([
+  'again', 'also', 'anything', 'bit', 'brief', 'briefly', 'compare', 'could', 'describe',
+  'detail', 'details', 'else', 'elaborate', 'everything', 'explain', 'give', 'good', 'great',
+  'hello', 'help', 'hey', 'hi', 'interesting', 'list', 'little', 'lot', 'many', 'maybe',
+  'mean', 'more', 'most', 'nice', 'now', 'ok', 'okay', 'one', 'other', 'others', 'please',
+  'point', 'really', 'say', 'short', 'should', 'show', 'summarise', 'summarize', 'summary',
+  'sure', 'thanks', 'thing', 'things', 'think', 'top', 'want', 'well', 'yeah', 'yes',
+]);
+
+/**
+ * False only when the visitor used substantive words and not one of them appears
+ * anywhere in the profile — "what's the capital of France", "write me a poem".
+ *
+ * The asymmetry is deliberate. Refusing needs positive evidence that the subject
+ * is somewhere else, because a wrong refusal is far more annoying to a visitor
+ * than a slightly loose answer. So a question with nothing substantive left
+ * after the filler is stripped counts as on-topic, and the caller answers it
+ * from the overview chunks.
+ */
+export function isOnTopic(chunks: KnowledgeChunk[], query: string): boolean {
+  const { terms, ranked } = rank(chunks, query);
+  if (ranked.length > 0) return true;
+  return terms.every((term) => FILLER.has(term));
+}
+
+/** Picks the chunks most relevant to `query`, up to `budget` characters. */
+export function retrieve(chunks: KnowledgeChunk[], query: string, budget = 2400): KnowledgeChunk[] {
+  const { ranked } = rank(chunks, query);
 
   // A question that matches nothing ("hey", "tell me more") still deserves an
   // answer, so fall back to the highest-priority overview chunks.

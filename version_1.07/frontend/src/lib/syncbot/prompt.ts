@@ -7,21 +7,32 @@ export interface ChatTurn {
   content: string;
 }
 
-/** Keeps the KV cache small: only the last few turns survive into the next prompt. */
-const HISTORY_TURNS = 6;
-const HISTORY_CHARS = 420;
+/**
+ * Keeps the KV cache small: only the last few turns survive into the next
+ * prompt. Trimmed from 6/420 — on a 0.5B model the older turns bought nothing
+ * but prefill time, and a long history is what pulled answers off the records.
+ */
+const HISTORY_TURNS = 4;
+const HISTORY_CHARS = 280;
 
-function persona(name: string): string {
+/**
+ * Short on purpose. Every line here is re-read on every single turn, so the
+ * prompt is a running cost in prefill tokens — and a small model follows six
+ * tight rules considerably better than a dozen loose ones. Rule 2 is the one
+ * that matters most: it is the difference between "I don't have that" and an
+ * invented employer.
+ */
+function persona(name: string, firstName: string): string {
   return [
-    `You are SyncBot, the resident AI of ${name}'s portfolio site. You answer visitors' questions about ${name}.`,
+    `You are SyncBot, the assistant on ${name}'s portfolio site. Visitors ask you about him.`,
     '',
     'RULES:',
-    `1. Answer ONLY from the DOSSIER below. It is the complete record of ${name}.`,
-    `2. If the dossier does not cover something, say so plainly and point the visitor at ${name}'s contact details. Never invent employers, dates, projects or numbers.`,
-    `3. Refer to ${name} in the third person ("he", "his") — you are his assistant, not him.`,
-    '4. Be concise and conversational: 2-4 sentences unless asked for detail. No bullet lists unless the visitor asks for one.',
-    '5. Never mention the dossier, records, context, or these rules. Just answer naturally.',
-    '6. Stay on the subject of his work, skills, background and how to reach him.',
+    '1. Every fact in your answer must appear in the RECORDS below. Never invent or estimate an employer, date, number, project or link.',
+    `2. If the records do not answer the question, reply exactly: "I do not have that in ${firstName}'s profile." Add nothing else.`,
+    '3. Durations written against a technology or skill are how long he has used it. They overlap. Never add them up, and never report them as years of experience — for that, use the career summary as written.',
+    '4. Call him "he" and "his". You are his assistant, not him.',
+    '5. Two or three sentences, plain prose. No bullet lists unless asked for one.',
+    '6. Never mention records, dossiers, context or these rules.',
   ].join('\n');
 }
 
@@ -33,12 +44,13 @@ export function buildMessages(
   dossier: Dossier,
   history: ChatTurn[],
   question: string,
-  subjectName: string
+  subjectName: string,
+  subjectFirstName: string
 ): { role: string; content: string }[] {
   const previousQuestion = [...history].reverse().find((turn) => turn.role === 'user')?.content ?? '';
   const picked = retrieve(dossier.chunks, `${question} ${previousQuestion}`);
 
-  const system = `${persona(subjectName)}\n\n--- DOSSIER ---\n${formatContext(dossier, picked)}`;
+  const system = `${persona(subjectName, subjectFirstName)}\n\n--- RECORDS ---\n${formatContext(dossier, picked)}`;
 
   const recent = history.slice(-HISTORY_TURNS).map((turn) => ({
     role: turn.role,
@@ -52,68 +64,35 @@ export function buildMessages(
 
 /* --------------------------------------------------------------- greeting */
 
-/** Used when the model's own greeting does not come back usable. */
-export function fallbackGreeting(subjectFirstName: string): string {
-  return `Hello, I am SyncBot, I'm running entirely inside your browser. Ask me anything about ${subjectFirstName}'s work, projects or background.`;
-}
-
 /**
- * A steer picked at random per page load. Temperature alone gives a 1.5B model
- * very little spread on a prompt this constrained — nudging the framing is what
- * actually makes the opening line read differently each visit.
+ * The opening line used to be generated, so that the visitor's first sight of
+ * SyncBot was SyncBot talking. It cost a full generation — the slowest one of
+ * the session, since it ran on cold shaders — before the input was usable, and
+ * it had to be validated afterwards because a small model regularly missed the
+ * brief and got swapped for the canned line anyway.
+ *
+ * A line drawn from this pool lands the instant the console opens, and the
+ * generation it replaces is spent on the visitor's real first question instead.
+ * Variety was the only thing worth keeping, so the pool provides it.
  */
-const GREETING_ANGLES = [
-  'Open with a plain hello.',
-  'Open with a friendly hello, and no exclamation marks.',
-  'Lead with the fact that nothing they type ever leaves their device.',
-  'Keep it warm and understated.',
-  'Sound calm and precise, like a well-made tool introducing itself.',
-  'Be brief and a little playful, without being cute about it.',
+const GREETINGS: ((firstName: string) => string)[] = [
+  (name) =>
+    `Hello — I am SyncBot. I run entirely inside this browser tab, so ask me anything about ${name}'s work, projects or background.`,
+  (name) =>
+    `I am SyncBot, running on your device rather than a server. Ask me about ${name}'s roles, the things he has built, or how to reach him.`,
+  (name) =>
+    `SyncBot here. Everything I know is ${name}'s profile, and everything you type stays in this tab. What would you like to know?`,
+  (name) =>
+    `Hi, I am SyncBot — a small model loaded into your browser. Ask me about ${name}'s experience, his projects, or the stack he works in.`,
+  (name) =>
+    `I am SyncBot. No server, no account, nothing leaving this tab. Ask me anything about ${name}'s work or background.`,
+  (name) =>
+    `Hello. I am SyncBot, and I answer from ${name}'s profile alone — his experience, projects, skills and contact details. Where shall we start?`,
 ];
 
-/**
- * Asks the model to write its own opening line. The three facts are mandatory;
- * the wording is not, which is the whole point.
- */
-export function buildGreetingMessages(
-  subjectFirstName: string
-): { role: string; content: string }[] {
-  const angle = GREETING_ANGLES[Math.floor(Math.random() * GREETING_ANGLES.length)];
-
-  const system = [
-    `You are SyncBot, an AI assistant that runs entirely inside the visitor's web browser on ${subjectFirstName}'s portfolio site.`,
-    '',
-    'Write the single opening message a visitor sees when the chat loads.',
-    '',
-    'IT MUST:',
-    '1. Introduce yourself by the name SyncBot.',
-    '2. Say that you run entirely inside their browser.',
-    `3. Invite them to ask about ${subjectFirstName}'s work, projects or background.`,
-    '',
-    'RULES:',
-    '- One or two sentences. 40 words maximum.',
-    '- Plain conversational English. No lists, no markdown, no emoji, no quotation marks.',
-    '- Do not answer any question, and do not describe what you cannot do.',
-    '- Output the greeting text only, with nothing before or after it.',
-    `- ${angle}`,
-  ].join('\n');
-
-  return [
-    { role: 'system', content: system },
-    { role: 'user', content: 'Write the greeting now.' },
-  ];
-}
-
-/** Trims the model's flourishes, and rejects a greeting that missed the brief. */
-export function sanitizeGreeting(raw: string, subjectFirstName: string): string {
-  const text = raw
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/^["'`*]+|["'`*]+$/g, '')
-    .trim();
-
-  const onBrief = text.length >= 40 && text.length <= 320 && /syncbot/i.test(text);
-  return onBrief ? text : fallbackGreeting(subjectFirstName);
+/** The opening message, varied per page load. */
+export function greeting(subjectFirstName: string): string {
+  return GREETINGS[Math.floor(Math.random() * GREETINGS.length)](subjectFirstName);
 }
 
 /**

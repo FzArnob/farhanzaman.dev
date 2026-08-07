@@ -256,6 +256,13 @@ export interface Speaker {
   push(text: string): void;
   /** Speaks the remainder, closing punctuation or not. */
   finish(text: string): void;
+  /**
+   * Speaks a whole answer that arrived at once rather than streaming — the
+   * looked-up replies in `facts.ts`. Chunked the same way a streamed answer
+   * ends up being, because `finish()` alone would hand Chrome one long
+   * utterance and Chrome drops those partway through.
+   */
+  speak(text: string): void;
   /** Silences everything queued and rewinds to the start of the next answer. */
   cancel(): void;
 }
@@ -294,6 +301,31 @@ function lastSentenceEnd(text: string, from: number): number {
     return i + 1;
   }
   return from;
+}
+
+/**
+ * Splits forwards into one piece per sentence or line.
+ *
+ * `lastSentenceEnd` scans backwards for the newest boundary, which is what a
+ * stream needs; a finished answer needs every boundary, in order.
+ */
+function splitSentences(text: string): string[] {
+  const pieces: string[] = [];
+  let start = 0;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    if (char !== '.' && char !== '!' && char !== '?' && char !== '\n') continue;
+    const next = text[i + 1];
+    // Same tests as the streaming scanner: keep decimals and "Md." whole.
+    if (char !== '\n' && next !== undefined && next !== ' ' && next !== '\n') continue;
+    if (char === '.' && isAbbreviation(text, i)) continue;
+    pieces.push(text.slice(start, i + 1));
+    start = i + 1;
+  }
+  if (start < text.length) pieces.push(text.slice(start));
+
+  return pieces.filter((piece) => piece.trim().length > 0);
 }
 
 /**
@@ -344,6 +376,10 @@ export function createSpeaker(handlers: { onStart: () => void; onEnd: () => void
     },
     finish(text) {
       if (text.length > spoken) enqueue(text.slice(spoken));
+      spoken = text.length;
+    },
+    speak(text) {
+      for (const piece of splitSentences(text.slice(spoken))) enqueue(piece);
       spoken = text.length;
     },
     cancel() {

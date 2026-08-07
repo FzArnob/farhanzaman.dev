@@ -10,15 +10,15 @@ import {
   createEngine,
   detectDevice,
   streamReply,
+  warmUp,
   type ChatEngine,
   type DeviceProfile,
 } from '../../lib/syncbot/engine';
 import { buildDossier } from '../../lib/syncbot/knowledge';
+import { fastAnswer } from '../../lib/syncbot/facts';
 import {
-  buildGreetingMessages,
   buildMessages,
-  fallbackGreeting,
-  sanitizeGreeting,
+  greeting,
   starterQuestions,
   type ChatTurn,
 } from '../../lib/syncbot/prompt';
@@ -147,34 +147,11 @@ export function SyncBotPage() {
     };
   }, [voice.synthesis]);
 
-  /**
-   * The opening line is generated, not stored: the visitor's first impression of
-   * SyncBot should be SyncBot talking. It runs with the thinking dots up rather
-   * than streaming, so a greeting that misses the brief can be swapped for the
-   * fallback without the visitor ever seeing the discarded one.
-   */
-  const openThread = useCallback(
-    async (engine: ChatEngine) => {
-      setStreaming(true);
-      setTurns([{ role: 'assistant', content: '' }]);
-      let opening: string;
-      try {
-        const raw = await streamReply(
-          engine,
-          buildGreetingMessages(info.first_name),
-          () => {},
-          { maxTokens: 90, temperature: 0.95 }
-        );
-        opening = sanitizeGreeting(raw, info.first_name);
-      } catch {
-        opening = fallbackGreeting(info.first_name);
-      }
-      if (!aliveRef.current) return;
-      setTurns([{ role: 'assistant', content: opening }]);
-      setStreaming(false);
-    },
-    [info.first_name]
-  );
+  /** Opens (or reopens) the thread. Instant — the greeting is not generated. */
+  const openThread = useCallback(() => {
+    setTurns([{ role: 'assistant', content: greeting(info.first_name) }]);
+    setStreaming(false);
+  }, [info.first_name]);
 
   const pushBootLine = useCallback((text: string) => {
     setBootLines((lines) => {
@@ -235,6 +212,12 @@ export function SyncBotPage() {
       engineRef.current = loaded.engine;
       setProgress(1);
       pushBootLine(`dossier indexed — ${dossier.recordCount} records`);
+
+      // Compile the decode kernels here, behind the boot animation, rather than
+      // letting the visitor's first question pay for them.
+      await warmUp(loaded.engine);
+      if (!aliveRef.current) return;
+
       pushBootLine(BOOT_STAGES[BOOT_STAGES.length - 1].text);
       setPhase('ready');
       track(
@@ -243,7 +226,7 @@ export function SyncBotPage() {
         sync.activities.page_view,
         sync.actions.syncbot_ready
       );
-      void openThread(loaded.engine);
+      openThread();
     } catch (error) {
       if (!aliveRef.current) return;
       setPhase('error');
@@ -296,9 +279,33 @@ export function SyncBotPage() {
       );
 
       try {
+        // Looked-up answers short-circuit the model entirely: no prefill, no
+        // decode, no chance of a hallucinated date. See lib/syncbot/facts.ts.
+        const looked = fastAnswer({
+          profile,
+          dossier,
+          question: trimmed,
+          modelLabel: device?.tier === 'light' ? 'a 360M language model' : 'a 0.5B language model',
+        });
+        if (looked) {
+          if (voiced) speaker?.speak(looked);
+          setTurns((current) => {
+            const next = [...current];
+            next[next.length - 1] = { role: 'assistant', content: looked };
+            return next;
+          });
+          return;
+        }
+
         // The greeting is UI copy, not a real turn — it would only confuse the model.
         const priorTurns = history.slice(1);
-        const messages = buildMessages(dossier, priorTurns, trimmed, info.full_name);
+        const messages = buildMessages(
+          dossier,
+          priorTurns,
+          trimmed,
+          info.full_name,
+          info.first_name
+        );
         const final = await streamReply(engine, messages, (text) => {
           if (!aliveRef.current) return;
           // Speaking sentence-by-sentence as they land, rather than waiting for
@@ -333,7 +340,7 @@ export function SyncBotPage() {
         if (aliveRef.current) setStreaming(false);
       }
     },
-    [dossier, info.full_name, streaming, turns]
+    [device?.tier, dossier, info.first_name, info.full_name, profile, streaming, turns]
   );
 
   // The listening session captures `ask` for as long as the mic is open, so it
@@ -413,8 +420,7 @@ export function SyncBotPage() {
 
   /** Start over — including a freshly worded opening line. */
   const resetThread = useCallback(() => {
-    const engine = engineRef.current;
-    if (streaming || !engine) return;
+    if (streaming || !engineRef.current) return;
     stopListening();
     speakerRef.current?.cancel();
     track(
@@ -423,7 +429,7 @@ export function SyncBotPage() {
       sync.activities.click,
       sync.actions.syncbot_reset
     );
-    void openThread(engine);
+    openThread();
   }, [openThread, stopListening, streaming]);
 
   const percent = Math.round(progress * 100);
@@ -534,7 +540,8 @@ export function SyncBotPage() {
               </p>
               <p className="syncbot-note">
                 <Icon name="lock" size={15} />
-                The model downloads once and is then cached by your browser. It runs on your GPU —
+                {device ? `A ${device.downloadMB} MB model` : 'The model'} downloads once, then your
+                browser caches it — every later visit opens straight away. It runs on your GPU,
                 nothing is sent to a server.
               </p>
             </div>
