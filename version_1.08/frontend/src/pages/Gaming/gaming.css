@@ -1,0 +1,267 @@
+    /* scrollbar design */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      border-radius: 9px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(125deg, rgba(0, 0, 0, 0.2) 0%, #fcba03 100%);
+      border-radius: 9px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-image: linear-gradient(125deg, rgba(0, 0, 0, 0.3) 0%, #ca9400 100%);
+    }
+
+    /* Gaming page specific styles */
+    .gaming-profile-row {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-position: top;
+      object-fit: cover;
+      filter: blur(8px);
+    }
+
+    .gaming-profile-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .videos-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .videos-grid::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    .videos-grid::-webkit-scrollbar-thumb {
+      background: #fcba03;
+      border-radius: 4px;
+    }
+
+    .videos-grid::-webkit-scrollbar-thumb:hover {
+      background: #ffd700;
+    }
+
+    .video-item {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .video-item:hover {
+      transform: translateY(-5px);
+      border: 1px solid rgba(252, 186, 3, 0.8);
+      box-shadow: 0 0 10px rgba(252, 186, 3, 0.3);
+    }
+
+    .profile-left-section {
+      padding: 120px 20px 20px 40px;
+      width: calc(50% - 60px);
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .profile-right-section {
+      padding: 120px 40px 20px 20px;
+      width: calc(50% - 60px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-left-section>div {
+      justify-content: flex-end;
+    }
+
+    .profile-left-section>p {
+      text-align: right;
+      max-width: 300px;
+      margin: 0;
+      display: block;
+    }
+
+    .profile-right-section>div {
+      justify-content: left;
+    }
+
+    .platform-logos {
+      padding-left: 25px;
+      display: flex; 
+      justify-content: left; 
+      gap: 20px; 
+      margin-top: 40px;
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .discord-section {
+      padding: 5px 30px;
+      background: rgba(48, 48, 48, 0.7);
+      margin-top: 20px;
+      border-radius: 100px;
+      box-shadow: 0 0 10px 5px rgba(252, 186, 3, 0.3) inset;
+    }
+    .discord-section > div {
+        justify-content: left;
+    }
+
+    .discord-section:hover {
+      box-shadow: 0 0 25px rgba(252, 186, 3, 0.8);
+    }
+
+    .video-info {
+      padding: 15px;
+    }
+
+    .video-title {
+      color: #fff;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .themeBtn:hover {
+      color: #fff;
+    }
+
+    .video-date {
+      color: #fcba03;
+      font-size: 12px;
+    }
+
+    .fa-logo {
+      width: 70px;
+      height: 70px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 880px) {
+      .gaming-profile-row {
+        flex-direction: column;
+      }
+      
+      .discord-section {
+        text-align: center !important;
+        margin: 0px auto 0px auto;
+      }
+      .discord-section > div {
+        justify-content: center;
+      }
+      .fa-logo {
+        position: absolute;
+        top: -15px;
+        width: 40px;
+        height: 40px;
+      }
+    
+      .platform-logos {
+        justify-content: center; 
+        padding: 0px;
+        margin-left: 0px;
+      }
+      .social-buttons {
+        justify-content: center;
+      }
+
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+      .profile-right-section > div {
+        justify-content: center;
+      }
+      .profile-left-section,
+      .profile-right-section {
+        width: 100% !important;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+
+      .profile-left-section > div {
+        justify-content: center;
+      }
+      .profile-left-section > p {
+        max-width: 300px;
+        text-align: center;
+        margin: 0;
+      }
+      .profile-left-section {
+        padding: 80px 0px 0px 0px;
+        width: calc(100% - 40px);
+        position: relative;
+        z-index: 1;
+      }
+
+      .profile-right-section {
+        padding: 0px 20px 20px 0px;
+        width: calc(100% - 40px);
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    .platform-logo>div {
+      background: #fff;
+    }
+
+    .platform-logo:hover {
+      transform: scale(1.1);
+    }
+
+    .platform-logo:hover>div {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(252, 186, 3, 0.8);
+    }
+
+    @keyframes skeleton-loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .sort-btn.active {
+      background: #fcba03 !important;
+      color: #222 !important;
+      font-weight: bold;
+    }

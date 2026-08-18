@@ -1,0 +1,24 @@
+/* app.css, split by section. Import order matches the original file so the cascade is identical. */
+@import "./01-base.css";
+@import "./02-buttons.css";
+@import "./03-intro.css";
+@import "./04-intro-animation.css";
+@import "./05-navbar.css";
+@import "./06-hotspot.css";
+@import "./07-layout.css";
+@import "./08-point-box.css";
+@import "./09-skill-cloud.css";
+@import "./10-animations.css";
+@import "./12-gallery.css";
+@import "./13-contact.css";
+@import "./14-reset.css";
+@import "./15-widgets.css";
+@import "./16-skill-bars.css";
+@import "./17-photo-viewer.css";
+@import "./18-cards.css";
+@import "./19-particles.css";
+@import "./20-works.css";
+@import "./21-about.css";
+@import "./22-work-details.css";
+@import "./23-syncbot.css";
+@import "./24-motion.css";

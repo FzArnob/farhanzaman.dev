@@ -1,0 +1,93 @@
+@font-face {
+  font-family: "icons-font";
+  src:
+    url(/view/static/icons.woff2) format("woff2"),
+    url(/view/static/icons.ttf) format("truetype");
+  font-display: block; /* icon glyphs are letters — a fallback face would show "K L M" */
+}
+
+@font-face {
+  font-family: "titillium-font";
+  src:
+    url(/view/static/TitilliumWeb-Regular.woff2) format("woff2"),
+    url(/view/static/TitilliumWeb-Regular.ttf) format("truetype");
+  font-display: swap;
+}
+
+/* colors */
+:root {
+  --theme-color: #00d3b4;
+  --theme-secondary-color: #fd2155;
+  --color-1-rgba: rgba(0, 0, 0, 0.3);
+  --theme-color-rbga: rgba(0, 211, 180, 0.8);
+  --theme-secondary-color-rbga: rgba(253, 33, 85, 0.8);
+  --theme-color-shadow: rgba(0, 211, 180, 0.4);
+  --theme-secondary-color-shadow: rgba(253, 33, 85, 0.4);
+}
+
+/* Ground colour before the theme stylesheet lands; dark.css / light.css
+   override it. Without this the first paint is a white flash. */
+html {
+  background-color: #252525;
+}
+
+/* theme */
+body {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: "titillium-font", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* restrict selection */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  scroll-behavior: smooth;
+  user-select: none;
+}
+
+/* Mouse/touch focus stays quiet; keyboard focus is visible (see 24-motion.css). */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* scrollbar design */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(125deg,
+      var(--theme-color) 0%,
+      var(--theme-secondary-color) 100%);
+  border-radius: 9px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+a {
+  text-decoration: none;
+}
+
+#content-gap {
+  width: 100%;
+  height: 70px;
+  border-top: 1px solid var(--theme-color);
+  opacity: 0.2;
+  margin-top: 15px;
+}

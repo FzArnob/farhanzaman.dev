@@ -1,0 +1,32 @@
+#skill-canvas-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The rotating cloud is now SkillSphere (see 24-motion.css §10); the TagCloud
+   dependency and its .tagcloud--item styling are gone. */
+
+.achievement-preview {
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.achievement-node {
+  cursor: pointer;
+}
+
+.achievement-node-image {
+  width: 100px;
+}
+
+@media screen and (max-width: 800px) {
+  .achievement-node-image {
+    width: 80px;
+    height: 80px;
+  }
+}
