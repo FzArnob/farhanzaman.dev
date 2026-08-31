@@ -1,0 +1,37 @@
+/* row and column*/
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.ch-1 {
+  margin: auto;
+  width: fit-content;
+}
+
+.column-2 {
+  position: relative;
+  width: 50%;
+}
+
+.column-3 {
+  position: relative;
+  width: 33.33%;
+}
+
+@media screen and (max-width: 1000px) {
+  .column-3 {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .column-2 {
+    width: 100%;
+  }
+
+  .row {
+    display: block;
+    width: 100%;
+  }
+}

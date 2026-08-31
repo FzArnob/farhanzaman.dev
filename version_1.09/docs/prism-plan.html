@@ -1,0 +1,2610 @@
+<title>FZ Prism Blueprint</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* ===========================================================
+   FZ PRISM — design tokens
+   Dark-first: bare :root carries the full dark palette; light is
+   redefined twice (prefers-color-scheme + explicit stamp) so an
+   explicit choice wins in both directions.
+   Brand colours are locked to the existing site theme:
+     #00d3b4 signal teal    #fd2155 split crimson
+     #00947f the light-mode teal already used in the project light.css
+   =========================================================== */
+:root{
+  --void:#06080a;
+  --ground:#0a0d0f;
+  --panel:#10161a;
+  --panel-2:#151d21;
+  --sunk:#070a0c;
+  --line:rgba(150,196,190,.14);
+  --line-2:rgba(150,196,190,.27);
+  --ink:#e6ecea;
+  --ink-2:#a4b3b0;
+  --ink-3:#6d7c79;
+  --teal:#00d3b4;
+  --teal-ink:#00d3b4;
+  --teal-soft:rgba(0,211,180,.13);
+  --crimson:#fd2155;
+  --crimson-ink:#ff5478;
+  --crimson-soft:rgba(253,33,85,.13);
+  --shadow:0 24px 60px -30px rgba(0,0,0,.9);
+
+  /* Dispersion band: teal to crimson the long, cool way round the wheel.
+     Wayfinding marks only, never text. See "Open decisions". */
+  --s0:#00d1b3; --s1:#12a6e2; --s2:#2b7cf5; --s3:#6a6bf8; --s4:#9a63fb;
+  --s5:#c258fd; --s6:#ef4ae8; --s7:#fd47a6; --s8:#fd2159;
+
+  --display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+
+  --maxw:1220px;
+  --prose:68ch;
+  --r:3px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --void:#eef2f1; --ground:#fbfcfc; --panel:#ffffff; --panel-2:#f4f8f7; --sunk:#eaf0ee;
+    --line:rgba(18,42,39,.13); --line-2:rgba(18,42,39,.27);
+    --ink:#111719; --ink-2:#485553; --ink-3:#75817d;
+    --teal-ink:#00806e; --teal-soft:rgba(0,148,127,.12);
+    --crimson:#e00f43; --crimson-ink:#c40b39; --crimson-soft:rgba(224,15,67,.1);
+    --shadow:0 18px 44px -26px rgba(10,40,36,.32);
+    --s0:#00806e; --s1:#0071a6; --s2:#0041b4; --s3:#1a10bd; --s4:#4a13c6;
+    --s5:#8409ca; --s6:#bd0bb8; --s7:#c60d81; --s8:#c40b39;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --void:#eef2f1; --ground:#fbfcfc; --panel:#ffffff; --panel-2:#f4f8f7; --sunk:#eaf0ee;
+  --line:rgba(18,42,39,.13); --line-2:rgba(18,42,39,.27);
+  --ink:#111719; --ink-2:#485553; --ink-3:#75817d;
+  --teal-ink:#00806e; --teal-soft:rgba(0,148,127,.12);
+  --crimson:#e00f43; --crimson-ink:#c40b39; --crimson-soft:rgba(224,15,67,.1);
+  --shadow:0 18px 44px -26px rgba(10,40,36,.32);
+  --s0:#00806e; --s1:#0071a6; --s2:#0041b4; --s3:#1a10bd; --s4:#4a13c6;
+  --s5:#8409ca; --s6:#bd0bb8; --s7:#c60d81; --s8:#c40b39;
+  color-scheme:light;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,svg,canvas{display:block;max-width:100%}
+a{color:var(--teal-ink);text-decoration:none;border-bottom:1px solid var(--teal-soft)}
+a:hover{border-bottom-color:currentColor}
+a:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:2px}
+
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.4rem,6.6vw,4.4rem);line-height:.98;font-weight:700;letter-spacing:-.03em}
+h2{font-size:clamp(1.5rem,3.1vw,2.05rem);line-height:1.1}
+h3{font-size:1.1rem;line-height:1.3;letter-spacing:0}
+h4{font-size:.94rem;line-height:1.3}
+p{margin:0}
+.prose{max-width:var(--prose)}
+.lead{font-size:clamp(1.04rem,1.7vw,1.22rem);line-height:1.55;color:var(--ink-2)}
+.eyebrow{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.mono{font-family:var(--mono);font-size:.82rem}
+strong{font-weight:600;color:var(--ink)}
+em{font-style:italic;color:var(--ink-2)}
+code{font-family:var(--mono);font-size:.83em;background:var(--sunk);border:1px solid var(--line);padding:.08em .34em;border-radius:2px;color:var(--ink)}
+.tnum{font-variant-numeric:tabular-nums}
+ul.clean{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+ul.clean li{position:relative;padding-left:18px;color:var(--ink-2)}
+ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--teal)}
+
+/* ---------- masthead ---------- */
+.mast{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:20px;
+  padding:0 clamp(16px,3vw,34px);height:54px;
+  background:var(--ground);
+  background:color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line);
+}
+.mast-logo{display:flex;align-items:center;gap:11px;flex:none}
+.mast-logo svg{width:19px;height:19px}
+.mast-id{font-family:var(--display);font-weight:700;font-size:.82rem;letter-spacing:.1em}
+.mast-ver{font-family:var(--mono);font-size:.65rem;color:var(--ink-3);letter-spacing:.12em}
+.mast nav{margin-left:auto;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.mast nav::-webkit-scrollbar{display:none}
+.mast nav a{font-family:var(--mono);font-size:.69rem;letter-spacing:.05em;color:var(--ink-3);border:0;padding:5px 8px;border-radius:2px;white-space:nowrap}
+.mast nav a:hover{color:var(--ink);background:var(--panel-2)}
+
+/* ---------- shell ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(16px,3vw,34px)}
+section{scroll-margin-top:70px}
+.band{border-top:1px solid var(--line);padding:clamp(46px,6.5vw,84px) 0}
+.band-head{display:flex;flex-direction:column;gap:13px;margin-bottom:32px}
+.band-head .num{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--ink-3)}
+.stack{display:flex;flex-direction:column;gap:18px}
+.stack-lg{display:flex;flex-direction:column;gap:32px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(44px,6.5vw,84px) 0 0;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:-26% 0 auto;height:620px;pointer-events:none;
+  background:
+    radial-gradient(46% 60% at 20% 44%, var(--teal-soft), transparent 68%),
+    radial-gradient(40% 54% at 80% 28%, var(--crimson-soft), transparent 68%);
+  filter:blur(4px);
+  opacity:.6;
+}
+.hero-inner{position:relative;display:flex;flex-direction:column;gap:24px}
+.hero h1 .fringe{
+  background:linear-gradient(96deg,var(--s0),var(--s4) 54%,var(--s8));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:7px 22px;font-family:var(--mono);font-size:.69rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.hero-meta b{color:var(--ink-2);font-weight:500}
+
+/* ---------- the live rig ---------- */
+.rig{
+  position:relative;height:min(78vh,700px);min-height:430px;
+  border:1px solid var(--line-2);border-radius:var(--r);
+  background:var(--void);overflow:hidden;
+}
+.rig canvas{position:absolute;inset:0;width:100%;height:100%}
+.rig-vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(122% 100% at 50% 48%, transparent 40%, var(--void) 100%)}
+.rig-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.rig-scroll::-webkit-scrollbar{width:6px}
+.rig-scroll::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:3px}
+.rig-spacer{height:600%}
+.rig-hud{position:absolute;left:0;right:0;bottom:0;pointer-events:none;padding:16px clamp(14px,2.4vw,26px);display:flex;flex-direction:column;gap:13px}
+.rig-copy{max-width:36ch;display:flex;flex-direction:column;gap:5px;min-height:104px}
+.rig-copy .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3)}
+.rig-copy .t{font-family:var(--display);font-weight:600;font-size:1.2rem;line-height:1.15;color:var(--ink)}
+.rig-copy .d{font-size:.83rem;line-height:1.45;color:var(--ink-2)}
+.rig-rail{pointer-events:none;display:flex;align-items:center;gap:10px}
+.rig-btn,.rig-tick{pointer-events:auto}
+.rig-track{position:relative;flex:1;height:20px;display:flex;align-items:center}
+.rig-track::before{content:"";position:absolute;left:0;right:0;height:1px;background:var(--line-2)}
+.rig-fill{position:absolute;left:0;height:2px;background:linear-gradient(90deg,var(--s0),var(--s4),var(--s8));width:0}
+.rig-tick{position:absolute;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;border:1px solid var(--line-2);background:var(--void);padding:0;cursor:pointer}
+.rig-tick[aria-current="true"]{border-color:transparent;transform:translate(-50%,-50%) scale(1.4)}
+.rig-btn{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);background:var(--panel);border:1px solid var(--line-2);border-radius:2px;padding:6px 11px;cursor:pointer;flex:none}
+.rig-btn:hover{color:var(--ink);border-color:var(--teal)}
+.rig-hint{position:absolute;top:14px;right:clamp(14px,2.4vw,26px);font-family:var(--mono);font-size:.61rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);pointer-events:none;text-align:right;line-height:1.8}
+.rig-fallback{position:absolute;inset:0;display:none;place-items:center;padding:32px;text-align:center;font-family:var(--mono);font-size:.8rem;color:var(--ink-2);line-height:1.7}
+.rig.is-dead .rig-fallback{display:grid}
+.rig.is-dead .rig-scroll,.rig.is-dead .rig-hud{display:none}
+.rig-note{display:flex;gap:8px 22px;font-family:var(--mono);font-size:.67rem;color:var(--ink-3);letter-spacing:.04em;margin-top:11px;flex-wrap:wrap}
+
+/* ---------- panels, cards ---------- */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;display:flex;flex-direction:column;gap:11px}
+.panel-sunk{background:var(--sunk)}
+.panel h4{font-family:var(--display)}
+.panel p{font-size:.9rem;color:var(--ink-2);line-height:1.55}
+.callout{
+  border-left:2px solid var(--teal);background:var(--teal-soft);
+  padding:15px 18px;border-radius:0 var(--r) var(--r) 0;
+}
+.callout.warn{border-left-color:var(--crimson);background:var(--crimson-soft)}
+.callout p{font-size:.9rem;color:var(--ink-2)}
+.callout .eyebrow{color:var(--ink-2);margin-bottom:5px;display:block}
+
+/* act cards: the leading edge carries the act's dispersion position */
+.acts{display:flex;flex-direction:column;gap:14px}
+.act{
+  position:relative;display:grid;
+  grid-template-columns:56px 1fr;
+  gap:0 22px;align-items:start;
+  background:var(--panel);border:1px solid var(--line);
+  border-left:2px solid var(--edge,var(--teal));
+  border-radius:0 var(--r) var(--r) 0;
+  padding:20px 22px 20px 18px;
+}
+.act-idx{font-family:var(--display);font-weight:700;font-size:1.5rem;line-height:1;color:var(--edge,var(--teal));letter-spacing:-.02em}
+.act-idx small{display:block;font-family:var(--mono);font-weight:400;font-size:.58rem;letter-spacing:.14em;color:var(--ink-3);margin-top:6px}
+.act-body{display:flex;flex-direction:column;gap:14px;min-width:0}
+.act-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.act-title h3{font-size:1.16rem}
+.act-title .kicker{font-family:var(--mono);font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.act-cols{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:820px){.act-cols{grid-template-columns:1.15fr 1fr}}
+.act-fig{background:var(--sunk);border:1px solid var(--line);border-radius:2px;padding:10px;align-self:start}
+.act-fig svg{width:100%;height:auto}
+.act-spec{display:flex;flex-direction:column;gap:11px}
+.spec-row{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:baseline}
+.spec-row dt{font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.spec-row dd{margin:0;font-size:.87rem;line-height:1.5;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:var(--mono);font-size:.63rem;letter-spacing:.04em;color:var(--ink-2);background:var(--sunk);border:1px solid var(--line);border-radius:2px;padding:2px 7px}
+.chip-b{border-color:var(--edge,var(--teal));color:var(--ink)}
+
+/* ---------- tables ---------- */
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.86rem}
+thead th{
+  text-align:left;font-family:var(--mono);font-size:.63rem;font-weight:500;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);
+  padding:11px 14px;border-bottom:1px solid var(--line-2);white-space:nowrap;
+  background:var(--panel-2);
+}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;line-height:1.5}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child{color:var(--ink);font-weight:500}
+td .mono,th .mono{font-size:.78rem}
+.pill{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.pill.ok{color:var(--teal-ink)}
+.pill.mid{color:var(--s4)}
+.pill.hot{color:var(--crimson-ink)}
+
+/* ---------- code ---------- */
+pre{
+  margin:0;overflow-x:auto;background:var(--sunk);border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 18px;
+  font-family:var(--mono);font-size:.78rem;line-height:1.65;color:var(--ink-2);
+}
+pre b{color:var(--teal-ink);font-weight:500}
+pre i{color:var(--ink-3);font-style:normal}
+pre u{color:var(--crimson-ink);text-decoration:none}
+
+/* ---------- figures ---------- */
+figure{margin:0;display:flex;flex-direction:column;gap:11px}
+figure .fbox{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:clamp(14px,2.4vw,26px);overflow-x:auto}
+figcaption{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--ink-3);line-height:1.6}
+figcaption b{color:var(--ink-2);font-weight:500}
+
+/* ---------- roadmap gantt ---------- */
+.gantt{display:flex;flex-direction:column;gap:2px;min-width:620px;padding:14px 18px}
+.gantt-head,.gantt-row{display:grid;grid-template-columns:200px 1fr 62px;gap:14px;align-items:center}
+.gantt-head span{font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3)}
+.gantt-row{padding:6px 0;border-bottom:1px solid var(--line)}
+.gantt-row:last-child{border-bottom:0}
+.gantt-label{display:flex;flex-direction:column;gap:2px}
+.gantt-label b{font-size:.86rem;font-weight:500;color:var(--ink)}
+.gantt-label span{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.08em}
+.gantt-lane{position:relative;height:16px;background:var(--sunk);border-radius:2px;overflow:hidden}
+.gantt-bar{position:absolute;top:0;bottom:0;border-radius:2px;background:var(--edge,var(--teal));opacity:.85}
+.gantt-days{font-family:var(--mono);font-size:.72rem;color:var(--ink-2);text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- footer ---------- */
+.foot{border-top:1px solid var(--line);padding:34px 0 56px}
+.foot .eyebrow{flex:none}
+.foot p{font-size:.84rem;color:var(--ink-3);max-width:56ch}
+
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  html{scroll-behavior:auto !important}
+}
+@media(max-width:640px){
+  .act{grid-template-columns:1fr;gap:14px}
+  .act-idx{display:flex;align-items:baseline;gap:10px}
+  .act-idx small{margin:0}
+  .spec-row{grid-template-columns:1fr;gap:2px}
+}
+</style>
+<style>
+/* figure primitives — inherit --edge from the enclosing act card */
+.fig-l{stroke:var(--line-2);fill:none;stroke-width:1}
+.fig-lf{stroke:var(--line);fill:none;stroke-width:1}
+.fig-e{stroke:var(--edge,var(--teal));fill:none;stroke-width:1.4}
+.fig-ef{fill:var(--edge,var(--teal))}
+.fig-s{fill:var(--panel-2);stroke:var(--line-2);stroke-width:1}
+.fig-t{font-family:var(--mono);font-size:8px;fill:var(--ink-3);letter-spacing:.06em}
+.fig-tb{font-family:var(--mono);font-size:8.5px;fill:var(--ink-2);letter-spacing:.06em}
+.fig-d{fill:var(--ink-3)}
+.fig-teal{stroke:var(--teal);fill:none;stroke-width:1.4}
+.fig-crim{stroke:var(--crimson);fill:none;stroke-width:1.4}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <symbol id="fz" viewBox="0 0 100 100">
+    <polygon fill="#FD2155" points="35.809,5.92 35.842,10.792 73.078,10.498 65.111,20.013 20.598,19.741 20.428,43.179 24.88,43.191 25.22,25.007 67.496,25.007 86.697,5.773"/>
+    <polygon fill="#FD2155" points="40.702,32.104 35.842,32.104 35.538,43.812 54.297,44.083 45.754,53.237 20.032,53.003 20.032,97.548 40.645,77.998 40.633,65.148 36.224,65.198 36.224,76.712 24.241,86.812 24.428,58.281 46.276,58.659 67.496,38.839 40.579,38.683"/>
+    <polygon fill="#00D3B4" points="39.663,4.146 39.697,9.018 76.933,8.724 68.965,18.239 24.452,17.968 24.282,41.406 28.734,41.417 29.074,23.234 71.35,23.234 90.551,4"/>
+    <polygon fill="#00D3B4" points="44.556,30.331 39.697,30.331 39.392,42.039 58.151,42.31 49.608,51.464 23.886,51.23 23.886,95.774 44.5,76.224 44.488,63.375 40.078,63.426 40.078,74.938 28.095,85.038 28.282,56.508 50.132,56.886 71.35,37.066 44.434,36.91"/>
+  </symbol>
+  <symbol id="fz1" viewBox="0 0 100 100">
+    <polygon fill="currentColor" points="39.663,4.146 39.697,9.018 76.933,8.724 68.965,18.239 24.452,17.968 24.282,41.406 28.734,41.417 29.074,23.234 71.35,23.234 90.551,4"/>
+    <polygon fill="currentColor" points="44.556,30.331 39.697,30.331 39.392,42.039 58.151,42.31 49.608,51.464 23.886,51.23 23.886,95.774 44.5,76.224 44.488,63.375 40.078,63.426 40.078,74.938 28.095,85.038 28.282,56.508 50.132,56.886 71.35,37.066 44.434,36.91"/>
+  </symbol>
+</svg>
+
+<header class="mast">
+  <div class="mast-logo">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#fz"/></svg>
+    <span class="mast-id">PRISM</span>
+    <span class="mast-ver">v1.09</span>
+  </div>
+  <nav aria-label="Sections">
+    <a href="#rig">Live rig</a>
+    <a href="#read">The read</a>
+    <a href="#thesis">Thesis</a>
+    <a href="#map">Scroll map</a>
+    <a href="#acts">Acts</a>
+    <a href="#inventory">Content</a>
+    <a href="#material">Material</a>
+    <a href="#arch">Architecture</a>
+    <a href="#perf">Budgets</a>
+    <a href="#a11y">Fallback</a>
+    <a href="#risk">Risks</a>
+    <a href="#road">Roadmap</a>
+    <a href="#decide">Decisions</a>
+  </nav>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div class="stack" style="gap:20px">
+      <p class="eyebrow">farhanzaman.dev &nbsp;·&nbsp; version 1.09 &nbsp;·&nbsp; concept &amp; build plan</p>
+      <h1>One light in.<br><span class="fringe">Three facets out.</span></h1>
+      <p class="lead prose">
+        Version 1.09 turns the portfolio into a single continuous 3D world that you travel
+        through by scrolling. Not a stack of pages with 3D widgets bolted on — one scene,
+        one camera, one timeline, nine acts. The content stays exactly what it is today.
+        The vessel changes completely.
+      </p>
+      <div class="hero-meta">
+        <span><b>Metaphor</b> optical dispersion</span>
+        <span><b>Anchor</b> the FZ monogram as a glass prism</span>
+        <span><b>Palette</b> #00d3b4 / #fd2155 — unchanged</span>
+        <span><b>Content</b> 0 items added, 0 removed</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ LIVE RIG ============================ -->
+<section id="rig" class="wrap" style="padding-top:34px">
+  <div class="rig" id="prismRig">
+    <canvas id="prismCanvas"></canvas>
+    <div class="rig-vig"></div>
+    <div class="rig-scroll" id="rigScroll" tabindex="0" role="region" aria-label="Interactive scroll demonstration — scroll or use arrow keys to travel through the acts">
+      <div class="rig-spacer"></div>
+    </div>
+    <div class="rig-hint">scroll inside &nbsp;/&nbsp; drag to look<br>arrow keys work too</div>
+    <div class="rig-hud">
+      <div class="rig-copy">
+        <span class="k" id="rigK">act 01</span>
+        <span class="t" id="rigT">The Prism</span>
+        <span class="d" id="rigD">Loading the scene…</span>
+      </div>
+      <div class="rig-rail">
+        <button class="rig-btn" id="rigPlay" type="button" aria-label="Auto-travel through the acts">Auto</button>
+        <div class="rig-track" id="rigTrack">
+          <div class="rig-fill" id="rigFill"></div>
+        </div>
+        <span class="mono tnum" id="rigT01" style="font-size:.66rem;color:var(--ink-3);min-width:44px;text-align:right">t 0.00</span>
+      </div>
+    </div>
+    <div class="rig-fallback">
+      This browser has no WebGL, so the live rig can't run here.<br>
+      Everything below describes the same system in stills and diagrams.
+    </div>
+  </div>
+  <div class="rig-note">
+    <span>Working prototype — real geometry, real glass, real camera spline.</span>
+    <span>Four of the nine acts, schematic content.</span>
+    <span>Follows your light/dark theme: Void and Studio.</span>
+  </div>
+</section>
+
+<!-- ============================ 00 THE READ ============================ -->
+<section id="read" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">01 — starting point</span>
+      <h2>What the reference does, and where it stops</h2>
+      <p class="lead prose">
+        The clip you sent is a good piece of work with one very good idea in it, repeated
+        eight times. Worth naming precisely, because the interesting question is what it
+        <em>doesn't</em> do.
+      </p>
+    </div>
+
+    <div class="grid2">
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 300 168" role="img" aria-label="Diagram of the reference mechanic: a single faceted crystal centred in a dark void with drifting shards and a text block bottom-left">
+            <rect x="0" y="0" width="300" height="168" fill="none"/>
+            <polygon class="fig-s" points="196,42 232,58 240,98 214,126 176,120 162,80"/>
+            <path class="fig-lf" d="M196 42 L214 126 M232 58 L176 120 M240 98 L162 80"/>
+            <g class="fig-d" opacity=".55">
+              <rect x="96" y="36" width="5" height="4" transform="rotate(24 98 38)"/>
+              <rect x="266" y="120" width="6" height="4" transform="rotate(-40 269 122)"/>
+              <rect x="128" y="132" width="4" height="4" transform="rotate(12 130 134)"/>
+              <rect x="252" y="30" width="4" height="5" transform="rotate(50 254 32)"/>
+              <circle cx="120" cy="72" r="1.2"/><circle cx="258" cy="76" r="1.2"/>
+              <circle cx="150" cy="24" r="1"/><circle cx="204" cy="150" r="1"/>
+            </g>
+            <rect x="24" y="112" width="86" height="2" class="fig-ef"/>
+            <rect x="24" y="122" width="112" height="2" fill="var(--line-2)"/>
+            <rect x="24" y="130" width="96" height="2" fill="var(--line-2)"/>
+            <rect x="24" y="142" width="56" height="11" class="fig-e"/>
+            <text x="24" y="100" class="fig-t">PROJECT n</text>
+            <text x="30" y="150" class="fig-t" style="font-size:6.5px">VIEW CASE STUDY</text>
+          </svg>
+        </div>
+        <figcaption><b>Reference mechanic, reconstructed.</b> One convex crystal, video mapped
+        across the facets, drifting shards, bloom, copy bottom-left. Scroll swaps the crystal.
+        Eight projects, eight crystals, one move.</figcaption>
+      </figure>
+
+      <div class="stack">
+        <div class="panel">
+          <h4>What we keep</h4>
+          <ul class="clean">
+            <li>The faceted crystal as a content vessel — it reads as "shard of a bigger thing", which suits a portfolio.</li>
+            <li>The void: no floor, no horizon, so scale is free.</li>
+            <li>Copy pinned to the lower-left in real DOM, never baked into the texture.</li>
+            <li>Bloom + drifting debris to give the void depth.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h4>Where it stops</h4>
+          <ul class="clean">
+            <li><strong>No journey.</strong> The camera barely moves; the object is swapped. Eight beats, one mechanic, and by the fourth you have seen it.</li>
+            <li><strong>The crystal means nothing.</strong> It's a nice shape, not <em>their</em> shape. Nothing about it is derived from the brand.</li>
+            <li><strong>Nothing is navigable.</strong> You can scroll it. You can't inspect it, spin it, or query it.</li>
+            <li><strong>Dark only.</strong> No light mode, no reduced-motion path, no no-WebGL path.</li>
+            <li><strong>It's a showreel.</strong> There is no education, no timeline, no skills matrix, no gallery — the hard content problems never come up.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">The move</span>
+      <p>
+        Keep the vessel, throw away the slideshow. Make the camera travel a single continuous
+        path through a world where every section is a different <em>place</em>, and derive the
+        central object from the FZ monogram so the whole thing is unmistakably yours.
+        Then make it actually usable — spinnable, clickable, readable, and gracefully
+        degradable down to the flat site you already have.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 01 THESIS ============================ -->
+<section id="thesis" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">02 — thesis</span>
+      <h2>The logo already told us what to build</h2>
+    </div>
+
+    <div class="grid2" style="align-items:start">
+      <div class="stack prose">
+        <p>
+          Your mark is an <strong>FZ monogram drawn twice</strong> — a crimson layer offset behind a
+          teal layer. That is not a decorative duplicate. That is a
+          <strong>chromatic aberration</strong>: white light hitting glass and splitting into
+          components that no longer line up.
+        </p>
+        <p>
+          Your three designations are <strong>Sr. Software Engineer</strong>,
+          <strong>AI Researcher</strong>, <strong>Art Enthusiast</strong> — one person,
+          three outputs. Your assistant is called <strong>SyncBot</strong>. Your logo is
+          two colours out of register.
+        </p>
+        <p>
+          So: <strong>the site is a prism.</strong> One beam of attention enters, one person
+          splits it, three spectra come out, and the visitor travels along the dispersed beam.
+          Every act of the scroll is a position on that beam. That gives us a principled reason
+          for the teal→crimson gradient, an identity for the hero object, a rationale for the
+          chromatic-aberration post-effect, and a wayfinding system — all from assets that
+          already exist.
+        </p>
+        <p class="mono" style="color:var(--ink-3)">
+          Nothing new is invented. #00d3b4 and #fd2155 stay. The monogram stays. The copy stays.
+        </p>
+      </div>
+
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 440 214" role="img" aria-label="Dispersion diagram: a beam of attention enters the FZ monogram and exits as three labelled rays — engineering in teal, research in violet, art in crimson">
+            <line x1="4" y1="98" x2="112" y2="98" stroke="var(--ink-2)" stroke-width="3"/>
+            <text x="4" y="88" class="fig-t">ATTENTION IN</text>
+            <g color="var(--teal)" opacity=".95"><use href="#fz1" x="108" y="52" width="92" height="92"/></g>
+            <g color="var(--crimson)" opacity=".5"><use href="#fz1" x="102" y="57" width="92" height="92"/></g>
+            <line x1="192" y1="96" x2="252" y2="42" stroke="var(--s0)" stroke-width="2.4"/>
+            <line x1="192" y1="99" x2="252" y2="99" stroke="var(--s4)" stroke-width="2.4"/>
+            <line x1="192" y1="102" x2="252" y2="158" stroke="var(--s8)" stroke-width="2.4"/>
+            <text x="258" y="38" class="fig-tb" style="fill:var(--s0)">ENGINEERING</text>
+            <text x="258" y="50" class="fig-t">Pocketalk · Tribel · TMS</text>
+            <text x="258" y="96" class="fig-tb" style="fill:var(--s4)">RESEARCH</text>
+            <text x="258" y="108" class="fig-t">Simba CSA · posture class.</text>
+            <text x="258" y="156" class="fig-tb" style="fill:var(--s8)">ART</text>
+            <text x="258" y="168" class="fig-t">gallery · photography · paint</text>
+            <text x="104" y="166" class="fig-t">THE PRISM — extruded glass FZ</text>
+            <text x="104" y="178" class="fig-t" style="fill:var(--ink-2)">teal layer front, crimson layer behind:</text>
+            <text x="104" y="190" class="fig-t" style="fill:var(--ink-2)">the mark IS the aberration</text>
+          </svg>
+        </div>
+        <figcaption><b>Dispersion as information architecture.</b> Act position on the
+        teal→crimson band is not a gradient for its own sake; it tells the visitor how far
+        through the story they are, and which facet of you they are looking at.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+<!-- ============================ 02 SCROLL MAP ============================ -->
+<section id="map" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">03 — scroll map</span>
+      <h2>One timeline, nine acts, no cuts</h2>
+      <p class="lead prose">
+        The whole page is about 900vh of scroll normalised to <code>t ∈ [0,1]</code>. Every
+        animation in the build is a pure function of <code>t</code> — which means the entire
+        site is scrubbable, deterministic, and impossible to desynchronise.
+      </p>
+    </div>
+
+    <figure>
+      <div class="fbox">
+        <svg viewBox="0 0 1160 322" style="min-width:940px" role="img" aria-label="Timeline diagram mapping scroll position t from 0 to 1 across nine acts, showing the DOM overlay copy, the dispersion band, act names and the world geometry present at each point">
+          <defs>
+            <linearGradient id="band" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="var(--s0)"/><stop offset=".14" stop-color="var(--s1)"/>
+              <stop offset=".28" stop-color="var(--s2)"/><stop offset=".42" stop-color="var(--s3)"/>
+              <stop offset=".56" stop-color="var(--s4)"/><stop offset=".7" stop-color="var(--s5)"/>
+              <stop offset=".82" stop-color="var(--s6)"/><stop offset=".92" stop-color="var(--s7)"/>
+              <stop offset="1" stop-color="var(--s8)"/>
+            </linearGradient>
+          </defs>
+
+          <!-- t axis -->
+          <text x="0" y="16" class="fig-t" style="fill:var(--ink-2)">SCROLL t</text>
+          <line x1="86" y1="24" x2="1106" y2="24" class="fig-l"/>
+          <g class="fig-t">
+            <line x1="86" y1="20" x2="86" y2="28" class="fig-l"/><text x="80" y="15">0.00</text>
+            <line x1="341" y1="20" x2="341" y2="28" class="fig-l"/><text x="329" y="15">0.25</text>
+            <line x1="596" y1="20" x2="596" y2="28" class="fig-l"/><text x="584" y="15">0.50</text>
+            <line x1="851" y1="20" x2="851" y2="28" class="fig-l"/><text x="839" y="15">0.75</text>
+            <line x1="1106" y1="20" x2="1106" y2="28" class="fig-l"/><text x="1088" y="15">1.00</text>
+          </g>
+
+          <!-- act boundary hairlines -->
+          <g class="fig-lf" opacity=".8">
+            <line x1="188" y1="30" x2="188" y2="300"/><line x1="331" y1="30" x2="331" y2="300"/>
+            <line x1="453" y1="30" x2="453" y2="300"/><line x1="535" y1="30" x2="535" y2="300"/>
+            <line x1="759" y1="30" x2="759" y2="300"/><line x1="882" y1="30" x2="882" y2="300"/>
+            <line x1="1024" y1="30" x2="1024" y2="300"/>
+          </g>
+
+          <!-- DOM overlay lane -->
+          <text x="0" y="52" class="fig-t" style="fill:var(--ink-2)">DOM</text>
+          <text x="0" y="62" class="fig-t">OVERLAY</text>
+          <g class="fig-s">
+            <rect x="90" y="40" width="94" height="26" rx="2"/>
+            <rect x="192" y="40" width="135" height="26" rx="2"/>
+            <rect x="335" y="40" width="114" height="26" rx="2"/>
+            <rect x="457" y="40" width="74" height="26" rx="2"/>
+            <rect x="539" y="40" width="216" height="26" rx="2"/>
+            <rect x="763" y="40" width="115" height="26" rx="2"/>
+            <rect x="886" y="40" width="134" height="26" rx="2"/>
+            <rect x="1028" y="40" width="78" height="26" rx="2"/>
+          </g>
+          <g class="fig-t" style="fill:var(--ink-2)">
+            <text x="96" y="51">name, 3 titles</text><text x="96" y="61">intro, socials</text>
+            <text x="198" y="51">4 educations +</text><text x="198" y="61">3 experiences</text>
+            <text x="341" y="51">23 expertises,</text><text x="341" y="61">level + duration</text>
+            <text x="463" y="51">12 skills,</text><text x="463" y="61">percentage</text>
+            <text x="545" y="51">8 projects: role, type,</text>
+            <text x="545" y="61">stack, tech, status, media</text>
+            <text x="769" y="51">10 certs,</text><text x="769" y="61">dates + links</text>
+            <text x="892" y="51">11 artworks, 6 cats</text><text x="892" y="61">+ 83 clips</text>
+            <text x="1034" y="51">contact,</text><text x="1034" y="61">form</text>
+          </g>
+
+          <!-- dispersion band -->
+          <rect x="86" y="84" width="1020" height="7" fill="url(#band)"/>
+          <text x="0" y="90" class="fig-t" style="fill:var(--ink-2)">BAND</text>
+
+          <!-- act names -->
+          <g>
+            <text x="90" y="112" class="fig-tb" style="fill:var(--s0)">01 THE PRISM</text>
+            <text x="192" y="112" class="fig-tb" style="fill:var(--s1)">02 THE SPINE</text>
+            <text x="335" y="112" class="fig-tb" style="fill:var(--s2)">03 THE LATTICE</text>
+            <text x="457" y="112" class="fig-tb" style="fill:var(--s3)">04 TURBINE</text>
+            <text x="539" y="112" class="fig-tb" style="fill:var(--s4)">05 THE FORGE</text>
+            <text x="763" y="112" class="fig-tb" style="fill:var(--s6)">06 CONSTELLATION</text>
+            <text x="886" y="112" class="fig-tb" style="fill:var(--s7)">07 VOID GALLERY</text>
+            <text x="1028" y="112" class="fig-tb" style="fill:var(--s8)">08 SYNC</text>
+          </g>
+          <g class="fig-t">
+            <text x="90" y="124">hero</text><text x="192" y="124">background</text>
+            <text x="335" y="124">expertise</text><text x="457" y="124">skills</text>
+            <text x="539" y="124">works &nbsp;+ 05b core interior</text>
+            <text x="763" y="124">achievements</text>
+            <text x="886" y="124">hobbies &nbsp;+ 07b arcade</text><text x="1028" y="124">contact</text>
+          </g>
+
+          <!-- world lane -->
+          <text x="0" y="152" class="fig-t" style="fill:var(--ink-2)">WORLD</text>
+          <text x="0" y="162" class="fig-t">GEOMETRY</text>
+          <g class="fig-t" style="fill:var(--ink-2)">
+            <text x="90" y="152">glass monogram</text><text x="90" y="162">3 spectrum beams</text>
+            <text x="192" y="152">Z corridor, 7 slabs</text><text x="192" y="162">luminous cable</text>
+            <text x="335" y="152">icosa wireframe</text><text x="335" y="162">23 nodes, real edges</text>
+            <text x="457" y="152">hub +</text><text x="457" y="162">12 blades</text>
+            <text x="539" y="152">28u ring, 8 seeded cores, camera at the hub</text>
+            <text x="539" y="162">shatter/reassemble handoff between cores</text>
+            <text x="763" y="152">10 hex tiles</text><text x="763" y="162">plotted by date</text>
+            <text x="886" y="152">the one act with a floor</text><text x="886" y="162">11 lit frames + video wall</text>
+            <text x="1028" y="152">beam writes</text><text x="1028" y="162">the address</text>
+          </g>
+
+          <!-- persistent lane -->
+          <line x1="86" y1="186" x2="1106" y2="186" stroke="var(--line-2)" stroke-dasharray="2 3"/>
+          <text x="0" y="190" class="fig-t" style="fill:var(--ink-2)">ALWAYS ON</text>
+          <g class="fig-t" style="fill:var(--ink-3)">
+            <text x="90" y="200">one persistent &lt;Canvas&gt; · one camera spline · 256-shard instanced pool · dust field · bloom + chromatic aberration keyed to the logo offset · SyncBot orb</text>
+          </g>
+
+          <!-- shard budget bar -->
+          <text x="0" y="222" class="fig-t" style="fill:var(--ink-2)">SHARDS</text>
+          <rect x="86" y="216" width="1020" height="8" fill="var(--sunk)" stroke="var(--line)"/>
+          <rect x="86" y="216" width="1020" height="8" fill="var(--teal)" opacity=".3"/>
+          <text x="86" y="236" class="fig-t" style="fill:var(--ink-2)">constant 256 — never allocated, never freed, only re-tasked</text>
+
+          <!-- transmission budget -->
+          <text x="0" y="258" class="fig-t" style="fill:var(--ink-2)">GLASS</text>
+          <text x="0" y="268" class="fig-t">BUDGET</text>
+          <rect x="86" y="252" width="1020" height="8" fill="var(--sunk)" stroke="var(--line)"/>
+          <g fill="var(--crimson)" opacity=".62">
+            <rect x="86" y="252" width="102" height="8"/>
+            <rect x="539" y="252" width="220" height="8"/>
+            <rect x="1024" y="252" width="82" height="8"/>
+          </g>
+          <text x="86" y="272" class="fig-t" style="fill:var(--ink-2)">at most ONE transmissive object on screen — the prism, the active core, or the closing mark</text>
+
+          <!-- entry / exit -->
+          <text x="86" y="298" class="fig-t" style="fill:var(--ink-2)">00 CALIBRATION &nbsp;·&nbsp; runs before t=0: 40 shards solve onto the monogram, crimson layer slides into register</text>
+          <text x="86" y="312" class="fig-t" style="fill:var(--ink-2)">Deep links (/works, /about, …) resolve to a t and the camera flies there instead of cutting — old URLs keep working.</text>
+        </svg>
+      </div>
+      <figcaption><b>The scroll contract.</b> Copy always lives in the DOM lane, never in a
+      texture, so it stays selectable, translatable, crawlable and screen-readable. The two
+      budget bars at the bottom are the load-bearing constraints of the whole build.</figcaption>
+    </figure>
+
+    <figure>
+      <div class="fbox">
+        <svg viewBox="0 0 1120 300" style="min-width:900px" role="img" aria-label="Top-down plan view of the 3D world showing the camera path threading from the prism at the origin, down a corridor, around the expertise lattice, past the turbine, into the centre of the works ring, through the achievement cloud, weaving down the gallery hall, and ending at the contact plane">
+          <text x="0" y="14" class="fig-t" style="fill:var(--ink-2)">PLAN VIEW — camera path through the world, looking down the Y axis</text>
+
+          <!-- depth ruler -->
+          <line x1="40" y1="286" x2="1072" y2="286" class="fig-l"/>
+          <polygon points="1080,286 1070,282 1070,290" class="fig-d"/>
+          <g class="fig-t">
+            <text x="34" y="298">z 0</text>
+            <text x="470" y="298">DEPTH — schematic, not to scale</text>
+            <text x="1006" y="298">z ≈ −180</text>
+          </g>
+
+          <!-- 01 prism -->
+          <g color="var(--s0)"><use href="#fz1" x="30" y="128" width="40" height="40" opacity=".9"/></g>
+          <text x="26" y="120" class="fig-tb" style="fill:var(--s0)">01</text>
+
+          <!-- 02 corridor -->
+          <g class="fig-s">
+            <rect x="106" y="96" width="26" height="7"/><rect x="146" y="196" width="26" height="7"/>
+            <rect x="186" y="96" width="26" height="7"/><rect x="226" y="196" width="26" height="7"/>
+            <rect x="266" y="96" width="26" height="7"/>
+          </g>
+          <line x1="100" y1="150" x2="300" y2="150" stroke="var(--s1)" stroke-width="1" opacity=".5" stroke-dasharray="3 4"/>
+          <text x="106" y="88" class="fig-tb" style="fill:var(--s1)">02 SPINE</text>
+          <text x="106" y="216" class="fig-t">education left / experience right, dates become depth</text>
+
+          <!-- 03 lattice -->
+          <circle cx="352" cy="150" r="34" class="fig-lf"/>
+          <circle cx="352" cy="150" r="34" fill="var(--s2)" opacity=".08"/>
+          <g fill="var(--s2)">
+            <circle cx="352" cy="116" r="2"/><circle cx="381" cy="133" r="2"/><circle cx="381" cy="167" r="2"/>
+            <circle cx="352" cy="184" r="2"/><circle cx="323" cy="167" r="2"/><circle cx="323" cy="133" r="2"/>
+            <circle cx="352" cy="150" r="2"/><circle cx="366" cy="140" r="1.6"/><circle cx="338" cy="160" r="1.6"/>
+          </g>
+          <path d="M352 116 L381 167 M352 116 L323 167 M381 133 L323 167 M381 167 L323 133 M352 184 L381 133 M352 184 L323 133" stroke="var(--s2)" stroke-width=".6" opacity=".55" fill="none"/>
+          <text x="322" y="104" class="fig-tb" style="fill:var(--s2)">03 LATTICE</text>
+
+          <!-- 04 turbine -->
+          <g stroke="var(--s3)" stroke-width="1.2" fill="none">
+            <path d="M436 150 L436 128 M436 150 L452 137 M436 150 L456 150 M436 150 L452 163 M436 150 L436 172 M436 150 L420 163 M436 150 L416 150 M436 150 L420 137"/>
+          </g>
+          <circle cx="436" cy="150" r="3" fill="var(--s3)"/>
+          <text x="412" y="120" class="fig-tb" style="fill:var(--s3)">04 TURBINE</text>
+
+          <!-- 05 ring -->
+          <ellipse cx="562" cy="150" rx="70" ry="70" class="fig-lf"/>
+          <g fill="var(--s4)">
+            <circle cx="562" cy="80" r="6"/><circle cx="611" cy="101" r="6"/><circle cx="632" cy="150" r="6"/>
+            <circle cx="611" cy="199" r="6"/><circle cx="562" cy="220" r="6"/><circle cx="513" cy="199" r="6"/>
+            <circle cx="492" cy="150" r="6"/><circle cx="513" cy="101" r="6"/>
+          </g>
+          <path d="M600 92 A62 62 0 0 1 624 122" stroke="var(--s4)" stroke-width="1.4" fill="none"/>
+          <polygon points="624,122 618,113 628,113" fill="var(--s4)"/>
+          <text x="514" y="66" class="fig-tb" style="fill:var(--s4)">05 THE FORGE</text>
+          <text x="498" y="244" class="fig-t">camera sits at the hub — the ring of 8 rotates around you</text>
+
+          <!-- 06 constellation -->
+          <g fill="var(--s6)" opacity=".9">
+            <circle cx="676" cy="122" r="2.6"/><circle cx="700" cy="152" r="2.6"/><circle cx="690" cy="184" r="2.6"/>
+            <circle cx="722" cy="112" r="2.6"/><circle cx="738" cy="166" r="2.6"/><circle cx="714" cy="196" r="2.6"/>
+            <circle cx="748" cy="132" r="2.6"/><circle cx="664" cy="164" r="2.6"/>
+          </g>
+          <path d="M676 122 L722 112 L748 132 M700 152 L738 166 M690 184 L714 196 M664 164 L700 152" stroke="var(--s6)" stroke-width=".7" opacity=".5" fill="none"/>
+          <text x="664" y="100" class="fig-tb" style="fill:var(--s6)">06 CONSTELLATION</text>
+
+          <!-- 07 gallery hall -->
+          <line x1="790" y1="96" x2="1000" y2="96" class="fig-lf"/>
+          <line x1="790" y1="204" x2="1000" y2="204" class="fig-lf"/>
+          <g fill="var(--s7)" opacity=".85">
+            <rect x="800" y="96" width="20" height="5"/><rect x="836" y="199" width="20" height="5"/>
+            <rect x="872" y="96" width="20" height="5"/><rect x="908" y="199" width="20" height="5"/>
+            <rect x="944" y="96" width="20" height="5"/><rect x="976" y="199" width="20" height="5"/>
+          </g>
+          <text x="790" y="86" class="fig-tb" style="fill:var(--s7)">07 VOID GALLERY</text>
+          <text x="790" y="222" class="fig-t">the only act with a floor · 07b arcade wall at the far end</text>
+
+          <!-- 08 sync -->
+          <rect x="1046" y="106" width="6" height="88" fill="var(--s8)"/>
+          <text x="1020" y="96" class="fig-tb" style="fill:var(--s8)">08 SYNC</text>
+
+          <!-- camera path -->
+          <path d="M16 150 C 60 150, 90 150, 130 149 C 180 147, 236 152, 288 151
+                   C 306 151, 314 112, 352 110 C 386 108, 398 150, 420 152
+                   C 440 154, 470 150, 500 150 C 528 150, 548 150, 562 150"
+                stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-dasharray="5 4" opacity=".8"/>
+          <path d="M562 150 C 600 150, 640 150, 664 146 C 686 142, 692 178, 716 180
+                   C 744 182, 762 140, 790 142 C 820 144, 826 186, 856 188
+                   C 890 190, 900 112, 934 114 C 968 116, 976 178, 1002 170
+                   C 1024 164, 1036 152, 1046 150"
+                stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-dasharray="5 4" opacity=".8"/>
+          <circle cx="16" cy="150" r="4" fill="var(--ink)"/>
+          <text x="8" y="168" class="fig-t" style="fill:var(--ink-2)">t=0</text>
+          <circle cx="1046" cy="150" r="4" fill="var(--ink)"/>
+          <text x="1036" y="168" class="fig-t" style="fill:var(--ink-2)">t=1</text>
+        </svg>
+      </div>
+      <figcaption><b>One camera, one path, no cuts.</b> The dashed line is a single
+      Catmull-Rom spline. Sections are <i>places</i>, so the transitions between them are
+      travel rather than crossfades — which is exactly what the reference never attempts.
+      Acts mount and unmount by proximity (±1 act), so peak scene cost stays flat no matter
+      how much content is added later.</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- ============================ 03 THE ACTS ============================ -->
+<section id="acts" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">04 — the acts</span>
+      <h2>Nine places, every one earning its geometry</h2>
+      <p class="lead prose">
+        The test each act has to pass: <em>does the 3D form make the data easier to read than
+        a list would?</em> If the answer is no, it's decoration and it gets cut. All nine below
+        pass on that test, and every field they consume already exists in
+        <code>data/profile.json</code>.
+      </p>
+    </div>
+
+    <div class="acts">
+
+      <!-- 00 -->
+      <article class="act" style="--edge:var(--s0)">
+        <div class="act-idx">00<small>PRE&nbsp;t</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Calibration</h3><span class="kicker">replaces PreLoader</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="Scattered glass shards converging onto the FZ monogram">
+                <g class="fig-d" opacity=".8">
+                  <rect x="26" y="20" width="9" height="6" transform="rotate(28 30 23)"/>
+                  <rect x="212" y="26" width="8" height="6" transform="rotate(-34 216 29)"/>
+                  <rect x="36" y="94" width="10" height="6" transform="rotate(46 41 97)"/>
+                  <rect x="204" y="96" width="9" height="6" transform="rotate(-18 208 99)"/>
+                  <rect x="120" y="8" width="8" height="5" transform="rotate(66 124 10)"/>
+                  <rect x="126" y="112" width="8" height="5" transform="rotate(-52 130 114)"/>
+                </g>
+                <g stroke="var(--edge)" stroke-width=".8" opacity=".55" fill="none">
+                  <path d="M40 26 L104 54"/><path d="M214 32 L152 56"/><path d="M48 96 L106 76"/>
+                  <path d="M206 98 L152 78"/><path d="M124 16 L124 44"/><path d="M132 110 L132 88"/>
+                </g>
+                <g color="var(--crimson)" opacity=".45"><use href="#fz1" x="98" y="26" width="72" height="72"/></g>
+                <g color="var(--teal)"><use href="#fz1" x="103" y="22" width="72" height="72"/></g>
+                <text x="8" y="122" class="fig-t">40 SHARDS → SOLVED</text>
+                <text x="176" y="122" class="fig-t">≈900 ms</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>The mark, nothing else.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>40 instanced glass shards scattered through ±6 world units solve onto surface positions on the extruded monogram and lock. The crimson layer slides from a 6-unit offset into its final 0.05-unit register behind the teal — <strong>the aberration resolving into focus.</strong> One-frame bloom on the snap.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Click or any key skips it. Warm cache runs it at 400&nbsp;ms; it never becomes a toll booth.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">favicon.svg → ExtrudeGeometry</span><span class="chip">shard pool warm-up</span><span class="chip">skippable</span></div>
+        </div>
+      </article>
+
+      <!-- 01 -->
+      <article class="act" style="--edge:var(--s0)">
+        <div class="act-idx">01<small>0.00–0.10</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Prism</h3><span class="kicker">hero · replaces IntroAnimation</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="The name FARHAN ZAMAN set behind the glass monogram, visibly refracted where the glass covers it">
+                <defs><clipPath id="cl1"><rect x="88" y="30" width="86" height="62"/></clipPath></defs>
+                <text x="16" y="66" style="font-family:var(--display);font-size:19px;font-weight:700;fill:var(--ink-3);letter-spacing:.02em">FARHAN ZAMAN</text>
+                <g clip-path="url(#cl1)">
+                  <rect x="88" y="30" width="86" height="62" fill="var(--panel)" opacity=".5"/>
+                  <text x="12" y="70" style="font-family:var(--display);font-size:23px;font-weight:700;fill:var(--edge);letter-spacing:.06em">FARHAN ZAMAN</text>
+                </g>
+                <g color="var(--crimson)" opacity=".4"><use href="#fz1" x="94" y="32" width="58" height="58"/></g>
+                <g color="var(--teal)" opacity=".9"><use href="#fz1" x="98" y="30" width="58" height="58"/></g>
+                <line x1="152" y1="56" x2="248" y2="34" stroke="var(--s0)" stroke-width="1.8"/>
+                <line x1="152" y1="59" x2="248" y2="60" stroke="var(--s4)" stroke-width="1.8"/>
+                <line x1="152" y1="62" x2="248" y2="88" stroke="var(--s8)" stroke-width="1.8"/>
+                <text x="180" y="30" class="fig-t" style="fill:var(--s0)">ENGINEER</text>
+                <text x="180" y="56" class="fig-t" style="fill:var(--s4)">RESEARCHER</text>
+                <text x="180" y="100" class="fig-t" style="fill:var(--s8)">ARTIST</text>
+                <text x="8" y="122" class="fig-t">real DOM text, refracted by real glass</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd><code>full_name</code>, all three <code>designations</code>, <code>intro_text</code>, <code>resume_url</code>, GitHub / LinkedIn / Facebook, and "Arnob".</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>The extruded glass monogram at the origin. Your name is set in <strong>real DOM behind the canvas</strong>, so the transmissive material genuinely refracts it — the letters warp, tear and re-form as the mark turns. Three additive spectrum beams leave stage right, one per designation.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Hover a designation and its beam ignites, the prism yaws to aim it at your cursor, and the scene tints toward that band. Pointer parallax ±4°.</dd></div>
+              <div class="spec-row"><dt>Why 3D</dt><dd>A refracted name is the one hero image that can only exist here. It also states the thesis in the first two seconds without a word of explanation.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">transmission 0.96 · ior 1.62</span><span class="chip">typed.js retained for the title cycle</span><span class="chip">DOM behind canvas</span></div>
+        </div>
+      </article>
+
+      <!-- 02 -->
+      <article class="act" style="--edge:var(--s1)">
+        <div class="act-idx">02<small>0.10–0.24</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Spine</h3><span class="kicker">background · replaces EducationList + ExperienceList</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="A receding corridor where education slabs line the left wall and experience slabs the right, with a luminous cable down the centre">
+                <path d="M0 6 L112 54 M0 122 L112 74" class="fig-lf"/>
+                <path d="M260 6 L148 54 M260 122 L148 74" class="fig-lf"/>
+                <line x1="0" y1="64" x2="260" y2="64" stroke="var(--edge)" stroke-width="1" opacity=".5" stroke-dasharray="4 5"/>
+                <circle cx="196" cy="64" r="2.4" fill="var(--edge)"/>
+                <circle cx="124" cy="64" r="1.6" fill="var(--edge)" opacity=".6"/>
+                <g class="fig-s">
+                  <polygon points="10,20 42,32 42,60 10,52"/>
+                  <polygon points="58,36 82,44 82,64 58,58"/>
+                  <polygon points="96,48 112,53 112,68 96,64"/>
+                </g>
+                <g class="fig-s">
+                  <polygon points="250,20 218,32 218,60 250,52"/>
+                  <polygon points="202,36 178,44 178,64 202,58"/>
+                  <polygon points="164,48 148,53 148,68 164,64"/>
+                </g>
+                <text x="8" y="14" class="fig-t" style="fill:var(--ink-2)">EDUCATION ×4</text>
+                <text x="192" y="14" class="fig-t" style="fill:var(--ink-2)">EXPERIENCE ×3</text>
+                <text x="8" y="122" class="fig-t">2009</text>
+                <text x="120" y="122" class="fig-t" style="fill:var(--edge)">NOW ▸</text>
+                <text x="222" y="122" class="fig-t">2026</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 4 <code>educations</code> and all 3 <code>experiences</code> — institute, subject/position, activity/project&nbsp;details, dates, <code>institute_url</code>, and the project chip (Pocketalk, Tribel).</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd><strong>Time becomes depth.</strong> A node's Z is its normalised date, a slab's length is its duration, so the corridor is a to-scale timeline you fly through. Education lines the left wall, experience the right. A luminous cable runs the length with pulses travelling toward you; <code>is_present:&nbsp;"1"</code> gets a live breathing edge. Each slab yaws to face you at closest approach, then falls back.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Click a slab and it flies to camera as a readable card. You arrive at <em>now</em> at the near end and stop there — the present is the destination, not a waypoint.</dd></div>
+              <div class="spec-row"><dt>Why 3D</dt><dd>Two parallel timelines are the classic portfolio layout problem. Putting them on opposite walls of a corridor solves it: they're simultaneous, comparable, and never fight for column width.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">Dhaka College · BRAC · BJIT · Doodle · Forecast</span><span class="chip">date → Z, duration → length</span></div>
+        </div>
+      </article>
+
+      <!-- 03 -->
+      <article class="act" style="--edge:var(--s2)">
+        <div class="act-idx">03<small>0.24–0.36</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Lattice</h3><span class="kicker">expertise · replaces SkillCloud</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="An icosahedral wireframe with expertise nodes at its vertices, edges lighting up between technologies that share a project">
+                <g stroke="var(--line-2)" fill="none" stroke-width=".8">
+                  <path d="M130 14 L92 44 L106 90 L154 90 L168 44 Z"/>
+                  <path d="M130 14 L106 90 M130 14 L154 90 M92 44 L154 90 M168 44 L106 90"/>
+                  <path d="M130 14 L130 62 M92 44 L130 62 M168 44 L130 62 M106 90 L130 62 M154 90 L130 62"/>
+                  <ellipse cx="130" cy="56" rx="52" ry="46"/>
+                </g>
+                <g stroke="var(--edge)" stroke-width="1.6" fill="none">
+                  <path d="M92 44 L130 62 L154 90 M130 62 L168 44"/>
+                </g>
+                <g fill="var(--edge)">
+                  <circle cx="130" cy="14" r="3"/><circle cx="92" cy="44" r="4.6"/><circle cx="168" cy="44" r="3.6"/>
+                  <circle cx="106" cy="90" r="2.6"/><circle cx="154" cy="90" r="4"/><circle cx="130" cy="62" r="5.2"/>
+                </g>
+                <g fill="var(--ink-3)">
+                  <circle cx="111" cy="28" r="2"/><circle cx="149" cy="28" r="2"/><circle cx="99" cy="67" r="2"/>
+                  <circle cx="161" cy="67" r="2"/><circle cx="130" cy="90" r="2"/><circle cx="118" cy="76" r="1.6"/>
+                </g>
+                <text x="132" y="60" class="fig-tb" style="fill:var(--ink)">Java</text>
+                <text x="46" y="44" class="fig-t" style="fill:var(--ink-2)">SpringBoot</text>
+                <text x="176" y="44" class="fig-t" style="fill:var(--ink-2)">Java EE</text>
+                <text x="158" y="102" class="fig-t" style="fill:var(--ink-2)">MySQL</text>
+                <text x="8" y="122" class="fig-t">23 nodes · radius = months · glow = level</text>
+                <text x="8" y="14" class="fig-t" style="fill:var(--edge)">edge = shared project</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 23 <code>expertises</code> — name, description, <code>duration</code> (3–48 months), <code>level</code> — plus <code>expertise_preference_details</code> as the act's standfirst.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>23 nodes on the vertices and edge-midpoints of an icosahedral wireframe. Radius ∝ duration, emission ∝ level. <strong>The edges are real data, not decoration:</strong> 17 of the 23 descriptions name the projects they were used in ("Used in Space Ninja and Tribel"), and each project carries a <code>tech_stack</code>. Cross-reference the two and the lattice becomes a true co-occurrence graph — Java, SpringBoot and MySQL light up together because Pocketalk Ventana binds them.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Drag to spin. Click a node and the lattice eases it to front-centre, its edges ignite, its neighbours brighten, and the panel names the projects that connect them. On touch, drag is horizontal-only so a vertical swipe always scrolls the page.</dd></div>
+              <div class="spec-row"><dt>Why 3D</dt><dd>A tag cloud has no way to say "these two things go together". A graph does, and a graph with 23 nodes only stays legible in three dimensions.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">graph derived from existing text</span><span class="chip">no new data entry</span><span class="chip">drops the TagCloud dependency</span></div>
+        </div>
+      </article>
+
+      <!-- 04 -->
+      <article class="act" style="--edge:var(--s3)">
+        <div class="act-idx">04<small>0.36–0.44</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Turbine</h3><span class="kicker">skills · replaces SkillBars</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="Twelve glass blades radiating from a hub, each blade length set by its skill percentage">
+                <g stroke="var(--edge)" stroke-width="3" stroke-linecap="butt" opacity=".85">
+                  <path d="M130 64 L130 22"/><path d="M130 64 L157 30"/><path d="M130 64 L172 45"/>
+                  <path d="M130 64 L176 64"/><path d="M130 64 L168 82"/><path d="M130 64 L154 96"/>
+                  <path d="M130 64 L130 106"/><path d="M130 64 L104 92"/><path d="M130 64 L92 80"/>
+                  <path d="M130 64 L86 64"/><path d="M130 64 L94 46"/><path d="M130 64 L106 32"/>
+                </g>
+                <circle cx="130" cy="64" r="7" fill="var(--panel-2)" stroke="var(--line-2)"/>
+                <line x1="130" y1="10" x2="130" y2="20" stroke="var(--ink)" stroke-width="1"/>
+                <text x="188" y="30" class="fig-tb" style="fill:var(--ink)">Presentation</text>
+                <text x="188" y="42" class="fig-t">88% · 14 mo</text>
+                <line x1="132" y1="24" x2="186" y2="26" class="fig-lf"/>
+                <text x="8" y="122" class="fig-t">length = percentage · twist = months</text>
+                <text x="8" y="16" class="fig-t" style="fill:var(--ink-2)">12 SKILLS, ONE GLANCE</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 12 <code>skills</code> — name, description, <code>percentage</code> (50–88), <code>duration</code> (8–36 months).</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>12 glass blades radiating from a hub, viewed near-on-axis. Blade length = percentage, blade twist = duration, so both numbers are encoded in one form. The assembly turns slowly; whichever blade reaches 12 o'clock reads out into the DOM.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Scroll indexes the readout blade; click freezes it and reveals the description. Keyboard steps blade to blade.</dd></div>
+              <div class="spec-row"><dt>Why 3D</dt><dd>The current skill bars are a 12-row list you scroll past. Radially, all 12 values are comparable in a single glance, and the second variable (duration) comes free — a bar chart would have needed a second chart.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">same numbers, better form</span><span class="chip">two variables, one mark</span></div>
+        </div>
+      </article>
+
+      <!-- 05 -->
+      <article class="act" style="--edge:var(--s4)">
+        <div class="act-idx">05<small>0.44–0.66</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Forge</h3><span class="kicker">works · the act the reference is a subset of</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="A ring of eight faceted project cores with the camera at the hub, one core indexed to the front at full scale">
+                <ellipse cx="130" cy="64" rx="106" ry="42" class="fig-lf"/>
+                <g class="fig-s">
+                  <polygon points="130,18 140,24 137,34 124,34 121,24"/>
+                  <polygon points="196,28 206,34 203,45 190,45 187,34"/>
+                  <polygon points="230,60 240,66 237,77 224,77 221,66"/>
+                  <polygon points="196,92 206,98 203,108 190,108 187,98"/>
+                  <polygon points="64,28 74,34 71,45 58,45 55,34"/>
+                  <polygon points="30,60 40,66 37,77 24,77 21,66"/>
+                  <polygon points="64,92 74,98 71,108 58,108 55,98"/>
+                </g>
+                <polygon points="130,84 152,96 148,120 112,120 106,96" fill="var(--panel-2)" stroke="var(--edge)" stroke-width="1.4"/>
+                <path d="M130 84 L112 120 M152 96 L106 96 M148 120 L106 96" stroke="var(--line-2)" stroke-width=".7" fill="none"/>
+                <circle cx="130" cy="64" r="3.4" fill="var(--ink)"/>
+                <text x="136" y="62" class="fig-t" style="fill:var(--ink-2)">CAMERA</text>
+                <path d="M204 22 A 100 40 0 0 1 232 46" stroke="var(--edge)" stroke-width="1.2" fill="none"/>
+                <polygon points="232,46 226,37 236,37" fill="var(--edge)"/>
+                <text x="8" y="16" class="fig-t" style="fill:var(--ink-2)">8 SEEDED CORES</text>
+                <text x="8" y="122" class="fig-t" style="fill:var(--edge)">ACTIVE</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 8 <code>projects</code>, every field: name, work_role, type, stack, details, tech_stack, live_text/live_url, source_url, current_status, methodology, start_date, last_contribution_date, scope_of_work, challenges, future_scope, media[].</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>The camera flies <strong>inside</strong> a 28-unit ring carrying 8 faceted cores that face inward. You are at the hub; scroll rotates the ring around you and indexes one core to front-centre at full scale. Each core's facet pattern is seeded from its <code>project_id</code>, so all 8 are distinct but obviously one family. <code>logo_image</code> and <code>media[]</code> map across the facets.</dd></div>
+              <div class="spec-row"><dt>The&nbsp;jump</dt><dd>The outgoing core <strong>shatters into the shared shard pool, and those exact shards reassemble as the incoming core.</strong> One instanced mesh, constant count, zero allocation. The shards have been drifting with you since act 00, so the handoff never pops in — which is the single thing the reference's hard swap can't do.</dd></div>
+              <div class="spec-row"><dt>05b</dt><dd><strong>Core open.</strong> Click and the camera flies through a facet into the interior chamber: <code>tech_stack</code> as orbiting satellite chips, <code>challenges</code> as glowing fracture lines in the inner wall, <code>media[]</code> on the chamber facets, start&nbsp;→&nbsp;last-contribution as an arc on the floor. Escape flies you back out at the same ring angle. Replaces <code>/work?id=</code> with no route change and no reload.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">Pocketalk Ventana</span><span class="chip">Tribel</span><span class="chip">Simba (CSA)</span><span class="chip">CovidEase</span><span class="chip">C Academy TMS</span><span class="chip">Examiner</span><span class="chip">Space Ninja</span><span class="chip">QR Queen</span></div>
+        </div>
+      </article>
+
+      <!-- 06 -->
+      <article class="act" style="--edge:var(--s6)">
+        <div class="act-idx">06<small>0.66–0.78</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Constellation</h3><span class="kicker">achievements · replaces Achievements grid</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="Ten hexagonal certificate tiles plotted in space, horizontal position by date and distance from the axis by level, linked by issuer">
+                <line x1="16" y1="112" x2="244" y2="112" class="fig-l"/>
+                <g class="fig-t"><text x="12" y="124">2020</text><text x="112" y="124">2022</text><text x="222" y="124">2023</text></g>
+                <line x1="16" y1="56" x2="244" y2="56" stroke="var(--line)" stroke-dasharray="2 4"/>
+                <text x="16" y="14" class="fig-t" style="fill:var(--ink-2)">ADVANCED = INNER</text>
+                <g fill="none" stroke="var(--edge)" stroke-width=".7" opacity=".55">
+                  <path d="M76 78 L128 34 L186 62 L214 44"/>
+                  <path d="M50 44 L104 62"/>
+                </g>
+                <g stroke="var(--edge)" stroke-width="1.1" fill="var(--panel-2)">
+                  <polygon points="50,36 57,40 57,48 50,52 43,48 43,40"/>
+                  <polygon points="76,70 83,74 83,82 76,86 69,82 69,74"/>
+                  <polygon points="104,54 111,58 111,66 104,70 97,66 97,58"/>
+                  <polygon points="128,26 135,30 135,38 128,42 121,38 121,30"/>
+                  <polygon points="152,84 159,88 159,96 152,100 145,96 145,88"/>
+                  <polygon points="186,54 193,58 193,66 186,70 179,66 179,58"/>
+                  <polygon points="214,36 221,40 221,48 214,52 207,48 207,40"/>
+                  <polygon points="230,72 237,76 237,84 230,88 223,84 223,76"/>
+                </g>
+                <text x="176" y="80" class="fig-t" style="fill:var(--ink-2)">SQL · advanced</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 10 <code>achievements</code> — name, description, certification_date, certification_url, <code>certification_logo</code> (the 10 local SVGs already in <code>view/static/svg/</code>), level.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>10 hexagonal glass tiles in a star field, each carrying its certificate mark. <strong>Position is data:</strong> horizontal = certification date, distance from the axis = level, with Advanced innermost. So the shape of the constellation <em>is</em> the trajectory — 2021 outer-ring basics, 2023 SQL right at the core. Faint lines link tiles by issuer (HackerRank ×4, competitive programming ×2).</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>The camera orbits on rails. Hover turns a tile edge-on then flips it to the description, date and level; click opens the certificate.</dd></div>
+              <div class="spec-row"><dt>Why 3D</dt><dd>The logos are already vector, so they extrude for free — no raster assets. And a grid of ten badges says nothing about progress; plotting them by date and level makes the growth curve the picture.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">SVG logos extrude natively</span><span class="chip">IELTS 7.0 · Selenium · LeetCode · Codeforces</span></div>
+        </div>
+      </article>
+
+      <!-- 07 -->
+      <article class="act" style="--edge:var(--s7)">
+        <div class="act-idx">07<small>0.78–0.92</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>The Void Gallery</h3><span class="kicker">hobbies + gaming · replaces Gallery, PhotoViewer, /gaming</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="A dark hall with artworks floating at staggered depths, each casting a soft coloured spill, and a curved video wall at the far end">
+                <path d="M0 118 L104 74 L156 74 L260 118" fill="var(--panel-2)" opacity=".5"/>
+                <path d="M0 118 L104 74 M260 118 L156 74" class="fig-lf"/>
+                <g>
+                  <rect x="14" y="34" width="26" height="34" fill="var(--edge)" opacity=".5"/>
+                  <ellipse cx="27" cy="92" rx="24" ry="7" fill="var(--edge)" opacity=".13"/>
+                  <rect x="60" y="42" width="20" height="26" fill="var(--s5)" opacity=".45"/>
+                  <ellipse cx="70" cy="82" rx="18" ry="5" fill="var(--s5)" opacity=".12"/>
+                  <rect x="222" y="34" width="26" height="34" fill="var(--s8)" opacity=".45"/>
+                  <ellipse cx="235" cy="92" rx="24" ry="7" fill="var(--s8)" opacity=".13"/>
+                  <rect x="184" y="42" width="20" height="26" fill="var(--s6)" opacity=".4"/>
+                  <ellipse cx="194" cy="82" rx="18" ry="5" fill="var(--s6)" opacity=".12"/>
+                </g>
+                <path d="M104 46 Q130 40 156 46 L156 70 Q130 64 104 70 Z" fill="var(--panel-2)" stroke="var(--line-2)"/>
+                <g fill="var(--ink-3)" opacity=".7">
+                  <rect x="110" y="50" width="11" height="6"/><rect x="124" y="49" width="11" height="6"/><rect x="138" y="50" width="11" height="6"/>
+                  <rect x="110" y="59" width="11" height="6"/><rect x="124" y="58" width="11" height="6"/><rect x="138" y="59" width="11" height="6"/>
+                </g>
+                <text x="8" y="16" class="fig-t" style="fill:var(--ink-2)">11 WORKS · SPILL LIT</text>
+                <text x="104" y="40" class="fig-t" style="fill:var(--ink-2)">07b ARCADE</text>
+                <text x="8" y="126" class="fig-t">plinth colour = category</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>All 11 <code>gallery</code> items across their 6 categories — Digital Arts, Oil Paint, Photography, Poster, Social Poster, Charcoal — with <code>thumb_url</code>, <code>image_url</code>, name, description. Plus the arts sentence from <code>about_text</code>.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>The only act with a floor, so the shift in gravity marks the shift from work to person. The camera dollies through a dark hall; 11 works hang at staggered depths, each lit by its own soft spill that bounces a tint of the image onto the surrounding dark. Category sets the plinth colour. <code>thumb_url</code> loads first and <code>image_url</code> swaps in on approach.</dd></div>
+              <div class="spec-row"><dt>07b</dt><dd><strong>The Arcade.</strong> A curved video wall at the far end of the hall: 83 clips from <em>Run Fz Run</em> on a cylindrical thumbnail grid, straight from <code>gaming_videos.json</code>. Click and it plays inline on the wall.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>Click a work and its frame flies to camera at full resolution with name, category and description; arrow keys walk the hall. The existing <code>PhotoViewer</code> logic carries over intact.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">real bounce light per artwork</span><span class="chip">thumb → full on approach</span><span class="chip">83 clips, cylindrical grid</span></div>
+        </div>
+      </article>
+
+      <!-- 08 -->
+      <article class="act" style="--edge:var(--s8)">
+        <div class="act-idx">08<small>0.92–1.00</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Sync</h3><span class="kicker">contact · replaces ContactInfo + ContactForm + Footer</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="Shards converging from all sides as three coloured beams fold into one that writes the email address">
+                <g stroke="var(--line-2)" stroke-width=".8" fill="none" opacity=".7">
+                  <path d="M12 16 L86 52"/><path d="M248 16 L174 52"/><path d="M12 112 L86 74"/>
+                  <path d="M248 112 L174 74"/><path d="M130 6 L130 44"/><path d="M130 122 L130 84"/>
+                </g>
+                <g class="fig-d" opacity=".8">
+                  <rect x="8" y="12" width="8" height="5" transform="rotate(30 12 14)"/>
+                  <rect x="244" y="12" width="8" height="5" transform="rotate(-30 248 14)"/>
+                  <rect x="8" y="108" width="8" height="5" transform="rotate(-24 12 110)"/>
+                  <rect x="244" y="108" width="8" height="5" transform="rotate(24 248 110)"/>
+                </g>
+                <line x1="16" y1="34" x2="96" y2="62" stroke="var(--s0)" stroke-width="1.6" opacity=".8"/>
+                <line x1="16" y1="64" x2="96" y2="64" stroke="var(--s4)" stroke-width="1.6" opacity=".8"/>
+                <line x1="16" y1="94" x2="96" y2="66" stroke="var(--s8)" stroke-width="1.6" opacity=".8"/>
+                <rect x="96" y="60" width="150" height="8" fill="var(--ink)" opacity=".92"/>
+                <text x="100" y="82" class="fig-t" style="fill:var(--ink-2)">farhanzamanarnob@gmail.com</text>
+                <g color="var(--crimson)" opacity=".3"><use href="#fz1" x="112" y="10" width="34" height="34"/></g>
+                <g color="var(--teal)" opacity=".8"><use href="#fz1" x="113" y="10" width="34" height="34"/></g>
+                <text x="150" y="26" class="fig-t" style="fill:var(--ink-2)">back in register</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd><code>contact_preference_details</code>, both emails, both phones, address, WhatsApp / GitHub / LinkedIn / Facebook, <code>resume_url</code>, and the working contact form against the existing <code>send-direct-message.php</code>.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>Every shard the page has used converges. The three spectra fold back into one beam and that beam writes the address in glowing type. The monogram reassembles behind it — <strong>back in register, aberration resolved.</strong> It's the reference's closing shot, except here it's earned: you watched the light split 900vh ago.</dd></div>
+              <div class="spec-row"><dt>Interaction</dt><dd>The form as three frosted panels at slightly different depths. On submit they flatten into the beam and the mark pulses once — the send is the visual payoff, not a toast.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">narrative close</span><span class="chip">existing PHP endpoint untouched</span></div>
+        </div>
+      </article>
+
+      <!-- syncbot -->
+      <article class="act" style="--edge:var(--s5)">
+        <div class="act-idx">∞<small>ALL&nbsp;t</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>SyncBot</h3><span class="kicker">resident, not an act</span></div>
+          <div class="act-cols">
+            <div class="act-fig">
+              <svg viewBox="0 0 260 128" role="img" aria-label="A small pulsing orb tethered at the lower right of the viewport, offering a context-aware prompt">
+                <rect x="6" y="10" width="248" height="108" class="fig-lf" rx="2"/>
+                <circle cx="214" cy="92" r="13" fill="none" stroke="var(--edge)" stroke-width="1.2"/>
+                <circle cx="214" cy="92" r="20" fill="none" stroke="var(--edge)" stroke-width=".7" opacity=".45"/>
+                <circle cx="214" cy="92" r="27" fill="none" stroke="var(--edge)" stroke-width=".5" opacity=".22"/>
+                <circle cx="214" cy="92" r="5" fill="var(--edge)"/>
+                <rect x="76" y="80" width="118" height="24" rx="2" fill="var(--panel-2)" stroke="var(--line-2)"/>
+                <text x="84" y="90" class="fig-t" style="fill:var(--ink-2)">You're on Pocketalk Ventana.</text>
+                <text x="84" y="99" class="fig-t" style="fill:var(--edge)">Ask about the PubSub work ▸</text>
+                <text x="16" y="24" class="fig-t">rides the whole scroll · knows the act you're in</text>
+              </svg>
+            </div>
+            <dl class="act-spec">
+              <div class="spec-row"><dt>Content</dt><dd>The existing assistant: <code>engine.ts</code>, <code>knowledge.ts</code>, <code>facts.ts</code>, <code>voice.ts</code>, <code>richText.ts</code> — 1,858 lines, all of it untouched.</dd></div>
+              <div class="spec-row"><dt>Mechanic</dt><dd>A small orb tethered at the lower right that rides the entire scroll and pulses on the act's band colour. Only the shell changes: it becomes a frosted glass console instead of a page.</dd></div>
+              <div class="spec-row"><dt>New&nbsp;trick</dt><dd>It knows where you are. Standing in front of the Pocketalk core it offers "Ask about the PubSub work"; in the gallery, "Ask about the oil paints". Current <code>t</code> → current act → a seeded prompt. Cheap to build, and it's the thing nobody else's 3D portfolio has.</dd></div>
+            </dl>
+          </div>
+          <div class="chips"><span class="chip chip-b">/syncbot survives as a deep link</span><span class="chip">context from scroll position</span><span class="chip">voice I/O retained</span></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+<!-- ============================ 04 INVENTORY ============================ -->
+<section id="inventory" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">05 — content inventory</span>
+      <h2>Nothing is added, nothing is dropped</h2>
+      <p class="lead prose">
+        You asked for the information to stay as it is. This is the audit. Every collection in
+        <code>data/profile.json</code> and <code>data/gaming_videos.json</code>, where it lands,
+        and what happens to the component that renders it today.
+      </p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">source data → destination act</caption>
+        <thead><tr>
+          <th>Collection</th><th>Count</th><th>Lands in</th><th>Fields consumed</th><th>Today's component</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>profile.info</td><td class="tnum">26 fields</td><td>01 Prism · 08 Sync</td><td>name, nick_name, 3 designations, intro_text, about_text, resume, both emails, both phones, address, 4 socials, domain</td><td>IntroAnimation, ContactInfo, Footer <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>educations</td><td class="tnum">4</td><td>02 The Spine — left wall</td><td>institute_name, subject, activity, start/end, is_present, institute_url</td><td>EducationList <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>experiences</td><td class="tnum">3</td><td>02 The Spine — right wall</td><td>institute_name, position, project_details, project_text_1, project_url_1, dates, is_present</td><td>ExperienceList <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>expertises</td><td class="tnum">23</td><td>03 The Lattice</td><td>name, description, duration, level &nbsp;+&nbsp; the project mentions already sitting in 17 of the 23 descriptions</td><td>SkillCloud + TagCloud dep <span class="pill mid">replaced</span></td></tr>
+          <tr><td>skills</td><td class="tnum">12</td><td>04 The Turbine</td><td>name, description, percentage, duration</td><td>SkillBars <span class="pill mid">replaced</span></td></tr>
+          <tr><td>projects</td><td class="tnum">8</td><td>05 The Forge</td><td>all 17 fields incl. scope_of_work, tech_stack, challenges, future_scope, methodology, current_status</td><td>WorksGrid, WorkCard, WorksMarquee <span class="pill mid">replaced</span></td></tr>
+          <tr><td>projects[].media</td><td class="tnum">53</td><td>05b Core interior</td><td>media_type, media_link — all 53 items mapped to chamber facets</td><td>ProjectDetails <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>achievements</td><td class="tnum">10</td><td>06 The Constellation</td><td>name, description, certification_date, certification_url, certification_logo, level</td><td>Achievements <span class="pill mid">replaced</span></td></tr>
+          <tr><td>gallery</td><td class="tnum">11</td><td>07 The Void Gallery</td><td>name, description, category, thumb_url, image_url</td><td>Gallery + PhotoViewer <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>gaming_videos</td><td class="tnum">83 clips</td><td>07b The Arcade</td><td>video_title, video_thumbnail, video id, channel meta</td><td>GamingPage <span class="pill ok">reshelled</span></td></tr>
+          <tr><td>SyncBot knowledge</td><td class="tnum">1,858 LOC</td><td>∞ resident orb</td><td>engine, knowledge, facts, prompt, richText, voice</td><td>SyncBotPage <span class="pill ok">untouched</span></td></tr>
+          <tr><td>Static assets</td><td class="tnum">—</td><td>everywhere</td><td>favicon.svg (becomes the hero geometry), the 10 referenced cert SVGs of the 11 in <code>view/static/svg/</code>, resume PDF, intro.png, TitilliumWeb, icons.ttf, cursors</td><td>all retained <span class="pill ok">kept</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="tscroll">
+        <table style="min-width:340px">
+          <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">route compatibility</caption>
+          <thead><tr><th>Old URL</th><th>Resolves to</th></tr></thead>
+          <tbody>
+            <tr><td><code>/</code></td><td>t = 0</td></tr>
+            <tr><td><code>/about</code></td><td>t = 0.10 — flies to The Spine</td></tr>
+            <tr><td><code>/expertise</code></td><td>t = 0.24 — The Lattice</td></tr>
+            <tr><td><code>/works</code></td><td>t = 0.44 — The Forge</td></tr>
+            <tr><td><code>/work?id=3</code></td><td>t = 0.44, ring index 3, core open</td></tr>
+            <tr><td><code>/hobbies</code></td><td>t = 0.78 — the hall</td></tr>
+            <tr><td><code>/gaming</code></td><td>t = 0.90 — the arcade wall</td></tr>
+            <tr><td><code>/syncbot</code></td><td>orb opens, console expanded</td></tr>
+            <tr><td><code>/403 /404 /500</code></td><td>kept as real pages, flat</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="eyebrow">Why this matters</span>
+        <p>
+          Every existing link, bookmark and indexed URL keeps working. A deep link doesn't cut —
+          it sets <code>t</code> and the camera <em>flies</em> there over about 1.2&nbsp;s, so
+          arriving from Google looks deliberate rather than broken. The admin editor and
+          <code>ProfileStore</code> stay exactly as they are: the JSON schema does not change,
+          so you can still edit content the way you do today.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 05 MATERIAL ============================ -->
+<section id="material" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">06 — material &amp; light</span>
+      <h2>Two colours, one glass, two worlds</h2>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>The palette does not change</h3>
+        <div class="tscroll">
+          <table style="min-width:320px">
+            <thead><tr><th>Token</th><th>Value</th><th>Role in 3D</th></tr></thead>
+            <tbody>
+              <tr><td>signal teal</td><td><code>#00d3b4</code></td><td>prism front layer, key light, engineering band</td></tr>
+              <tr><td>split crimson</td><td><code>#fd2155</code></td><td>prism rear layer, rim light, art band</td></tr>
+              <tr><td>light-mode teal</td><td><code>#00947f</code></td><td>already in your light.css — reused for text on Studio</td></tr>
+              <tr><td>void ground</td><td><code>#252525</code> → <code>#0a0d0f</code></td><td>the dark world, pushed darker so bloom has headroom</td></tr>
+              <tr><td>studio ground</td><td><code>#ffffff</code> / <code>#f6f6f6</code></td><td>the light world, unchanged from today</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <span class="eyebrow">The one derived detail</span>
+          <p>
+            In your favicon the crimson layer sits at an offset of
+            <code>(−3.85, +1.77)</code> in the mark's own 100-unit space — about <strong>6% of
+            the mark's width, at 205°</strong>. That exact vector becomes the
+            chromatic-aberration offset in post-processing, scaled to the mark's on-screen size.
+            The whole scene's colour fringing is therefore <em>measured from your logo</em>
+            rather than dialled in by eye.
+          </p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <h3>Glass presets</h3>
+        <div class="tscroll">
+          <table style="min-width:420px">
+            <thead><tr><th>Preset</th><th>Used by</th><th>Parameters</th></tr></thead>
+            <tbody>
+              <tr><td>Prism</td><td>the monogram, the closing mark</td><td class="mono">transmission .96 · ior 1.62 · thickness 1.4 · roughness .04 · clearcoat 1</td></tr>
+              <tr><td>Core</td><td>the active project core</td><td class="mono">transmission .55 · ior 1.45 · roughness .18 · flatShading · texture on facets</td></tr>
+              <tr><td>Frost</td><td>slabs, tiles, form panels</td><td class="mono">no transmission · roughness .55 · envMap + fresnel rim · opacity .82</td></tr>
+              <tr><td>Shard</td><td>the 256-instance pool</td><td class="mono">MeshBasicMaterial + additive fresnel · vertex-coloured teal↔crimson</td></tr>
+              <tr><td>Beam</td><td>spectrum rays, the spine cable</td><td class="mono">additive shader · band colour ramp · no depth write</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="prose" style="font-size:.9rem;color:var(--ink-2)">
+          Only the first two are transmissive, and the budget bar in the scroll map is the rule:
+          <strong>one at a time, ever.</strong> Transmission renders the scene to an offscreen
+          buffer, so two on screen doubles the cost of everything.
+        </p>
+      </div>
+    </div>
+
+    <figure>
+      <div class="fbox">
+        <div class="grid2" style="gap:26px">
+          <div class="stack" style="gap:12px">
+            <p class="eyebrow" style="color:var(--teal-ink)">dark theme — “The Void”</p>
+            <svg viewBox="0 0 300 130" role="img" aria-label="Dark theme treatment: no horizon, glowing glass, additive bloom">
+              <rect x="0" y="0" width="300" height="130" fill="#0a0d0f"/>
+              <circle cx="150" cy="62" r="52" fill="#00d3b4" opacity=".07"/>
+              <circle cx="150" cy="62" r="32" fill="#00d3b4" opacity=".09"/>
+              <g color="#fd2155" opacity=".55"><use href="#fz1" x="118" y="30" width="64" height="64"/></g>
+              <g color="#00d3b4"><use href="#fz1" x="122" y="28" width="64" height="64"/></g>
+              <g fill="#8fb3ae" opacity=".5">
+                <circle cx="46" cy="30" r="1"/><circle cx="262" cy="42" r="1"/><circle cx="70" cy="100" r="1"/>
+                <circle cx="240" cy="96" r="1"/><circle cx="30" cy="70" r="1"/><circle cx="278" cy="74" r="1"/>
+              </g>
+              <text x="12" y="122" style="font-family:var(--mono);font-size:8px;fill:#6d7c79">no floor · no horizon · additive bloom · scale is free</text>
+            </svg>
+          </div>
+          <div class="stack" style="gap:12px">
+            <p class="eyebrow" style="color:var(--crimson-ink)">light theme — “The Studio”</p>
+            <svg viewBox="0 0 300 130" role="img" aria-label="Light theme treatment: an infinity cove with contact shadows and coloured caustics">
+              <rect x="0" y="0" width="300" height="130" fill="#fbfcfc"/>
+              <path d="M0 92 Q150 78 300 92 L300 130 L0 130 Z" fill="#eef2f1"/>
+              <ellipse cx="150" cy="102" rx="56" ry="7" fill="#0f2b28" opacity=".1"/>
+              <ellipse cx="176" cy="104" rx="26" ry="5" fill="#00947f" opacity=".28"/>
+              <ellipse cx="126" cy="105" rx="20" ry="4" fill="#e00f43" opacity=".22"/>
+              <g color="#e00f43" opacity=".4"><use href="#fz1" x="118" y="26" width="64" height="64"/></g>
+              <g color="#00947f"><use href="#fz1" x="122" y="24" width="64" height="64"/></g>
+              <text x="12" y="122" style="font-family:var(--mono);font-size:8px;fill:#75817d">infinity cove · contact shadow · coloured caustics · no bloom</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <figcaption><b>The light theme is not an inversion.</b> Same geometry, different physics:
+      the Void lights the glass from inside and lets bloom carry it, the Studio lights it from
+      outside and lets the <i>caustics</i> — the coloured light the glass throws onto the cove —
+      carry it. Bloom is off in Studio; a soft contact shadow replaces it. Your existing theme
+      toggle drives the switch, and the switch is a 400&nbsp;ms crossfade, not a reload.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================ 06 ARCHITECTURE ============================ -->
+<section id="arch" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">07 — architecture</span>
+      <h2>Four invariants, and everything else follows</h2>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <div class="panel">
+          <h4>1 · One canvas, forever</h4>
+          <p>A single <code>&lt;Canvas&gt;</code> mounts once in the shell and never unmounts.
+          Acts mount and unmount by scroll proximity (±1 act) inside it. Peak scene cost stays
+          flat however much content you add later.</p>
+        </div>
+        <div class="panel">
+          <h4>2 · Scroll is the only clock</h4>
+          <p>Every animation is a pure function of <code>t</code>. No timers, no
+          <code>useState</code> in the render loop, no independent tweens that can drift out of
+          sync. Scrub backwards and the world runs exactly backwards.</p>
+        </div>
+        <div class="panel">
+          <h4>3 · The shard pool is global</h4>
+          <p>256 shards in one <code>InstancedMesh</code>, allocated at boot, freed never. Acts
+          lease slices and write matrices. This is what makes the Forge's
+          shatter-and-reassemble handoff possible at all.</p>
+        </div>
+        <div class="panel">
+          <h4>4 · The DOM is the content of record</h4>
+          <p>Not a single character of your copy lives in a texture. The canvas is
+          <code>aria-hidden</code>; the text over it is real, selectable, translatable and
+          crawlable. Delete the canvas and you still have a readable site.</p>
+        </div>
+      </div>
+
+      <div class="stack">
+        <figure>
+          <div class="fbox">
+<pre>frontend/src/
+├─ <b>three/</b>
+│  ├─ Stage.tsx            <i>the one persistent Canvas</i>
+│  ├─ ScrollRig.tsx        <i>scroll → t, damped follower</i>
+│  ├─ CameraSpline.ts      <i>keyframes → position + lookAt</i>
+│  ├─ Quality.ts           <i>device tier probe</i>
+│  ├─ geometry/
+│  │  ├─ fzMonogram.ts     <i>favicon polygons → ExtrudeGeometry</i>
+│  │  ├─ facetedCore.ts    <i>seeded icosa displacement</i>
+│  │  └─ hexTile.ts
+│  ├─ materials/
+│  │  ├─ prism.ts  core.ts  frost.ts
+│  │  ├─ shard.ts  beam.ts
+│  ├─ fx/
+│  │  ├─ ShardPool.tsx     <i>256 instances, leased by act</i>
+│  │  ├─ DustField.tsx
+│  │  └─ PostFX.tsx        <i>bloom + CA @ logo offset</i>
+│  └─ acts/
+│     ├─ Act00Calibration.tsx
+│     ├─ Act01Prism.tsx    Act02Spine.tsx
+│     ├─ Act03Lattice.tsx  Act04Turbine.tsx
+│     ├─ Act05Forge.tsx    Act05bCore.tsx
+│     ├─ Act06Constellation.tsx
+│     ├─ Act07Gallery.tsx  Act07bArcade.tsx
+│     └─ Act08Sync.tsx
+├─ <b>overlay/</b>              <i>real DOM per act — a11y + SEO</i>
+│  └─ Act01Copy.tsx … Act08Copy.tsx
+├─ <b>lib/</b>
+│  ├─ expertiseGraph.ts    <u>new</u> <i>derives lattice edges</i>
+│  ├─ flatMode.ts          <u>new</u> <i>the no-3D path</i>
+│  └─ theme.ts  api.ts  syncbot/*   <i>unchanged</i>
+└─ <b>pages/</b>                <i>kept, flat, for /403 /404 /500</i></pre>
+          </div>
+          <figcaption><b>Additive, not a rewrite.</b> <u>Two</u> new lib files. Everything under
+          <i>syncbot/</i>, <i>api.ts</i>, <i>theme.ts</i>, <i>cookies.ts</i> and the whole
+          <i>backend/</i> and <i>admin/</i> tree is untouched.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <figure>
+      <div class="fbox">
+<pre><i>// ScrollRig — the entire timing model of the site</i>
+const t = clamp(window.scrollY / (document.body.scrollHeight - innerHeight), 0, 1)
+smoothed.current = damp(smoothed.current, t, <b>0.10</b>, delta)   <i>// inertia, not lag</i>
+
+<i>// CameraSpline — piecewise, eased, exact at every keyframe</i>
+const KEYS = [
+  { t: 0.00, pos: [ 0, 0.2,   5 ], look: [0, 0,    0] },   <i>// 01 prism</i>
+  { t: 0.10, pos: [ 1.2, 0.4, -4 ], look: [0, 0,  -14] },   <i>// into the corridor</i>
+  { t: 0.24, pos: [ 0, 0.3, -38 ], look: [0, 0,  -46] },   <i>// 03 lattice</i>
+  { t: 0.36, pos: [ 0, 0.3, -52 ], look: [0, 0,  -58] },   <i>// 04 turbine</i>
+  { t: 0.44, pos: [ 0, 0.4, -62 ], look: [0, 0,  -80] },   <i>// 05 ring approach</i>
+  { t: 0.55, pos: [ 0, 0.4, -80 ], look: <u>ringTangent(t)</u> },  <i>// at the hub</i>
+  { t: 0.66, pos: [ 0, 0.4, -96 ], look: [0, 0, -108] },   <i>// 06 constellation</i>
+  { t: 0.78, pos: [ 0, 0.0,-118 ], look: [0, 0, -140] },   <i>// 07 hall — floor appears</i>
+  { t: 1.00, pos: [ 0, 0.2,-166 ], look: [0, 0, -176] },   <i>// 08 sync</i>
+]
+
+<i>// ShardPool — leases, never allocations</i>
+const lease = pool.<b>claim</b>(actId, count)        <i>// returns index range</i>
+for (const i of lease) pool.<b>write</b>(i, matrix)  <i>// dst-side only, no GC</i>
+pool.<b>handoff</b>(fromCore, toCore, easedT)        <i>// the Forge transition</i></pre>
+      </div>
+      <figcaption><b>The whole timing model fits on a screen.</b> That is the point of
+      invariant 2 — if it doesn't fit on a screen, acts start disagreeing about what time it is.</figcaption>
+    </figure>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>Dependencies to add</h3>
+        <div class="tscroll">
+          <table style="min-width:360px">
+            <thead><tr><th>Package</th><th>Version</th><th>Note</th></tr></thead>
+            <tbody>
+              <tr><td>three</td><td class="mono">^0.180</td><td>core renderer</td></tr>
+              <tr><td>@react-three/fiber</td><td class="mono">^8.17</td><td><strong>not v9</strong> — v9 requires React 19, you're on 18.3.1</td></tr>
+              <tr><td>@react-three/drei</td><td class="mono">^9.114</td><td>the React-18-compatible line</td></tr>
+              <tr><td>@react-three/postprocessing</td><td class="mono">^2.16</td><td>bloom, chromatic aberration, SMAA</td></tr>
+              <tr><td>lenis</td><td class="mono">^1.1</td><td>smooth scroll input</td></tr>
+              <tr><td>motion</td><td class="mono">^13.1</td><td>already in 1.08 — DOM overlays only</td></tr>
+              <tr><td>maath</td><td class="mono">^0.10</td><td>frame-rate-independent damping</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>Dependencies to drop</h3>
+        <ul class="clean">
+          <li><code>TagCloud@2.2.0</code> — the Lattice supersedes it, and it was the only
+          non-typed dependency in the tree.</li>
+          <li><code>typed.js</code> — <em>keep</em>. The designation cycle in act 01 still uses
+          it, and it's 3&nbsp;KB.</li>
+        </ul>
+        <div class="callout warn" style="margin-top:8px">
+          <span class="eyebrow">Version 1.09 is a fresh copy of 1.07, not 1.08</span>
+          <p><code>version_1.09/frontend/src</code> is byte-identical to
+          <code>version_1.07</code> except for a single file, <code>lib/sync.ts</code> — it
+          carries <code>SkillCloud</code>, <code>PreLoader</code> and the <code>TagCloud</code>
+          dependency. Version 1.08 is the one with <code>motion</code>,
+          <code>ScrollProgress</code>, <code>SectionRail</code>, <code>ParticleField</code>,
+          <code>SkillSphere</code>, <code>GlitchLoader</code> and a custom
+          <code>Cursor</code> — several of which feed straight into this work.
+          <strong>Decide before phase 0</strong> whether 1.09 rebases onto 1.08 or stays on the
+          1.07 base; it changes what we can reuse.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ 07 PERF ============================ -->
+<section id="perf" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">08 — budgets</span>
+      <h2>Four tiers, measured at boot, never guessed</h2>
+      <p class="lead prose">
+        A 3D portfolio that only works on the machine it was built on is a liability, not a
+        portfolio. Recruiters open links on mid-range phones. So the tier is <em>measured</em>
+        — renderer string plus a 30-frame probe in the first second — and everything scales
+        from that one number.
+      </p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <thead><tr>
+          <th>Tier</th><th>Detected by</th><th>DPR</th><th>Shards</th><th>Transmission</th><th>Post</th><th>Target</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>High</td><td>probe ≥ 55 fps, discrete GPU or Apple silicon</td><td class="tnum">2.0</td><td class="tnum">256</td><td>full, 1 object</td><td>bloom + CA + SMAA + AO</td><td class="tnum">60 fps</td></tr>
+          <tr><td>Mid</td><td>probe 35–55 fps, most laptops and flagship phones</td><td class="tnum">1.5</td><td class="tnum">96</td><td>fresnel fake</td><td>bloom + CA</td><td class="tnum">60 fps</td></tr>
+          <tr><td>Low</td><td>probe &lt; 35 fps, integrated mobile GPUs</td><td class="tnum">1.0</td><td class="tnum">0</td><td>none — matcap</td><td>none</td><td class="tnum">30 fps floor</td></tr>
+          <tr><td>Flat</td><td>no WebGL, <code>prefers-reduced-motion</code>, or an explicit opt-out</td><td>—</td><td>—</td><td>—</td><td>—</td><td>the 2D site you have today</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>Hard budgets</h3>
+        <div class="tscroll">
+          <table style="min-width:340px">
+            <thead><tr><th>Metric</th><th>Ceiling</th></tr></thead>
+            <tbody>
+              <tr><td>Draw calls, peak</td><td class="tnum">≤ 120</td></tr>
+              <tr><td>Triangles on screen</td><td class="tnum">≤ 240 k</td></tr>
+              <tr><td>CPU frame time</td><td class="tnum">≤ 3 ms</td></tr>
+              <tr><td>Transmissive objects</td><td class="tnum">1</td></tr>
+              <tr><td>Texture memory</td><td class="tnum">≤ 96 MB</td></tr>
+              <tr><td>Shell JS, gzipped</td><td class="tnum">≤ 120 KB</td></tr>
+              <tr><td>3D chunk, gzipped, lazy</td><td class="tnum">≤ 240 KB</td></tr>
+              <tr><td>LCP (flat hero paints first)</td><td class="tnum">≤ 1.8 s</td></tr>
+              <tr><td>Allocations per frame</td><td class="tnum">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>How each ceiling is held</h3>
+        <ul class="clean">
+          <li><strong>Draw calls</strong> — the 256 shards are one call; dust is one; slabs,
+          tiles and blades are instanced per act.</li>
+          <li><strong>Zero allocation</strong> — pre-allocated <code>Vector3</code>/<code>Matrix4</code>
+          scratch objects at module scope, and the shard pool leases rather than creating.
+          No garbage means no stutter.</li>
+          <li><strong>Textures</strong> — only the active project's media plus its two neighbours
+          are resident. Everything else is disposed on the way out. Remote images are
+          downscaled to 1024² through a canvas before upload, anisotropy 4.</li>
+          <li><strong>LCP</strong> — the hero copy is server-shaped DOM that paints before the
+          3D chunk has even been requested. The prism fades in behind text that is already
+          readable.</li>
+          <li><strong>Idle</strong> — <code>frameloop="demand"</code> when the scroll has been
+          still for 400&nbsp;ms and nothing is animating. A parked tab renders nothing.</li>
+          <li><strong>Off-screen</strong> — an <code>IntersectionObserver</code> stops the loop
+          entirely when the canvas is out of view.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 08 A11Y ============================ -->
+<section id="a11y" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">09 — accessibility &amp; the flat path</span>
+      <h2>The site has to survive losing the 3D</h2>
+    </div>
+
+    <figure>
+      <div class="fbox">
+        <svg viewBox="0 0 1080 210" style="min-width:820px" role="img" aria-label="Diagram of the three rendering paths: the full 3D world, the low tier without post-processing, and flat mode which is the existing 2D site, all driven from the same DOM content layer">
+          <rect x="20" y="24" width="1040" height="42" rx="2" fill="var(--teal-soft)" stroke="var(--teal)"/>
+          <text x="34" y="42" class="fig-tb" style="fill:var(--ink)">CONTENT LAYER — real DOM, one source, always present</text>
+          <text x="34" y="57" class="fig-t">profile.json → semantic HTML: headings, lists, links, tables, form. Selectable, translatable, crawlable, screen-readable.</text>
+
+          <g class="fig-lf">
+            <path d="M200 66 L200 96 M540 66 L540 96 M880 66 L880 96"/>
+          </g>
+
+          <g class="fig-s">
+            <rect x="40" y="96" width="320" height="78" rx="2"/>
+            <rect x="380" y="96" width="320" height="78" rx="2"/>
+            <rect x="720" y="96" width="320" height="78" rx="2"/>
+          </g>
+          <text x="56" y="116" class="fig-tb" style="fill:var(--s0)">HIGH / MID — the full world</text>
+          <text x="56" y="132" class="fig-t">canvas aria-hidden, decorative only</text>
+          <text x="56" y="145" class="fig-t">scroll drives the camera · acts mount by proximity</text>
+          <text x="56" y="158" class="fig-t">every act has a real anchor and a skip link</text>
+
+          <text x="396" y="116" class="fig-tb" style="fill:var(--s4)">LOW — geometry, no spectacle</text>
+          <text x="396" y="132" class="fig-t">matcap instead of glass, no bloom, no shards</text>
+          <text x="396" y="145" class="fig-t">same camera path, DPR 1, 30 fps floor</text>
+          <text x="396" y="158" class="fig-t">still one continuous world</text>
+
+          <text x="736" y="116" class="fig-tb" style="fill:var(--s8)">FLAT — no canvas at all</text>
+          <text x="736" y="132" class="fig-t">no WebGL · prefers-reduced-motion · opt-out toggle</text>
+          <text x="736" y="145" class="fig-t">the 1.09 sections render as the 2D site you have now</text>
+          <text x="736" y="158" class="fig-t">nothing is missing, only the travel</text>
+
+          <text x="20" y="196" class="fig-t" style="fill:var(--ink-2)">The content layer is written once. The three paths are three ways of decorating it — which is why flat mode is not a stub, it is the site.</text>
+        </svg>
+      </div>
+      <figcaption><b>Flat mode is a first-class path, not a courtesy.</b> It's also the honest
+      answer to "what if WebGL is blocked at their office" — a real risk for a portfolio that
+      recruiters open on managed laptops.</figcaption>
+    </figure>
+
+    <div class="grid3">
+      <div class="panel">
+        <h4>Keyboard</h4>
+        <p>Tab reaches every act in order. <kbd>PgUp</kbd>/<kbd>PgDn</kbd> jump act to act.
+        Inside an act, arrows step the interactive element — ring index, lattice node, blade,
+        gallery position. Nothing is hover-only.</p>
+      </div>
+      <div class="panel">
+        <h4>Reduced motion</h4>
+        <p>Respected as a hard switch to flat mode, not a slowed-down version of the same
+        ride. Users who set that flag are telling you camera travel makes them ill.</p>
+      </div>
+      <div class="panel">
+        <h4>Screen readers</h4>
+        <p>The canvas is <code>aria-hidden="true"</code>. Each act is a
+        <code>&lt;section aria-labelledby&gt;</code> with its real heading. A skip link jumps
+        straight to contact.</p>
+      </div>
+      <div class="panel">
+        <h4>Touch</h4>
+        <p>Vertical always scrolls the page. Drag-to-spin is horizontal-only. No gesture the
+        browser already owns gets hijacked.</p>
+      </div>
+      <div class="panel">
+        <h4>Contrast</h4>
+        <p>All copy sits on DOM surfaces with a token background, never directly on the
+        canvas. That's why <code>#00947f</code> exists in your light.css — the same rule
+        applies here.</p>
+      </div>
+      <div class="panel">
+        <h4>SEO</h4>
+        <p>Text volume is unchanged, headings keep their hierarchy, and every project keeps a
+        crawlable anchor. A 3D site that de-indexes you is a bad trade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 09 RISKS ============================ -->
+<section id="risk" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">10 — risks</span>
+      <h2>What can actually go wrong</h2>
+    </div>
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Flickr textures blocked by CORS</td><td><span class="pill hot">high</span></td>
+            <td>The data carries <strong>83 remote image URLs</strong> — 8 project logos, 53 media
+            items and 22 gallery images — and <strong>73 of them sit on
+            <code>live.staticflickr.com</code></strong>, the other 10 on assorted third-party
+            hosts. A WebGL texture needs CORS headers, and a third-party CDN can withdraw them
+            without notice. <strong>Fix: copy them into <code>view/static/works/</code> and
+            <code>/gallery/</code>, pre-sized to 1024².</strong>
+            Kills the dependency, halves the bytes, and lets us ship 2× WebP. Do this in phase 0
+            — it's the one task that blocks the Forge and the Gallery.</td>
+          </tr>
+          <tr>
+            <td>Transmission cost on mid-range phones</td><td><span class="pill hot">high</span></td>
+            <td>Transmission renders the scene to an offscreen buffer per object. Held by the
+            one-object rule plus the tier fallback to a fresnel fake, which is visually close at
+            a fraction of the cost. Verified on device in phase 7, not assumed.</td>
+          </tr>
+          <tr>
+            <td>React 18 vs @react-three/fiber v9</td><td><span class="pill mid">medium</span></td>
+            <td>R3F v9 needs React 19. Pin v8.17 / drei 9.114 and leave the React upgrade as
+            its own separate piece of work — mixing the two would put the 1,858-line SyncBot at
+            risk for no gain.</td>
+          </tr>
+          <tr>
+            <td>Bundle weight</td><td><span class="pill mid">medium</span></td>
+            <td>three + R3F + drei + postprocessing is roughly 230 KB gzipped. Lazy-load the
+            whole 3D chunk after first paint; the flat hero is what LCP measures. Import drei
+            per-symbol, never the barrel.</td>
+          </tr>
+          <tr>
+            <td>Scroll hijack fatigue</td><td><span class="pill mid">medium</span></td>
+            <td>900vh of scroll is a lot to ask. Mitigated by never blocking or snapping the
+            scroll, by the act rail letting anyone jump, and by deep links flying rather than
+            scrolling. If the analytics in <code>track-visitor.php</code> show drop-off at a
+            specific <code>t</code>, shorten that act — the timeline is data, so this is a
+            one-line change.</td>
+          </tr>
+          <tr>
+            <td>Nested scroll on the arcade / gallery</td><td><span class="pill ok">low</span></td>
+            <td>Any inner scroller inside a scroll-driven page is a trap. The arcade uses a
+            horizontal cylindrical grid, and the gallery uses camera position, so there is no
+            second vertical scroller anywhere in the build.</td>
+          </tr>
+          <tr>
+            <td>Content drift</td><td><span class="pill ok">low</span></td>
+            <td>The JSON schema does not change, so <code>admin/</code> and
+            <code>ProfileStore</code> keep working. New expertises and projects appear in the
+            Lattice and the Forge automatically — the ring divides 360° by
+            <code>projects.length</code>, and the lattice re-solves its node positions.</td>
+          </tr>
+          <tr>
+            <td>Safari transmission artefacts</td><td><span class="pill ok">low</span></td>
+            <td>Known ANGLE issues with high-<code>samples</code> transmission on iOS. Clamp
+            samples to 6 on Safari and prefer the fresnel fake below iOS 17.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 10 ROADMAP ============================ -->
+<section id="road" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">11 — roadmap</span>
+      <h2>Eight phases, each one shippable</h2>
+      <p class="lead prose">
+        Ordered so that the site is deployable at the end of every phase. Phase 1 alone gives
+        you a hero nobody else has; if the work stops there, you've still gained something.
+      </p>
+    </div>
+
+    <div class="tscroll">
+      <div class="gantt">
+        <div class="gantt-head"><span>Phase</span><span>27 working days</span><span>Days</span></div>
+        <div class="gantt-row" style="--edge:var(--s0)">
+          <div class="gantt-label"><b>P0 · Foundation</b><span>deps · Stage · ScrollRig · spline · tiers · flat mode · asset re-host</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:0%;width:11.1%"></div></div>
+          <div class="gantt-days">3</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s0)">
+          <div class="gantt-label"><b>P1 · Act 01 The Prism</b><span>monogram extrude · glass · beams · refracted name · post-FX</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:11.1%;width:11.1%"></div></div>
+          <div class="gantt-days">3</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s1)">
+          <div class="gantt-label"><b>P2 · Acts 02 + 04</b><span>the Spine corridor and the Turbine — mechanically simple, two acts done</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:22.2%;width:11.1%"></div></div>
+          <div class="gantt-days">3</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s4)">
+          <div class="gantt-label"><b>P3 · Act 05 The Forge</b><span>shard pool · seeded cores · ring indexing · shatter handoff · 05b interior</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:33.3%;width:18.5%"></div></div>
+          <div class="gantt-days">5</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s2)">
+          <div class="gantt-label"><b>P4 · Acts 03 + 06</b><span>expertise graph derivation · lattice interaction · constellation plotting</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:51.9%;width:14.8%"></div></div>
+          <div class="gantt-days">4</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s7)">
+          <div class="gantt-label"><b>P5 · Act 07 + 07b</b><span>the hall · spill lighting · lightbox · the arcade wall</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:66.7%;width:11.1%"></div></div>
+          <div class="gantt-days">3</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s8)">
+          <div class="gantt-label"><b>P6 · Acts 00 + 08 + orb</b><span>calibration loader · the Sync close · SyncBot as a resident</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:77.8%;width:7.4%"></div></div>
+          <div class="gantt-days">2</div>
+        </div>
+        <div class="gantt-row" style="--edge:var(--s5)">
+          <div class="gantt-label"><b>P7 · Studio, perf, a11y, QA</b><span>light theme pass · budget enforcement · device matrix · Lighthouse</span></div>
+          <div class="gantt-lane"><div class="gantt-bar" style="left:85.2%;width:14.8%"></div></div>
+          <div class="gantt-days">4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="eyebrow">Sequencing logic</span>
+      <p>
+        P0 does the boring asset re-host first because it blocks two later phases. P1 is next
+        because it's the highest-value single deliverable. P3 is the hard one and it sits in the
+        middle where there's still room to recover. P7 is not a polish buffer — the light theme
+        and the device matrix are real work, and putting them last is a deliberate choice to
+        tune against a finished world rather than a moving one.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 11 DECISIONS ============================ -->
+<section id="decide" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">12 — over to you</span>
+      <h2>Five things I need your call on</h2>
+    </div>
+    <div class="acts">
+      <article class="act" style="--edge:var(--s0)">
+        <div class="act-idx">01<small>BASE</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Does 1.09 rebase onto 1.08?</h3></div>
+          <p class="prose" style="font-size:.92rem;color:var(--ink-2)"><code>version_1.09/frontend/src</code>
+          is a copy of 1.07, not 1.08 — I diffed them, and only <code>lib/sync.ts</code>
+          differs. So the tree you've scoped for this work is missing <code>motion</code>,
+          <code>ScrollProgress</code>, <code>SectionRail</code>, <code>ParticleField</code> and
+          <code>SkillSphere</code>, all of which feed directly into the plan.
+          <strong>Recommendation: rebase 1.09 onto 1.08</strong> before phase 0 — it saves
+          roughly two days, and the 3D work doesn't touch those files afterwards.</p>
+        </div>
+      </article>
+      <article class="act" style="--edge:var(--s2)">
+        <div class="act-idx">02<small>COLOUR</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Strict two-tone, or the dispersion fringe?</h3></div>
+          <p class="prose" style="font-size:.92rem;color:var(--ink-2)">Your theme is teal and
+          crimson and both stay. The question is whether the <em>band between them</em> — the
+          blues and violets used in this document's act rail and in the middle spectrum beam —
+          is allowed on the site. <strong>Recommendation: allow it, thinly.</strong> Hairlines,
+          beams and node glows only, never text, never a surface. It's what makes dispersion
+          read as dispersion. Say the word and I'll cut it to a straight teal→crimson ramp
+          instead.</p>
+        </div>
+      </article>
+      <article class="act" style="--edge:var(--s4)">
+        <div class="act-idx">03<small>ASSETS</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Can I re-host the Flickr images locally?</h3></div>
+          <p class="prose" style="font-size:.92rem;color:var(--ink-2)">83 remote images across
+          projects and gallery, 73 of them on <code>live.staticflickr.com</code>. WebGL textures
+          need CORS, and this is the single highest risk in the plan. <strong>Recommendation:
+          copy them into <code>view/static/</code> at 1024², keep Flickr as the
+          archive.</strong> Roughly 10&nbsp;MB of repo, and it removes an outage nobody
+          controls.</p>
+        </div>
+      </article>
+      <article class="act" style="--edge:var(--s6)">
+        <div class="act-idx">04<small>SCOPE</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>All nine acts, or land the first four?</h3></div>
+          <p class="prose" style="font-size:.92rem;color:var(--ink-2)">Full build is about 27
+          working days. Phases P0–P3 — the Prism, the Spine, the Turbine and the Forge — is 14
+          days and already covers your hero, your background and all 8 projects, with acts 03,
+          06 and 07 staying flat until later. <strong>Recommendation: commit to P0–P3, then
+          decide.</strong> You'll be looking at something real before spending the second half.</p>
+        </div>
+      </article>
+      <article class="act" style="--edge:var(--s8)">
+        <div class="act-idx">05<small>NAME</small></div>
+        <div class="act-body">
+          <div class="act-title"><h3>Is “Prism” the name?</h3></div>
+          <p class="prose" style="font-size:.92rem;color:var(--ink-2)">It's doing real work
+          here — it names the hero object, justifies the palette, explains the chromatic
+          aberration and organises the acts. But it's the one thing in this plan chosen rather
+          than derived, and if it doesn't sound like you, the whole document survives renaming
+          it.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-start">
+    <div style="display:flex;align-items:center;gap:11px;flex:none">
+      <svg viewBox="0 0 100 100" style="width:24px;height:24px" aria-hidden="true"><use href="#fz"/></svg>
+      <div>
+        <p class="mast-id">PRISM</p>
+        <p class="mast-ver">farhanzaman.dev v1.09</p>
+      </div>
+    </div>
+    <p>
+      Concept and build plan for the 3D-on-scroll rebuild. Content is unchanged from
+      <code>data/profile.json</code>; palette and mark are unchanged from the existing theme.
+      The rig at the top of this page is a working prototype, not a mockup — the geometry, the
+      glass and the camera spline are the same ones the build would use.
+    </p>
+  </div>
+</footer>
+<style>
+kbd{font-family:var(--mono);font-size:.74em;background:var(--sunk);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:.1em .35em;color:var(--ink)}
+</style>
+<script>
+/* =====================================================================
+   FZ PRISM — live scroll rig
+   A working prototype of the scroll contract described above: one scene,
+   one camera on one spline, four of the nine acts. The hero geometry is
+   extruded from the real favicon polygons.
+
+   Written against two three.js generations: the modern ES-module build
+   (real transmission — the name behind the prism is genuinely refracted)
+   with the r128 UMD build as a fallback (env-map glass, no refraction).
+   ===================================================================== */
+window.__PRISM = { ok: false, init: function (THREE) {
+  'use strict';
+  var rig = document.getElementById('prismRig');
+  var cvs = document.getElementById('prismCanvas');
+  var scroller = document.getElementById('rigScroll');
+  if (!rig || !cvs || !THREE) return;
+
+  /* ---------- version compatibility ---------- */
+  var MODERN = !!THREE.SRGBColorSpace;               /* r152+ */
+  function srgb(t) {
+    if (MODERN) t.colorSpace = THREE.SRGBColorSpace;
+    else if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
+    return t;
+  }
+
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var TAU = Math.PI * 2;
+  var lerp = THREE.MathUtils.lerp;
+  function smooth(x) { return x * x * (3 - 2 * x); }
+  function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function rand(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
+  /* ---------- the real logo, as two closed polygons ---------- */
+  var FZ = [
+    '39.663,4.146 39.697,9.018 76.933,8.724 68.965,18.239 24.452,17.968 24.282,41.406 28.734,41.417 29.074,23.234 71.35,23.234 90.551,4',
+    '44.556,30.331 39.697,30.331 39.392,42.039 58.151,42.31 49.608,51.464 23.886,51.23 23.886,95.774 44.5,76.224 44.488,63.375 40.078,63.426 40.078,74.938 28.095,85.038 28.282,56.508 50.132,56.886 71.35,37.066 44.434,36.91'
+  ];
+  function monogramGeometry() {
+    var shapes = FZ.map(function (str) {
+      var sh = new THREE.Shape();
+      str.trim().split(/\s+/).forEach(function (pair, i) {
+        var p = pair.split(',');
+        var x = (parseFloat(p[0]) - 57) * 0.026;
+        var y = (50.5 - parseFloat(p[1])) * 0.026;   /* SVG y points down */
+        if (i === 0) sh.moveTo(x, y); else sh.lineTo(x, y);
+      });
+      sh.closePath();
+      return sh;
+    });
+    var g = new THREE.ExtrudeGeometry(shapes, {
+      depth: 0.3, bevelEnabled: true, bevelThickness: 0.026,
+      bevelSize: 0.02, bevelSegments: 2, curveSegments: 1
+    });
+    g.center();
+    return g;
+  }
+
+  /* ---------- seeded faceted core: the project vessel ---------- */
+  function facetedCore(seed, radius) {
+    var g = new THREE.IcosahedronGeometry(radius, 0);
+    var pos = g.attributes.position, r = rand(seed * 7919 + 13), cache = {};
+    var v = new THREE.Vector3();
+    for (var i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i);
+      var k = Math.round(v.x * 900) + '|' + Math.round(v.y * 900) + '|' + Math.round(v.z * 900);
+      var s = cache[k];
+      if (s === undefined) { s = 0.62 + r() * 0.76; cache[k] = s; }
+      pos.setXYZ(i, v.x * s, v.y * s, v.z * s);
+    }
+    g.computeVertexNormals();
+    return g;
+  }
+
+  /* ---------- canvas textures ---------- */
+  var DISPLAY = '"Chakra Petch","Segoe UI",sans-serif';
+  var MONO = '"IBM Plex Mono",monospace';
+
+  function tex(w, h, draw, isColor) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    draw(c.getContext('2d'), w, h);
+    var t = new THREE.CanvasTexture(c);
+    t.anisotropy = 4; t.needsUpdate = true;
+    if (isColor !== false) srgb(t);
+    return t;
+  }
+  function radial(size, hex, stops) {
+    return tex(size, size, function (g, w) {
+      var gr = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
+      stops.forEach(function (s) { gr.addColorStop(s[0], 'rgba(' + hex + ',' + s[1] + ')'); });
+      g.fillStyle = gr; g.fillRect(0, 0, w, w);
+    });
+  }
+  function label(text, sub, light, accent) {
+    return tex(512, 128, function (g, w, h) {
+      g.clearRect(0, 0, w, h);
+      g.fillStyle = light ? 'rgba(255,255,255,.9)' : 'rgba(11,17,20,.86)';
+      g.fillRect(0, 0, w, h);
+      g.fillStyle = accent; g.fillRect(0, 0, 5, h);
+      g.font = '600 42px ' + DISPLAY;
+      g.fillStyle = light ? '#111719' : '#e6ecea';
+      g.fillText(text, 24, 62);
+      g.font = '400 25px ' + MONO;
+      g.fillStyle = light ? '#5c6a67' : '#93a29f';
+      g.fillText(sub, 24, 100);
+    });
+  }
+  /* The vessel surface carries project MEDIA, never project type — an icosahedron's
+     UVs are per-face, so any text mapped onto it arrives fragmented and mirrored.
+     Copy belongs in the DOM rail. This stands in for logo_image + media[]. */
+  function coreFace(seed, light) {
+    return tex(512, 512, function (g, w, h) {
+      var r = rand(seed * 104729 + 7);
+      var bg = g.createLinearGradient(0, 0, w, h);
+      if (light) { bg.addColorStop(0, '#dde8e6'); bg.addColorStop(1, '#f6faf9'); }
+      else { bg.addColorStop(0, '#06181c'); bg.addColorStop(1, '#170a11'); }
+      g.fillStyle = bg; g.fillRect(0, 0, w, h);
+      for (var i = 0; i < 34; i++) {
+        var crim = r() > 0.66;
+        g.fillStyle = (crim ? 'rgba(253,33,85,' : 'rgba(0,211,180,') + (0.12 + r() * 0.55) + ')';
+        var bw = 26 + r() * 210, bh = 8 + r() * 44;
+        g.fillRect(r() * (w - bw), r() * (h - bh), bw, bh);
+      }
+      for (var j = 0; j < 5; j++) {
+        g.strokeStyle = 'rgba(0,211,180,' + (0.22 + r() * 0.42) + ')';
+        g.lineWidth = 1 + r() * 2;
+        g.beginPath(); g.moveTo(0, r() * h); g.lineTo(w, r() * h); g.stroke();
+      }
+    });
+  }
+  function addressPlate(light) {
+    return tex(1024, 256, function (g, w) {
+      g.clearRect(0, 0, w, 256);
+      g.textAlign = 'center';
+      g.font = '700 82px ' + DISPLAY;
+      g.fillStyle = light ? '#0f1618' : '#ffffff';
+      g.shadowColor = '#00d3b4'; g.shadowBlur = light ? 0 : 34;
+      g.fillText('LET’S BUILD SOMETHING', w / 2, 104);
+      g.font = '500 44px ' + MONO;
+      g.shadowBlur = light ? 0 : 22;
+      g.fillStyle = light ? '#00806e' : '#8ff2e4';
+      g.fillText('farhanzamanarnob@gmail.com', w / 2, 186);
+    });
+  }
+  function namePlate(light) {
+    return tex(2048, 512, function (g, w) {
+      g.clearRect(0, 0, w, 512);
+      g.textAlign = 'center';
+      g.font = '700 236px ' + DISPLAY;
+      g.fillStyle = light ? 'rgba(17,23,25,.5)' : 'rgba(233,240,238,.46)';
+      g.fillText('FARHAN ZAMAN', w / 2, 250);
+      g.font = '500 62px ' + MONO;
+      g.fillStyle = light ? 'rgba(0,128,110,.6)' : 'rgba(0,211,180,.56)';
+      g.fillText('SR. SOFTWARE ENGINEER · AI RESEARCHER · ART ENTHUSIAST', w / 2, 372);
+    });
+  }
+
+  /* ---------- renderer ---------- */
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: false, powerPreference: 'high-performance' });
+  } catch (e) { rig.classList.add('is-dead'); return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  if (MODERN) renderer.outputColorSpace = THREE.SRGBColorSpace;
+  else if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 320);
+  var world = new THREE.Group(); scene.add(world);
+  var TEAL = 0x00d3b4, CRIM = 0xfd2155, VIOLET = 0x8a4cf9;
+
+  /* ---------- environment, rebuilt when the theme flips ---------- */
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  if (pmrem.compileEquirectangularShader) pmrem.compileEquirectangularShader();
+  var envRT = null;
+  function buildEnv(light) {
+    var t = tex(512, 256, function (g, w, h) {
+      var base = g.createLinearGradient(0, 0, 0, h);
+      if (light) { base.addColorStop(0, '#ffffff'); base.addColorStop(.5, '#e9efee'); base.addColorStop(1, '#ccd8d5'); }
+      else { base.addColorStop(0, '#10191d'); base.addColorStop(.52, '#040709'); base.addColorStop(1, '#0b1114'); }
+      g.fillStyle = base; g.fillRect(0, 0, w, h);
+      function blob(cx, cy, r, col, a) {
+        var gr = g.createRadialGradient(cx, cy, 0, cx, cy, r);
+        gr.addColorStop(0, 'rgba(' + col + ',' + a + ')');
+        gr.addColorStop(1, 'rgba(' + col + ',0)');
+        g.fillStyle = gr; g.fillRect(cx - r, cy - r, r * 2, r * 2);
+      }
+      blob(130, 92, 132, '0,211,180', light ? .55 : 1);
+      blob(372, 152, 122, '253,33,85', light ? .38 : .72);
+      blob(252, 20, 92, '255,255,255', light ? .85 : .42);
+    }, false);
+    t.mapping = THREE.EquirectangularReflectionMapping;
+    if (envRT) envRT.dispose();
+    envRT = pmrem.fromEquirectangular(t);
+    t.dispose();
+    return envRT.texture;
+  }
+
+  /* ---------- lights: directional only, so intensity means the same thing
+       on both the legacy and the physically-correct lighting model ---------- */
+  var amb = new THREE.AmbientLight(0xffffff, 0.55);
+  var key = new THREE.DirectionalLight(TEAL, 2.4); key.position.set(3, 4, 5);
+  var rim = new THREE.DirectionalLight(CRIM, 1.7); rim.position.set(-4, -1, -3);
+  var fill = new THREE.DirectionalLight(0xffffff, 1.2); fill.position.set(0, 3, 6);
+  scene.add(amb, key, rim, fill);
+
+  /* ================= ACT 01 — THE PRISM ================= */
+  var act1 = new THREE.Group(); world.add(act1);
+
+  var namePlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(7.6, 1.9),
+    new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false })
+  );
+  namePlane.position.set(0, 0.02, -2.3);
+  act1.add(namePlane);
+
+  var prismMatT = new THREE.MeshPhysicalMaterial({
+    color: 0xdefff9, metalness: 0, roughness: 0.04, transmission: 1,
+    thickness: 1.1, ior: 1.62, clearcoat: 1, clearcoatRoughness: 0.05,
+    transparent: true, side: THREE.DoubleSide
+  });
+  var prismMatC = new THREE.MeshPhysicalMaterial({
+    color: CRIM, metalness: 0, roughness: 0.14, transmission: 0.82,
+    thickness: 0.9, ior: 1.5, transparent: true, opacity: 0.85, side: THREE.DoubleSide
+  });
+  /* r165+ does real wavelength dispersion — the whole point of the metaphor */
+  if ('dispersion' in prismMatT) { prismMatT.dispersion = 0.7; prismMatC.dispersion = 0.4; }
+
+  var mg = monogramGeometry();
+  var prismT = new THREE.Mesh(mg, prismMatT);
+  var prismC = new THREE.Mesh(mg, prismMatC);
+  prismC.position.set(-0.075, 0.036, -0.16);   /* the logo's own offset vector */
+  prismC.scale.setScalar(1.006);
+  var prism = new THREE.Group(); prism.add(prismC, prismT); act1.add(prism);
+
+  var prismGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: radial(256, '0,211,180', [[0, .5], [.34, .14], [1, 0]]),
+    blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
+  }));
+  prismGlow.scale.set(9, 9, 1); prismGlow.position.z = -1.4; act1.add(prismGlow);
+
+  /* three spectrum beams, one per designation */
+  var beams = new THREE.Group(); act1.add(beams);
+  [[TEAL, 0.62], [VIOLET, 0.0], [CRIM, -0.66]].forEach(function (spec, i) {
+    var m = new THREE.Mesh(
+      new THREE.PlaneGeometry(8, 0.055),
+      new THREE.MeshBasicMaterial({
+        color: spec[0], transparent: true, opacity: 0.5,
+        blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
+      })
+    );
+    m.position.set(5.2, spec[1] * 0.8, 0);
+    m.rotation.z = spec[1] * 0.16;
+    beams.add(m);
+  });
+
+  /* ================= ACT 02 — THE SPINE ================= */
+  var act2 = new THREE.Group(); world.add(act2);
+  var SPINE = [
+    ['IDEAL SCHOOL', '2009 → 2014', 1], ['BJIT GROUP', '2022 → now', 0],
+    ['DHAKA COLLEGE', '2014 → 2016', 1], ['DOODLE INC.', '2021 → 2022', 0],
+    ['BRAC UNIVERSITY', '2017 → 2022', 1], ['FORECAST', '2018 → 2021', 0],
+    ['BRAC · MBA', '2022 → now', 1]
+  ];
+  var slabMat = new THREE.MeshStandardMaterial({ color: 0x1b2427, roughness: .55, metalness: .12, transparent: true, opacity: .9 });
+  var spineLabels = [];
+  SPINE.forEach(function (row, i) {
+    var isEdu = row[2] === 1;
+    var z = -8 - i * 3.4;
+    var x = isEdu ? -2.6 : 2.6;
+    var slab = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.3, 0.12), slabMat);
+    slab.position.set(x, 0.1, z); slab.rotation.y = isEdu ? 0.44 : -0.44;
+    act2.add(slab);
+    var edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(slab.geometry),
+      new THREE.LineBasicMaterial({ color: isEdu ? TEAL : CRIM, transparent: true, opacity: .6 })
+    );
+    edges.position.copy(slab.position); edges.rotation.copy(slab.rotation);
+    act2.add(edges);
+    var lab = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.3, 0.575),
+      new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide })
+    );
+    lab.position.set(x, 0.12, z + 0.1); lab.rotation.y = slab.rotation.y;
+    act2.add(lab);
+    spineLabels.push({ mesh: lab, text: row[0], sub: row[1], accent: isEdu ? '#00d3b4' : '#fd2155' });
+  });
+
+  var cable = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.014, 0.014, 32, 6),
+    new THREE.MeshBasicMaterial({ color: TEAL, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false })
+  );
+  cable.rotation.x = Math.PI / 2; cable.position.set(0, -0.55, -22); act2.add(cable);
+  var pulses = [];
+  for (var pi = 0; pi < 3; pi++) {
+    var pspr = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: radial(128, '0,211,180', [[0, .95], [.4, .2], [1, 0]]),
+      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
+    }));
+    pspr.scale.set(1.2, 1.2, 1); pspr.position.y = -0.55; act2.add(pspr); pulses.push(pspr);
+  }
+
+  /* ================= ACT 05 — THE FORGE ================= */
+  var PROJECTS = [
+    ['POCKETALK VENTANA', 'Enterprise · Web · Backend Engineer'],
+    ['TRIBEL', 'Social · Cross · Full Stack Engineer'],
+    ['SIMBA (CSA)', 'NLP · Language Model · Researcher'],
+    ['COVIDEASE', 'Health · Android · Team Leader'],
+    ['C ACADEMY TMS', 'Education · Web · Developer'],
+    ['EXAMINER', 'Education · Web · Developer'],
+    ['SPACE NINJA', 'Game · Web · Developer'],
+    ['QR QUEEN', 'Accessibility · Android · Developer']
+  ];
+  var RING_Z = -44, RING_R = 7;
+  var ring = new THREE.Group(); ring.position.z = RING_Z; world.add(ring);
+  var cores = [];
+  PROJECTS.forEach(function (p, i) {
+    var a = i * TAU / 8;
+    var mat = new THREE.MeshPhysicalMaterial({
+      metalness: .2, roughness: .28, transmission: .08, thickness: .5,
+      envMapIntensity: 1.6, flatShading: true, transparent: true,
+      opacity: 1, side: THREE.FrontSide
+    });
+    var m = new THREE.Mesh(facetedCore(i + 3, 1.6), mat);
+    m.position.set(Math.sin(a) * RING_R, 0, -Math.cos(a) * RING_R);
+    m.lookAt(0, 0, 0);
+    ring.add(m);
+    var glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: radial(256, '0,211,180', [[0, .42], [.4, .1], [1, 0]]),
+      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
+    }));
+    glow.scale.set(11, 11, 1); glow.position.copy(m.position).multiplyScalar(1.1);
+    ring.add(glow);
+    cores.push({ mesh: m, glow: glow, mat: mat, name: p[0], type: p[1], seed: i + 3 });
+  });
+  var ringPts = [];
+  for (var ri = 0; ri <= 72; ri++) { var ra = ri * TAU / 72; ringPts.push(new THREE.Vector3(Math.sin(ra) * RING_R, 0, -Math.cos(ra) * RING_R)); }
+  var ringLine = new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(ringPts),
+    new THREE.LineBasicMaterial({ color: VIOLET, transparent: true, opacity: .3 })
+  );
+  ring.add(ringLine);
+
+  /* ================= ACT 08 — SYNC ================= */
+  var act8 = new THREE.Group(); world.add(act8);
+  var plateMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  var plate = new THREE.Mesh(new THREE.PlaneGeometry(12, 3), plateMat);
+  plate.position.set(0, 0.3, -70); act8.add(plate);
+  var plateGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: radial(256, '0,211,180', [[0, .34], [.42, .1], [1, 0]]),
+    blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
+  }));
+  plateGlow.scale.set(26, 12, 1); plateGlow.position.set(0, 0.3, -71); act8.add(plateGlow);
+  var closeMark = new THREE.Mesh(mg, prismMatT.clone());
+  closeMark.scale.setScalar(1.7); closeMark.position.set(0, 2.6, -70); act8.add(closeMark);
+
+  /* ================= PERSISTENT — shards + dust ================= */
+  var SHARDS = 150;
+  var shardMesh = new THREE.InstancedMesh(
+    new THREE.TetrahedronGeometry(0.14, 0),
+    new THREE.MeshStandardMaterial({ roughness: .16, metalness: .35, flatShading: true, vertexColors: true, transparent: true, opacity: .92 }),
+    SHARDS
+  );
+  shardMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  var shardData = [], _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(),
+      _e = new THREE.Euler(), _v = new THREE.Vector3(), _sc = new THREE.Vector3(), _c = new THREE.Color();
+  var sr = rand(9137);
+  for (var si = 0; si < SHARDS; si++) {
+    shardData.push({
+      home: new THREE.Vector3((sr() - .5) * 28, (sr() - .5) * 13, -sr() * 76 + 5),
+      rot: new THREE.Vector3(sr() * TAU, sr() * TAU, sr() * TAU),
+      spin: (sr() - .5) * .5, drift: .3 + sr() * .9, sc: .5 + sr() * 1.2, phase: sr() * TAU
+    });
+    _c.setHex(sr() > .74 ? CRIM : TEAL).lerp(new THREE.Color(0xffffff), sr() * .4);
+    shardMesh.setColorAt(si, _c);
+  }
+  if (shardMesh.instanceColor) shardMesh.instanceColor.needsUpdate = true;
+  world.add(shardMesh);
+
+  var dustGeo = new THREE.BufferGeometry();
+  var DUST = 1500, dp = new Float32Array(DUST * 3), dr = rand(4421);
+  for (var di = 0; di < DUST; di++) {
+    dp[di * 3] = (dr() - .5) * 48; dp[di * 3 + 1] = (dr() - .5) * 24; dp[di * 3 + 2] = -dr() * 84 + 7;
+  }
+  dustGeo.setAttribute('position', new THREE.BufferAttribute(dp, 3));
+  var dustMat = new THREE.PointsMaterial({
+    size: .075, sizeAttenuation: true, transparent: true, opacity: .6,
+    map: radial(64, '255,255,255', [[0, 1], [.5, .3], [1, 0]]),
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  world.add(new THREE.Points(dustGeo, dustMat));
+
+  /* ---------- camera spline ---------- */
+  var KEYS = [
+    { t: 0.00, p: [0, 0.10, 3.5], l: [0, 0, 0] },
+    { t: 0.14, p: [1.5, 0.45, 1.7], l: [0, 0, -1.4] },
+    { t: 0.24, p: [0, 0.30, -6], l: [0, 0, -13] },
+    { t: 0.42, p: [0, 0.30, -27], l: [0, 0, -34] },
+    { t: 0.50, p: [0, 0.40, -40], l: [0, 0, -50] },
+    { t: 0.58, p: [0, 0.28, -44], l: [0, 0, -52] },
+    { t: 0.74, p: [0, 0.28, -44], l: [0, 0, -52] },   /* held at the hub */
+    { t: 0.81, p: [3.9, 1.30, -47], l: [0, 0, -53] },
+    { t: 0.88, p: [0.8, 0.60, -56], l: [0, 0, -66] },
+    { t: 1.00, p: [0, 0.25, -63.5], l: [0, 0.3, -70] }
+  ];
+  var camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
+  function sampleCam(t) {
+    var i = 0;
+    while (i < KEYS.length - 2 && t > KEYS[i + 1].t) i++;
+    var a = KEYS[i], b = KEYS[i + 1];
+    var u = smooth(clamp01((t - a.t) / (b.t - a.t)));
+    camPos.set(lerp(a.p[0], b.p[0], u), lerp(a.p[1], b.p[1], u), lerp(a.p[2], b.p[2], u));
+    camLook.set(lerp(a.l[0], b.l[0], u), lerp(a.l[1], b.l[1], u), lerp(a.l[2], b.l[2], u));
+  }
+
+  /* ---------- acts + HUD ---------- */
+  var ACTS = [
+    { t: 0.00, k: 'act 01 · hero', n: 'The Prism', d: 'The extruded glass monogram refracts your name, which is set behind it. Three spectrum beams leave it — one per designation.' },
+    { t: 0.20, k: 'act 02 · background', n: 'The Spine', d: 'Time becomes depth. Education lines the left wall, experience the right, dates mapped to Z. You fly from 2009 and stop at now.' },
+    { t: 0.46, k: 'act 05 · works', n: 'The Forge', d: 'Eight seeded cores on a ring with the camera at the hub. Scroll turns the ring; the outgoing core shatters into the shards that build the next.' },
+    { t: 0.80, k: 'act 08 · contact', n: 'Sync', d: 'Every shard converges, the three spectra fold back into one beam, and the beam writes the address. The mark returns to register.' }
+  ];
+  var elK = document.getElementById('rigK'), elT = document.getElementById('rigT'),
+      elD = document.getElementById('rigD'), elFill = document.getElementById('rigFill'),
+      elT01 = document.getElementById('rigT01'), track = document.getElementById('rigTrack');
+  var SBAND = ['--s0', '--s1', '--s4', '--s8'];
+  var ticks = ACTS.map(function (a, i) {
+    var b = document.createElement('button');
+    b.className = 'rig-tick'; b.type = 'button';
+    b.style.left = (a.t * 100) + '%';
+    b.style.background = 'var(' + SBAND[i] + ')';
+    b.setAttribute('aria-label', 'Jump to ' + a.n);
+    b.addEventListener('click', function () {
+      var max = scroller.scrollHeight - scroller.clientHeight;
+      scroller.scrollTo({ top: (a.t + 0.02) * max, behavior: RM ? 'auto' : 'smooth' });
+    });
+    track.appendChild(b);
+    return b;
+  });
+  var actIdx = -1, lastProject = null;
+  function setAct(i) {
+    if (i === actIdx) return;
+    actIdx = i;
+    if (i !== 2) lastProject = null;
+    elK.textContent = ACTS[i].k; elT.textContent = ACTS[i].n; elD.textContent = ACTS[i].d;
+    ticks.forEach(function (b, j) { b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
+  }
+  /* inside the Forge the readout names the core you are actually looking at */
+  function setProject(proj) {
+    if (!proj || proj[0] === lastProject) return;
+    lastProject = proj[0];
+    actIdx = 2;
+    elK.textContent = 'act 05 · works';
+    elT.textContent = proj[0];
+    elD.textContent = proj[1] + ' — the ring is at the hub with you; scroll indexes the next core and the shards hand over between them.';
+    ticks.forEach(function (b, j) { b.setAttribute('aria-current', j === 2 ? 'true' : 'false'); });
+  }
+
+  /* ---------- theme ---------- */
+  var themeLight = null;
+  function resolveLight() {
+    var a = document.documentElement.getAttribute('data-theme');
+    if (a === 'light') return true;
+    if (a === 'dark') return false;
+    return window.matchMedia('(prefers-color-scheme: light)').matches;
+  }
+  function applyTheme(force) {
+    var light = resolveLight();
+    if (light === themeLight && !force) return;
+    themeLight = light;
+    var env = buildEnv(light);
+    scene.background = new THREE.Color(light ? 0xeef2f1 : 0x06080a);
+    scene.fog = new THREE.Fog(light ? 0xeef2f1 : 0x06080a, 24, 100);
+    scene.environment = env;
+    renderer.toneMappingExposure = light ? 0.95 : 1.15;
+    amb.intensity = light ? 1.25 : 0.55;
+    key.intensity = light ? 1.5 : 2.4;
+    rim.intensity = light ? 1.0 : 1.7;
+    fill.intensity = light ? 1.6 : 1.2;
+    [prismMatT, prismMatC, closeMark.material].forEach(function (m) { m.envMap = env; m.needsUpdate = true; });
+    prismMatT.color.setHex(light ? 0xffffff : 0xdefff9);
+    slabMat.color.setHex(light ? 0xf3f8f7 : 0x1b2427);
+    prismGlow.material.opacity = light ? 0.3 : 1;
+    plateGlow.material.opacity = light ? 0.18 : 1;
+    ringLine.material.color.setHex(light ? 0x4a13c6 : VIOLET);
+    ringLine.material.opacity = light ? 0.45 : 0.3;
+    shardMesh.material.opacity = light ? 0.96 : 0.92;
+    dustMat.opacity = light ? 0.34 : 0.6;
+    dustMat.color.setHex(light ? 0x5c7a76 : 0xffffff);
+    dustMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    dustMat.needsUpdate = true;
+    /* additive marks vanish on a light ground — the Studio look drops the glow and
+       keeps the geometry, so beams and the cable switch to normal blending. */
+    beams.children.forEach(function (b) {
+      b.material.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+      b.material.needsUpdate = true;
+    });
+    cable.material.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    cable.material.needsUpdate = true;
+    /* textures that carry ink have to be redrawn for the other ground */
+    namePlane.material.map = namePlate(light); namePlane.material.needsUpdate = true;
+    plateMat.map = addressPlate(light); plateMat.needsUpdate = true;
+    plateMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    spineLabels.forEach(function (s) {
+      s.mesh.material.map = label(s.text, s.sub, light, s.accent);
+      s.mesh.material.needsUpdate = true;
+    });
+    cores.forEach(function (c) {
+      c.mat.map = coreFace(c.seed, light);
+      c.mat.envMap = env; c.mat.needsUpdate = true;
+      c.glow.material.opacity = light ? 0.28 : 1;
+    });
+    dirty = true;
+  }
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () { applyTheme(false); });
+  new MutationObserver(function () { applyTheme(false); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* ---------- mouse drag to look ---------- */
+  var look = { x: 0, y: 0 }, target = { x: 0, y: 0 }, dragging = false, last = null;
+  function clampAbs(v, m) { return v > m ? m : v < -m ? -m : v; }
+  scroller.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse') return;
+    dragging = true; last = { x: e.clientX, y: e.clientY };
+  });
+  window.addEventListener('pointerup', function () { dragging = false; last = null; });
+  scroller.addEventListener('pointermove', function (e) {
+    if (!dragging || !last) return;
+    target.x = clampAbs(target.x + (e.clientX - last.x) * 0.0016, 0.17);
+    target.y = clampAbs(target.y + (e.clientY - last.y) * 0.0014, 0.1);
+    last = { x: e.clientX, y: e.clientY };
+    dirty = true;
+  });
+
+  /* ---------- autoplay ---------- */
+  var playing = false;
+  var playBtn = document.getElementById('rigPlay');
+  playBtn.addEventListener('click', function () {
+    playing = !playing;
+    playBtn.textContent = playing ? 'Stop' : 'Auto';
+    if (playing) { visible = true; loop(); }
+  });
+
+  /* ---------- resize / visibility ---------- */
+  var dirty = true, visible = true;
+  function resize() {
+    var w = rig.clientWidth, h = rig.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(h, 1); camera.updateProjectionMatrix();
+    dirty = true;
+  }
+  window.addEventListener('resize', resize);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting;
+      if (visible) loop();
+    }, { rootMargin: '150px' }).observe(rig);
+  }
+  scroller.addEventListener('scroll', function () { dirty = true; if (visible) loop(); }, { passive: true });
+
+  /* ---------- the frame ---------- */
+  var tRaw = 0, tSmooth = 0, clock = new THREE.Clock(), running = false;
+
+  function frame() {
+    var dt = Math.min(clock.getDelta(), 0.05);
+    var max = scroller.scrollHeight - scroller.clientHeight;
+
+    if (playing) {
+      tRaw = (tRaw + dt * 0.05) % 1.0;
+      scroller.scrollTop = tRaw * max;
+    } else {
+      tRaw = max > 0 ? clamp01(scroller.scrollTop / max) : 0;
+    }
+    tSmooth = RM ? tRaw : tSmooth + (tRaw - tSmooth) * Math.min(1, dt * 6.5);
+    var t = tSmooth;
+
+    sampleCam(t);
+    look.x += (target.x - look.x) * Math.min(1, dt * 5);
+    look.y += (target.y - look.y) * Math.min(1, dt * 5);
+    camera.position.copy(camPos);
+    camera.lookAt(camLook);
+    camera.rotateY(look.x); camera.rotateX(look.y);
+
+    /* act 01 */
+    var a1 = 1 - clamp01((t - 0.13) / 0.1);
+    act1.visible = a1 > 0.01;
+    if (act1.visible) {
+      prism.rotation.y = t * 9 + (RM ? 0 : clock.elapsedTime * 0.1);
+      prism.rotation.x = Math.sin(t * 6) * 0.1;
+      prism.scale.setScalar(lerp(1.35, 1.75, smooth(clamp01(t / 0.14))));
+      namePlane.material.opacity = a1;
+      prismGlow.material.opacity = a1 * (themeLight ? 0.3 : 1);
+      beams.children.forEach(function (b, i) {
+        b.material.opacity = a1 * (0.32 + 0.22 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 1.1 + i * 2.1)));
+      });
+      prismMatT.opacity = a1;
+      prismMatC.opacity = a1 * 0.85;
+    }
+
+    /* act 02 */
+    var a2 = clamp01((t - 0.15) / 0.08) * (1 - clamp01((t - 0.44) / 0.06));
+    act2.visible = a2 > 0.01;
+    if (act2.visible) {
+      slabMat.opacity = a2 * 0.9;
+      spineLabels.forEach(function (s) { s.mesh.material.opacity = a2; });
+      cable.material.opacity = a2 * 0.55;
+      pulses.forEach(function (p, i) {
+        var u = ((clock.elapsedTime * 0.19 + i / 3) % 1);
+        p.position.z = -38 + u * 32;
+        p.material.opacity = a2 * (0.85 * Math.sin(u * Math.PI));
+      });
+    }
+
+    /* act 05 — the ring turns, one core indexes forward */
+    var a5 = clamp01((t - 0.42) / 0.06) * (1 - clamp01((t - 0.80) / 0.07));
+    ring.visible = a5 > 0.01;
+    if (ring.visible) {
+      var prog = clamp01((t - 0.46) / 0.28) * 7;
+      ring.rotation.y = -prog * TAU / 8;
+      var frac = prog - Math.floor(prog);
+      var shatter = Math.sin(clamp01(frac) * Math.PI);   /* peaks mid-handoff */
+      cores.forEach(function (c, i) {
+        var near = 1 - Math.min(1, Math.abs(i - prog));
+        c.mesh.scale.setScalar(lerp(0.48, 1.34, near * near) * (1 - shatter * 0.2 * near));
+        c.mesh.rotation.y += dt * (0.12 + near * 0.3);
+        c.mesh.rotation.x = Math.sin(clock.elapsedTime * 0.2 + i) * 0.1;
+        c.mat.opacity = a5 * lerp(0.42, 1, near) * (1 - shatter * 0.26 * near);
+        c.glow.material.opacity = a5 * near * (themeLight ? 0.28 : 0.9);
+      });
+      ringLine.material.opacity = a5 * (themeLight ? 0.45 : 0.3);
+      if (t > 0.46 && t < 0.78) setProject(PROJECTS[Math.max(0, Math.min(7, Math.round(prog)))]);
+    }
+
+    /* act 08 */
+    var a8 = clamp01((t - 0.80) / 0.1);
+    act8.visible = a8 > 0.01;
+    if (act8.visible) {
+      plateMat.opacity = a8;
+      plateGlow.material.opacity = a8 * (themeLight ? 0.18 : 1);
+      closeMark.rotation.y = -t * 5;
+      closeMark.material.opacity = a8;
+      closeMark.position.y = lerp(4.4, 2.5, smooth(a8));
+    }
+
+    /* shards: drift, then converge on the closing plate */
+    var conv = clamp01((t - 0.82) / 0.16);
+    for (var i = 0; i < SHARDS; i++) {
+      var s = shardData[i];
+      _v.copy(s.home);
+      _v.y += Math.sin(clock.elapsedTime * 0.22 * s.drift + s.phase) * 0.7;
+      _v.x += Math.cos(clock.elapsedTime * 0.17 * s.drift + s.phase) * 0.6;
+      if (conv > 0) {
+        var e = smooth(conv);
+        _v.x = lerp(_v.x, Math.cos(s.phase) * 6 * (1 - e * 0.7), e);
+        _v.y = lerp(_v.y, 0.3 + Math.sin(s.phase) * 1.7 * (1 - e * 0.7), e);
+        _v.z = lerp(_v.z, -69.4, e);
+      }
+      _e.set(s.rot.x + clock.elapsedTime * s.spin, s.rot.y + clock.elapsedTime * s.spin * .7, s.rot.z);
+      _q.setFromEuler(_e);
+      _sc.setScalar(s.sc * lerp(1, 1.5, conv));
+      _m4.compose(_v, _q, _sc);
+      shardMesh.setMatrixAt(i, _m4);
+    }
+    shardMesh.instanceMatrix.needsUpdate = true;
+
+    /* HUD */
+    var ai = 0;
+    for (var k = 0; k < ACTS.length; k++) if (t >= ACTS[k].t - 0.001) ai = k;
+    setAct(ai);
+    elFill.style.width = (t * 100) + '%';
+    elT01.textContent = 't ' + t.toFixed(2);
+
+    renderer.render(scene, camera);
+  }
+
+  function loop() {
+    if (running) return;
+    running = true;
+    (function tick() {
+      if (!visible) { running = false; return; }
+      if (RM && !dirty && !playing) { running = false; return; }
+      dirty = false;
+      frame();
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  resize();
+  applyTheme(true);
+  setAct(0);
+  clock.start();
+  loop();
+
+  /* webfonts land after first paint; the ink textures need one redraw */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { applyTheme(true); });
+  }
+}};
+</script>
+<script type="module">
+  /* The modern build is what makes the refraction real: transmission renders the
+     scene behind the glass, and r165+ adds wavelength dispersion. */
+  import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.169.0/three.module.min.js';
+  if (!window.__PRISM.ok) { window.__PRISM.ok = true; window.__PRISM.init(THREE); }
+</script>
+<script>
+  /* If ES modules or that CDN path are unavailable, fall back to the r128 UMD
+     build — env-map glass instead of true refraction, but the rig still runs. */
+  setTimeout(function () {
+    if (window.__PRISM.ok) return;
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload = function () {
+      if (window.__PRISM.ok || !window.THREE) return;
+      window.__PRISM.ok = true; window.__PRISM.init(window.THREE);
+    };
+    s.onerror = function () { document.getElementById('prismRig').classList.add('is-dead'); };
+    document.head.appendChild(s);
+  }, 3500);
+</script>

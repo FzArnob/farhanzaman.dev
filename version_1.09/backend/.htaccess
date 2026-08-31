@@ -1,0 +1,10 @@
+# Only the api folder is reachable from the web.
+<FilesMatch "\.php$">
+  Require all granted
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Block direct access to config, lib, models, controllers and sql
+  RewriteRule ^(config|lib|models|controllers|sql)/ - [F,L]
+</IfModule>

@@ -1,0 +1,272 @@
+/* Intro */
+#intro-image {
+  position: absolute;
+  transition: opacity 1s;
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 85%;
+  opacity: 0.2;
+  max-width: 95%;
+}
+
+.intro-text {
+  font-weight: 500;
+  width: max-content;
+  padding: 25px;
+  border-radius: 12px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: 600px;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 19;
+}
+
+.intro-text-theme-color {
+  color: var(--theme-color);
+}
+
+.intro-text-secondary-theme-color {
+  color: var(--theme-secondary-color);
+}
+
+.intro-designation-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  transform: translateY(-25px);
+}
+
+.intro-text-large {
+  font-weight: 600;
+  font-size: 40px;
+  transform: translateY(30px);
+  transform: translateX(5px);
+}
+
+.intro-text-medium {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  font-size: 80px;
+}
+
+.typed-cursor {
+  font-size: 40px;
+  color: var(--theme-color);
+}
+
+.intro-text-medium-2 {
+  color: var(--theme-color);
+  box-sizing: border-box;
+  font-size: 40px;
+}
+
+.intro-text-medium-1 {
+  box-sizing: border-box;
+  font-size: 40px;
+  padding-right: 10px;
+}
+
+.intro-text-small {
+  width: 100%;
+  margin-left: 50%;
+  text-align: center;
+  max-width: 550px;
+  font-size: 20px;
+  font-weight: 400;
+  transform: translate(-50%, -15px);
+}
+
+.section-head {
+  width: fit-content;
+  font-weight: 600;
+  font-size: 80px;
+  margin: auto;
+  transform: translateX(-10px);
+}
+
+.section-title {
+  font-size: 35px;
+  margin: auto;
+  max-width: 75%;
+  margin-top: 50px;
+}
+
+.section-text {
+  font-size: 18px;
+  width: 100%;
+  line-height: 1.75;
+  text-align: justify;
+}
+
+.inline {
+  display: inline-block;
+}
+
+@media screen and (max-width: 800px) {
+  #intro-image {
+    height: 80%;
+    top: 50%;
+    opacity: 0.2;
+    transform: translateY(-50%);
+  }
+
+  .intro-text {
+    position: absolute;
+    padding: 15px;
+    border-radius: 8px;
+    left: 50%;
+    top: calc(50% + 20px);
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 19;
+  }
+
+  .mobile-wrap {
+    width: 100%;
+    height: 100%;
+  }
+
+  .intro-text-large {
+    font-size: 25px;
+    transform: translateY(20px);
+  }
+
+  .intro-text-medium {
+    font-size: 70px;
+  }
+
+  .intro-text-medium-2 {
+    font-size: 30px;
+  }
+
+  .typed-cursor {
+    font-size: 30px;
+  }
+
+  .intro-text-medium-1 {
+    font-size: 30px;
+  }
+
+  .section-head {
+    font-size: 35px;
+    transform: translateX(-2px);
+    margin: auto;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .section-text {
+    font-size: 16px;
+  }
+
+  .intro-text-small {
+    max-width: 450px;
+    font-size: 16px;
+  }
+
+  .intro-designation-text {
+    transform: translateY(-20px);
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  #intro-image {
+    height: 80%;
+    top: 50%;
+    opacity: 0.2;
+    transform: translateY(-50%);
+  }
+
+  .intro-text {
+    position: absolute;
+    padding: 15px;
+    border-radius: 8px;
+    left: 50%;
+    top: calc(50% + 20px);
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 19;
+  }
+
+  .intro-text-large {
+    font-size: 20px;
+    transform: translateY(20px);
+  }
+
+  .intro-text-medium {
+    font-size: 45px;
+  }
+
+  .button-basic {
+    padding: 8px 20px;
+  }
+
+  #button-3 {
+    padding: 8px 20px;
+  }
+
+  .button-basic-fill {
+    padding: 8px 20px;
+  }
+
+  .btn-5 {
+    padding: 8px 20px;
+  }
+
+  .intro-text-medium-2 {
+    font-size: 25px;
+  }
+
+  .typed-cursor {
+    font-size: 25px;
+  }
+
+  .intro-text-medium-1 {
+    font-size: 25px;
+  }
+
+  .section-head {
+    font-size: 35px;
+    transform: translateX(-2px);
+    margin: auto;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .section-text {
+    font-size: 16px;
+  }
+
+  .intro-text-small {
+    max-width: 280px;
+    font-size: 16px;
+  }
+
+  .intro-designation-text {
+    transform: translateY(-15px);
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 1000px) {
+  .section-head {
+    font-weight: 600;
+    font-size: 60px;
+    transform: translateX(-6px);
+  }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
