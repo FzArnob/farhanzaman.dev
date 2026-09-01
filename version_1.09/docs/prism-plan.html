@@ -333,6 +333,7 @@ html{scroll-behavior:smooth}
     <a href="#risk">Risks</a>
     <a href="#road">Roadmap</a>
     <a href="#decide">Decisions</a>
+    <a href="#built">As built</a>
   </nav>
 </header>
 
@@ -1863,6 +1864,120 @@ pool.<b>handoff</b>(fromCore, toCore, easedT)        <i>// the Forge transition<
           it.</p>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================ 13 AS BUILT ============================ -->
+<section id="built" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">13 — as built</span>
+      <h2>What the build changed about the plan</h2>
+      <p class="lead prose">
+        All nine acts are implemented and running in <code>version_1.09/frontend</code>.
+        This is the honest diff between the plan above and the code — the places where
+        building it taught us something the plan had wrong, and the bugs that only
+        appear once a browser is actually rendering the thing.
+      </p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">deliberate departures</caption>
+        <thead><tr><th>The plan said</th><th>The build does</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Add <code>@react-three/drei</code></td>
+            <td><span class="pill mid">dropped</span> three r169 directly</td>
+            <td>Everything drei was wanted for — <code>MeshTransmissionMaterial</code>, an environment, texture loading — is native now, and <code>MeshPhysicalMaterial.dispersion</code> (r165+) does real wavelength splitting. Dropping it removed the biggest version-compatibility risk in the plan and a large slice of the bundle.</td>
+          </tr>
+          <tr>
+            <td>Re-host 73 Flickr images: <span class="pill hot">high risk</span></td>
+            <td><span class="pill ok">measured, not needed</span></td>
+            <td><code>live.staticflickr.com</code> returns <code>access-control-allow-origin: *</code>, so the textures upload to WebGL directly with <code>crossOrigin</code> set. The plan's number-one risk was an assumption; one <code>curl</code> settled it. The third-party dependency is still real, so every loader degrades to a seeded placeholder — but 10&nbsp;MB does not need to enter the repo today.</td>
+          </tr>
+          <tr>
+            <td>Rebase 1.09 onto 1.08 first</td>
+            <td><span class="pill mid">not done</span> — built on the tree as scoped</td>
+            <td>Rebasing would overwrite the working tree, which is your call and not a side effect of "implement the plan". <code>motion</code> is installed and the 1.08 pieces this needed (a scroll rail, a progress indicator) exist here as <code>ActRail</code> and <code>ScrollRig</code>. Rebasing later costs nothing: the 3D lives in its own directories.</td>
+          </tr>
+          <tr>
+            <td>Act 08: the beam writes the address</td>
+            <td>The beam writes the invitation; the DOM writes the address</td>
+            <td>Both drawing the address put two copies of the same words on top of each other. The DOM version is the selectable, clickable, screen-readable one, so it keeps the content and the beam keeps the payoff.</td>
+          </tr>
+          <tr>
+            <td>"No second vertical scroller anywhere"</td>
+            <td>One exception: the contact act on a short viewport</td>
+            <td>Act 08 carries a working four-field form, so it is the one block that cannot be clamped to fit. It scrolls inside itself only when it genuinely will not fit, and nothing else in the build does.</td>
+          </tr>
+          <tr>
+            <td>Rail carries <code>details</code></td>
+            <td>Rail clamps it; the chamber shows it whole</td>
+            <td><code>details</code> runs to 3.8&nbsp;KB of HTML. It is clamped with CSS, not truncated in JS, so every character stays in the DOM for search and screen readers — and the full text is one tap away in the case study.</td>
+          </tr>
+          <tr>
+            <td>3D chunk ≤ 240&nbsp;KB gz</td>
+            <td>228&nbsp;KB core + 74&nbsp;KB post, split</td>
+            <td>Post-processing is a third of the 3D weight on its own, and the low tier never uses it. Splitting it lets the scene render before the polish arrives.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">bugs the plan could not have predicted — found by running it</caption>
+        <thead><tr><th>Symptom</th><th>Cause</th></tr></thead>
+        <tbody>
+          <tr><td>Nothing drew at all</td><td>react-three-fiber hands rendering to the app if <em>any</em> <code>useFrame</code> uses a positive priority. Priorities 1 and 2, used purely to order shard leases, silently disabled the render loop. Negative priorities sort identically and leave it alone.</td></tr>
+          <tr><td>Scroll snapped back mid-page</td><td>The rig's context object was rebuilt on every act change, so the deep-link effect re-ran and re-seeked. Splitting the stable API from the changing act fixed it — and stopped the whole overlay re-rendering eight times a page.</td></tr>
+          <tr><td>Wrong act on screen on a slow device</td><td>The damped scroll follower clamped <code>dt</code> to 50&nbsp;ms. An exponential follower needs the real elapsed time; at 2&nbsp;fps the clamp closed only a third of the gap per frame and <code>t</code> trailed the scroll by seconds.</td></tr>
+          <tr><td>The rail named one project, the camera showed another</td><td>The ring rotated the wrong way. Rotating by θ moves a core from angle <em>a</em> to <em>a−θ</em>, so bringing core <em>i</em> forward needs <code>+a</code>. Exactly the desync the one-timeline invariant exists to prevent, and invisible until DOM and 3D were checked against each other.</td></tr>
+          <tr><td>Every lattice node rendered black</td><td><code>vertexColors: true</code> on an instanced mesh switches on <code>USE_COLOR</code>, which multiplies by a per-vertex <code>color</code> attribute the geometry has not got. <code>instanceColor</code> alone is what three needs.</td></tr>
+          <tr><td>Copy could not be selected; jumps drifted</td><td>The existing <code>01-base.css</code> sets <code>user-select: none</code> and <code>scroll-behavior: smooth</code> on <code>*</code>. The first contradicts "the DOM is the content of record"; the second double-smooths against Lenis. Both are corrected under a root class, so the flat site is untouched.</td></tr>
+          <tr><td>Canvas still in the accessibility tree</td><td><code>aria-hidden</code> on <code>&lt;Canvas&gt;</code> lands on R3F's wrapper div, not the canvas element. It is set in <code>onCreated</code> now.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>Measured against the budgets</h3>
+        <div class="tscroll">
+          <table style="min-width:340px">
+            <thead><tr><th>Metric</th><th>Ceiling</th><th>Built</th></tr></thead>
+            <tbody>
+              <tr><td>Shell JS, gzipped</td><td class="tnum">≤ 120 KB</td><td class="tnum"><span class="pill ok">72 KB</span></td></tr>
+              <tr><td>3D chunk, gzipped</td><td class="tnum">≤ 240 KB</td><td class="tnum"><span class="pill ok">228 KB</span></td></tr>
+              <tr><td>Post-processing, deferred</td><td class="tnum">—</td><td class="tnum">74 KB</td></tr>
+              <tr><td>CSS, gzipped</td><td class="tnum">—</td><td class="tnum">16 KB</td></tr>
+              <tr><td>Transmissive objects</td><td class="tnum">1</td><td class="tnum"><span class="pill ok">1</span></td></tr>
+              <tr><td>Acts implemented</td><td class="tnum">9</td><td class="tnum"><span class="pill ok">9</span></td></tr>
+              <tr><td>Acceptance checks</td><td class="tnum">—</td><td class="tnum"><span class="pill ok">32 / 32</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="stack">
+        <h3>Still to do on real hardware</h3>
+        <ul class="clean">
+          <li>Every check above ran under a <strong>software rasteriser</strong>, which the tier probe correctly reports as <code>low</code> — so transmission, dispersion and bloom are all verified as <em>code paths</em> but have not been <em>looked at</em> on a GPU. Open it with <code>?tier=high</code> and judge the glass.</li>
+          <li>The device matrix — a real phone, a real integrated GPU — is the one thing a desktop cannot stand in for.</li>
+          <li>The two remaining questions from section 12 are still yours: whether the dispersion band is allowed on the site, and whether "Prism" is the name.</li>
+        </ul>
+        <div class="callout">
+          <span class="eyebrow">Test hooks built in</span>
+          <p>
+            <code>?tier=high|mid|low|flat</code> forces a quality tier,
+            <code>?smooth=0</code> turns off momentum scrolling, and
+            <code>?flat=1</code> loads the 2D site. The first two exist because the
+            device matrix needs them; all three are useful to a visitor too.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

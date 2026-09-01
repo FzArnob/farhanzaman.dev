@@ -2,17 +2,30 @@
   position: relative;
 }
 
+/* Flat mode's expertise list. The 3D sphere it replaced lives in act 03 now, so this
+   is a plain wrapped list — the size of each name still carries its duration. */
 .tagcloud {
   margin: auto;
-}
-
-.tagcloud--item:hover {
-  cursor: pointer;
-  color: #fd2155;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px 18px;
+  max-width: 900px;
+  line-height: 1.25;
 }
 
 .tagcloud--item {
   color: #0bc1a6;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.tagcloud--item:hover {
+  cursor: default;
+  color: #fd2155;
+  transform: translateY(-2px);
 }
 
 .achievement-preview {

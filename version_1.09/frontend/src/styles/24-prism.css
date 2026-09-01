@@ -1,0 +1,1331 @@
+/* ============================================================
+   PRISM — the 3D-on-scroll shell (v1.09)
+
+   Colours come from the site's existing theme files, which set .bg1/.c1/.c-theme
+   etc. from view/css/theme/{dark,light}.css. Anything the theme files do not
+   already provide is derived here from the same two brand values, so there is
+   still one place to change the palette.
+
+     #00d3b4  signal teal        #fd2155  split crimson
+     #00947f  light-mode teal    (already in light.css for contrast)
+   ============================================================ */
+
+:root {
+  --prism-teal: #00d3b4;
+  --prism-crimson: #fd2155;
+
+  /* The dispersion band. Hairlines, dots and rails only — never a text colour
+     and never a surface, so contrast never depends on a mid-band hue. */
+  --band-0: #00d1b3;
+  --band-1: #12a6e2;
+  --band-2: #2b7cf5;
+  --band-3: #6a6bf8;
+  --band-4: #9a63fb;
+  --band-5: #c258fd;
+  --band-6: #ef4ae8;
+  --band-7: #fd47a6;
+  --band-8: #fd2159;
+
+  /* Overlay surfaces. Copy always sits on one of these, never straight on the
+     canvas, which is what keeps text legible over a moving 3D background. */
+  --prism-panel: rgba(8, 12, 14, 0.62);
+  --prism-panel-solid: rgba(10, 15, 17, 0.94);
+  --prism-hairline: rgba(150, 196, 190, 0.16);
+  --prism-hairline-2: rgba(150, 196, 190, 0.3);
+  --prism-ink: #e9efee;
+  --prism-ink-2: #a9b8b5;
+  --prism-ink-3: #74827f;
+  --prism-blur: blur(16px) saturate(1.1);
+
+  --prism-display: 'Chakra Petch', 'Titillium Web', system-ui, sans-serif;
+  --prism-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+}
+
+/* The light theme link is present only on Studio; scope the overrides to it so
+   the un-themed first paint still has a complete palette. */
+html:has(link[data-theme='light']) {
+  --prism-panel: rgba(255, 255, 255, 0.72);
+  --prism-panel-solid: rgba(255, 255, 255, 0.96);
+  --prism-hairline: rgba(18, 42, 39, 0.14);
+  --prism-hairline-2: rgba(18, 42, 39, 0.26);
+  --prism-ink: #111719;
+  --prism-ink-2: #485553;
+  --prism-ink-3: #75817d;
+  --prism-teal: #00947f;
+  --prism-crimson: #d70f41;
+  --band-0: #00806e;
+  --band-1: #0071a6;
+  --band-2: #0041b4;
+  --band-3: #1a10bd;
+  --band-4: #4a13c6;
+  --band-5: #8409ca;
+  --band-6: #bd0bb8;
+  --band-7: #c60d81;
+  --band-8: #c40b39;
+}
+
+/* ---------- corrections to the base stylesheet ---------- */
+
+/*
+  01-base.css sets `scroll-behavior: smooth` on `*`. The Prism cannot use it: Lenis
+  does the smoothing itself, and a rail jump or a deep-link flight has to be applied
+  the instant it is set or the two easings fight and the camera drifts.
+*/
+html.prism-active,
+html.prism-active * {
+  scroll-behavior: auto !important;
+}
+
+/*
+  01-base.css also sets `user-select: none` on `*`. Act copy is the content of record,
+  so it has to be selectable — a visitor should be able to copy an email address or a
+  project name. Controls stay unselectable so a double-click on a button still feels
+  like a button.
+*/
+.prism-overlay p,
+.prism-overlay h1,
+.prism-overlay h2,
+.prism-overlay h3,
+.prism-overlay li,
+.prism-overlay span,
+.prism-overlay dd,
+.prism-overlay dt,
+.prism-chamber p,
+.prism-chamber h2,
+.prism-chamber h3,
+.prism-chamber dd,
+.prism-lightbox-bar p,
+.prism-lightbox-bar h2 {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.prism-overlay button,
+.prism-overlay button * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ---------- shell ---------- */
+
+.prism-scroll {
+  /* The only thing in the document flow. Everything else is fixed over it. */
+  width: 100%;
+  pointer-events: none;
+}
+
+.prism-canvas {
+  position: fixed !important;
+  inset: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0;
+  /* Interaction is per-object; the acts opt in with their own handlers. */
+  touch-action: pan-y;
+}
+
+.prism-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  font-family: var(--prism-body, 'Titillium Web', system-ui, sans-serif);
+  color: var(--prism-ink);
+}
+
+.prism-overlay a,
+.prism-overlay button,
+.prism-overlay input,
+.prism-overlay textarea,
+.prism-overlay label {
+  pointer-events: auto;
+}
+
+.prism-overlay :focus-visible {
+  outline: 2px solid var(--prism-teal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+html.prism-locked,
+html.prism-locked body {
+  overflow: hidden;
+}
+
+/* ---------- masthead ---------- */
+
+.prism-masthead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px clamp(16px, 3vw, 34px);
+}
+
+.prism-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: var(--prism-ink);
+  font-family: var(--prism-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prism-mark svg {
+  display: none;
+}
+
+.prism-mark img {
+  display: block;
+}
+
+.prism-masthead-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.prism-icon-btn {
+  font-family: var(--prism-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--prism-ink-2);
+  background: var(--prism-panel);
+  backdrop-filter: var(--prism-blur);
+  border: 1px solid var(--prism-hairline-2);
+  border-radius: 2px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.prism-icon-btn:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-teal);
+}
+
+/* ---------- act rail ---------- */
+
+.prism-rail {
+  position: absolute;
+  top: 50%;
+  right: clamp(12px, 2vw, 26px);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.prism-rail-track {
+  position: relative;
+  width: 2px;
+  height: 190px;
+  background: var(--prism-hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.prism-rail-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: linear-gradient(180deg, var(--band-0), var(--band-4), var(--band-8));
+}
+
+.prism-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prism-rail-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 3px 4px;
+  cursor: pointer;
+  color: var(--prism-ink-3);
+  font-family: var(--prism-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.prism-rail-list button i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--edge);
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.prism-rail-list button em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.prism-rail-list button span {
+  /* The names appear on hover and for the current act; the rail stays quiet. */
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.28s, opacity 0.2s;
+}
+
+.prism-rail-list button:hover,
+.prism-rail-list button.is-active {
+  color: var(--prism-ink);
+}
+
+.prism-rail-list button:hover i,
+.prism-rail-list button.is-active i {
+  opacity: 1;
+  transform: scale(1.35);
+}
+
+.prism-rail-list button:hover span,
+.prism-rail-list button:focus-visible span,
+.prism-rail-list button.is-active span {
+  max-width: 130px;
+  opacity: 1;
+}
+
+.prism-rail-readout {
+  position: absolute;
+  right: 0;
+  bottom: -30px;
+  font-family: var(--prism-mono);
+  font-size: 0.6rem;
+  color: var(--prism-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- act copy ---------- */
+
+.prism-acts {
+  position: absolute;
+  inset: 0;
+}
+
+.prism-act {
+  position: absolute;
+  left: clamp(16px, 4vw, 56px);
+  bottom: clamp(26px, 6vh, 74px);
+  width: min(430px, calc(100vw - 96px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  /* The drift is a custom property so it composes with the layout transform
+     below; useActFade must never write `transform` itself. */
+  transform: translate3d(0, var(--drift, 0px), 0);
+  will-change: opacity, transform;
+}
+
+.prism-act-center {
+  /*
+    Bottom-anchored, not centred: act 08's beam writes its headline across the top
+    third of the frame, so the DOM block has to start below it. Centring the two put
+    the form straight through the 3D type.
+  */
+  left: 50%;
+  right: auto;
+  top: auto;
+  bottom: clamp(18px, 4vh, 44px);
+  transform: translate(-50%, 0) translate3d(0, var(--drift, 0px), 0);
+  width: min(640px, calc(100vw - 64px));
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  /*
+    The contact act carries a working form, so it is the one block that cannot be
+    clamped down to fit — on a short viewport it scrolls inside itself. This is the
+    single exception to "no second scroller in the build", and it only ever engages
+    when the form genuinely will not fit.
+  */
+  max-height: calc(100vh - 190px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.prism-act-num {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.prism-act-num span {
+  color: var(--edge);
+  font-weight: 500;
+}
+
+.prism-act-num i {
+  width: 18px;
+  height: 1px;
+  background: var(--edge);
+  opacity: 0.7;
+}
+
+.prism-act-title {
+  margin: 0;
+  font-family: var(--prism-display);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--prism-ink);
+}
+
+.prism-lead {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.58;
+  color: var(--prism-ink-2);
+  max-width: 46ch;
+  /* Copy over a moving 3D scene needs its own ground to stay legible. */
+  background: var(--prism-panel);
+  backdrop-filter: var(--prism-blur);
+  border-left: 2px solid var(--edge);
+  padding: 11px 14px;
+  border-radius: 0 3px 3px 0;
+  /*
+    Clamped, not truncated. Several of these fields run to 3–4 KB in
+    profile.json; every character is still in the DOM for a screen reader and for
+    search, and the whole text is one tap away in the case-study chamber.
+  */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+/* project.details arrives as HTML with <br/> in it. Keep the breaks, keep the clamp. */
+.prism-lead br {
+  content: '';
+  display: inline;
+}
+
+.prism-lead-tall {
+  -webkit-line-clamp: 7;
+}
+
+.prism-lead-short {
+  -webkit-line-clamp: 3;
+}
+
+.prism-center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/*
+  Visually hidden, still announced. Act 08's headline is written by the beam in 3D,
+  but the heading has to stay in the document so the section keeps its accessible
+  name and the page keeps its heading outline.
+*/
+.prism-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.prism-note {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--prism-ink-3);
+  max-width: 46ch;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.prism-hint {
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- designations ---------- */
+
+.prism-designations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.prism-role {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--prism-panel);
+  backdrop-filter: var(--prism-blur);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 2px;
+  padding: 6px 11px;
+  cursor: default;
+  color: var(--prism-ink-2);
+  font-family: var(--prism-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.prism-role i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.prism-role:hover,
+.prism-role:focus-visible {
+  color: var(--prism-ink);
+  border-color: var(--prism-hairline-2);
+}
+
+/* ---------- buttons ---------- */
+
+.prism-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.prism-btn {
+  font-family: var(--prism-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--prism-ink-2);
+  background: var(--prism-panel);
+  backdrop-filter: var(--prism-blur);
+  border: 1px solid var(--prism-hairline-2);
+  border-radius: 2px;
+  padding: 9px 15px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.prism-btn:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-teal);
+}
+
+.prism-btn-solid {
+  background: var(--prism-teal);
+  border-color: var(--prism-teal);
+  color: #06110f;
+  font-weight: 600;
+}
+
+.prism-btn-solid:hover {
+  color: #06110f;
+  filter: brightness(1.12);
+}
+
+.prism-btn-solid:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- lists, chips, detail ---------- */
+
+.prism-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  /* Denser than the other panels: 3D labels sit right behind this one, so it
+     needs a more opaque ground than --prism-panel gives on its own. */
+  background: color-mix(in srgb, var(--prism-panel-solid) 88%, transparent);
+  backdrop-filter: var(--prism-blur);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 3px;
+  padding: 13px 15px;
+  max-height: 46vh;
+  overflow: hidden;
+}
+
+.prism-col-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 9px;
+  font-family: var(--prism-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-teal {
+  background: var(--prism-teal);
+}
+
+.dot-crimson {
+  background: var(--prism-crimson);
+}
+
+.prism-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.prism-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prism-list a {
+  color: var(--prism-ink);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  align-self: flex-start;
+}
+
+.prism-list a:hover {
+  border-bottom-color: var(--prism-teal);
+}
+
+.prism-meta {
+  font-family: var(--prism-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--prism-ink-3);
+}
+
+.prism-list .prism-note {
+  font-size: 0.76rem;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+}
+
+.prism-inline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 4.6em;
+  overflow: hidden;
+}
+
+.prism-inline-list button {
+  font-family: var(--prism-mono);
+  font-size: 0.62rem;
+  color: var(--prism-ink-2);
+  background: var(--prism-panel);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 2px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.prism-inline-list button:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-teal);
+}
+
+.prism-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+}
+
+.prism-chip {
+  font-family: var(--prism-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: var(--prism-ink-2);
+  background: var(--prism-panel);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 2px;
+  padding: 3px 8px;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+a.prism-chip:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-teal);
+}
+
+.prism-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.prism-detail-title {
+  margin: 0;
+  font-family: var(--prism-display);
+  font-size: 1.16rem;
+  font-weight: 600;
+  color: var(--prism-ink);
+}
+
+.prism-detail-meta {
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--edge);
+}
+
+.prism-figure {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--prism-ink);
+}
+
+.prism-bar {
+  height: 3px;
+  background: var(--prism-hairline);
+  border-radius: 3px;
+  overflow: hidden;
+  max-width: 240px;
+}
+
+.prism-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--band-0), var(--edge));
+}
+
+.prism-status {
+  font-family: var(--prism-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: var(--prism-teal);
+}
+
+.prism-status-completed,
+.prism-status-live {
+  color: var(--prism-teal);
+}
+
+.prism-status-ongoing,
+.prism-status-in-progress {
+  color: var(--band-4);
+}
+
+.prism-status-archived,
+.prism-status-closed {
+  color: var(--prism-ink-3);
+}
+
+/* ---------- contact ---------- */
+
+.prism-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.prism-address {
+  font-family: var(--prism-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.4vw, 1.5rem);
+  letter-spacing: -0.01em;
+  color: var(--prism-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--prism-teal);
+}
+
+.prism-contact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 22px;
+}
+
+.prism-contact-grid p {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 0.8rem;
+  color: var(--prism-ink-2);
+}
+
+.prism-contact-grid span {
+  font-family: var(--prism-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.prism-contact-grid a {
+  color: var(--prism-ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--prism-hairline);
+}
+
+.prism-contact-grid a:hover {
+  color: var(--prism-ink);
+  border-bottom-color: var(--prism-teal);
+}
+
+.prism-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  width: 100%;
+  max-width: 560px;
+  transition: opacity 0.4s, transform 0.5s;
+}
+
+/* On submit the panels flatten into the beam — the send is the payoff. */
+.prism-form-sent {
+  opacity: 0.25;
+  transform: scaleY(0.04);
+}
+
+.prism-panel {
+  background: var(--prism-panel);
+  backdrop-filter: var(--prism-blur);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 3px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prism-panel:nth-child(2),
+.prism-panel:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.prism-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prism-panel span {
+  font-family: var(--prism-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.prism-panel input,
+.prism-panel textarea {
+  font: inherit;
+  font-size: 0.86rem;
+  color: var(--prism-ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--prism-hairline-2);
+  padding: 4px 0;
+  resize: vertical;
+}
+
+.prism-panel input:focus,
+.prism-panel textarea:focus {
+  outline: none;
+  border-bottom-color: var(--prism-teal);
+}
+
+.prism-form-foot {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.prism-form-status {
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.66rem;
+  color: var(--prism-teal);
+}
+
+/* ---------- chamber (05b) ---------- */
+
+.prism-chamber {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vh, 40px);
+  background: rgba(3, 6, 8, 0.62);
+  backdrop-filter: blur(8px);
+  animation: prism-fade 0.3s ease;
+}
+
+html:has(link[data-theme='light']) .prism-chamber {
+  background: rgba(228, 236, 234, 0.66);
+}
+
+@keyframes prism-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.prism-chamber-inner {
+  width: min(860px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--prism-panel-solid);
+  border: 1px solid var(--prism-hairline-2);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 32px);
+  color: var(--prism-ink);
+}
+
+.prism-chamber-head {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--prism-hairline);
+}
+
+.prism-chamber-head .prism-act-num {
+  --edge: var(--band-4);
+  margin-bottom: 7px;
+}
+
+.prism-chamber-title {
+  margin: 0 0 5px;
+  font-family: var(--prism-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.prism-chamber-head .prism-detail-meta {
+  --edge: var(--prism-ink-3);
+}
+
+.prism-close {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--prism-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--prism-ink-2);
+  background: transparent;
+  border: 1px solid var(--prism-hairline-2);
+  border-radius: 2px;
+  padding: 7px 11px;
+  cursor: pointer;
+}
+
+.prism-close:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-crimson);
+}
+
+.prism-chamber-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 20px;
+}
+
+.prism-chamber-body section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prism-chamber-body h3 {
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.prism-chamber-body p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.62;
+  color: var(--prism-ink-2);
+  max-width: 68ch;
+}
+
+.prism-count {
+  font-family: var(--prism-mono);
+  font-size: 0.9em;
+  color: var(--prism-teal);
+}
+
+.prism-facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.prism-facts div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prism-facts dt {
+  font-family: var(--prism-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+.prism-facts dd {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--prism-ink-2);
+}
+
+.prism-facts a {
+  color: var(--prism-teal);
+}
+
+.prism-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.prism-media-grid img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--prism-hairline);
+  display: block;
+}
+
+/* ---------- lightbox ---------- */
+
+.prism-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 14;
+  display: flex;
+  flex-direction: column;
+  background: rgba(3, 5, 6, 0.94);
+  animation: prism-fade 0.25s ease;
+}
+
+html:has(link[data-theme='light']) .prism-lightbox {
+  background: rgba(238, 242, 241, 0.96);
+}
+
+.prism-lightbox > img {
+  flex: 1;
+  min-height: 0;
+  object-fit: contain;
+  padding: clamp(12px, 3vh, 40px);
+}
+
+.prism-clip-frame {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vh, 40px);
+}
+
+.prism-clip-frame iframe {
+  width: min(100%, 1100px);
+  aspect-ratio: 16 / 9;
+  border: 0;
+  border-radius: 3px;
+}
+
+.prism-lightbox-bar {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 16px clamp(16px, 3vw, 34px) clamp(18px, 3vh, 28px);
+  border-top: 1px solid var(--prism-hairline);
+  color: var(--prism-ink);
+}
+
+.prism-lightbox-bar h2 {
+  margin: 0 0 3px;
+  font-family: var(--prism-display);
+  font-size: 1.06rem;
+  font-weight: 600;
+}
+
+.prism-lightbox-bar p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--prism-ink-2);
+  max-width: 68ch;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prism-lightbox-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prism-lightbox-nav button {
+  font-family: var(--prism-mono);
+  font-size: 0.8rem;
+  color: var(--prism-ink-2);
+  background: transparent;
+  border: 1px solid var(--prism-hairline-2);
+  border-radius: 2px;
+  min-width: 34px;
+  padding: 6px 9px;
+  cursor: pointer;
+}
+
+.prism-lightbox-nav button:hover {
+  color: var(--prism-ink);
+  border-color: var(--prism-teal);
+}
+
+/* ---------- calibration curtain ---------- */
+
+.prism-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #06080a;
+  pointer-events: none;
+}
+
+html:has(link[data-theme='light']) .prism-curtain {
+  background: #eef2f1;
+}
+
+.prism-curtain img {
+  animation: prism-pulse 1.4s ease-in-out infinite;
+}
+
+.prism-curtain p {
+  margin: 0;
+  font-family: var(--prism-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--prism-teal);
+}
+
+.prism-curtain span {
+  font-family: var(--prism-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--prism-ink-3);
+}
+
+@keyframes prism-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+/* ---------- flat mode ---------- */
+
+.prism-flat-notice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px 18px;
+  background: rgba(0, 211, 180, 0.1);
+  border-bottom: 1px solid rgba(0, 211, 180, 0.3);
+  font-family: var(--prism-mono);
+  font-size: 0.72rem;
+  position: relative;
+  z-index: 30;
+}
+
+.prism-flat-notice p {
+  margin: 0;
+}
+
+.prism-flat-notice button {
+  font: inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #06110f;
+  background: #00d3b4;
+  border: 0;
+  border-radius: 2px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 900px) {
+  .prism-rail-track {
+    height: 130px;
+  }
+  .prism-rail-list button span {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .prism-act {
+    left: 14px;
+    right: 14px;
+    width: auto;
+    bottom: 18px;
+    gap: 9px;
+  }
+  .prism-act-center {
+    left: 14px;
+    right: 14px;
+    top: auto;
+    bottom: 18px;
+    width: auto;
+    transform: translate3d(0, var(--drift, 0px), 0);
+  }
+  .prism-act-title {
+    font-size: clamp(1.4rem, 7vw, 1.9rem);
+  }
+  .prism-cols {
+    grid-template-columns: 1fr;
+  }
+  .prism-form {
+    grid-template-columns: 1fr;
+  }
+  .prism-rail {
+    /* Out of the way of the copy on a phone. */
+    top: auto;
+    bottom: 12px;
+    right: 12px;
+    transform: none;
+    flex-direction: column-reverse;
+  }
+  .prism-rail-track {
+    width: 120px;
+    height: 2px;
+  }
+  .prism-rail-fill {
+    width: 0;
+    height: 100% !important;
+    bottom: 0;
+  }
+  .prism-rail-list {
+    flex-direction: row;
+  }
+  .prism-rail-readout {
+    display: none;
+  }
+  .prism-lead {
+    font-size: 0.86rem;
+  }
+}
+
+/* Reduced motion switches to flat mode entirely, but if a visitor turns it on
+   mid-session the overlay must not keep animating. */
+@media (prefers-reduced-motion: reduce) {
+  .prism-act,
+  .prism-form,
+  .prism-curtain img {
+    transition: none !important;
+    animation: none !important;
+  }
+}
