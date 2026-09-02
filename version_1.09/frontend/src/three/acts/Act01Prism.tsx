@@ -54,7 +54,7 @@ export function Act01Prism({
   const plateRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Sprite>(null);
   const beamsRef = useRef<THREE.Group>(null);
-  const act = ACT_BY_ID.prism;
+  const act = ACT_BY_ID.intro;
 
   const geometry = useMemo(() => fzMonogramGeometry(), []);
   const front = useMemo(() => prismMaterial(quality, !look.bloom), [quality, look.bloom]);
@@ -105,9 +105,9 @@ export function Act01Prism({
       BEAM_BANDS.map((band, i) => {
         const colour = bandColor(band).getHex();
         const mat = beamMaterial(colour, !look.bloom);
-        // Short enough to stay clear of the act rail on the right-hand edge.
-        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(5.4, 0.05), mat);
-        mesh.position.set(3.6, (1 - i) * 0.6, 0);
+        // Short enough to dissolve well before the right-hand rail.
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 0.045), mat);
+        mesh.position.set(2.5, (1 - i) * 0.5, 0);
         mesh.rotation.z = (1 - i) * 0.14;
         return mesh;
       }),
@@ -151,7 +151,14 @@ export function Act01Prism({
     rear.opacity = presence * 0.85;
 
     if (plateRef.current) {
-      (plateRef.current.material as THREE.MeshBasicMaterial).opacity = presence;
+      /*
+        The ghost name exists only to be refracted. With a transmission pass it
+        warps and re-forms behind the glass, which is the hero image; without one
+        it is just a second, blurrier copy of the DOM headline directly behind the
+        mark, so below the high tier it does not render at all.
+      */
+      (plateRef.current.material as THREE.MeshBasicMaterial).opacity =
+        quality.transmission ? presence * 0.9 : 0;
     }
     if (glowRef.current) {
       glowRef.current.material.opacity = presence * look.glow;

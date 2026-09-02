@@ -1,43 +1,49 @@
-import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
-  ConstellationCopy,
-  ForgeCopy,
-  GalleryCopy,
-  LatticeCopy,
-  PrismCopy,
-  SpineCopy,
-  TurbineCopy,
+  AchievementsCopy,
+  ArcadeCopy,
+  BackgroundCopy,
+  ExpertiseCopy,
+  HobbiesCopy,
+  IntroCopy,
+  SkillsCopy,
+  WorksCopy,
 } from '../../overlay/ActCopy';
 import { ActRail } from '../../overlay/ActRail';
+import { ContactCopy } from '../../overlay/ContactCopy';
 import { ClipPlayer, Lightbox } from '../../overlay/Lightbox';
+import { ParticleLayer } from '../../overlay/ParticleLayer';
 import { CalibrationCurtain, PrismMasthead } from '../../overlay/PrismChrome';
 import { ProjectPanel } from '../../overlay/ProjectPanel';
-import { SyncCopy } from '../../overlay/SyncCopy';
+import { SectionReadout } from '../../overlay/SectionReadout';
 import { useProfile } from '../../data/ProfileContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
-import { detectQuality, setFlatMode, type Quality } from '../../lib/quality';
+import { detectQuality, type Quality } from '../../lib/quality';
 import { HEIGHT_VH, ScrollRig, useScrollRig } from '../../three/ScrollRig';
 import { StageStateProvider, useStageState } from '../../three/StageState';
 import { tForPath } from '../../three/timeline';
 import type { GamingVideo } from '../../types/gaming';
+import { StaticFallback } from './StaticFallback';
 import '../../styles/24-prism.css';
 
 /**
- * PRISM — the whole site as one continuous 3D world.
+ * PRISM — the whole site, as one continuous 3D world.
  *
- * One canvas behind, one DOM overlay in front, one scroll driving both. The old routes
- * still resolve: each maps to a `t` and the camera flies there rather than cutting, so
- * arriving from a bookmark or a search result looks deliberate.
+ * Nine acts, one canvas, one scroll. There is no flat/3D switch: this is the site.
+ * The only alternative rendering is StaticFallback, which catches a browser that
+ * cannot run WebGL and is chosen for the visitor rather than offered to them.
  *
- * Both heavy branches are code-split. The overlay, the scroll rig and the timeline
- * import no three.js at all (that is what src/three/liveState.ts and src/lib/band.ts
- * are for), so the shell paints the hero copy before the 3D chunk has been requested —
- * which is what LCP actually measures.
+ * Everything heavy is code-split. The overlay, the scroll rig and the timeline import
+ * no three.js at all — that is what src/three/liveState.ts and src/lib/band.ts are
+ * for — so the hero copy paints before the 3D chunk has even been requested, which is
+ * what a visitor on a slow connection actually experiences.
  */
 
 const Stage = lazy(() => import('../../three/Stage').then((m) => ({ default: m.Stage })));
-const FlatMode = lazy(() => import('./FlatMode'));
+const SyncBotConsole = lazy(() =>
+  import('../SyncBot/SyncBotPage').then((m) => ({ default: m.SyncBotPage }))
+);
 
 function Deeplink() {
   const rig = useScrollRig();
@@ -54,7 +60,13 @@ function Deeplink() {
   return null;
 }
 
-function Overlays({ clip, onClip }: { clip: GamingVideo | null; onClip: (clip: GamingVideo | null) => void }) {
+function Overlays({
+  clip,
+  onClip,
+}: {
+  clip: GamingVideo | null;
+  onClip: (clip: GamingVideo | null) => void;
+}) {
   const profile = useProfile();
   const stage = useStageState();
   const project = useMemo(
@@ -79,13 +91,16 @@ function Overlays({ clip, onClip }: { clip: GamingVideo | null; onClip: (clip: G
 function PrismWorld({ quality }: { quality: Quality }) {
   const profile = useProfile();
   const [clip, setClip] = useState<GamingVideo | null>(null);
-  const [light, setLight] = useState(() => document.querySelector('link[data-theme="light"]') !== null);
+  const [bot, setBot] = useState(false);
+  const [light, setLight] = useState(
+    () => document.querySelector('link[data-theme="light"]') !== null
+  );
 
   useDocumentTitle(profile.info.full_name);
 
   /**
-   * The existing theme switch swaps a <link> in <head> rather than setting a class, so
-   * the stage watches for that instead of being told. Keeps lib/theme.ts untouched.
+   * The existing theme switch swaps a <link> in <head> rather than setting a class,
+   * so the stage watches for that instead of being told. Keeps lib/theme.ts untouched.
    */
   useEffect(() => {
     const read = () => setLight(document.querySelector('link[data-theme="light"]') !== null);
@@ -95,40 +110,57 @@ function PrismWorld({ quality }: { quality: Quality }) {
     return () => observer.disconnect();
   }, []);
 
-  const onFlat = useCallback(() => {
-    setFlatMode(true);
-    window.location.reload();
-  }, []);
-
   return (
     <ScrollRig>
       <StageStateProvider>
         <Deeplink />
 
-        {/* The only thing in the document flow: 900vh of scroll for the world to run on. */}
+        {/* The only thing in the document flow: the scroll the world runs on. */}
         <div className="prism-scroll" style={{ height: `${HEIGHT_VH}vh` }} aria-hidden="true" />
 
         <Suspense fallback={null}>
           <Stage profile={profile} quality={quality} light={light} onOpenClip={setClip} />
         </Suspense>
 
+        {/* The flat site's own particle network, between the canvas and the copy. */}
+        <ParticleLayer enabled={quality.particles} />
+
         <div className="prism-overlay">
-          <PrismMasthead nickName={profile.info.nick_name} onFlat={onFlat} />
+          <PrismMasthead nickName={profile.info.nick_name} onOpenBot={() => setBot(true)} />
           <ActRail />
+          <SectionReadout />
 
           <main className="prism-acts">
-            <PrismCopy profile={profile} />
-            <SpineCopy profile={profile} />
-            <LatticeCopy profile={profile} />
-            <TurbineCopy profile={profile} />
-            <ForgeCopy profile={profile} />
-            <ConstellationCopy profile={profile} />
-            <GalleryCopy profile={profile} />
-            <SyncCopy profile={profile} />
+            <IntroCopy profile={profile} />
+            <BackgroundCopy profile={profile} />
+            <ExpertiseCopy profile={profile} />
+            <SkillsCopy profile={profile} />
+            <AchievementsCopy profile={profile} />
+            <WorksCopy profile={profile} />
+            <HobbiesCopy profile={profile} />
+            <ArcadeCopy />
+            <ContactCopy profile={profile} />
           </main>
         </div>
 
         <Overlays clip={clip} onClip={setClip} />
+
+        {bot && (
+          <div className="prism-console" role="dialog" aria-modal="true" aria-label="SyncBot">
+            <button
+              type="button"
+              className="prism-close prism-console-close"
+              onClick={() => setBot(false)}
+              aria-label="Close SyncBot"
+            >
+              Esc
+            </button>
+            <Suspense fallback={<p className="prism-text">Waking SyncBot…</p>}>
+              <SyncBotConsole />
+            </Suspense>
+          </div>
+        )}
+
         <CalibrationCurtain />
       </StageStateProvider>
     </ScrollRig>
@@ -139,12 +171,6 @@ export function PrismPage() {
   // Measured once at mount: the tier can only be known on the device it runs on.
   const [quality] = useState<Quality>(detectQuality);
 
-  if (quality.tier === 'flat') {
-    return (
-      <Suspense fallback={null}>
-        <FlatMode />
-      </Suspense>
-    );
-  }
+  if (quality.tier === 'static') return <StaticFallback />;
   return <PrismWorld quality={quality} />;
 }

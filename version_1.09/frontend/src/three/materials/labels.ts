@@ -9,8 +9,14 @@ import * as THREE from 'three';
  * Textures are cached by their full draw signature and disposed by the caller's act.
  */
 
-const DISPLAY = '"Chakra Petch","Titillium Web",system-ui,sans-serif';
-const MONO = '"IBM Plex Mono",ui-monospace,monospace';
+/*
+  The flat site's faces, so 3D type and DOM type are the same type. Titillium Web is
+  loaded from view/static as a local @font-face, which also means no webfont request
+  on the critical path.
+*/
+const DISPLAY = '"titillium-font","Titillium Web",system-ui,sans-serif';
+const BODY = '"titillium-font","Titillium Web",system-ui,sans-serif';
+const MONO = 'ui-monospace,"SF Mono",Consolas,monospace';
 
 export interface LabelOpts {
   title: string;
@@ -109,16 +115,21 @@ export function coreFaceTexture(seed: number, light: boolean): THREE.CanvasTextu
   g.fillStyle = bg;
   g.fillRect(0, 0, 512, 512);
 
-  for (let i = 0; i < 34; i++) {
-    const crimson = rnd() > 0.66;
-    g.fillStyle = `rgba(${crimson ? '253,33,85' : '0,211,180'},${0.12 + rnd() * 0.55})`;
-    const w = 26 + rnd() * 210;
-    const h = 8 + rnd() * 44;
+  /*
+    Quieter than it looks it should be. This is the inside of a prism, not a poster:
+    it exists to give the glass something to bend, and the readable content is the
+    logo plate suspended inside it. Turned up, it fought the plate and the copy.
+  */
+  for (let i = 0; i < 22; i++) {
+    const crimson = rnd() > 0.7;
+    g.fillStyle = `rgba(${crimson ? '253,33,85' : '0,211,180'},${0.05 + rnd() * 0.2})`;
+    const w = 30 + rnd() * 190;
+    const h = 8 + rnd() * 36;
     g.fillRect(rnd() * (512 - w), rnd() * (512 - h), w, h);
   }
-  for (let i = 0; i < 5; i++) {
-    g.strokeStyle = `rgba(0,211,180,${0.22 + rnd() * 0.42})`;
-    g.lineWidth = 1 + rnd() * 2;
+  for (let i = 0; i < 4; i++) {
+    g.strokeStyle = `rgba(0,211,180,${0.1 + rnd() * 0.16})`;
+    g.lineWidth = 1 + rnd() * 1.5;
     g.beginPath();
     g.moveTo(0, rnd() * 512);
     g.lineTo(512, rnd() * 512);
@@ -132,31 +143,42 @@ export function coreFaceTexture(seed: number, light: boolean): THREE.CanvasTextu
   return tex;
 }
 
+
 /**
- * The closing plate: the beam writes the invitation.
+ * One expertise name, drawn as a word on a 4:1 canvas for the tag sphere.
  *
- * The address deliberately is NOT here. The DOM overlay carries it as a real
- * mailto link — selectable, clickable, readable by a screen reader — and printing
- * it in the texture as well just put two copies of the same words on top of each
- * other. The beam gets the line that is pure payoff; the DOM keeps the content.
+ * A stroke behind the fill is what keeps it readable wherever the sphere's rotation
+ * happens to put it — over the void, over the particle net, or over a bright glow.
+ * Titillium is the flat site's face, so the cloud reads as the same design.
  */
-export function addressTexture(headline: string, light: boolean): THREE.CanvasTexture {
-  const key = `addr|${headline}|${light}`;
+export function wordTexture(text: string, colour: string, light: boolean): THREE.CanvasTexture {
+  const key = `word|${text}|${colour}|${light}`;
   const hit = cache.get(key);
   if (hit) return hit;
 
+  const W = 512;
+  const H = 128;
   const canvas = document.createElement('canvas');
-  canvas.width = 2048;
-  canvas.height = 320;
+  canvas.width = W;
+  canvas.height = H;
   const g = canvas.getContext('2d')!;
-  g.clearRect(0, 0, 2048, 320);
+  g.clearRect(0, 0, W, H);
   g.textAlign = 'center';
+  g.textBaseline = 'middle';
 
-  g.font = `700 168px ${DISPLAY}`;
-  g.fillStyle = light ? '#0f1618' : '#ffffff';
-  g.shadowColor = '#00d3b4';
-  g.shadowBlur = light ? 0 : 46;
-  g.fillText(headline.toUpperCase(), 1024, 216);
+  // Shrink to fit rather than clip: "Business Communication" has to survive.
+  let size = 74;
+  do {
+    g.font = `600 ${size}px ${BODY}`;
+    if (g.measureText(text).width <= W - 26) break;
+    size -= 3;
+  } while (size > 22);
+
+  g.lineWidth = Math.max(4, size * 0.14);
+  g.strokeStyle = light ? 'rgba(255,255,255,0.92)' : 'rgba(4,7,9,0.92)';
+  g.strokeText(text, W / 2, H / 2);
+  g.fillStyle = colour;
+  g.fillText(text, W / 2, H / 2);
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;

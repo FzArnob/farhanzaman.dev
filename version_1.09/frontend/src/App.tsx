@@ -12,17 +12,7 @@ import type { Profile } from './types/profile';
  * a visitor who gets the 3D world should not download the flat site as well. Error
  * pages stay eager — they have to render when something has already gone wrong.
  */
-const HomePage = lazy(() => import('./pages/Home/HomePage').then((m) => ({ default: m.HomePage })));
-const AboutPage = lazy(() => import('./pages/About/AboutPage').then((m) => ({ default: m.AboutPage })));
-const ExpertisePage = lazy(() =>
-  import('./pages/Expertise/ExpertisePage').then((m) => ({ default: m.ExpertisePage }))
-);
-const WorksPage = lazy(() => import('./pages/Works/WorksPage').then((m) => ({ default: m.WorksPage })));
 const WorkPage = lazy(() => import('./pages/Work/WorkPage').then((m) => ({ default: m.WorkPage })));
-const HobbiesPage = lazy(() =>
-  import('./pages/Hobbies/HobbiesPage').then((m) => ({ default: m.HobbiesPage }))
-);
-const GamingPage = lazy(() => import('./pages/Gaming/GamingPage').then((m) => ({ default: m.GamingPage })));
 const SyncBotPage = lazy(() => import('./pages/SyncBot/SyncBotPage').then((m) => ({ default: m.SyncBotPage })));
 
 /**
@@ -35,9 +25,10 @@ const PRISM_PATHS = new Set([
   '/about',
   '/expertise',
   '/skills',
-  '/works',
   '/achievements',
+  '/works',
   '/hobbies',
+  '/gaming',
   '/contact',
 ]);
 
@@ -72,29 +63,25 @@ export function App() {
       <Suspense fallback={<PreLoader image="/view/static/favicon.svg" />}>
       <Routes>
         {/*
-          v1.09: the site is one continuous 3D world. Every one of these paths
-          resolves to a position on that one scroll (see three/timeline.ts) and the
-          camera flies there, so existing links, bookmarks and indexed URLs keep
-          working without a cut. The flat pages below remain the fallback and are
-          what PrismPage renders in flat mode.
+          v1.09: the site IS the 3D world. Every one of these paths resolves to a
+          position on its single scroll (see three/timeline.ts) and the camera flies
+          there, so existing links, bookmarks and indexed URLs all keep working
+          without a page change. There is no flat variant to switch to — a browser
+          that cannot run WebGL gets StaticFallback, chosen for it rather than
+          offered as an option.
         */}
         <Route path="/" element={<PrismPage />} />
         <Route path="/about" element={<PrismPage />} />
         <Route path="/expertise" element={<PrismPage />} />
         <Route path="/skills" element={<PrismPage />} />
-        <Route path="/works" element={<PrismPage />} />
         <Route path="/achievements" element={<PrismPage />} />
+        <Route path="/works" element={<PrismPage />} />
         <Route path="/hobbies" element={<PrismPage />} />
+        <Route path="/gaming" element={<PrismPage />} />
         <Route path="/contact" element={<PrismPage />} />
 
-        {/* The 2D site, still reachable in full. */}
-        <Route path="/flat" element={<HomePage />} />
-        <Route path="/flat/about" element={<AboutPage />} />
-        <Route path="/flat/expertise" element={<ExpertisePage />} />
-        <Route path="/flat/works" element={<WorksPage />} />
+        {/* Not acts: a single project deep link, the assistant, and the error pages. */}
         <Route path="/work" element={<WorkPage />} />
-        <Route path="/flat/hobbies" element={<HobbiesPage />} />
-        <Route path="/gaming" element={<GamingPage />} />
         <Route path="/syncbot" element={<SyncBotPage />} />
         <Route path="/403" element={<ForbiddenPage />} />
         <Route path="/404" element={<NotFoundPage />} />

@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Skill } from '../../types/profile';
-import { bladeGeometry } from '../geometry/facetedCore';
+import { bladeGeometry } from '../geometry/crystal';
 import { bandColor, type WorldLook } from '../materials/palette';
 import { CRIMSON, TEAL } from '../materials/presets';
 import { turbineState } from '../liveState';
@@ -35,7 +35,7 @@ export function Act04Turbine({
   const groupRef = useRef<THREE.Group>(null);
   const rotorRef = useRef<THREE.Group>(null);
   const bladeRefs = useRef<THREE.Mesh[]>([]);
-  const act = ACT_BY_ID.turbine;
+  const act = ACT_BY_ID.skills;
 
   const blades = useMemo(
     () =>
@@ -43,7 +43,7 @@ export function Act04Turbine({
         const percentage = clamp01(Number(skill.percentage) / 100);
         const months = Number(skill.duration) || 0;
         // 50–88% across the data; remap so the spread is legible rather than literal.
-        const length = 1.5 + percentage * WORLD.turbine.radius * 0.85;
+        const length = 1.5 + percentage * WORLD.skills.radius * 0.85;
         // 8–36 months; a half-turn at the tip is as much twist as reads cleanly.
         const twist = (Math.min(months, 36) / 36) * Math.PI * 0.55;
         return {
@@ -133,7 +133,7 @@ export function Act04Turbine({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, WORLD.turbine.z]}>
+    <group ref={groupRef} position={[0, 0, WORLD.skills.z]}>
       <group ref={rotorRef}>
         {blades.map((blade, i) => (
           <group key={blade.id} rotation={[0, 0, blade.angle]}>
@@ -164,7 +164,7 @@ export function Act04Turbine({
         </mesh>
       </group>
       {/* Readout marker at 12 o'clock — fixed, the rotor turns beneath it. */}
-      <mesh position={[0, WORLD.turbine.radius + 1.5, 0.4]}>
+      <mesh position={[0, WORLD.skills.radius + 1.5, 0.4]}>
         <boxGeometry args={[0.035, 0.7, 0.035]} />
         <meshBasicMaterial color={TEAL} transparent opacity={0.85} toneMapped={false} />
       </mesh>

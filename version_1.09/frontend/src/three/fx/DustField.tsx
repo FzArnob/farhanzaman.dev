@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Quality } from '../../lib/quality';
-import { mulberry } from '../geometry/facetedCore';
+import { mulberry } from '../geometry/crystal';
 import { glowTexture } from '../materials/presets';
 import type { WorldLook } from '../materials/palette';
 import { WORLD } from '../timeline';
@@ -20,7 +20,7 @@ export function DustField({ quality, look }: { quality: Quality; look: WorldLook
     const n = quality.dust;
     const rnd = mulberry(4421);
     const pos = new Float32Array(n * 3);
-    const zSpan = Math.abs(WORLD.sync.z) + 16;
+    const zSpan = Math.abs(WORLD.contact.z) + 16;
     for (let i = 0; i < n; i++) {
       pos[i * 3] = (rnd() - 0.5) * 58;
       pos[i * 3 + 1] = (rnd() - 0.5) * 30;

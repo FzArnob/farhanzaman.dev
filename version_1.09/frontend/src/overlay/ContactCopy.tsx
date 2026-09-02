@@ -4,7 +4,7 @@ import type { Profile } from '../types/profile';
 import { ActSection } from './ActSection';
 
 /**
- * Act 08's copy — the contact block and the form.
+ * Act 09's copy — the contact block, the form and the footer credit.
  *
  * The form posts to the same backend/api/send-direct-message.php the site already
  * uses; only the shell around it changed. On submit the panels flatten into the beam,
@@ -13,7 +13,7 @@ import { ActSection } from './ActSection';
 
 const EMPTY = { name: '', email: '', subject: '', message: '' };
 
-export function SyncCopy({ profile }: { profile: Profile }) {
+export function ContactCopy({ profile }: { profile: Profile }) {
   const { info } = profile;
   const [values, setValues] = useState(EMPTY);
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
@@ -41,8 +41,8 @@ export function SyncCopy({ profile }: { profile: Profile }) {
   };
 
   return (
-    <ActSection id="sync" eyebrow="Contact" title="Let’s build something" align="center" drift={14} titleHidden>
-      <p className="prism-lead prism-center prism-lead-short">{info.contact_preference_details}</p>
+    <ActSection id="contact" eyebrow="Contact" title="Let’s build something" align="center" drift={12}>
+      <p className="prism-text prism-center prism-text-short">{info.contact_preference_details}</p>
 
       <div className="prism-contact">
         <a className="prism-address" href={`mailto:${info.email}`}>

@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Achievement } from '../../types/profile';
-import { hexTileGeometry } from '../geometry/facetedCore';
+import { hexTileGeometry } from '../geometry/crystal';
 import type { WorldLook } from '../materials/palette';
 import { CRIMSON, TEAL } from '../materials/presets';
 import { constellationState } from '../liveState';
@@ -51,7 +51,7 @@ export function buildConstellation(achievements: Achievement[]): { tiles: Tile[]
   const min = Math.min(...times);
   const max = Math.max(...times);
   const span = Math.max(1, max - min);
-  const spread = WORLD.constellation.spread;
+  const spread = WORLD.achievements.spread;
 
   const tiles: Tile[] = achievements.map((achievement, i) => {
     const k = ((new Date(achievement.certification_date).getTime() || min) - min) / span;
@@ -161,7 +161,7 @@ function Tile({
   );
 }
 
-export function Act06Constellation({
+export function Act05Achievements({
   look,
   envMap,
   achievements,
@@ -175,7 +175,7 @@ export function Act06Constellation({
   const rig = useScrollRig();
   const groupRef = useRef<THREE.Group>(null);
   const linkRef = useRef<THREE.LineSegments>(null);
-  const act = ACT_BY_ID.constellation;
+  const act = ACT_BY_ID.achievements;
 
   const { tiles, links } = useMemo(() => buildConstellation(achievements), [achievements]);
   const geometry = useMemo(() => hexTileGeometry(0.85, 0.14), []);
@@ -207,7 +207,7 @@ export function Act06Constellation({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, WORLD.constellation.z]}>
+    <group ref={groupRef} position={[0, 0, WORLD.achievements.z]}>
       <lineSegments ref={linkRef} geometry={linkGeometry}>
         <lineBasicMaterial
           color={TEAL}

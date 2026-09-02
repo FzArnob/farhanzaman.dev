@@ -69,7 +69,7 @@ export function CameraRig({ parallax = 1 }: { parallax?: number }) {
     const open = stage.refs.openProject.current !== null;
     blend.current = THREE.MathUtils.damp(blend.current, open ? 1 : 0, 2.6, delta);
     if (blend.current > 0.001) {
-      const chamberZ = WORLD.forge.z - WORLD.forge.radius;
+      const chamberZ = WORLD.works.z - WORLD.works.radius;
       _overridePos.set(0, 0.4, chamberZ + 4.2);
       _overrideLook.set(0, 0, chamberZ);
       const k = smooth(clamp01(blend.current));

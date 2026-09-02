@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { demote, type Quality } from '../lib/quality';
 import type { Profile } from '../types/profile';
@@ -7,18 +7,18 @@ import type { GamingVideo } from '../types/gaming';
 import { CameraRig } from './CameraRig';
 import { Act00Calibration } from './acts/Act00Calibration';
 import { Act01Prism } from './acts/Act01Prism';
-import { Act02Spine } from './acts/Act02Spine';
-import { Act03Lattice } from './acts/Act03Lattice';
-import { boot, latticeState } from './liveState';
+import { Act02Background } from './acts/Act02Background';
+import { Act03Cloud } from './acts/Act03Cloud';
 import { Act04Turbine } from './acts/Act04Turbine';
-import { Act05Forge } from './acts/Act05Forge';
-import { Act05bCore } from './acts/Act05bCore';
-import { Act06Constellation } from './acts/Act06Constellation';
-import { Act07Gallery } from './acts/Act07Gallery';
-import { Act07bArcade } from './acts/Act07bArcade';
-import { Act08Sync } from './acts/Act08Sync';
+import { Act05Achievements } from './acts/Act05Achievements';
+import { Act06Works } from './acts/Act06Works';
+import { Act06bCase } from './acts/Act06bCase';
+import { Act07Hobbies } from './acts/Act07Hobbies';
+import { Act08Arcade } from './acts/Act08Arcade';
+import { Act09Contact } from './acts/Act09Contact';
 import { DustField } from './fx/DustField';
 import { ShardPool } from './fx/ShardPool';
+import { boot, cloudState } from './liveState';
 import { buildEnvTexture, lookFor } from './materials/palette';
 import { disposeLabelCache } from './materials/labels';
 import { useStageState } from './StageState';
@@ -29,16 +29,16 @@ import { disposeTextureCache } from './useRemoteTexture';
  *
  * It mounts once and never unmounts. Acts inside it appear and disappear by scroll
  * proximity, so peak scene cost stays flat however much content the admin editor adds
- * later. The canvas itself is aria-hidden: not a character of the copy lives in a
- * texture, and deleting this component leaves a readable site behind.
+ * later. The canvas is aria-hidden and role="presentation": not a character of the
+ * copy lives in a texture, so deleting this component would leave a readable site.
+ *
+ * There is deliberately NO post-processing pass. Bloom and chromatic aberration cost
+ * 74 KB gzipped and a full-screen render target, and both are achievable more cheaply
+ * here: the glow is additive sprites the scene needed anyway, and the colour fringing
+ * is the mark's own offset crimson layer — geometry rather than a shader. On a slow
+ * connection that trade is the difference between a scene that appears and one that is
+ * still downloading.
  */
-
-/**
- * Bloom, chromatic aberration and SMAA come from postprocessing, which is a third of
- * the 3D chunk on its own. Split out so the scene renders first and the polish lands a
- * beat later — and so the low tier, which uses none of it, never downloads it.
- */
-const PostFX = lazy(() => import('./fx/PostFX').then((m) => ({ default: m.PostFX })));
 
 /** Builds the PMREM environment and keeps it in step with the theme. */
 function Environment({ light, onReady }: { light: boolean; onReady: (t: THREE.Texture) => void }) {
@@ -78,8 +78,8 @@ function Environment({ light, onReady }: { light: boolean; onReady: (t: THREE.Te
 
 /**
  * Measured tiering. The renderer string gives a first guess; if the first second of
- * real frames disagrees, the tier drops. Runs once — a demotion mid-scroll would be
- * more jarring than the frames it saves.
+ * real frames disagrees, the tier drops once. A demotion mid-scroll would be more
+ * jarring than the frames it saves, so it only ever happens at the start.
  */
 function FrameProbe({ quality, onDemote }: { quality: Quality; onDemote: () => void }) {
   const samples = useRef<number[]>([]);
@@ -101,57 +101,55 @@ function FrameProbe({ quality, onDemote }: { quality: Quality; onDemote: () => v
   return null;
 }
 
-/** Pointer interaction that needs a raycast against instanced geometry. */
-function LatticePointer() {
+/**
+ * Pointer handling for the expertise sphere: hover a word, drag to spin.
+ *
+ * Sprites are raycastable, so this walks the word group rather than needing separate
+ * hit-test geometry. Drag is horizontal-only — on touch a vertical swipe must always
+ * belong to the page, never to the sphere.
+ */
+function CloudPointer() {
   const { camera, gl, scene } = useThree();
-  const stage = useStageState();
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
   const pointer = useMemo(() => new THREE.Vector2(), []);
-  const drag = useRef<{ active: boolean; x: number; moved: number } | null>(null);
+  const drag = useRef<{ x: number; moved: number } | null>(null);
 
   useEffect(() => {
     const element = gl.domElement;
 
-    const hitNode = (event: PointerEvent): number => {
+    const hit = (event: PointerEvent): number => {
+      const group = scene.getObjectByName('cloud-words');
+      if (!group || !group.parent?.visible) return -1;
       const rect = element.getBoundingClientRect();
       pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(pointer, camera);
-      const mesh = scene.getObjectByName('lattice-nodes') as THREE.InstancedMesh | undefined;
-      if (!mesh || !mesh.visible) return -1;
-      const hits = raycaster.intersectObject(mesh, false);
-      return hits.length > 0 && hits[0].instanceId !== undefined ? hits[0].instanceId : -1;
+      const hits = raycaster.intersectObjects(group.children, false);
+      if (hits.length === 0) return -1;
+      return group.children.indexOf(hits[0].object);
     };
 
     const onDown = (event: PointerEvent) => {
-      // Mouse only: on touch, a vertical swipe must always belong to the page.
-      drag.current = { active: true, x: event.clientX, moved: 0 };
+      drag.current = { x: event.clientX, moved: 0 };
     };
-
     const onMove = (event: PointerEvent) => {
       const d = drag.current;
-      if (d?.active) {
+      if (d) {
         const dx = event.clientX - d.x;
         d.x = event.clientX;
         d.moved += Math.abs(dx);
-        // Horizontal-only, so the page keeps every vertical gesture.
-        latticeState.spinVelocity = dx * 0.02;
+        cloudState.spinVelocity = dx * 0.02;
         return;
       }
-      latticeState.hovered = hitNode(event);
+      cloudState.hovered = hit(event);
     };
-
     const onUp = (event: PointerEvent) => {
       const d = drag.current;
       drag.current = null;
-      if (!d) return;
       // A drag is a spin; only a genuine tap selects.
-      if (d.moved > 6) return;
-      const index = hitNode(event);
-      if (index >= 0) {
-        stage.setExpertise(latticeState.selected === index ? -1 : index);
-        latticeState.selected = latticeState.selected === index ? -1 : index;
-      }
+      if (!d || d.moved > 6) return;
+      const index = hit(event);
+      if (index >= 0) cloudState.selected = cloudState.selected === index ? -1 : index;
     };
 
     element.addEventListener('pointerdown', onDown);
@@ -162,12 +160,7 @@ function LatticePointer() {
       element.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
     };
-  }, [camera, gl, scene, raycaster, pointer, stage]);
-
-  // Keep the module-level mirror in step when the overlay changes the selection.
-  useEffect(() => {
-    latticeState.selected = stage.expertise;
-  }, [stage.expertise]);
+  }, [camera, gl, scene, raycaster, pointer]);
 
   return null;
 }
@@ -221,16 +214,13 @@ export function Stage({
         antialias: quality.antialias,
         alpha: false,
         powerPreference: 'high-performance',
-        // The transmission pass needs to read the frame it is refracting.
-        preserveDrawingBuffer: false,
       }}
-      camera={{ fov: 50, near: 0.1, far: 340, position: [0, 0.2, 6] }}
+      camera={{ fov: 50, near: 0.1, far: 420, position: [0, 0.25, 7.4] }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.outputColorSpace = THREE.SRGBColorSpace;
         // R3F spreads unknown props onto its wrapper div, so the canvas itself has
-        // to be marked here. Everything readable is in the DOM overlay; the canvas
-        // is decoration and must not appear in the accessibility tree.
+        // to be marked here. Everything readable is in the DOM overlay.
         gl.domElement.setAttribute('aria-hidden', 'true');
         gl.domElement.setAttribute('role', 'presentation');
       }}
@@ -239,7 +229,7 @@ export function Stage({
       <Environment light={light} onReady={setEnvMap} />
       <FrameProbe quality={quality} onDemote={() => setQuality((q) => demote(q))} />
       <CameraRig parallax={quality.tier === 'low' ? 0.4 : 1} />
-      <LatticePointer />
+      <CloudPointer />
 
       <Act00Calibration quality={quality} />
 
@@ -250,42 +240,35 @@ export function Stage({
         name={profile.info.full_name}
         designations={profile.info.designations}
       />
-      <Act02Spine
+      <Act02Background
         look={look}
         envMap={envMap}
         educations={profile.educations}
         experiences={profile.experiences}
       />
-      {/* The lattice nodes carry their own colour, so it needs no environment map. */}
-      <Act03Lattice look={look} expertises={profile.expertises} projects={profile.projects} />
+      {/* The tag sphere carries its own colour, so it needs no environment map. */}
+      <Act03Cloud look={look} expertises={profile.expertises} />
       <Act04Turbine look={look} envMap={envMap} skills={profile.skills} />
-      <Act05Forge
+      <Act05Achievements
+        look={look}
+        envMap={envMap}
+        achievements={profile.achievements}
+        onSelect={stage.setAchievement}
+      />
+      <Act06Works
         quality={quality}
         look={look}
         envMap={envMap}
         projects={profile.projects}
         onOpen={stage.setOpenProject}
       />
-      <Act05bCore quality={quality} look={look} envMap={envMap} project={openProject} />
-      <Act06Constellation
-        look={look}
-        envMap={envMap}
-        achievements={profile.achievements}
-        onSelect={stage.setAchievement}
-      />
-      <Act07Gallery look={look} gallery={profile.gallery} onSelect={stage.setLightbox} />
-      <Act07bArcade look={look} onSelect={onOpenClip} />
-      {/* The address stays in the DOM overlay, where it is a real mailto link. */}
-      <Act08Sync quality={quality} look={look} envMap={envMap} headline="Let’s build something" />
+      <Act06bCase quality={quality} look={look} envMap={envMap} project={openProject} />
+      <Act07Hobbies look={look} gallery={profile.gallery} onSelect={stage.setLightbox} />
+      <Act08Arcade look={look} onSelect={onOpenClip} />
+      <Act09Contact quality={quality} look={look} envMap={envMap} />
 
       <ShardPool quality={quality} envMap={envMap} />
       <DustField quality={quality} look={look} />
-      {quality.tier !== 'low' && (
-        <Suspense fallback={null}>
-          <PostFX quality={quality} look={look} />
-        </Suspense>
-      )}
     </Canvas>
   );
 }
-

@@ -93,12 +93,25 @@ class ParticleNetwork {
 
   private listeners: [string, EventListener][] = [];
 
-  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  interactive = true;
+
+  constructor(
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    overrides?: Partial<Options> & { interactive?: boolean }
+  ) {
     this.canvas = canvas;
     this.ctx = ctx;
+    if (overrides) {
+      const { interactive, ...rest } = overrides;
+      Object.assign(this.options, rest);
+      if (interactive === false) this.interactive = false;
+    }
     this.createParticles(true);
     this.animationFrame = requestAnimationFrame(this.update.bind(this));
-    this.bindUiActions();
+    // The 3D shell puts this layer behind a canvas that owns the pointer, so it
+    // opts out of the mouse handlers rather than fighting for the same events.
+    if (this.interactive) this.bindUiActions();
   }
 
   createParticles(isInitial?: boolean): void {
@@ -268,8 +281,17 @@ class ParticleNetwork {
   }
 }
 
-/** Mounts the animation inside `element`. Returns a teardown function. */
-export function initParticleNetwork(element: HTMLElement): () => void {
+/**
+ * Mounts the animation inside `element`. Returns a teardown function.
+ *
+ * `overrides` was added for v1.09: the 3D shell reuses this exact animation as its
+ * background net and needs it in the brand colours at a lower density. The flat site
+ * passes nothing and keeps the original grey.
+ */
+export function initParticleNetwork(
+  element: HTMLElement,
+  overrides?: Partial<Options> & { interactive?: boolean }
+): () => void {
   const canvas = document.createElement('canvas');
   const sizeCanvas = () => {
     canvas.width = window.innerWidth;
@@ -279,7 +301,7 @@ export function initParticleNetwork(element: HTMLElement): () => void {
   element.appendChild(canvas);
 
   const ctx = canvas.getContext('2d')!;
-  const network = new ParticleNetwork(canvas, ctx);
+  const network = new ParticleNetwork(canvas, ctx, overrides);
 
   const onResize = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

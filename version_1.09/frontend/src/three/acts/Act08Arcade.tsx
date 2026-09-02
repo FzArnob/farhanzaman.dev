@@ -7,7 +7,7 @@ import type { WorldLook } from '../materials/palette';
 import { TEAL } from '../materials/presets';
 import { arcadeState } from '../liveState';
 import { useScrollRig } from '../ScrollRig';
-import { WORLD, clamp01, ramp } from '../timeline';
+import { ACT_BY_ID, WORLD, actPresence } from '../timeline';
 import { loadTexture } from '../useRemoteTexture';
 
 /**
@@ -23,8 +23,8 @@ import { loadTexture } from '../useRemoteTexture';
 
 export { arcadeState };
 
-const COLUMNS = 12;
-const ROWS = 4;
+const COLUMNS = 14;
+const ROWS = 5;
 const RADIUS = 13;
 const TILE_W = 1.72;
 const TILE_H = 0.98;
@@ -36,7 +36,7 @@ interface Tile {
   angle: number;
 }
 
-export function Act07bArcade({
+export function Act08Arcade({
   look,
   onSelect,
 }: {
@@ -121,14 +121,15 @@ export function Act07bArcade({
     };
   }, [tiles, materials]);
 
-  const wallZ = WORLD.gallery.zFar - 6;
+  const wallZ = WORLD.arcade.z;
 
   useFrame((state, delta) => {
     const group = groupRef.current;
     if (!group) return;
     const t = rig.state.current.t;
-    // Only present at the very end of the hall.
-    const presence = clamp01(ramp(t, 0.86, 0.9) * (1 - ramp(t, 0.92, 0.95)));
+    // A full act of its own now, on the same presence curve as every other one,
+    // rather than a coda tacked onto the end of the gallery.
+    const presence = actPresence(t, ACT_BY_ID.arcade, 0.04, 0.04);
     group.visible = presence > 0.005;
     if (!group.visible) return;
 
@@ -148,7 +149,7 @@ export function Act07bArcade({
   if (tiles.length === 0) return null;
 
   return (
-    <group ref={groupRef} position={[0, WORLD.gallery.floorY + 3.4, wallZ]}>
+    <group ref={groupRef} position={[0, 0.4, wallZ]}>
       <group ref={wallRef}>
         {tiles.map((tile, i) => {
           const x = Math.sin(tile.angle) * RADIUS;

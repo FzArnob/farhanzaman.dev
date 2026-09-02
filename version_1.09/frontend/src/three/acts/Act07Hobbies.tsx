@@ -33,9 +33,12 @@ interface Frame {
   band: number;
 }
 
+/** The flat home page showed a six-item preview; Explore opens the rest. */
+export const HOBBIES_PREVIEW = 6;
+
 export function buildGallery(items: GalleryItem[]): Frame[] {
   const categories = [...new Set(items.map((i) => i.category))].sort();
-  const { zNear, zFar, wallX } = WORLD.gallery;
+  const { zNear, zFar, wallX } = WORLD.hobbies;
   return items.map((item, i) => {
     const k = items.length <= 1 ? 0 : i / (items.length - 1);
     // Alternate walls so the camera has something to look at on both sides.
@@ -66,14 +69,19 @@ function Artwork({
   look: WorldLook;
   onSelect: (index: number) => void;
 }) {
+  // Outside the current window this work is not in the hall at all — no texture
+  // request, no light, nothing to draw.
+  const inWindow = index < galleryState.shown;
   const groupRef = useRef<THREE.Group>(null);
   const planeRef = useRef<THREE.Mesh>(null);
   const spillRef = useRef<THREE.PointLight>(null);
   const nearRef = useRef(0);
 
-  // Thumb first; the full image is requested only once the camera is close.
-  const thumb = useRemoteTexture(frame.item.thumb_url);
-  const wantFull = nearRef.current > 0.45;
+  // Thumb first; the full image is requested only once the camera is close. A work
+  // outside the window asks for nothing, which is what keeps the initial payload
+  // to six thumbnails instead of eleven full-resolution photographs.
+  const thumb = useRemoteTexture(inWindow ? frame.item.thumb_url : null);
+  const wantFull = inWindow && nearRef.current > 0.45;
   const full = useRemoteTexture(wantFull ? frame.item.image_url : null);
   const texture = full ?? thumb;
 
@@ -109,6 +117,13 @@ function Artwork({
   useFrame((state, delta) => {
     const group = groupRef.current;
     if (!group) return;
+    const shown = index < galleryState.shown;
+    group.visible = shown || material.opacity > 0.01;
+    if (!shown) {
+      material.opacity = THREE.MathUtils.damp(material.opacity, 0, 5, delta);
+      if (spillRef.current) spillRef.current.intensity = 0;
+      return;
+    }
     const camZ = state.camera.position.z;
     const near = clamp01(1 - Math.abs(camZ - frame.z) / 22);
     nearRef.current = near;
@@ -155,7 +170,7 @@ function Artwork({
       <mesh position={[0, -frame.height / 2 - 0.28, 0]}>
         <boxGeometry args={[frame.width * 0.72, 0.06, 0.06]} />
         <meshBasicMaterial
-          color={bandColor(0.6 + frame.band * 0.4).getHex()}
+          color={bandColor(frame.band).getHex()}
           transparent
           opacity={0.85}
           toneMapped={false}
@@ -173,7 +188,7 @@ function Artwork({
   );
 }
 
-export function Act07Gallery({
+export function Act07Hobbies({
   look,
   gallery,
   onSelect,
@@ -185,10 +200,17 @@ export function Act07Gallery({
   const rig = useScrollRig();
   const groupRef = useRef<THREE.Group>(null);
   const floorRef = useRef<THREE.Mesh>(null);
-  const act = ACT_BY_ID.gallery;
+  const act = ACT_BY_ID.hobbies;
 
   const frames = useMemo(() => buildGallery(gallery), [gallery]);
-  const { zNear, zFar, floorY } = WORLD.gallery;
+  const { zNear, zFar, floorY } = WORLD.hobbies;
+
+  useEffect(() => {
+    galleryState.total = gallery.length;
+    galleryState.shown = galleryState.expanded
+      ? gallery.length
+      : Math.min(HOBBIES_PREVIEW, gallery.length);
+  }, [gallery.length]);
 
   useFrame(() => {
     const group = groupRef.current;
@@ -197,6 +219,10 @@ export function Act07Gallery({
     const presence = actPresence(t, act, 0.04, 0.03);
     group.visible = presence > 0.005;
     if (!group.visible) return;
+    galleryState.total = gallery.length;
+    galleryState.shown = galleryState.expanded
+      ? gallery.length
+      : Math.min(HOBBIES_PREVIEW, gallery.length);
     if (floorRef.current) {
       (floorRef.current.material as THREE.MeshStandardMaterial).opacity = presence * 0.9;
     }
@@ -212,11 +238,11 @@ export function Act07Gallery({
       >
         <planeGeometry args={[26, Math.abs(zFar - zNear) + 24]} />
         <meshStandardMaterial
-          color={look.bloom ? 0x05080a : 0xe6ecea}
-          roughness={0.55}
-          metalness={0.15}
+          color={look.bloom ? 0x040607 : 0xdfe6e4}
+          roughness={0.72}
+          metalness={0.08}
           transparent
-          opacity={0.9}
+          opacity={0.85}
         />
       </mesh>
 
@@ -224,13 +250,16 @@ export function Act07Gallery({
         <Artwork key={frame.item.gallery_item_id} frame={frame} index={i} look={look} onSelect={onSelect} />
       ))}
 
-      {/* Faint: the hall is meant to be read by the light each work throws, so a
-          general fill here would flatten exactly the effect the act is built on. */}
+      {/*
+        Barely there. The hall is meant to be read by the light each work throws onto
+        the dark around it, so a general fill flattens exactly the effect the act is
+        built on — and on the floor it turned into a bright slab across half the frame.
+      */}
       <pointLight
         position={[0, 3, (zNear + zFar) / 2]}
-        intensity={look.bloom ? 1.4 : 6}
+        intensity={look.bloom ? 0.8 : 2.2}
         color={TEAL}
-        distance={40}
+        distance={30}
       />
     </group>
   );

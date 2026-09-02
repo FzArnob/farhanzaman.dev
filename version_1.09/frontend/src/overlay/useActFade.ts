@@ -1,15 +1,19 @@
 import { useEffect, useRef } from 'react';
 import { useScrollRig } from '../three/ScrollRig';
-import { ACT_BY_ID, actPresence, type ActId } from '../three/timeline';
+import { ACT_BY_ID, copyPresence, type ActId } from '../three/timeline';
 
 /**
- * Fades a DOM block in step with its act.
+ * Fades an act's copy in and out in step with the scroll.
  *
- * Writes opacity and transform straight onto the element from a single rAF loop rather
- * than driving them through React state. Sixty re-renders a second of the whole
- * overlay would dominate the frame budget and would fight the invariant that scroll is
- * the only clock — this way the copy is a pure function of `t` exactly like the
- * geometry is.
+ * Uses `copyPresence`, not `actPresence`: the copy windows do not overlap. An act's
+ * text reaches zero before the next act's text leaves zero, so two headlines can
+ * never be legible at once. Geometry still crossfades — a room should dissolve into
+ * the next one — but text does not, because two paragraphs on top of each other is
+ * unreadable no matter how pretty the transition is.
+ *
+ * Writes straight onto the element from a single rAF loop rather than through React
+ * state. Sixty re-renders a second of the whole overlay would dominate the frame
+ * budget, and it would break the rule that scroll is the only clock.
  */
 
 interface Entry {
@@ -31,14 +35,18 @@ function loop() {
   const t = getT();
   entries.forEach(({ el, actId, drift }) => {
     const act = ACT_BY_ID[actId];
-    const presence = actPresence(t, act, 0.035, 0.035);
-    el.style.opacity = String(presence);
-    // Fully faded blocks stop hit-testing and leave the a11y tree.
-    el.style.visibility = presence < 0.02 ? 'hidden' : 'visible';
+    const presence = copyPresence(t, act);
+    el.style.opacity = presence.toFixed(3);
+    /*
+      Below a whisker of opacity the block leaves the layout entirely: it stops
+      hit-testing, leaves the accessibility tree, and — the reason this matters —
+      cannot overlap the incoming act even by a pixel of anti-aliased text.
+    */
+    el.style.visibility = presence < 0.015 ? 'hidden' : 'visible';
     if (drift) {
       const progress = (t - act.t0) / (act.t1 - act.t0);
-      // A custom property, not `transform` — the centred act composes this with its
-      // own translate(-50%,-50%) and overwriting the whole property broke that.
+      // A custom property, not `transform`: the centred acts compose this with their
+      // own translate() and overwriting the whole property breaks them.
       el.style.setProperty('--drift', `${((0.5 - progress) * drift).toFixed(2)}px`);
     }
   });

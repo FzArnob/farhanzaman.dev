@@ -52,7 +52,7 @@ export function buildSpine(educations: Education[], experiences: Experience[]): 
   const maxYear = Math.max(...ends);
   const span = Math.max(1, maxYear - minYear);
 
-  const { zNear, zFar } = WORLD.spine;
+  const { zNear, zFar } = WORLD.background;
   for (const { kind, row } of all) {
     const from = year(row.start_date);
     const to = row.is_present === '1' ? new Date().getFullYear() : year(row.end_date);
@@ -72,7 +72,7 @@ export function buildSpine(educations: Education[], experiences: Experience[]): 
   return rows.sort((a, b) => a.z - b.z);
 }
 
-export function Act02Spine({
+export function Act02Background({
   look,
   envMap,
   educations,
@@ -86,7 +86,7 @@ export function Act02Spine({
   const rig = useScrollRig();
   const groupRef = useRef<THREE.Group>(null);
   const slabRefs = useRef<THREE.Group[]>([]);
-  const act = ACT_BY_ID.spine;
+  const act = ACT_BY_ID.background;
 
   const slabs = useMemo(() => buildSpine(educations, experiences), [educations, experiences]);
 
@@ -110,7 +110,7 @@ export function Act02Spine({
   useEffect(() => () => slabMaterial.dispose(), [slabMaterial]);
 
   const cable = useMemo(() => {
-    const { zNear, zFar } = WORLD.spine;
+    const { zNear, zFar } = WORLD.background;
     const length = Math.abs(zNear - zFar) + 6;
     const geo = new THREE.CylinderGeometry(0.014, 0.014, length, 6);
     const mat = new THREE.MeshBasicMaterial({
@@ -184,7 +184,7 @@ export function Act02Spine({
     });
 
     // Pulses travel toward you along the cable: the present is drawing closer.
-    const { zNear, zFar } = WORLD.spine;
+    const { zNear, zFar } = WORLD.background;
     pulses.forEach((p, i) => {
       const u = (time * 0.19 + i / pulses.length) % 1;
       p.position.set(0, -0.7, zFar + (zNear - zFar) * u);
@@ -201,7 +201,7 @@ export function Act02Spine({
 
       {slabs.map((slab, i) => {
         const isEdu = slab.kind === 'education';
-        const x = isEdu ? -WORLD.spine.wallX : WORLD.spine.wallX;
+        const x = isEdu ? -WORLD.background.wallX : WORLD.background.wallX;
         const accent = isEdu ? '#00d3b4' : '#fd2155';
         return (
           <group

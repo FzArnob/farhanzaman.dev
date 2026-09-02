@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Quality } from '../../lib/quality';
-import { mulberry } from '../geometry/facetedCore';
+import { mulberry, shardGeometry } from '../geometry/crystal';
 import { CRIMSON, TEAL, shardMaterial } from '../materials/presets';
 import { useScrollRig } from '../ScrollRig';
 import { WORLD, clamp01, ramp, smooth } from '../timeline';
@@ -57,7 +57,7 @@ export function ShardPool({ quality, envMap }: { quality: Quality; envMap: THREE
   const rig = useScrollRig();
   const count = quality.shards;
 
-  const geometry = useMemo(() => new THREE.TetrahedronGeometry(0.16, 0), []);
+  const geometry = useMemo(() => shardGeometry(), []);
   const material = useMemo(() => shardMaterial(), []);
 
   const shards = useMemo<Shard[]>(() => {
@@ -65,7 +65,7 @@ export function ShardPool({ quality, envMap }: { quality: Quality; envMap: THREE
     const list: Shard[] = [];
     // Spread through the whole travelled corridor so shards are already with you
     // wherever you are on the scroll, rather than fading in per act.
-    const zSpan = Math.abs(WORLD.sync.z) + 12;
+    const zSpan = Math.abs(WORLD.contact.z) + 12;
     for (let i = 0; i < count; i++) {
       list.push({
         home: new THREE.Vector3((rnd() - 0.5) * 34, (rnd() - 0.5) * 16, 6 - rnd() * zSpan),
@@ -109,7 +109,7 @@ export function ShardPool({ quality, envMap }: { quality: Quality; envMap: THREE
     // Act 08 pulls every shard in to write the address.
     const converge = ramp(t, 0.93, 1.0);
     const eased = smooth(converge);
-    const syncZ = WORLD.sync.z + 1.6;
+    const syncZ = WORLD.contact.z + 1.6;
 
     for (let i = 0; i < count; i++) {
       const sh = shards[i];

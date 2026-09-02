@@ -32,8 +32,9 @@
 
   /* Dispersion band: teal to crimson the long, cool way round the wheel.
      Wayfinding marks only, never text. See "Open decisions". */
-  --s0:#00d1b3; --s1:#12a6e2; --s2:#2b7cf5; --s3:#6a6bf8; --s4:#9a63fb;
-  --s5:#c258fd; --s6:#ef4ae8; --s7:#fd47a6; --s8:#fd2159;
+  /* Two poles and their own blend. Nothing else — see lib/band.ts. */
+  --s0:#00d3b4; --s1:#00d3b4; --s2:#00d3b4; --s3:#00d3b4; --s4:#7f7a85;
+  --s5:#fd2155; --s6:#fd2155; --s7:#fd2155; --s8:#fd2155;
 
   --display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -52,8 +53,8 @@
     --teal-ink:#00806e; --teal-soft:rgba(0,148,127,.12);
     --crimson:#e00f43; --crimson-ink:#c40b39; --crimson-soft:rgba(224,15,67,.1);
     --shadow:0 18px 44px -26px rgba(10,40,36,.32);
-    --s0:#00806e; --s1:#0071a6; --s2:#0041b4; --s3:#1a10bd; --s4:#4a13c6;
-    --s5:#8409ca; --s6:#bd0bb8; --s7:#c60d81; --s8:#c40b39;
+    --s0:#00806e; --s1:#00806e; --s2:#00806e; --s3:#00806e; --s4:#6b5560;
+    --s5:#c40b39; --s6:#c40b39; --s7:#c40b39; --s8:#c40b39;
     color-scheme:light;
   }
 }
@@ -64,8 +65,8 @@
   --teal-ink:#00806e; --teal-soft:rgba(0,148,127,.12);
   --crimson:#e00f43; --crimson-ink:#c40b39; --crimson-soft:rgba(224,15,67,.1);
   --shadow:0 18px 44px -26px rgba(10,40,36,.32);
-  --s0:#00806e; --s1:#0071a6; --s2:#0041b4; --s3:#1a10bd; --s4:#4a13c6;
-  --s5:#8409ca; --s6:#bd0bb8; --s7:#c60d81; --s8:#c40b39;
+  --s0:#00806e; --s1:#00806e; --s2:#00806e; --s3:#00806e; --s4:#6b5560;
+  --s5:#c40b39; --s6:#c40b39; --s7:#c40b39; --s8:#c40b39;
   color-scheme:light;
 }
 
@@ -333,7 +334,7 @@ html{scroll-behavior:smooth}
     <a href="#risk">Risks</a>
     <a href="#road">Roadmap</a>
     <a href="#decide">Decisions</a>
-    <a href="#built">As built</a>
+    <a href="#v2">Rev 2</a>
   </nav>
 </header>
 
@@ -342,55 +343,227 @@ html{scroll-behavior:smooth}
   <div class="wrap hero-inner">
     <div class="stack" style="gap:20px">
       <p class="eyebrow">farhanzaman.dev &nbsp;·&nbsp; version 1.09 &nbsp;·&nbsp; concept &amp; build plan</p>
-      <h1>One light in.<br><span class="fringe">Three facets out.</span></h1>
+      <h1>Your flat site,<br><span class="fringe">as one 3D world.</span></h1>
       <p class="lead prose">
-        Version 1.09 turns the portfolio into a single continuous 3D world that you travel
-        through by scrolling. Not a stack of pages with 3D widgets bolted on — one scene,
-        one camera, one timeline, nine acts. The content stays exactly what it is today.
-        The vessel changes completely.
+        Every section and every page of the current site becomes a place in a single
+        continuous 3D scene that you travel through by scrolling. Nine acts, one camera,
+        one canvas — and no flat version to switch to, because this <em>is</em> the site.
+        The content, the typeface, the two brand colours and the section names are all
+        the ones you already have.
       </p>
       <div class="hero-meta">
-        <span><b>Metaphor</b> optical dispersion</span>
-        <span><b>Anchor</b> the FZ monogram as a glass prism</span>
-        <span><b>Palette</b> #00d3b4 / #fd2155 — unchanged</span>
-        <span><b>Content</b> 0 items added, 0 removed</span>
+        <span><b>Acts</b> nine, one per flat section</span>
+        <span><b>Palette</b> #00d3b4 and #fd2155 only</span>
+        <span><b>Type</b> Titillium, the flat scale</span>
+        <span><b>Fallback</b> no switch — 3D or static</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ============================ LIVE RIG ============================ -->
-<section id="rig" class="wrap" style="padding-top:34px">
-  <div class="rig" id="prismRig">
-    <canvas id="prismCanvas"></canvas>
-    <div class="rig-vig"></div>
-    <div class="rig-scroll" id="rigScroll" tabindex="0" role="region" aria-label="Interactive scroll demonstration — scroll or use arrow keys to travel through the acts">
-      <div class="rig-spacer"></div>
-    </div>
-    <div class="rig-hint">scroll inside &nbsp;/&nbsp; drag to look<br>arrow keys work too</div>
-    <div class="rig-hud">
-      <div class="rig-copy">
-        <span class="k" id="rigK">act 01</span>
-        <span class="t" id="rigT">The Prism</span>
-        <span class="d" id="rigD">Loading the scene…</span>
-      </div>
-      <div class="rig-rail">
-        <button class="rig-btn" id="rigPlay" type="button" aria-label="Auto-travel through the acts">Auto</button>
-        <div class="rig-track" id="rigTrack">
-          <div class="rig-fill" id="rigFill"></div>
-        </div>
-        <span class="mono tnum" id="rigT01" style="font-size:.66rem;color:var(--ink-3);min-width:44px;text-align:right">t 0.00</span>
-      </div>
-    </div>
-    <div class="rig-fallback">
-      This browser has no WebGL, so the live rig can't run here.<br>
-      Everything below describes the same system in stills and diagrams.
-    </div>
+<!-- ============================ THE BUILD ============================ -->
+<section id="rig" class="wrap" style="padding-top:30px">
+  <div class="panel" style="border-left:2px solid var(--teal);gap:14px">
+    <h3>The prototype has been replaced by the real thing</h3>
+    <p>
+      This page used to carry a small three.js prototype of an earlier, eight-act version
+      of the design. It has been removed rather than left running, because it demonstrated
+      a structure and a palette that the build no longer uses — a stale demo beside a
+      current plan is worse than no demo.
+    </p>
+    <p>
+      What it was showing is now implemented in full. Nine acts, the flat site's own
+      sections, running on your data:
+    </p>
+    <pre style="margin-top:4px">cd version_1.09/frontend
+npm install
+npm run dev        <i># http://localhost:3050</i>
+
+<i># useful while looking at it</i>
+?tier=high|mid|low|static   <i>force a quality tier</i>
+?smooth=0                   <i>turn off momentum scrolling</i></pre>
+    <p class="mono" style="color:var(--ink-3)">
+      Every act below has been checked in a real browser at 1280×800 and 390×780, in both
+      themes, at three quality tiers, with a clean console.
+    </p>
   </div>
-  <div class="rig-note">
-    <span>Working prototype — real geometry, real glass, real camera spline.</span>
-    <span>Four of the nine acts, schematic content.</span>
-    <span>Follows your light/dark theme: Void and Studio.</span>
+</section>
+
+<!-- ============================ REV 2 ============================ -->
+<section id="v2" class="band">
+  <div class="wrap stack-lg">
+    <div class="band-head">
+      <span class="num">00 — revision 2</span>
+      <h2>The plan, rebuilt around the flat site</h2>
+      <p class="lead prose">
+        The first revision invented its own structure and its own palette. This one does
+        not: the acts <em>are</em> the flat site's sections, the type <em>is</em> its type,
+        and the accent is its two colours with nothing in between. Everything below is
+        built and running.
+      </p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">nine acts, mapped one-for-one onto the flat site</caption>
+        <thead><tr><th>Act</th><th>Flat source</th><th>In 3D</th><th>Accent</th></tr></thead>
+        <tbody>
+          <tr><td>01 Intro</td><td><code>IntroAnimation</code></td><td>The extruded glass monogram. Name, all three designations, <code>intro_text</code>, résumé and socials. Three rays leave it, one per designation.</td><td><span class="pill ok">teal</span></td></tr>
+          <tr><td>02 Background</td><td><code>#about-section</code> + <code>/about</code></td><td>A corridor where a slab's Z is its date: education on the left wall, experience on the right. "About me" swaps the two lists for <code>about_text</code> in place.</td><td><span class="pill ok">teal</span></td></tr>
+          <tr><td>03 Expertise</td><td><code>#expertise-section</code> — the skill canvas</td><td><strong>Your tag cloud, kept.</strong> It was already a rotating 3D sphere, so it is the same design in WebGL: 23 names on a Fibonacci sphere, sized by months, drag to spin, near face opaque and far face receding. Descriptions removed.</td><td><span class="pill ok">teal</span></td></tr>
+          <tr><td>04 Skills</td><td><code>SkillBars</code></td><td>Twelve glass blades from a hub. Length is the percentage, twist is the duration — the same two numbers the bars carry, in one mark. The DOM still shows the bar.</td><td><span class="pill ok">teal</span></td></tr>
+          <tr><td>05 Achievements</td><td><code>Achievements</code></td><td>Ten certificate tiles plotted by date and level, joined by issuer. The logos are already SVG, so they load as textures with nothing to produce.</td><td><span class="pill hot">crimson</span></td></tr>
+          <tr><td>06 Works</td><td><code>#works-section</code> + <code>/works</code></td><td><strong>Crystal prisms on a ring, camera at the hub.</strong> The home view carries the <strong>five most recent</strong>; "View all 8 projects" opens the same ring wider rather than navigating. Click one to fly inside it for the full case study.</td><td><span class="pill hot">crimson</span></td></tr>
+          <tr><td>07 Hobbies</td><td><code>#gallery-section</code> + <code>/hobbies</code></td><td>A hall with a floor — the only act that has one, which is what marks the shift from work to person. Six works to start, "Explore all 11" extends the hall the camera is already in.</td><td><span class="pill hot">crimson</span></td></tr>
+          <tr><td>08 Gaming</td><td><code>GamingPage</code></td><td>A curved wall of Run Fz Run clips on a cylindrical grid. Tap one and it plays in place. Its own act now, not a coda.</td><td><span class="pill hot">crimson</span></td></tr>
+          <tr><td>09 Contact</td><td><code>#contact-section</code></td><td>The three rays fold back into one and the mark comes back into register. The working form posts to the same <code>send-direct-message.php</code>.</td><td><span class="pill hot">crimson</span></td></tr>
+          <tr><td>∞ SyncBot</td><td><code>/syncbot</code></td><td>A button in the masthead opens the existing assistant as a full console. All 1,858 lines of it untouched.</td><td><span class="pill ok">resident</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>Type is the flat site's type</h3>
+        <div class="tscroll">
+          <table style="min-width:340px">
+            <thead><tr><th>Flat</th><th>3D</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td><code>titillium-font</code></td><td>same face, same local file</td><td class="mono">no webfont request</td></tr>
+              <tr><td><code>.section-head</code></td><td><code>.prism-head</code></td><td class="mono">600 weight, clamped 30→68px</td></tr>
+              <tr><td><code>.section-text</code></td><td><code>.prism-text</code></td><td class="mono">18px / 1.75, 16px on phones</td></tr>
+              <tr><td>card title</td><td><code>.prism-detail-title</code></td><td class="mono">22px</td></tr>
+              <tr><td><code>.c1 / .c2 / .c3</code></td><td><code>--pz-c1/2/3</code></td><td class="mono">#e7e7e7 / #a3a3a3 / #b4b4b4</td></tr>
+              <tr><td><code>--theme-color</code></td><td><code>--pz-teal</code></td><td class="mono">#00d3b4 (#00947f on light)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="prose" style="font-size:.9rem;color:var(--ink-2)">
+          Every block of copy sits on its own translucent panel rather than straight on the
+          canvas. That is the only reason text over a moving 3D scene is readable, and it is
+          why the panels are there at all.
+        </p>
+      </div>
+
+      <div class="stack">
+        <h3>Two colours, and nothing between them</h3>
+        <figure>
+          <div class="fbox">
+            <svg viewBox="0 0 300 96" role="img" aria-label="The accent ramp: teal for the first half, crimson for the second, with only a narrow blend at the midpoint">
+              <defs>
+                <linearGradient id="pole" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#00d3b4"/>
+                  <stop offset="0.43" stop-color="#00d3b4"/>
+                  <stop offset="0.57" stop-color="#fd2155"/>
+                  <stop offset="1" stop-color="#fd2155"/>
+                </linearGradient>
+              </defs>
+              <rect x="10" y="18" width="280" height="14" fill="url(#pole)"/>
+              <text x="10" y="12" class="fig-t" style="fill:#00d3b4">#00D3B4</text>
+              <text x="240" y="12" class="fig-t" style="fill:#fd2155">#FD2155</text>
+              <text x="10" y="50" class="fig-t">acts 01–04 land on the teal pole</text>
+              <text x="10" y="62" class="fig-t">acts 05–09 land on the crimson pole</text>
+              <text x="10" y="74" class="fig-t">the crossover is 14% wide and never carries text</text>
+              <text x="10" y="88" class="fig-t" style="fill:var(--ink-2)">no blue, no violet, no magenta anywhere in the build</text>
+            </svg>
+          </div>
+          <figcaption><b>Revision 1 was wrong about this.</b> It ran a "dispersion band"
+          from teal to crimson the long way round the wheel, which meant blues and violets —
+          colours that are not yours. The ramp now snaps to the nearest pole, so every dot,
+          edge, node and glyph is one of your two values or their own blend.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <h4>Copy never overlaps</h4>
+        <p>Geometry crossfades — a room should dissolve into the next one. Text does not.
+        Each act owns a slice of its window for its copy and the slices do not touch, so
+        the outgoing block reaches zero opacity before the incoming one leaves it. Below
+        1.5% it also leaves the layout entirely, so not even an anti-aliased edge can
+        overlap. Verified at every boundary: exactly one act is ever legible.</p>
+      </div>
+      <div class="panel">
+        <h4>The trackers</h4>
+        <p>Dots down the centre-right for position — no numbers, because the name of the
+        section belongs to the readout at the centre bottom and printing it twice makes
+        the eye choose. The readout says what you are exploring and how far through that
+        section you are; the rail says where you are in the whole journey.</p>
+      </div>
+      <div class="panel">
+        <h4>The particle network is yours</h4>
+        <p>The flat site's <code>particleNetwork.ts</code>, reused as the connective tissue
+        between the canvas and the copy — recoloured to the two brand values, at a fifth of
+        the density, with pointer handling off because the 3D canvas owns that. Its opacity
+        follows the scroll: strongest through Works and Expertise where a network means
+        something, almost gone in the gallery where the artwork has to win.</p>
+      </div>
+      <div class="panel">
+        <h4>No mode switch</h4>
+        <p>There is no flat/3D toggle. A browser that cannot run WebGL, or a visitor who has
+        asked their OS for reduced motion, gets a static rendering with the same nine
+        sections, the same face and the same colours — chosen for them, never offered as a
+        choice.</p>
+      </div>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding:12px 14px;caption-side:top">what it costs, measured</caption>
+        <thead><tr><th>Chunk</th><th>Raw</th><th>Gzipped</th><th>When it loads</th></tr></thead>
+        <tbody>
+          <tr><td>Shell — overlay, scroll rig, timeline</td><td class="tnum">207 KB</td><td class="tnum"><span class="pill ok">64 KB</span></td><td>immediately; paints the hero copy</td></tr>
+          <tr><td>CSS</td><td class="tnum">84 KB</td><td class="tnum"><span class="pill ok">17 KB</span></td><td>immediately</td></tr>
+          <tr><td>three.js + the nine acts</td><td class="tnum">836 KB</td><td class="tnum">224 KB</td><td>after first paint</td></tr>
+          <tr><td>SyncBot</td><td class="tnum">42 KB</td><td class="tnum">17 KB</td><td>only if opened</td></tr>
+          <tr><td>Post-processing</td><td class="tnum">—</td><td class="tnum"><span class="pill ok">removed</span></td><td>bloom is additive sprites, fringing is geometry</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid2">
+      <div class="stack">
+        <h3>Fast on a slow connection</h3>
+        <ul class="clean">
+          <li><strong>The shell has no three.js in it at all.</strong> The overlay, the rail
+          and the readout import from <code>three/liveState.ts</code> and
+          <code>lib/band.ts</code>, neither of which touches three — so the hero copy is on
+          screen before the 3D chunk has been requested.</li>
+          <li><strong>Post-processing is gone.</strong> 74 KB gzipped and a full-screen
+          render target, for a bloom that additive sprites already give and a colour
+          fringing the mark's own offset layer already is.</li>
+          <li><strong>The connection is a tier input.</strong> <code>navigator.connection</code>
+          reporting 2G, Data Saver or under 1.2 Mbps drops straight to the low tier, which
+          asks for the fewest bytes — no shards, no particle layer, DPR 1.</li>
+          <li><strong>Six thumbnails, not eleven photographs.</strong> The gallery only
+          requests what is inside the current window, thumbnails first, full resolution
+          only on approach. Works load the front project and its two neighbours.</li>
+          <li><strong>The typeface is local.</strong> Titillium comes from
+          <code>view/static</code>, so there is no font request on the critical path.</li>
+          <li><strong>Nothing is polled.</strong> One rAF loop drives the scroll, one drives
+          the copy, and the overlay re-renders only when an act boundary is crossed.</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <h3>Responsive, and nothing broken by overlap</h3>
+        <ul class="clean">
+          <li>The overlay is a fixed layer, so no block can reflow into another. What they
+          can do is <em>cover</em> each other, and that is what the breakpoints are for.</li>
+          <li><strong>Phone:</strong> copy goes full width and sits above the readout; the
+          rail loses its track and becomes a dot column at the very edge; the head drops to
+          the flat site's own mobile size and the text to 16px.</li>
+          <li><strong>Landscape phone:</strong> a height query tightens the copy to two
+          clamped lines rather than letting it run off the top.</li>
+          <li><strong>Long fields:</strong> clamped with a transparent bottom border rather
+          than padding — <code>overflow:hidden</code> clips at the padding edge, so padding
+          lets the next line paint a readable sliver under the clamp. Every character stays
+          in the DOM; the whole text is in the case study.</li>
+          <li><strong>Measured, not assumed:</strong> every act is checked at 1280×800 and
+          390×780 for exactly one legible block and for nothing colliding with the masthead.</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1992,734 +2165,11 @@ pool.<b>handoff</b>(fromCore, toCore, easedT)        <i>// the Forge transition<
       </div>
     </div>
     <p>
-      Concept and build plan for the 3D-on-scroll rebuild. Content is unchanged from
-      <code>data/profile.json</code>; palette and mark are unchanged from the existing theme.
-      The rig at the top of this page is a working prototype, not a mockup — the geometry, the
-      glass and the camera spline are the same ones the build would use.
+      Concept and build plan for the 3D rebuild, revised against the flat site as it
+      actually stands. Content is unchanged from <code>data/profile.json</code>; the
+      typeface, the section names and the two brand colours are unchanged from the
+      existing theme. Everything described here is implemented in
+      <code>version_1.09/frontend</code> and has been checked in a browser.
     </p>
   </div>
 </footer>
-<style>
-kbd{font-family:var(--mono);font-size:.74em;background:var(--sunk);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:3px;padding:.1em .35em;color:var(--ink)}
-</style>
-<script>
-/* =====================================================================
-   FZ PRISM — live scroll rig
-   A working prototype of the scroll contract described above: one scene,
-   one camera on one spline, four of the nine acts. The hero geometry is
-   extruded from the real favicon polygons.
-
-   Written against two three.js generations: the modern ES-module build
-   (real transmission — the name behind the prism is genuinely refracted)
-   with the r128 UMD build as a fallback (env-map glass, no refraction).
-   ===================================================================== */
-window.__PRISM = { ok: false, init: function (THREE) {
-  'use strict';
-  var rig = document.getElementById('prismRig');
-  var cvs = document.getElementById('prismCanvas');
-  var scroller = document.getElementById('rigScroll');
-  if (!rig || !cvs || !THREE) return;
-
-  /* ---------- version compatibility ---------- */
-  var MODERN = !!THREE.SRGBColorSpace;               /* r152+ */
-  function srgb(t) {
-    if (MODERN) t.colorSpace = THREE.SRGBColorSpace;
-    else if (THREE.sRGBEncoding) t.encoding = THREE.sRGBEncoding;
-    return t;
-  }
-
-  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var TAU = Math.PI * 2;
-  var lerp = THREE.MathUtils.lerp;
-  function smooth(x) { return x * x * (3 - 2 * x); }
-  function clamp01(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
-  function rand(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
-
-  /* ---------- the real logo, as two closed polygons ---------- */
-  var FZ = [
-    '39.663,4.146 39.697,9.018 76.933,8.724 68.965,18.239 24.452,17.968 24.282,41.406 28.734,41.417 29.074,23.234 71.35,23.234 90.551,4',
-    '44.556,30.331 39.697,30.331 39.392,42.039 58.151,42.31 49.608,51.464 23.886,51.23 23.886,95.774 44.5,76.224 44.488,63.375 40.078,63.426 40.078,74.938 28.095,85.038 28.282,56.508 50.132,56.886 71.35,37.066 44.434,36.91'
-  ];
-  function monogramGeometry() {
-    var shapes = FZ.map(function (str) {
-      var sh = new THREE.Shape();
-      str.trim().split(/\s+/).forEach(function (pair, i) {
-        var p = pair.split(',');
-        var x = (parseFloat(p[0]) - 57) * 0.026;
-        var y = (50.5 - parseFloat(p[1])) * 0.026;   /* SVG y points down */
-        if (i === 0) sh.moveTo(x, y); else sh.lineTo(x, y);
-      });
-      sh.closePath();
-      return sh;
-    });
-    var g = new THREE.ExtrudeGeometry(shapes, {
-      depth: 0.3, bevelEnabled: true, bevelThickness: 0.026,
-      bevelSize: 0.02, bevelSegments: 2, curveSegments: 1
-    });
-    g.center();
-    return g;
-  }
-
-  /* ---------- seeded faceted core: the project vessel ---------- */
-  function facetedCore(seed, radius) {
-    var g = new THREE.IcosahedronGeometry(radius, 0);
-    var pos = g.attributes.position, r = rand(seed * 7919 + 13), cache = {};
-    var v = new THREE.Vector3();
-    for (var i = 0; i < pos.count; i++) {
-      v.fromBufferAttribute(pos, i);
-      var k = Math.round(v.x * 900) + '|' + Math.round(v.y * 900) + '|' + Math.round(v.z * 900);
-      var s = cache[k];
-      if (s === undefined) { s = 0.62 + r() * 0.76; cache[k] = s; }
-      pos.setXYZ(i, v.x * s, v.y * s, v.z * s);
-    }
-    g.computeVertexNormals();
-    return g;
-  }
-
-  /* ---------- canvas textures ---------- */
-  var DISPLAY = '"Chakra Petch","Segoe UI",sans-serif';
-  var MONO = '"IBM Plex Mono",monospace';
-
-  function tex(w, h, draw, isColor) {
-    var c = document.createElement('canvas'); c.width = w; c.height = h;
-    draw(c.getContext('2d'), w, h);
-    var t = new THREE.CanvasTexture(c);
-    t.anisotropy = 4; t.needsUpdate = true;
-    if (isColor !== false) srgb(t);
-    return t;
-  }
-  function radial(size, hex, stops) {
-    return tex(size, size, function (g, w) {
-      var gr = g.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
-      stops.forEach(function (s) { gr.addColorStop(s[0], 'rgba(' + hex + ',' + s[1] + ')'); });
-      g.fillStyle = gr; g.fillRect(0, 0, w, w);
-    });
-  }
-  function label(text, sub, light, accent) {
-    return tex(512, 128, function (g, w, h) {
-      g.clearRect(0, 0, w, h);
-      g.fillStyle = light ? 'rgba(255,255,255,.9)' : 'rgba(11,17,20,.86)';
-      g.fillRect(0, 0, w, h);
-      g.fillStyle = accent; g.fillRect(0, 0, 5, h);
-      g.font = '600 42px ' + DISPLAY;
-      g.fillStyle = light ? '#111719' : '#e6ecea';
-      g.fillText(text, 24, 62);
-      g.font = '400 25px ' + MONO;
-      g.fillStyle = light ? '#5c6a67' : '#93a29f';
-      g.fillText(sub, 24, 100);
-    });
-  }
-  /* The vessel surface carries project MEDIA, never project type — an icosahedron's
-     UVs are per-face, so any text mapped onto it arrives fragmented and mirrored.
-     Copy belongs in the DOM rail. This stands in for logo_image + media[]. */
-  function coreFace(seed, light) {
-    return tex(512, 512, function (g, w, h) {
-      var r = rand(seed * 104729 + 7);
-      var bg = g.createLinearGradient(0, 0, w, h);
-      if (light) { bg.addColorStop(0, '#dde8e6'); bg.addColorStop(1, '#f6faf9'); }
-      else { bg.addColorStop(0, '#06181c'); bg.addColorStop(1, '#170a11'); }
-      g.fillStyle = bg; g.fillRect(0, 0, w, h);
-      for (var i = 0; i < 34; i++) {
-        var crim = r() > 0.66;
-        g.fillStyle = (crim ? 'rgba(253,33,85,' : 'rgba(0,211,180,') + (0.12 + r() * 0.55) + ')';
-        var bw = 26 + r() * 210, bh = 8 + r() * 44;
-        g.fillRect(r() * (w - bw), r() * (h - bh), bw, bh);
-      }
-      for (var j = 0; j < 5; j++) {
-        g.strokeStyle = 'rgba(0,211,180,' + (0.22 + r() * 0.42) + ')';
-        g.lineWidth = 1 + r() * 2;
-        g.beginPath(); g.moveTo(0, r() * h); g.lineTo(w, r() * h); g.stroke();
-      }
-    });
-  }
-  function addressPlate(light) {
-    return tex(1024, 256, function (g, w) {
-      g.clearRect(0, 0, w, 256);
-      g.textAlign = 'center';
-      g.font = '700 82px ' + DISPLAY;
-      g.fillStyle = light ? '#0f1618' : '#ffffff';
-      g.shadowColor = '#00d3b4'; g.shadowBlur = light ? 0 : 34;
-      g.fillText('LET’S BUILD SOMETHING', w / 2, 104);
-      g.font = '500 44px ' + MONO;
-      g.shadowBlur = light ? 0 : 22;
-      g.fillStyle = light ? '#00806e' : '#8ff2e4';
-      g.fillText('farhanzamanarnob@gmail.com', w / 2, 186);
-    });
-  }
-  function namePlate(light) {
-    return tex(2048, 512, function (g, w) {
-      g.clearRect(0, 0, w, 512);
-      g.textAlign = 'center';
-      g.font = '700 236px ' + DISPLAY;
-      g.fillStyle = light ? 'rgba(17,23,25,.5)' : 'rgba(233,240,238,.46)';
-      g.fillText('FARHAN ZAMAN', w / 2, 250);
-      g.font = '500 62px ' + MONO;
-      g.fillStyle = light ? 'rgba(0,128,110,.6)' : 'rgba(0,211,180,.56)';
-      g.fillText('SR. SOFTWARE ENGINEER · AI RESEARCHER · ART ENTHUSIAST', w / 2, 372);
-    });
-  }
-
-  /* ---------- renderer ---------- */
-  var renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: false, powerPreference: 'high-performance' });
-  } catch (e) { rig.classList.add('is-dead'); return; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-  if (MODERN) renderer.outputColorSpace = THREE.SRGBColorSpace;
-  else if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(50, 1, 0.1, 320);
-  var world = new THREE.Group(); scene.add(world);
-  var TEAL = 0x00d3b4, CRIM = 0xfd2155, VIOLET = 0x8a4cf9;
-
-  /* ---------- environment, rebuilt when the theme flips ---------- */
-  var pmrem = new THREE.PMREMGenerator(renderer);
-  if (pmrem.compileEquirectangularShader) pmrem.compileEquirectangularShader();
-  var envRT = null;
-  function buildEnv(light) {
-    var t = tex(512, 256, function (g, w, h) {
-      var base = g.createLinearGradient(0, 0, 0, h);
-      if (light) { base.addColorStop(0, '#ffffff'); base.addColorStop(.5, '#e9efee'); base.addColorStop(1, '#ccd8d5'); }
-      else { base.addColorStop(0, '#10191d'); base.addColorStop(.52, '#040709'); base.addColorStop(1, '#0b1114'); }
-      g.fillStyle = base; g.fillRect(0, 0, w, h);
-      function blob(cx, cy, r, col, a) {
-        var gr = g.createRadialGradient(cx, cy, 0, cx, cy, r);
-        gr.addColorStop(0, 'rgba(' + col + ',' + a + ')');
-        gr.addColorStop(1, 'rgba(' + col + ',0)');
-        g.fillStyle = gr; g.fillRect(cx - r, cy - r, r * 2, r * 2);
-      }
-      blob(130, 92, 132, '0,211,180', light ? .55 : 1);
-      blob(372, 152, 122, '253,33,85', light ? .38 : .72);
-      blob(252, 20, 92, '255,255,255', light ? .85 : .42);
-    }, false);
-    t.mapping = THREE.EquirectangularReflectionMapping;
-    if (envRT) envRT.dispose();
-    envRT = pmrem.fromEquirectangular(t);
-    t.dispose();
-    return envRT.texture;
-  }
-
-  /* ---------- lights: directional only, so intensity means the same thing
-       on both the legacy and the physically-correct lighting model ---------- */
-  var amb = new THREE.AmbientLight(0xffffff, 0.55);
-  var key = new THREE.DirectionalLight(TEAL, 2.4); key.position.set(3, 4, 5);
-  var rim = new THREE.DirectionalLight(CRIM, 1.7); rim.position.set(-4, -1, -3);
-  var fill = new THREE.DirectionalLight(0xffffff, 1.2); fill.position.set(0, 3, 6);
-  scene.add(amb, key, rim, fill);
-
-  /* ================= ACT 01 — THE PRISM ================= */
-  var act1 = new THREE.Group(); world.add(act1);
-
-  var namePlane = new THREE.Mesh(
-    new THREE.PlaneGeometry(7.6, 1.9),
-    new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false })
-  );
-  namePlane.position.set(0, 0.02, -2.3);
-  act1.add(namePlane);
-
-  var prismMatT = new THREE.MeshPhysicalMaterial({
-    color: 0xdefff9, metalness: 0, roughness: 0.04, transmission: 1,
-    thickness: 1.1, ior: 1.62, clearcoat: 1, clearcoatRoughness: 0.05,
-    transparent: true, side: THREE.DoubleSide
-  });
-  var prismMatC = new THREE.MeshPhysicalMaterial({
-    color: CRIM, metalness: 0, roughness: 0.14, transmission: 0.82,
-    thickness: 0.9, ior: 1.5, transparent: true, opacity: 0.85, side: THREE.DoubleSide
-  });
-  /* r165+ does real wavelength dispersion — the whole point of the metaphor */
-  if ('dispersion' in prismMatT) { prismMatT.dispersion = 0.7; prismMatC.dispersion = 0.4; }
-
-  var mg = monogramGeometry();
-  var prismT = new THREE.Mesh(mg, prismMatT);
-  var prismC = new THREE.Mesh(mg, prismMatC);
-  prismC.position.set(-0.075, 0.036, -0.16);   /* the logo's own offset vector */
-  prismC.scale.setScalar(1.006);
-  var prism = new THREE.Group(); prism.add(prismC, prismT); act1.add(prism);
-
-  var prismGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: radial(256, '0,211,180', [[0, .5], [.34, .14], [1, 0]]),
-    blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
-  }));
-  prismGlow.scale.set(9, 9, 1); prismGlow.position.z = -1.4; act1.add(prismGlow);
-
-  /* three spectrum beams, one per designation */
-  var beams = new THREE.Group(); act1.add(beams);
-  [[TEAL, 0.62], [VIOLET, 0.0], [CRIM, -0.66]].forEach(function (spec, i) {
-    var m = new THREE.Mesh(
-      new THREE.PlaneGeometry(8, 0.055),
-      new THREE.MeshBasicMaterial({
-        color: spec[0], transparent: true, opacity: 0.5,
-        blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide
-      })
-    );
-    m.position.set(5.2, spec[1] * 0.8, 0);
-    m.rotation.z = spec[1] * 0.16;
-    beams.add(m);
-  });
-
-  /* ================= ACT 02 — THE SPINE ================= */
-  var act2 = new THREE.Group(); world.add(act2);
-  var SPINE = [
-    ['IDEAL SCHOOL', '2009 → 2014', 1], ['BJIT GROUP', '2022 → now', 0],
-    ['DHAKA COLLEGE', '2014 → 2016', 1], ['DOODLE INC.', '2021 → 2022', 0],
-    ['BRAC UNIVERSITY', '2017 → 2022', 1], ['FORECAST', '2018 → 2021', 0],
-    ['BRAC · MBA', '2022 → now', 1]
-  ];
-  var slabMat = new THREE.MeshStandardMaterial({ color: 0x1b2427, roughness: .55, metalness: .12, transparent: true, opacity: .9 });
-  var spineLabels = [];
-  SPINE.forEach(function (row, i) {
-    var isEdu = row[2] === 1;
-    var z = -8 - i * 3.4;
-    var x = isEdu ? -2.6 : 2.6;
-    var slab = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.3, 0.12), slabMat);
-    slab.position.set(x, 0.1, z); slab.rotation.y = isEdu ? 0.44 : -0.44;
-    act2.add(slab);
-    var edges = new THREE.LineSegments(
-      new THREE.EdgesGeometry(slab.geometry),
-      new THREE.LineBasicMaterial({ color: isEdu ? TEAL : CRIM, transparent: true, opacity: .6 })
-    );
-    edges.position.copy(slab.position); edges.rotation.copy(slab.rotation);
-    act2.add(edges);
-    var lab = new THREE.Mesh(
-      new THREE.PlaneGeometry(2.3, 0.575),
-      new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide })
-    );
-    lab.position.set(x, 0.12, z + 0.1); lab.rotation.y = slab.rotation.y;
-    act2.add(lab);
-    spineLabels.push({ mesh: lab, text: row[0], sub: row[1], accent: isEdu ? '#00d3b4' : '#fd2155' });
-  });
-
-  var cable = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.014, 0.014, 32, 6),
-    new THREE.MeshBasicMaterial({ color: TEAL, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false })
-  );
-  cable.rotation.x = Math.PI / 2; cable.position.set(0, -0.55, -22); act2.add(cable);
-  var pulses = [];
-  for (var pi = 0; pi < 3; pi++) {
-    var pspr = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: radial(128, '0,211,180', [[0, .95], [.4, .2], [1, 0]]),
-      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
-    }));
-    pspr.scale.set(1.2, 1.2, 1); pspr.position.y = -0.55; act2.add(pspr); pulses.push(pspr);
-  }
-
-  /* ================= ACT 05 — THE FORGE ================= */
-  var PROJECTS = [
-    ['POCKETALK VENTANA', 'Enterprise · Web · Backend Engineer'],
-    ['TRIBEL', 'Social · Cross · Full Stack Engineer'],
-    ['SIMBA (CSA)', 'NLP · Language Model · Researcher'],
-    ['COVIDEASE', 'Health · Android · Team Leader'],
-    ['C ACADEMY TMS', 'Education · Web · Developer'],
-    ['EXAMINER', 'Education · Web · Developer'],
-    ['SPACE NINJA', 'Game · Web · Developer'],
-    ['QR QUEEN', 'Accessibility · Android · Developer']
-  ];
-  var RING_Z = -44, RING_R = 7;
-  var ring = new THREE.Group(); ring.position.z = RING_Z; world.add(ring);
-  var cores = [];
-  PROJECTS.forEach(function (p, i) {
-    var a = i * TAU / 8;
-    var mat = new THREE.MeshPhysicalMaterial({
-      metalness: .2, roughness: .28, transmission: .08, thickness: .5,
-      envMapIntensity: 1.6, flatShading: true, transparent: true,
-      opacity: 1, side: THREE.FrontSide
-    });
-    var m = new THREE.Mesh(facetedCore(i + 3, 1.6), mat);
-    m.position.set(Math.sin(a) * RING_R, 0, -Math.cos(a) * RING_R);
-    m.lookAt(0, 0, 0);
-    ring.add(m);
-    var glow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: radial(256, '0,211,180', [[0, .42], [.4, .1], [1, 0]]),
-      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
-    }));
-    glow.scale.set(11, 11, 1); glow.position.copy(m.position).multiplyScalar(1.1);
-    ring.add(glow);
-    cores.push({ mesh: m, glow: glow, mat: mat, name: p[0], type: p[1], seed: i + 3 });
-  });
-  var ringPts = [];
-  for (var ri = 0; ri <= 72; ri++) { var ra = ri * TAU / 72; ringPts.push(new THREE.Vector3(Math.sin(ra) * RING_R, 0, -Math.cos(ra) * RING_R)); }
-  var ringLine = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(ringPts),
-    new THREE.LineBasicMaterial({ color: VIOLET, transparent: true, opacity: .3 })
-  );
-  ring.add(ringLine);
-
-  /* ================= ACT 08 — SYNC ================= */
-  var act8 = new THREE.Group(); world.add(act8);
-  var plateMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-  var plate = new THREE.Mesh(new THREE.PlaneGeometry(12, 3), plateMat);
-  plate.position.set(0, 0.3, -70); act8.add(plate);
-  var plateGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: radial(256, '0,211,180', [[0, .34], [.42, .1], [1, 0]]),
-    blending: THREE.AdditiveBlending, depthWrite: false, transparent: true
-  }));
-  plateGlow.scale.set(26, 12, 1); plateGlow.position.set(0, 0.3, -71); act8.add(plateGlow);
-  var closeMark = new THREE.Mesh(mg, prismMatT.clone());
-  closeMark.scale.setScalar(1.7); closeMark.position.set(0, 2.6, -70); act8.add(closeMark);
-
-  /* ================= PERSISTENT — shards + dust ================= */
-  var SHARDS = 150;
-  var shardMesh = new THREE.InstancedMesh(
-    new THREE.TetrahedronGeometry(0.14, 0),
-    new THREE.MeshStandardMaterial({ roughness: .16, metalness: .35, flatShading: true, vertexColors: true, transparent: true, opacity: .92 }),
-    SHARDS
-  );
-  shardMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  var shardData = [], _m4 = new THREE.Matrix4(), _q = new THREE.Quaternion(),
-      _e = new THREE.Euler(), _v = new THREE.Vector3(), _sc = new THREE.Vector3(), _c = new THREE.Color();
-  var sr = rand(9137);
-  for (var si = 0; si < SHARDS; si++) {
-    shardData.push({
-      home: new THREE.Vector3((sr() - .5) * 28, (sr() - .5) * 13, -sr() * 76 + 5),
-      rot: new THREE.Vector3(sr() * TAU, sr() * TAU, sr() * TAU),
-      spin: (sr() - .5) * .5, drift: .3 + sr() * .9, sc: .5 + sr() * 1.2, phase: sr() * TAU
-    });
-    _c.setHex(sr() > .74 ? CRIM : TEAL).lerp(new THREE.Color(0xffffff), sr() * .4);
-    shardMesh.setColorAt(si, _c);
-  }
-  if (shardMesh.instanceColor) shardMesh.instanceColor.needsUpdate = true;
-  world.add(shardMesh);
-
-  var dustGeo = new THREE.BufferGeometry();
-  var DUST = 1500, dp = new Float32Array(DUST * 3), dr = rand(4421);
-  for (var di = 0; di < DUST; di++) {
-    dp[di * 3] = (dr() - .5) * 48; dp[di * 3 + 1] = (dr() - .5) * 24; dp[di * 3 + 2] = -dr() * 84 + 7;
-  }
-  dustGeo.setAttribute('position', new THREE.BufferAttribute(dp, 3));
-  var dustMat = new THREE.PointsMaterial({
-    size: .075, sizeAttenuation: true, transparent: true, opacity: .6,
-    map: radial(64, '255,255,255', [[0, 1], [.5, .3], [1, 0]]),
-    blending: THREE.AdditiveBlending, depthWrite: false
-  });
-  world.add(new THREE.Points(dustGeo, dustMat));
-
-  /* ---------- camera spline ---------- */
-  var KEYS = [
-    { t: 0.00, p: [0, 0.10, 3.5], l: [0, 0, 0] },
-    { t: 0.14, p: [1.5, 0.45, 1.7], l: [0, 0, -1.4] },
-    { t: 0.24, p: [0, 0.30, -6], l: [0, 0, -13] },
-    { t: 0.42, p: [0, 0.30, -27], l: [0, 0, -34] },
-    { t: 0.50, p: [0, 0.40, -40], l: [0, 0, -50] },
-    { t: 0.58, p: [0, 0.28, -44], l: [0, 0, -52] },
-    { t: 0.74, p: [0, 0.28, -44], l: [0, 0, -52] },   /* held at the hub */
-    { t: 0.81, p: [3.9, 1.30, -47], l: [0, 0, -53] },
-    { t: 0.88, p: [0.8, 0.60, -56], l: [0, 0, -66] },
-    { t: 1.00, p: [0, 0.25, -63.5], l: [0, 0.3, -70] }
-  ];
-  var camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-  function sampleCam(t) {
-    var i = 0;
-    while (i < KEYS.length - 2 && t > KEYS[i + 1].t) i++;
-    var a = KEYS[i], b = KEYS[i + 1];
-    var u = smooth(clamp01((t - a.t) / (b.t - a.t)));
-    camPos.set(lerp(a.p[0], b.p[0], u), lerp(a.p[1], b.p[1], u), lerp(a.p[2], b.p[2], u));
-    camLook.set(lerp(a.l[0], b.l[0], u), lerp(a.l[1], b.l[1], u), lerp(a.l[2], b.l[2], u));
-  }
-
-  /* ---------- acts + HUD ---------- */
-  var ACTS = [
-    { t: 0.00, k: 'act 01 · hero', n: 'The Prism', d: 'The extruded glass monogram refracts your name, which is set behind it. Three spectrum beams leave it — one per designation.' },
-    { t: 0.20, k: 'act 02 · background', n: 'The Spine', d: 'Time becomes depth. Education lines the left wall, experience the right, dates mapped to Z. You fly from 2009 and stop at now.' },
-    { t: 0.46, k: 'act 05 · works', n: 'The Forge', d: 'Eight seeded cores on a ring with the camera at the hub. Scroll turns the ring; the outgoing core shatters into the shards that build the next.' },
-    { t: 0.80, k: 'act 08 · contact', n: 'Sync', d: 'Every shard converges, the three spectra fold back into one beam, and the beam writes the address. The mark returns to register.' }
-  ];
-  var elK = document.getElementById('rigK'), elT = document.getElementById('rigT'),
-      elD = document.getElementById('rigD'), elFill = document.getElementById('rigFill'),
-      elT01 = document.getElementById('rigT01'), track = document.getElementById('rigTrack');
-  var SBAND = ['--s0', '--s1', '--s4', '--s8'];
-  var ticks = ACTS.map(function (a, i) {
-    var b = document.createElement('button');
-    b.className = 'rig-tick'; b.type = 'button';
-    b.style.left = (a.t * 100) + '%';
-    b.style.background = 'var(' + SBAND[i] + ')';
-    b.setAttribute('aria-label', 'Jump to ' + a.n);
-    b.addEventListener('click', function () {
-      var max = scroller.scrollHeight - scroller.clientHeight;
-      scroller.scrollTo({ top: (a.t + 0.02) * max, behavior: RM ? 'auto' : 'smooth' });
-    });
-    track.appendChild(b);
-    return b;
-  });
-  var actIdx = -1, lastProject = null;
-  function setAct(i) {
-    if (i === actIdx) return;
-    actIdx = i;
-    if (i !== 2) lastProject = null;
-    elK.textContent = ACTS[i].k; elT.textContent = ACTS[i].n; elD.textContent = ACTS[i].d;
-    ticks.forEach(function (b, j) { b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
-  }
-  /* inside the Forge the readout names the core you are actually looking at */
-  function setProject(proj) {
-    if (!proj || proj[0] === lastProject) return;
-    lastProject = proj[0];
-    actIdx = 2;
-    elK.textContent = 'act 05 · works';
-    elT.textContent = proj[0];
-    elD.textContent = proj[1] + ' — the ring is at the hub with you; scroll indexes the next core and the shards hand over between them.';
-    ticks.forEach(function (b, j) { b.setAttribute('aria-current', j === 2 ? 'true' : 'false'); });
-  }
-
-  /* ---------- theme ---------- */
-  var themeLight = null;
-  function resolveLight() {
-    var a = document.documentElement.getAttribute('data-theme');
-    if (a === 'light') return true;
-    if (a === 'dark') return false;
-    return window.matchMedia('(prefers-color-scheme: light)').matches;
-  }
-  function applyTheme(force) {
-    var light = resolveLight();
-    if (light === themeLight && !force) return;
-    themeLight = light;
-    var env = buildEnv(light);
-    scene.background = new THREE.Color(light ? 0xeef2f1 : 0x06080a);
-    scene.fog = new THREE.Fog(light ? 0xeef2f1 : 0x06080a, 24, 100);
-    scene.environment = env;
-    renderer.toneMappingExposure = light ? 0.95 : 1.15;
-    amb.intensity = light ? 1.25 : 0.55;
-    key.intensity = light ? 1.5 : 2.4;
-    rim.intensity = light ? 1.0 : 1.7;
-    fill.intensity = light ? 1.6 : 1.2;
-    [prismMatT, prismMatC, closeMark.material].forEach(function (m) { m.envMap = env; m.needsUpdate = true; });
-    prismMatT.color.setHex(light ? 0xffffff : 0xdefff9);
-    slabMat.color.setHex(light ? 0xf3f8f7 : 0x1b2427);
-    prismGlow.material.opacity = light ? 0.3 : 1;
-    plateGlow.material.opacity = light ? 0.18 : 1;
-    ringLine.material.color.setHex(light ? 0x4a13c6 : VIOLET);
-    ringLine.material.opacity = light ? 0.45 : 0.3;
-    shardMesh.material.opacity = light ? 0.96 : 0.92;
-    dustMat.opacity = light ? 0.34 : 0.6;
-    dustMat.color.setHex(light ? 0x5c7a76 : 0xffffff);
-    dustMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-    dustMat.needsUpdate = true;
-    /* additive marks vanish on a light ground — the Studio look drops the glow and
-       keeps the geometry, so beams and the cable switch to normal blending. */
-    beams.children.forEach(function (b) {
-      b.material.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-      b.material.needsUpdate = true;
-    });
-    cable.material.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-    cable.material.needsUpdate = true;
-    /* textures that carry ink have to be redrawn for the other ground */
-    namePlane.material.map = namePlate(light); namePlane.material.needsUpdate = true;
-    plateMat.map = addressPlate(light); plateMat.needsUpdate = true;
-    plateMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-    spineLabels.forEach(function (s) {
-      s.mesh.material.map = label(s.text, s.sub, light, s.accent);
-      s.mesh.material.needsUpdate = true;
-    });
-    cores.forEach(function (c) {
-      c.mat.map = coreFace(c.seed, light);
-      c.mat.envMap = env; c.mat.needsUpdate = true;
-      c.glow.material.opacity = light ? 0.28 : 1;
-    });
-    dirty = true;
-  }
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function () { applyTheme(false); });
-  new MutationObserver(function () { applyTheme(false); })
-    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-  /* ---------- mouse drag to look ---------- */
-  var look = { x: 0, y: 0 }, target = { x: 0, y: 0 }, dragging = false, last = null;
-  function clampAbs(v, m) { return v > m ? m : v < -m ? -m : v; }
-  scroller.addEventListener('pointerdown', function (e) {
-    if (e.pointerType !== 'mouse') return;
-    dragging = true; last = { x: e.clientX, y: e.clientY };
-  });
-  window.addEventListener('pointerup', function () { dragging = false; last = null; });
-  scroller.addEventListener('pointermove', function (e) {
-    if (!dragging || !last) return;
-    target.x = clampAbs(target.x + (e.clientX - last.x) * 0.0016, 0.17);
-    target.y = clampAbs(target.y + (e.clientY - last.y) * 0.0014, 0.1);
-    last = { x: e.clientX, y: e.clientY };
-    dirty = true;
-  });
-
-  /* ---------- autoplay ---------- */
-  var playing = false;
-  var playBtn = document.getElementById('rigPlay');
-  playBtn.addEventListener('click', function () {
-    playing = !playing;
-    playBtn.textContent = playing ? 'Stop' : 'Auto';
-    if (playing) { visible = true; loop(); }
-  });
-
-  /* ---------- resize / visibility ---------- */
-  var dirty = true, visible = true;
-  function resize() {
-    var w = rig.clientWidth, h = rig.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / Math.max(h, 1); camera.updateProjectionMatrix();
-    dirty = true;
-  }
-  window.addEventListener('resize', resize);
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) {
-      visible = es[0].isIntersecting;
-      if (visible) loop();
-    }, { rootMargin: '150px' }).observe(rig);
-  }
-  scroller.addEventListener('scroll', function () { dirty = true; if (visible) loop(); }, { passive: true });
-
-  /* ---------- the frame ---------- */
-  var tRaw = 0, tSmooth = 0, clock = new THREE.Clock(), running = false;
-
-  function frame() {
-    var dt = Math.min(clock.getDelta(), 0.05);
-    var max = scroller.scrollHeight - scroller.clientHeight;
-
-    if (playing) {
-      tRaw = (tRaw + dt * 0.05) % 1.0;
-      scroller.scrollTop = tRaw * max;
-    } else {
-      tRaw = max > 0 ? clamp01(scroller.scrollTop / max) : 0;
-    }
-    tSmooth = RM ? tRaw : tSmooth + (tRaw - tSmooth) * Math.min(1, dt * 6.5);
-    var t = tSmooth;
-
-    sampleCam(t);
-    look.x += (target.x - look.x) * Math.min(1, dt * 5);
-    look.y += (target.y - look.y) * Math.min(1, dt * 5);
-    camera.position.copy(camPos);
-    camera.lookAt(camLook);
-    camera.rotateY(look.x); camera.rotateX(look.y);
-
-    /* act 01 */
-    var a1 = 1 - clamp01((t - 0.13) / 0.1);
-    act1.visible = a1 > 0.01;
-    if (act1.visible) {
-      prism.rotation.y = t * 9 + (RM ? 0 : clock.elapsedTime * 0.1);
-      prism.rotation.x = Math.sin(t * 6) * 0.1;
-      prism.scale.setScalar(lerp(1.35, 1.75, smooth(clamp01(t / 0.14))));
-      namePlane.material.opacity = a1;
-      prismGlow.material.opacity = a1 * (themeLight ? 0.3 : 1);
-      beams.children.forEach(function (b, i) {
-        b.material.opacity = a1 * (0.32 + 0.22 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 1.1 + i * 2.1)));
-      });
-      prismMatT.opacity = a1;
-      prismMatC.opacity = a1 * 0.85;
-    }
-
-    /* act 02 */
-    var a2 = clamp01((t - 0.15) / 0.08) * (1 - clamp01((t - 0.44) / 0.06));
-    act2.visible = a2 > 0.01;
-    if (act2.visible) {
-      slabMat.opacity = a2 * 0.9;
-      spineLabels.forEach(function (s) { s.mesh.material.opacity = a2; });
-      cable.material.opacity = a2 * 0.55;
-      pulses.forEach(function (p, i) {
-        var u = ((clock.elapsedTime * 0.19 + i / 3) % 1);
-        p.position.z = -38 + u * 32;
-        p.material.opacity = a2 * (0.85 * Math.sin(u * Math.PI));
-      });
-    }
-
-    /* act 05 — the ring turns, one core indexes forward */
-    var a5 = clamp01((t - 0.42) / 0.06) * (1 - clamp01((t - 0.80) / 0.07));
-    ring.visible = a5 > 0.01;
-    if (ring.visible) {
-      var prog = clamp01((t - 0.46) / 0.28) * 7;
-      ring.rotation.y = -prog * TAU / 8;
-      var frac = prog - Math.floor(prog);
-      var shatter = Math.sin(clamp01(frac) * Math.PI);   /* peaks mid-handoff */
-      cores.forEach(function (c, i) {
-        var near = 1 - Math.min(1, Math.abs(i - prog));
-        c.mesh.scale.setScalar(lerp(0.48, 1.34, near * near) * (1 - shatter * 0.2 * near));
-        c.mesh.rotation.y += dt * (0.12 + near * 0.3);
-        c.mesh.rotation.x = Math.sin(clock.elapsedTime * 0.2 + i) * 0.1;
-        c.mat.opacity = a5 * lerp(0.42, 1, near) * (1 - shatter * 0.26 * near);
-        c.glow.material.opacity = a5 * near * (themeLight ? 0.28 : 0.9);
-      });
-      ringLine.material.opacity = a5 * (themeLight ? 0.45 : 0.3);
-      if (t > 0.46 && t < 0.78) setProject(PROJECTS[Math.max(0, Math.min(7, Math.round(prog)))]);
-    }
-
-    /* act 08 */
-    var a8 = clamp01((t - 0.80) / 0.1);
-    act8.visible = a8 > 0.01;
-    if (act8.visible) {
-      plateMat.opacity = a8;
-      plateGlow.material.opacity = a8 * (themeLight ? 0.18 : 1);
-      closeMark.rotation.y = -t * 5;
-      closeMark.material.opacity = a8;
-      closeMark.position.y = lerp(4.4, 2.5, smooth(a8));
-    }
-
-    /* shards: drift, then converge on the closing plate */
-    var conv = clamp01((t - 0.82) / 0.16);
-    for (var i = 0; i < SHARDS; i++) {
-      var s = shardData[i];
-      _v.copy(s.home);
-      _v.y += Math.sin(clock.elapsedTime * 0.22 * s.drift + s.phase) * 0.7;
-      _v.x += Math.cos(clock.elapsedTime * 0.17 * s.drift + s.phase) * 0.6;
-      if (conv > 0) {
-        var e = smooth(conv);
-        _v.x = lerp(_v.x, Math.cos(s.phase) * 6 * (1 - e * 0.7), e);
-        _v.y = lerp(_v.y, 0.3 + Math.sin(s.phase) * 1.7 * (1 - e * 0.7), e);
-        _v.z = lerp(_v.z, -69.4, e);
-      }
-      _e.set(s.rot.x + clock.elapsedTime * s.spin, s.rot.y + clock.elapsedTime * s.spin * .7, s.rot.z);
-      _q.setFromEuler(_e);
-      _sc.setScalar(s.sc * lerp(1, 1.5, conv));
-      _m4.compose(_v, _q, _sc);
-      shardMesh.setMatrixAt(i, _m4);
-    }
-    shardMesh.instanceMatrix.needsUpdate = true;
-
-    /* HUD */
-    var ai = 0;
-    for (var k = 0; k < ACTS.length; k++) if (t >= ACTS[k].t - 0.001) ai = k;
-    setAct(ai);
-    elFill.style.width = (t * 100) + '%';
-    elT01.textContent = 't ' + t.toFixed(2);
-
-    renderer.render(scene, camera);
-  }
-
-  function loop() {
-    if (running) return;
-    running = true;
-    (function tick() {
-      if (!visible) { running = false; return; }
-      if (RM && !dirty && !playing) { running = false; return; }
-      dirty = false;
-      frame();
-      requestAnimationFrame(tick);
-    })();
-  }
-
-  resize();
-  applyTheme(true);
-  setAct(0);
-  clock.start();
-  loop();
-
-  /* webfonts land after first paint; the ink textures need one redraw */
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { applyTheme(true); });
-  }
-}};
-</script>
-<script type="module">
-  /* The modern build is what makes the refraction real: transmission renders the
-     scene behind the glass, and r165+ adds wavelength dispersion. */
-  import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.169.0/three.module.min.js';
-  if (!window.__PRISM.ok) { window.__PRISM.ok = true; window.__PRISM.init(THREE); }
-</script>
-<script>
-  /* If ES modules or that CDN path are unavailable, fall back to the r128 UMD
-     build — env-map glass instead of true refraction, but the rig still runs. */
-  setTimeout(function () {
-    if (window.__PRISM.ok) return;
-    var s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    s.onload = function () {
-      if (window.__PRISM.ok || !window.THREE) return;
-      window.__PRISM.ok = true; window.__PRISM.init(window.THREE);
-    };
-    s.onerror = function () { document.getElementById('prismRig').classList.add('is-dead'); };
-    document.head.appendChild(s);
-  }, 3500);
-</script>

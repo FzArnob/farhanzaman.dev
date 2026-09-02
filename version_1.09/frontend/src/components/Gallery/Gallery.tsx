@@ -113,7 +113,7 @@ export function Gallery({ gallery, extended, onOpen }: GalleryProps) {
   const length = extended ? gallery.length : numColumn * 2;
 
   return (
-    <div id="gallery">
+    <div id="hobbies">
       <div
         className="gallery-container"
         style={{ overflow: 'hidden', height: extended ? undefined : containerHeight + 'px' }}

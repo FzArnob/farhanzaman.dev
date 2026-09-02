@@ -6,7 +6,7 @@ import type { Project } from '../../types/profile';
 import type { WorldLook } from '../materials/palette';
 import { bandColor } from '../materials/palette';
 import { CRIMSON, TEAL, TEAL_RGB, glowSprite } from '../materials/presets';
-import { coreOpenState } from '../liveState';
+import { caseOpenState } from '../liveState';
 import { WORLD, clamp01, smooth } from '../timeline';
 import { useRemoteTexture } from '../useRemoteTexture';
 
@@ -21,11 +21,11 @@ import { useRemoteTexture } from '../useRemoteTexture';
  * fields, read from the same JSON, in a place instead of on a page.
  */
 
-export { coreOpenState };
+export { caseOpenState };
 
 const _v = new THREE.Vector3();
 
-export function Act05bCore({
+export function Act06bCase({
   quality,
   look,
   envMap,
@@ -139,7 +139,7 @@ export function Act05bCore({
     const want = project ? 1 : 0;
     openRef.current = THREE.MathUtils.damp(openRef.current, want, 3.4, delta);
     const open = openRef.current;
-    coreOpenState.progress = open;
+    caseOpenState.progress = open;
     group.visible = open > 0.004;
     if (!group.visible) return;
 
@@ -179,7 +179,7 @@ export function Act05bCore({
   }
 
   return (
-    <group ref={groupRef} position={[0, 0, WORLD.forge.z - WORLD.forge.radius]}>
+    <group ref={groupRef} position={[0, 0, WORLD.works.z - WORLD.works.radius]}>
       <mesh ref={chamberRef} geometry={chamberGeometry} material={chamberMaterial} />
       <primitive object={glow} />
 

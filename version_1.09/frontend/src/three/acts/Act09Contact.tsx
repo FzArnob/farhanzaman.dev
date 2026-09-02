@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Quality } from '../../lib/quality';
 import { ABERRATION, fzMonogramGeometry } from '../geometry/fzMonogram';
-import { addressTexture } from '../materials/labels';
 import { bandColor, type WorldLook } from '../materials/palette';
 import {
   CRIMSON,
@@ -30,25 +29,22 @@ import { ACT_BY_ID, WORLD, actPresence, ramp, smooth } from '../timeline';
  * to the question the hero asked.
  */
 
-export function Act08Sync({
+export function Act09Contact({
   quality,
   look,
   envMap,
-  headline,
 }: {
   quality: Quality;
   look: WorldLook;
   envMap: THREE.Texture | null;
-  headline: string;
 }) {
   const rig = useScrollRig();
   const groupRef = useRef<THREE.Group>(null);
-  const plateRef = useRef<THREE.Mesh>(null);
   const markRef = useRef<THREE.Group>(null);
   const rearRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Sprite>(null);
   const beamsRef = useRef<THREE.Group>(null);
-  const act = ACT_BY_ID.sync;
+  const act = ACT_BY_ID.contact;
 
   const geometry = useMemo(() => fzMonogramGeometry(), []);
   const front = useMemo(() => prismMaterial(quality, !look.bloom), [quality, look.bloom]);
@@ -67,8 +63,6 @@ export function Act08Sync({
     },
     [front, rear]
   );
-
-  const plateTexture = useMemo(() => addressTexture(headline, !look.bloom), [headline, look.bloom]);
 
   const glow = useMemo(() => glowSprite(TEAL_RGB, 26, 0.34), []);
   useEffect(() => () => glow.material.dispose(), [glow]);
@@ -106,13 +100,10 @@ export function Act08Sync({
     // How far through the resolution we are: 0 at the act's start, 1 at the very end.
     const resolve = smooth(ramp(t, act.t0 + 0.01, 1.0));
 
-    if (plateRef.current) {
-      (plateRef.current.material as THREE.MeshBasicMaterial).opacity = presence * ramp(t, 0.94, 0.985);
-    }
-
     const mark = markRef.current!;
     mark.rotation.y = THREE.MathUtils.damp(mark.rotation.y, 0, 2.2, delta) + (1 - resolve) * Math.sin(time * 0.6) * 0.5;
-    mark.position.y = THREE.MathUtils.lerp(8.4, 6.6, resolve);
+    // High enough to clear the contact form, which owns the middle of the frame.
+    mark.position.y = THREE.MathUtils.lerp(6.4, 4.9, resolve);
     mark.scale.setScalar(THREE.MathUtils.lerp(1.1, 1.75, resolve));
 
     /**
@@ -143,28 +134,27 @@ export function Act08Sync({
   });
 
   return (
-    <group ref={groupRef} position={[0, 0, WORLD.sync.z]}>
-      <primitive object={glow} ref={glowRef} position={[0, 3.6, -1.2]} />
+    <group ref={groupRef} position={[0, 0, WORLD.contact.z]}>
+      <primitive object={glow} ref={glowRef} position={[0, 4.6, -1.2]} />
 
-      {/* Up in the top third: the form and the address live below it in the DOM. */}
-      <mesh ref={plateRef} position={[0, 3.8, 0]}>
-        <planeGeometry args={[12, 1.88]} />
-        <meshBasicMaterial map={plateTexture} transparent depthWrite={false} toneMapped={false} />
-      </mesh>
-
+      {/*
+        No headline plate here. The DOM carries those words — one copy, selectable,
+        and readable at any size — and printing them into a texture as well only
+        put two versions of the same sentence on top of each other.
+      */}
       <group ref={beamsRef}>
         {beams.map((beam, i) => (
           <primitive key={i} object={beam} />
         ))}
       </group>
 
-      <group ref={markRef} position={[0, 6.6, 0]}>
+      <group ref={markRef} position={[0, 4.9, 0]}>
         <mesh ref={rearRef} geometry={geometry} material={rear} scale={1.006} />
         <mesh geometry={geometry} material={front} />
       </group>
 
-      <pointLight position={[2.6, 7.6, 3]} intensity={look.bloom ? 9 : 4} color={TEAL} distance={24} />
-      <pointLight position={[-2.4, 5.2, 2]} intensity={look.bloom ? 5 : 2.5} color={CRIMSON} distance={22} />
+      <pointLight position={[2.6, 6, 3]} intensity={look.bloom ? 9 : 4} color={TEAL} distance={24} />
+      <pointLight position={[-2.4, 3.6, 2]} intensity={look.bloom ? 5 : 2.5} color={CRIMSON} distance={22} />
     </group>
   );
 }
