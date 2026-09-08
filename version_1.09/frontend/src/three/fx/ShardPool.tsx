@@ -84,7 +84,9 @@ export function ShardPool({ quality, envMap }: { quality: Quality; envMap: THREE
     if (!mesh || count === 0) return;
     const rnd = mulberry(4242);
     for (let i = 0; i < count; i++) {
-      _c.setHex(rnd() > 0.74 ? CRIMSON : TEAL).lerp(_white, rnd() * 0.4);
+      // Only a touch of white, for variation in the highlights. Any more and the
+      // pool drifts off-brand into a grey confetti.
+      _c.setHex(rnd() > 0.74 ? CRIMSON : TEAL).lerp(_white, rnd() * 0.16);
       mesh.setColorAt(i, _c);
     }
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;

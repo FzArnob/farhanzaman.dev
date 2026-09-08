@@ -109,7 +109,7 @@ export function ContactCopy({ profile }: { profile: Profile }) {
           WhatsApp
         </a>
         <a className="prism-btn" href={info.resume_url} target="_blank" rel="noreferrer">
-          Résumé
+          Resume
         </a>
       </div>
     </ActSection>

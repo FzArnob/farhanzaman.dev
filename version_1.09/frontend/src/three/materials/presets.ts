@@ -14,15 +14,28 @@ import { CRIMSON, TEAL } from './palette';
 export function prismMaterial(q: Quality, light = false): THREE.MeshPhysicalMaterial {
   const m = new THREE.MeshPhysicalMaterial({
     /*
-      On the Studio (light) ground, clear glass over near-white reads as nothing at
-      all — the mark needs a tint to hold an edge. The Void can afford to be almost
-      colourless because the ground is doing the contrast.
+      The mark is teal and crimson — that is the logo, and the glass has to say so.
+      It used to be near-colourless (0xdefff9), which under bloom read as a white
+      object with a red shadow rather than as the brand mark. The body is now the
+      theme teal at full saturation; white belongs to the travelling specular
+      highlight and to nothing else, which is what the clearcoat below is for.
+
+      The Studio (light) ground needs the darker teal for the same reason it always
+      did: a bright tint over near-white cannot hold an edge.
     */
-    color: light ? 0x8fded1 : 0xdefff9,
+    color: light ? 0x00947f : TEAL,
+    emissive: TEAL,
+    // Just enough self-light that the mark never sinks into the void; the lights
+    // and the environment still do the shaping.
+    emissiveIntensity: light ? 0.06 : 0.22,
     metalness: 0,
     roughness: q.transmission ? 0.04 : 0.09,
     clearcoat: 1,
     clearcoatRoughness: 0.05,
+    // The one white in the material: the specular sheen that the sweeping key light
+    // drags across the facets.
+    specularColor: 0xffffff,
+    specularIntensity: 1,
     transparent: true,
     side: THREE.DoubleSide,
   });
@@ -46,6 +59,8 @@ export function prismMaterial(q: Quality, light = false): THREE.MeshPhysicalMate
 export function prismRearMaterial(q: Quality): THREE.MeshPhysicalMaterial {
   const m = new THREE.MeshPhysicalMaterial({
     color: CRIMSON,
+    emissive: CRIMSON,
+    emissiveIntensity: 0.18,
     metalness: 0,
     roughness: 0.14,
     transparent: true,

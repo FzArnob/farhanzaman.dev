@@ -56,7 +56,7 @@ export function IntroCopy({ profile }: { profile: Profile }) {
       <p className="prism-text">{info.intro_text}</p>
       <div className="prism-actions">
         <a className="prism-btn prism-btn-solid" href={info.resume_url} target="_blank" rel="noreferrer">
-          Résumé
+          Resume
         </a>
         <a className="prism-btn" href={info.github_url} target="_blank" rel="noreferrer">
           GitHub

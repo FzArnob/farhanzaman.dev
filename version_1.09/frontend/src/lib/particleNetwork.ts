@@ -9,7 +9,10 @@ interface Options {
   density: number; // the lower the denser
   netLineDistance: number;
   netLineColor: string;
+  netLineWidth: number;
   particleColors: string[];
+  /** ms between the staggered initial spawns. Lower fills the net in sooner. */
+  spawnInterval: number;
 }
 
 const getLimitedRandom = (min: number, max: number, roundToInteger?: boolean): number => {
@@ -78,7 +81,9 @@ class ParticleNetwork {
     density: 15000,
     netLineDistance: 200,
     netLineColor: '#9a9a9a',
+    netLineWidth: 0.7,
     particleColors: ['#9a9a9a'],
+    spawnInterval: 250,
   };
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -128,7 +133,7 @@ class ParticleNetwork {
           clearInterval(this.createIntervalId);
         }
         counter++;
-      }, 250);
+      }, this.options.spawnInterval);
     } else {
       for (let i = 0; i < quantity; i++) {
         this.particles.push(new Particle(this));
@@ -180,7 +185,7 @@ class ParticleNetwork {
           ((this.options.netLineDistance - distance) / this.options.netLineDistance) *
           p1.opacity *
           p2.opacity;
-        this.ctx.lineWidth = 0.7;
+        this.ctx.lineWidth = this.options.netLineWidth;
         this.ctx.moveTo(p1.x, p1.y);
         this.ctx.lineTo(p2.x, p2.y);
         this.ctx.stroke();

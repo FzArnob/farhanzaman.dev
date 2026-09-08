@@ -54,6 +54,7 @@ export function Act01Prism({
   const plateRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Sprite>(null);
   const beamsRef = useRef<THREE.Group>(null);
+  const sheenRef = useRef<THREE.PointLight>(null);
   const act = ACT_BY_ID.intro;
 
   const geometry = useMemo(() => fzMonogramGeometry(), []);
@@ -164,6 +165,19 @@ export function Act01Prism({
       glowRef.current.material.opacity = presence * look.glow;
     }
 
+    /*
+      The white in this act. The mark's own colour is the logo's teal and crimson, so
+      the only thing allowed to be white is this: a hard key on a slow orbit whose
+      specular streak travels across the facets and off the edge. It reads as the mark
+      catching the light rather than as a white object, which is the whole point.
+    */
+    const sheen = sheenRef.current;
+    if (sheen) {
+      const sweep = time * 0.55;
+      sheen.position.set(Math.cos(sweep) * 3.2, Math.sin(sweep * 0.7) * 2.0, 2.4 + Math.sin(sweep) * 1.1);
+      sheen.intensity = presence * (look.bloom ? 5.5 : 2.6) * (0.55 + 0.45 * Math.sin(time * 1.3));
+    }
+
     beams.forEach((beam, i) => {
       const mat = beam.material as THREE.MeshBasicMaterial;
       const lit = focus === i ? 1 : focus >= 0 ? 0.16 : 0.42;
@@ -203,6 +217,8 @@ export function Act01Prism({
       {/* Key and rim, placed to rake across the mark's facets. */}
       <pointLight position={[2.4, 1.6, 2.6]} intensity={look.bloom ? 7 : 3} color={TEAL} distance={14} />
       <pointLight position={[-2.2, -1.2, 1.4]} intensity={look.bloom ? 4 : 2} color={CRIMSON} distance={12} />
+      {/* The travelling white sheen. Driven from useFrame; starts dark. */}
+      <pointLight ref={sheenRef} intensity={0} color={0xffffff} distance={16} />
     </group>
   );
 }

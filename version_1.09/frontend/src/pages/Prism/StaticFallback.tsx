@@ -42,7 +42,7 @@ export function StaticFallback() {
         <p className="prism-text">{info.intro_text}</p>
         <p className="prism-actions">
           <a className="prism-btn prism-btn-solid" href={info.resume_url}>
-            Résumé
+            Resume
           </a>
           <a className="prism-btn" href={info.github_url}>
             GitHub
