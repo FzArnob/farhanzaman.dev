@@ -1,0 +1,519 @@
+/* ============================================================
+   /about — the world's side room.
+
+   Loaded by the About page alone, never from styles/index.css, so a visitor who stays
+   in the 3D world never downloads it. Every token here comes from 24-prism.css, which
+   the page imports first: same two brand colours, same panels, same face. The page
+   used to be v1.07's markup dropped whole into v1.09 — flat navbar, flat footer, flat
+   form — which is exactly why it read as broken. Nothing on this page is flat now.
+
+   Everything is scoped under .about-world or .a3d so it cannot reach another page.
+   ============================================================ */
+
+.about-world {
+  position: relative;
+  min-height: 100vh;
+  background: #06080a;
+  color: var(--pz-c1);
+  font-family: var(--pz-face);
+  overflow-x: hidden;
+  /*
+    .prism-eyebrow paints in var(--edge) — the act's own band colour, set per section
+    by ActSection. There are no acts here, so the page declares it once. Without it the
+    property is invalid at computed-value time and the eyebrow silently inherits body
+    ink instead of the accent.
+  */
+  --edge: var(--pz-teal);
+}
+
+html:has(link[data-theme='light']) .about-world {
+  background: #eef2f1;
+}
+
+/* 01-base.css sets user-select:none on *. This page is the content of record. */
+.about-world p,
+.about-world h1,
+.about-world h2,
+.about-world h3,
+.about-world li,
+.about-world a,
+.about-world span {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.about-doc {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(96px, 14vh, 150px) clamp(16px, 5vw, 48px) clamp(90px, 12vh, 130px);
+}
+
+.about-masthead {
+  position: absolute;
+  z-index: 3;
+}
+
+/* ---------- hero ---------- */
+
+.about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+.about-head {
+  margin: 6px 0 10px;
+}
+
+.about-roles {
+  margin: 0 0 22px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pz-teal);
+}
+
+/*
+  The full about_text, not a clamp of it. Act 02 shows a truncated teaser precisely so
+  that this can be complete — clamping here would leave the visitor nowhere to go.
+*/
+.about-prose {
+  margin: 0 0 26px;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.8;
+  color: var(--pz-c2);
+  border-left: 3px solid var(--pz-teal);
+  border-radius: 0 4px 4px 0;
+  background: var(--pz-panel);
+  backdrop-filter: var(--pz-blur);
+  padding: 16px 20px;
+  max-width: 62ch;
+}
+
+.about-prose p {
+  margin: 0 0 0.9em;
+}
+
+.about-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.about-prose-tight {
+  max-width: 58ch;
+}
+
+.about-hero .prism-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* v1.07's stacked offset frames, redrawn as the mark's own aberration. */
+.about-portrait {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 420px;
+  justify-self: center;
+}
+
+.about-portrait-frame {
+  position: absolute;
+  inset: 6%;
+  border-radius: 6px;
+}
+
+.about-portrait-teal {
+  border: 2px solid var(--pz-teal);
+  transform: translate(-9px, -9px);
+}
+
+.about-portrait-crimson {
+  border: 2px solid var(--pz-crimson);
+  transform: translate(9px, 9px);
+}
+
+.about-portrait img {
+  position: absolute;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* ---------- the corridor, flattened ---------- */
+
+.about-track {
+  margin-top: clamp(70px, 12vh, 130px);
+}
+
+.about-track .prism-head {
+  margin: 6px 0 clamp(28px, 5vh, 52px);
+}
+
+/*
+  One line down the middle with the history hung off both sides — act 02's cable, seen
+  from the side instead of flown down. The line is a gradient rather than a flat rule
+  so it fades in and out at the ends instead of stopping dead.
+*/
+.about-spine {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.about-spine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 211, 180, 0),
+    var(--pz-teal) 8%,
+    var(--pz-teal) 88%,
+    rgba(0, 211, 180, 0)
+  );
+}
+
+.about-node {
+  position: relative;
+  display: flex;
+  padding: 0 0 clamp(22px, 4vh, 40px);
+}
+
+.about-node-left {
+  justify-content: flex-start;
+  padding-right: calc(50% + 26px);
+}
+
+.about-node-right {
+  justify-content: flex-end;
+  padding-left: calc(50% + 26px);
+}
+
+/* Where the entry meets the line. */
+.about-node-dot {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--pz-teal);
+  box-shadow: 0 0 12px 2px rgba(0, 211, 180, 0.45);
+}
+
+.about-node-experience {
+  --edge: var(--pz-crimson);
+}
+
+.about-node-experience .about-node-dot {
+  background: var(--pz-crimson);
+  box-shadow: 0 0 12px 2px rgba(253, 33, 85, 0.45);
+}
+
+/* The card. The accent edge is the only place a brand colour touches a surface. */
+.about-card {
+  width: 100%;
+  background: var(--pz-panel);
+  backdrop-filter: var(--pz-blur);
+  border: 1px solid var(--pz-hairline);
+  border-left: 3px solid var(--pz-teal);
+  border-radius: 0 4px 4px 0;
+  padding: 16px 20px;
+  transition: border-color 0.25s, transform 0.25s;
+}
+
+.about-node-experience .about-card {
+  border-left-color: var(--pz-crimson);
+}
+
+.about-card:hover {
+  border-color: var(--pz-hairline-2);
+  border-left-color: var(--pz-teal);
+}
+
+.about-node-experience .about-card:hover {
+  border-left-color: var(--pz-crimson);
+}
+
+.about-card-role {
+  margin: 0 0 4px;
+  font-size: clamp(17px, 1.5vw, 21px);
+  font-weight: 600;
+  color: var(--pz-c1);
+}
+
+.about-card-where {
+  margin: 0 0 3px;
+  font-size: 15px;
+}
+
+.about-card-where a {
+  color: var(--pz-teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.about-node-experience .about-card-where a {
+  color: var(--pz-crimson);
+}
+
+.about-card-where a:hover {
+  border-bottom-color: currentColor;
+}
+
+.about-card-when {
+  margin: 0 0 10px;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--pz-c3);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* The live dot: this one is still running. */
+.about-card-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pz-teal);
+  box-shadow: 0 0 8px 1px rgba(0, 211, 180, 0.6);
+}
+
+.about-node-experience .about-card-live {
+  background: var(--pz-crimson);
+  box-shadow: 0 0 8px 1px rgba(253, 33, 85, 0.6);
+}
+
+.about-card-detail {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--pz-c2);
+}
+
+.about-card-links {
+  margin: 10px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.about-card-links a {
+  font-size: 12.5px;
+  color: var(--pz-c2);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--pz-hairline);
+  border-radius: 3px;
+  padding: 3px 9px;
+  text-decoration: none;
+}
+
+.about-card-links a:hover {
+  color: var(--pz-c1);
+  border-color: var(--pz-teal);
+}
+
+/* ---------- contact ---------- */
+
+.about-reach {
+  margin-top: clamp(70px, 12vh, 130px);
+  max-width: 620px;
+}
+
+.about-reach .prism-head {
+  margin: 6px 0 18px;
+}
+
+/*
+  The shared contact block and form are centred in act 09, because that act is. This
+  page is a document with a left edge, so they are pulled back into line here rather
+  than being forked into a second copy.
+*/
+.about-reach .prism-contact {
+  align-items: flex-start;
+  margin-top: 18px;
+}
+
+.about-reach .prism-contact-grid {
+  justify-content: flex-start;
+}
+
+.about-form {
+  margin-top: 22px;
+}
+
+.about-foot {
+  margin-top: clamp(56px, 9vh, 96px);
+  padding-top: 20px;
+  border-top: 1px solid var(--pz-hairline);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--pz-c3);
+}
+
+.about-foot p {
+  margin: 0;
+}
+
+/* ---------- the animated blocks ---------- */
+
+/*
+  The perspective is a transform FUNCTION, not the `perspective` property. The targets
+  sit at several different depths of the markup and a parent `perspective` reaches only
+  its direct children unless every element in between opts into preserve-3d. Per
+  element it is self-contained and cannot disturb the layout it is applied to.
+
+  The custom properties are written by hooks/useScroll3D.ts every frame. The fallbacks
+  here are the resting state, so a block with no JS is simply in place.
+*/
+.a3d {
+  transform: perspective(1200px) translate3d(0, var(--a3-y, 0px), var(--a3-z, 0px))
+    rotateX(var(--a3-rx, 0deg)) rotateY(var(--a3-ry, 0deg));
+  transform-origin: 50% 65%;
+  opacity: var(--a3-o, 1);
+  will-change: transform, opacity;
+}
+
+/* The card keeps its own hover transition; the node the loop drives must not have
+   one, or every frame would be chasing a 0.25s ease and the list would swim. */
+.about-node.a3d {
+  transition: none;
+}
+
+/* ---------- the net ---------- */
+
+.a3d-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.a3d-backdrop canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- back to the world ---------- */
+
+.a3d-return {
+  position: fixed;
+  left: clamp(12px, 3vw, 30px);
+  bottom: clamp(16px, 4vh, 34px);
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--pz-face);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--pz-teal);
+  background: var(--pz-panel-strong);
+  backdrop-filter: var(--pz-blur);
+  border: 1px solid rgba(0, 211, 180, 0.45);
+  border-radius: 3px;
+  padding: 10px 16px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.a3d-return:hover {
+  color: var(--pz-c1);
+  border-color: var(--pz-teal);
+  background: rgba(0, 211, 180, 0.16);
+}
+
+.a3d-return i {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+/* ---------- narrow ----------
+
+   One column, and the spine moves to the left edge with every card to its right — the
+   zig-zag needs width to read and there is none at 320px. Everything else is fluid, so
+   this is the only structural change the page needs.
+   ----------------------------- */
+
+@media (max-width: 880px) {
+  .about-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-portrait {
+    order: -1;
+    max-width: 300px;
+  }
+
+  .about-spine::before {
+    left: 5px;
+    transform: none;
+  }
+
+  .about-node-left,
+  .about-node-right {
+    justify-content: flex-start;
+    padding-left: 26px;
+    padding-right: 0;
+  }
+
+  .about-node-dot {
+    left: 5px;
+    top: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .about-prose {
+    padding: 13px 15px;
+    font-size: 14.5px;
+  }
+
+  .about-card {
+    padding: 13px 15px;
+  }
+
+  .a3d-return {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ---------- reduced motion ----------
+
+   useScroll3D bails out entirely under prefers-reduced-motion, so no element ever gets
+   the .a3d class. These rules are the belt to that braces.
+   ------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .a3d {
+    transform: none;
+    opacity: 1;
+    will-change: auto;
+  }
+
+  .a3d-backdrop {
+    display: none;
+  }
+}

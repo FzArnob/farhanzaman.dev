@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { toggleTheme } from '../lib/theme';
 import { boot } from '../three/liveState';
-import { useScrollRig } from '../three/ScrollRig';
+import { useCurrentAct, useScrollRig } from '../three/ScrollRig';
 
 /**
  * Fixed chrome: the mark, the theme switch, the SyncBot entry, and the calibration
@@ -12,6 +13,33 @@ import { useScrollRig } from '../three/ScrollRig';
  * them rather than offered as a choice.
  */
 
+/**
+ * The mark, on its corner.
+ *
+ * This is the flat site's own masthead — .nav-corner and .fa-logo from 05-navbar.css:
+ * a square rotated 40 degrees and hung off the top-left of the viewport, with the
+ * monogram floating on it. v1.09 had flattened it to a 24px favicon and a word, which
+ * lost the one piece of chrome the site has always been recognised by.
+ *
+ * It is smaller than the flat site's (a 210px corner against 300px, a 54px mark
+ * against 96px) because the Prism world has to keep its corners quiet, and the word
+ * beside it is gone: at this size it would cross the diagonal. The nickname is still
+ * the button's accessible name.
+ */
+export function PrismMark({ nickName, onClick }: { nickName: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      className="prism-mark"
+      onClick={onClick}
+      aria-label={nickName + ' — back to the start'}
+    >
+      <span className="prism-mark-corner" aria-hidden="true" />
+      <img className="prism-mark-logo" src="/view/static/favicon.svg" alt="" width="54" height="54" />
+    </button>
+  );
+}
+
 export function PrismMasthead({
   nickName,
   onOpenBot,
@@ -20,14 +48,24 @@ export function PrismMasthead({
   onOpenBot: () => void;
 }) {
   const rig = useScrollRig();
+  const act = useCurrentAct();
 
   return (
     <header className="prism-masthead">
-      <button type="button" className="prism-mark" onClick={() => rig.seek(0)} aria-label="Back to the start">
-        <img src="/view/static/favicon.svg" alt="" width="24" height="24" />
-        <span>{nickName}</span>
-      </button>
+      <PrismMark nickName={nickName} onClick={() => rig.seek(0)} />
       <div className="prism-masthead-actions">
+        {/*
+          Act 02's way out, and only act 02's: /about is the Background act's own page,
+          so the link belongs to the act rather than to the site. It joins the row the
+          world already uses for the things you can click instead of standing in the
+          middle of the corridor, which is the part of the frame the blocks fly through.
+        */}
+        {act.id === 'background' && (
+          <Link className="prism-icon-btn prism-icon-btn-cta" to="/about">
+            About Me
+            <i className="prism-btn-chevron" aria-hidden="true" />
+          </Link>
+        )}
         <button type="button" className="prism-icon-btn" onClick={onOpenBot}>
           SyncBot
         </button>

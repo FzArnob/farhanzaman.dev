@@ -100,7 +100,10 @@ export function StaticFallback() {
         {/* No descriptions here either — name, level and time, as in the 3D act. */}
         <ul className="prism-static-cloud">
           {profile.expertises.map((item) => (
-            <li key={item.expertise_id} className={/beginner/i.test(item.level) ? 'is-beginner' : undefined}>
+            <li
+              key={item.expertise_id}
+              className={/advanced/i.test(item.level) ? 'is-advanced' : undefined}
+            >
               {item.name}
               <em>{item.duration}mo</em>
             </li>

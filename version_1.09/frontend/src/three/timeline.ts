@@ -42,8 +42,14 @@ export interface ActSpec {
   t1: number;
   /** 0 = teal pole, 1 = crimson pole. Nothing lands in between. */
   band: number;
-  /** Deep-link path, so every existing URL still resolves. */
-  path: string;
+  /**
+   * Deep-link path, so every existing URL still resolves.
+   *
+   * `null` for an act that has a page of its own rather than a position on this
+   * scroll — Background is the one: /about is the v1.07 About page again, reached
+   * from the act's See More button, so the act itself is not addressable.
+   */
+  path: string | null;
 }
 
 /**
@@ -53,7 +59,7 @@ export interface ActSpec {
  */
 export const ACTS: ActSpec[] = [
   { id: 'intro', index: 1, name: 'Intro', t0: 0.0, t1: 0.1, band: 0, path: '/' },
-  { id: 'background', index: 2, name: 'Background', t0: 0.1, t1: 0.23, band: 0, path: '/about' },
+  { id: 'background', index: 2, name: 'Background', t0: 0.1, t1: 0.23, band: 0, path: null },
   { id: 'expertise', index: 3, name: 'Expertise', t0: 0.23, t1: 0.35, band: 0, path: '/expertise' },
   { id: 'skills', index: 4, name: 'Skills', t0: 0.35, t1: 0.45, band: 0, path: '/skills' },
   { id: 'achievements', index: 5, name: 'Achievements', t0: 0.45, t1: 0.55, band: 1, path: '/achievements' },

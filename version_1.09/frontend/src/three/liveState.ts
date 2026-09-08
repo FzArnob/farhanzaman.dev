@@ -13,8 +13,12 @@
 /** Act 01 — which designation beam is lit, and pointer parallax. -1 = none. */
 export const prismFocus = { beam: -1, pointerX: 0, pointerY: 0 };
 
-/** Act 02 — the qualification slab the overlay is hovering, by `kind-id`. */
-export const spineFocus = { id: '' };
+/*
+  Act 02 has no entry here any more. It used to carry `spineFocus` so hovering an
+  institute in the overlay could light its slab in the corridor; the overlay no longer
+  lists the institutes at all — the blocks carry their own text and /about carries the
+  full history — so there is nothing left on either end of that wire.
+*/
 
 /** Act 03 — the expertise tag sphere: hover, selection and drag momentum. */
 export const cloudState = {

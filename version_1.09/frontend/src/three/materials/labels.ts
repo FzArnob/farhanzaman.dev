@@ -187,6 +187,152 @@ export function wordTexture(text: string, colour: string, light: boolean): THREE
   return tex;
 }
 
+/**
+ * A qualification block's face: institute, role, dates and — where there is room for
+ * it — a line or two of what actually happened there.
+ *
+ * Unlike labelTexture this draws NO opaque panel. The block behind it is an irregular
+ * extruded shape with a chamfered corner, and a rectangular plate of colour laid over
+ * that would put the rectangle straight back. The scrim here fades out at its own
+ * edges instead, so the silhouette the visitor reads is the block's, not the texture's.
+ *
+ * `detailLines` is the mobile lever. A portrait phone shows the same block at roughly
+ * a third of the pixel width a desktop does, so the answer is fewer words at a larger
+ * size rather than the same paragraph shrunk past legibility — the full history is one
+ * tap away on /about either way.
+ */
+export interface PanelOpts {
+  title: string;
+  role: string;
+  dates: string;
+  detail?: string;
+  accent: string;
+  light: boolean;
+  width?: number;
+  height?: number;
+  /** 0 disables the description entirely. */
+  detailLines?: number;
+  /** Multiplies every type size. Portrait passes >1. */
+  typeScale?: number;
+}
+
+export function panelTexture(opts: PanelOpts): THREE.CanvasTexture {
+  const {
+    title,
+    role,
+    dates,
+    detail = '',
+    accent,
+    light,
+    width = 768,
+    height = 384,
+    detailLines = 2,
+    typeScale = 1,
+  } = opts;
+
+  const key = [
+    'panel', title, role, dates, detail, accent, light,
+    width + 'x' + height, detailLines, typeScale,
+  ].join('|');
+  const hit = cache.get(key);
+  if (hit) return hit;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const g = canvas.getContext('2d')!;
+
+  /*
+    The scrim. Two gradients rather than a fill: a vertical one for the body and a
+    horizontal one that dies off before the right edge, so no side of it ever lands
+    as a straight line against the block behind.
+  */
+  const ink = light ? '255,255,255' : '6,12,14';
+  const body = g.createLinearGradient(0, 0, 0, height);
+  body.addColorStop(0, 'rgba(' + ink + ',' + (light ? 0.86 : 0.8) + ')');
+  body.addColorStop(0.72, 'rgba(' + ink + ',' + (light ? 0.78 : 0.66) + ')');
+  body.addColorStop(1, 'rgba(' + ink + ',0)');
+  g.fillStyle = body;
+  g.fillRect(0, 0, width, height);
+
+  const sideways = g.createLinearGradient(0, 0, width, 0);
+  sideways.addColorStop(0, 'rgba(' + ink + ',0.22)');
+  sideways.addColorStop(0.62, 'rgba(' + ink + ',0)');
+  g.fillStyle = sideways;
+  g.fillRect(0, 0, width, height);
+
+  const pad = Math.round(width * 0.075);
+  const s = (n: number) => Math.round(height * n * typeScale);
+
+  // The accent rule, inset so it reads as part of the card rather than the block edge.
+  g.fillStyle = accent;
+  g.fillRect(pad - Math.round(width * 0.028), Math.round(height * 0.16), 6, Math.round(height * 0.5));
+
+  let y = Math.round(height * 0.29);
+  g.textAlign = 'left';
+
+  g.font = '600 ' + s(0.155) + 'px ' + DISPLAY;
+  g.fillStyle = light ? '#111719' : '#f2f7f6';
+  g.fillText(fit(g, title, width - pad * 2), pad, y);
+
+  y += s(0.135);
+  g.font = '600 ' + s(0.105) + 'px ' + DISPLAY;
+  g.fillStyle = accent;
+  g.fillText(fit(g, role, width - pad * 2), pad, y);
+
+  y += s(0.115);
+  g.font = '400 ' + s(0.085) + 'px ' + MONO;
+  g.fillStyle = light ? '#5c6a67' : '#9db0ac';
+  g.fillText(dates, pad, y);
+
+  const trimmed = detail.trim();
+  if (detailLines > 0 && trimmed) {
+    y += s(0.12);
+    g.font = '400 ' + s(0.082) + 'px ' + BODY;
+    g.fillStyle = light ? '#3d4a48' : '#b9c6c3';
+    for (const line of wrap(g, trimmed, width - pad * 2, detailLines)) {
+      g.fillText(line, pad, y);
+      y += s(0.105);
+    }
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  cache.set(key, tex);
+  return tex;
+}
+
+/** Greedy word wrap, ellipsised on the last line it is allowed. */
+function wrap(
+  g: CanvasRenderingContext2D,
+  text: string,
+  max: number,
+  maxLines: number
+): string[] {
+  const words = text.split(' ').filter(Boolean);
+  const lines: string[] = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? line + ' ' + word : word;
+    if (g.measureText(next).width <= max) {
+      line = next;
+      continue;
+    }
+    lines.push(line || word);
+    line = line ? word : '';
+    if (lines.length === maxLines) break;
+  }
+  if (lines.length < maxLines && line) lines.push(line);
+  // Anything left over is signalled, not silently dropped.
+  const used = lines.join(' ').length;
+  if (used < text.length - 1 && lines.length) {
+    lines[lines.length - 1] = fit(g, lines[lines.length - 1] + ' ' + text.slice(used).trim(), max);
+  }
+  return lines;
+}
+
+
 /** Frees every cached texture. Called when the stage unmounts. */
 export function disposeLabelCache(): void {
   cache.forEach((t) => t.dispose());

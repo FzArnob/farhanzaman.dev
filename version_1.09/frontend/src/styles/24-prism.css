@@ -180,24 +180,80 @@ html.prism-locked body {
   padding: 14px clamp(14px, 3vw, 32px);
 }
 
+/*
+  The mark, on its corner — 05-navbar.css's .nav-corner and .fa-logo, scaled down for
+  a world that has to keep its corners quiet.
+
+  `position: relative; z-index: 0` on the button is load-bearing: it makes the button
+  its own stacking context, so the corner can sit at z-index -1 (behind the monogram)
+  without falling behind the WebGL canvas the whole overlay is painted over. The corner
+  itself is fixed rather than absolute because it has to hang off two edges of the
+  viewport, and nothing between it and the root carries a transform.
+*/
 .prism-mark {
+  position: relative;
+  z-index: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: flex-start;
+  width: 60px;
+  height: 68px;
+  margin: -6px 0 0 -8px;
   background: none;
   border: 0;
-  padding: 6px 8px;
+  padding: 0;
   cursor: pointer;
   color: var(--pz-c1);
-  font-family: var(--pz-face);
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
-.prism-mark img {
+.prism-mark-corner {
+  position: fixed;
+  z-index: -1;
+  top: -74px;
+  left: -128px;
+  width: 210px;
+  height: 210px;
+  transform: rotate(40deg);
+  border-radius: 3px;
+  background: var(--pz-panel-strong);
+  box-shadow: 5px 0 22px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  animation: prism-mark-drop 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.prism-mark-logo {
   display: block;
+  width: 54px;
+  height: 54px;
+  /* The flat site's own float, same 4s cycle, shorter travel for the smaller mark. */
+  animation: prism-mark-float 4s ease-in-out infinite;
+  transition: filter 0.25s;
+}
+
+.prism-mark:hover .prism-mark-logo,
+.prism-mark:focus-visible .prism-mark-logo {
+  filter: drop-shadow(0 0 10px rgba(0, 211, 180, 0.65));
+}
+
+@keyframes prism-mark-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-11px);
+  }
+}
+
+@keyframes prism-mark-drop {
+  from {
+    transform: rotate(40deg) translateY(-260px);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(40deg) translateY(0);
+    opacity: 1;
+  }
 }
 
 .prism-masthead-actions {
@@ -224,6 +280,47 @@ html.prism-locked body {
 .prism-icon-btn:hover {
   color: var(--pz-c1);
   border-color: var(--pz-teal);
+}
+
+/*
+  Act 02's call to action, sitting in the masthead row.
+
+  It is the same shape as SyncBot and Theme so the row keeps its rhythm, and filled
+  rather than outlined so it is obviously the one that does something — it is the only
+  button in the world that appears and disappears with the scroll, and a visitor has
+  about two acts' worth of time to notice it. The halo is the same keyframe the old
+  in-world button used; the entrance is what stops it popping into existence.
+*/
+.prism-icon-btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0d1b19;
+  background: var(--pz-teal);
+  border-color: var(--pz-teal);
+  font-weight: 600;
+  text-decoration: none;
+  animation: prism-cta-in 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both,
+    prism-beckon 2.6s ease-out 0.42s infinite;
+}
+
+.prism-icon-btn-cta:hover,
+.prism-icon-btn-cta:focus-visible {
+  color: #0d1b19;
+  border-color: var(--pz-teal);
+  filter: brightness(1.12);
+  animation: prism-cta-in 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes prism-cta-in {
+  from {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ---------- section tracker: dots only, centre-right ---------- */
@@ -568,6 +665,229 @@ html.prism-locked body {
   cursor: default;
 }
 
+/* ---------- See More: the one thing in act 02 a visitor is meant to click ----
+
+   The Background act no longer prints the history in the overlay — it flies past you
+   in the corridor — so the only affordance left is this button, and a static button
+   in the corner of a moving 3D scene is invisible. It beckons on a loop: an expanding
+   halo, a sheen that crosses the face, and a chevron that leans on the exit.
+
+   The halo is a box-shadow on the button itself rather than a pseudo-element, so the
+   overflow:hidden the sheen needs cannot clip it — an element's own shadow is painted
+   outside its overflow box. It stops the moment the pointer arrives: it exists to be
+   noticed, and once it has been noticed it is only noise.
+   -------------------------------------------------------------------------- */
+
+.prism-btn-beckon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  overflow: hidden;
+  animation: prism-beckon 2.6s ease-out infinite;
+}
+
+.prism-btn-beckon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: prism-beckon-sheen 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.prism-btn-chevron {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  animation: prism-beckon-nudge 2.6s ease-in-out infinite;
+}
+
+.prism-btn-beckon:hover,
+.prism-btn-beckon:focus-visible {
+  animation: none;
+  box-shadow: 0 0 0 3px rgba(0, 211, 180, 0.24);
+}
+
+.prism-btn-beckon:hover::after,
+.prism-btn-beckon:focus-visible::after {
+  animation: none;
+  opacity: 0;
+}
+
+.prism-btn-beckon:hover .prism-btn-chevron {
+  animation: none;
+  transform: rotate(-45deg) translate(2px, 2px);
+}
+
+@keyframes prism-beckon {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 211, 180, 0.5);
+  }
+  55% {
+    box-shadow: 0 0 0 13px rgba(0, 211, 180, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 211, 180, 0);
+  }
+}
+
+@keyframes prism-beckon-sheen {
+  0%,
+  22% {
+    left: -60%;
+  }
+  62%,
+  100% {
+    left: 130%;
+  }
+}
+
+@keyframes prism-beckon-nudge {
+  0%,
+  62%,
+  100% {
+    transform: rotate(-45deg) translate(0, 0);
+  }
+  76% {
+    transform: rotate(-45deg) translate(3px, 3px);
+  }
+}
+
+/* ---------- act 02 keeps its record, and draws none of it --------------------
+
+   The corridor carries every institute, role, date and description, so the overlay has
+   nothing left to say. The section is still in the document — clipped, not removed, so
+   the accessible name and the indexable about_text both survive — and act 02's one
+   link lives in the masthead row instead (.prism-icon-btn-cta below).
+
+   Two classes, so this beats .prism-act's own box wherever it lands in the file.
+   -------------------------------------------------------------------------- */
+
+.prism-act.prism-act-quiet {
+  left: 0;
+  right: auto;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ---------- act 03: the cloud's HUD ------------------------------------------
+
+   One line at a time, centred, instead of a corner panel. The section becomes a
+   full-frame layer so its two children can be placed against the viewport rather than
+   against a 440px column; it takes no pointer events, because everything underneath it
+   is the sphere and the sphere is draggable.
+
+   Two classes, so this beats .prism-act's own box wherever it lands in the file.
+   -------------------------------------------------------------------------- */
+
+.prism-act.prism-act-hud {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: auto;
+  display: block;
+  gap: 0;
+  pointer-events: none;
+}
+
+/* The act's name is the readout's job; here it is record only. */
+.prism-act-hud .prism-eyebrow {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The headline count, directly above the readout. */
+.prism-cloud-total {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(64px, 8.5vh, 88px);
+  transform: translateX(-50%);
+  margin: 0;
+  max-width: calc(100vw - 32px);
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--pz-teal);
+  text-shadow: 0 0 18px rgba(0, 211, 180, 0.4);
+}
+
+/* What you are pointing at, in the middle of the sphere it belongs to. */
+.prism-cloud-detail {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(340px, calc(100vw - 36px));
+  padding: 14px 24px;
+  text-align: center;
+  background: var(--pz-panel);
+  backdrop-filter: var(--pz-blur);
+  border: 1px solid var(--pz-hairline);
+  border-radius: 4px;
+}
+
+.prism-cloud-detail h3 {
+  margin: 0 0 6px;
+  font-family: var(--pz-face);
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--pz-c1);
+}
+
+.prism-cloud-detail p {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pz-c2);
+}
+
+.prism-cloud-detail p i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--pz-hairline-2);
+}
+
+/* The same two poles the sphere paints with, so the label confirms the colour. */
+.prism-cloud-level {
+  font-weight: 600;
+  color: var(--pz-teal);
+}
+
+.prism-cloud-level.is-advanced {
+  color: var(--pz-crimson);
+}
+
 .prism-chips {
   display: flex;
   flex-wrap: wrap;
@@ -663,23 +983,6 @@ html.prism-locked body {
   font-size: 14px;
   line-height: 1.5;
   color: var(--pz-c3);
-}
-
-.prism-legend {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 16px;
-  font-size: 13px;
-  color: var(--pz-c3);
-}
-
-.prism-legend li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .prism-inline-list {
@@ -1274,7 +1577,9 @@ html:has(link[data-theme='light']) .prism-lightbox {
   gap: 5px;
 }
 
-.prism-static-cloud li.is-beginner {
+/* Advanced is the accent, here as on the sphere: crimson for the few, teal for the
+   intermediate and beginner alike. */
+.prism-static-cloud li.is-advanced {
   color: var(--pz-crimson);
 }
 
@@ -1397,8 +1702,20 @@ html:has(link[data-theme='light']) .prism-lightbox {
   .prism-masthead {
     padding: 10px 14px;
   }
-  .prism-mark span {
-    font-size: 14px;
+  /* The corner comes in a size, not a scale — a transform would fight the rotate. */
+  .prism-mark {
+    width: 50px;
+    height: 58px;
+  }
+  .prism-mark-corner {
+    top: -66px;
+    left: -114px;
+    width: 178px;
+    height: 178px;
+  }
+  .prism-mark-logo {
+    width: 44px;
+    height: 44px;
   }
 
   /* Copy goes full width and sits above the readout. */
@@ -1488,9 +1805,24 @@ html:has(link[data-theme='light']) .prism-lightbox {
     font-size: 13px;
     padding: 8px 12px;
   }
+  /*
+    The masthead row is the mark plus three buttons once act 02 adds its own, and at
+    320px — the narrowest width this has to survive — that is every pixel there is.
+    Tighter tracking and no chevron buys about 70px, which is enough.
+  */
+  .prism-masthead-actions {
+    gap: 6px;
+  }
   .prism-icon-btn {
     font-size: 12px;
     padding: 7px 10px;
+    letter-spacing: 0.06em;
+  }
+  .prism-icon-btn-cta {
+    gap: 0;
+  }
+  .prism-icon-btn-cta .prism-btn-chevron {
+    display: none;
   }
   .prism-inline-list,
   .prism-chips {
@@ -1530,8 +1862,19 @@ html:has(link[data-theme='light']) .prism-lightbox {
   .prism-particles,
   .prism-curtain img,
   .prism-chamber,
-  .prism-lightbox {
+  .prism-lightbox,
+  .prism-btn-beckon,
+  .prism-btn-beckon::after,
+  .prism-btn-chevron,
+  .prism-icon-btn-cta,
+  .prism-mark-corner,
+  .prism-mark-logo {
     transition: none !important;
     animation: none !important;
+  }
+  /* Both still have to be found, so the pulsing halo becomes a static ring. */
+  .prism-btn-beckon,
+  .prism-icon-btn-cta {
+    box-shadow: 0 0 0 3px rgba(0, 211, 180, 0.28) !important;
   }
 }

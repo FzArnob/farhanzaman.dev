@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { orderProjects } from '../three/acts/Act06Works';
 import {
   arcadeState,
@@ -6,7 +6,6 @@ import {
   constellationState,
   galleryState,
   prismFocus,
-  spineFocus,
   turbineState,
   worksState,
 } from '../three/liveState';
@@ -23,13 +22,6 @@ import { usePolled } from './usePolled';
  * that they no longer navigate: "View all projects" opens the ring the camera is
  * already inside, and "Explore all" extends the hall it is already flying down.
  */
-
-function year(date: string | null, present?: string): string {
-  if (present === '1') return 'now';
-  if (!date) return '—';
-  if (/present/i.test(date)) return 'now';
-  return String(date).slice(0, 4);
-}
 
 /* ------------------------------------------------------------------ 01 intro */
 
@@ -71,65 +63,51 @@ export function IntroCopy({ profile }: { profile: Profile }) {
 
 /* ------------------------------------------------------------- 02 background */
 
+/**
+ * about_text is authored in the admin editor and arrives as HTML. The teaser wants
+ * words, not markup, so tags come out and entities go back to characters.
+ */
+function plain(html: string): string {
+  return String(html)
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/(p|div|li|h[1-6])>/gi, ' ')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&(#39|apos);/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Act 02 draws nothing.
+ *
+ * Every institute, role, date and description flies past in the corridor itself, so a
+ * panel repeating them was the overlay competing with the act it exists to introduce —
+ * and the button that replaced the panel was parked in the middle of the screen, in
+ * the one part of the frame the corridor needs kept clear. It now lives in the
+ * masthead row beside SyncBot (see PrismMasthead), where the world already keeps the
+ * things you can click.
+ *
+ * What stays here is the record: the eyebrow, the heading and the whole of about_text
+ * are still in the document for search and for screen readers. They are simply not
+ * drawn.
+ */
 export function BackgroundCopy({ profile }: { profile: Profile }) {
-  const [showAll, setShowAll] = useState(false);
   const { info } = profile;
+  const teaser = useMemo(() => plain(info.about_text), [info.about_text]);
 
   return (
-    <ActSection id="background" eyebrow="Where this came from" title="Background">
-      {showAll ? (
-        <p className="prism-text prism-text-tall">{info.about_text}</p>
-      ) : (
-        <div className="prism-cols">
-          <div className="prism-col">
-            <h3 className="prism-col-head">
-              <i className="dot dot-teal" /> Education
-            </h3>
-            <ul className="prism-list">
-              {profile.educations.map((edu) => (
-                <li
-                  key={edu.education_id}
-                  onMouseEnter={() => (spineFocus.id = `education-${edu.education_id}`)}
-                  onMouseLeave={() => (spineFocus.id = '')}
-                >
-                  <a href={edu.institute_url} target="_blank" rel="noreferrer">
-                    {edu.institute_name}
-                  </a>
-                  <span className="prism-meta">
-                    {edu.subject} · {year(edu.start_date)} → {year(edu.end_date, edu.is_present)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="prism-col">
-            <h3 className="prism-col-head">
-              <i className="dot dot-crimson" /> Experience
-            </h3>
-            <ul className="prism-list">
-              {profile.experiences.map((job) => (
-                <li
-                  key={job.experience_id}
-                  onMouseEnter={() => (spineFocus.id = `experience-${job.experience_id}`)}
-                  onMouseLeave={() => (spineFocus.id = '')}
-                >
-                  <a href={job.institute_url} target="_blank" rel="noreferrer">
-                    {job.institute_name}
-                  </a>
-                  <span className="prism-meta">
-                    {job.position} · {year(job.start_date)} → {year(job.end_date, job.is_present)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-      <div className="prism-actions">
-        <button type="button" className="prism-btn prism-btn-solid" onClick={() => setShowAll((v) => !v)}>
-          {showAll ? 'Back to the timeline' : 'About me'}
-        </button>
-      </div>
+    <ActSection
+      id="background"
+      eyebrow="Where this came from"
+      title="Background"
+      titleHidden
+      className="prism-act-quiet"
+      drift={0}
+    >
+      <p className="prism-sr">{teaser}</p>
     </ActSection>
   );
 }
@@ -139,37 +117,64 @@ export function BackgroundCopy({ profile }: { profile: Profile }) {
 const readCloudHover = () => cloudState.hovered;
 const readCloudSelect = () => cloudState.selected;
 
+/**
+ * Act 03's HUD — a headline count, or the name you are pointing at. Never both.
+ *
+ * The bottom-left panel is gone: a hint telling you to hover the sphere, a legend for
+ * two colours, and a heading repeating the readout, all stacked over the corner of the
+ * cloud they were describing. What is left is one line at a time, centred, where the
+ * eye already is.
+ *
+ * The heading and the full list of technologies stay in the document for search and
+ * for a screen reader; they are simply not drawn.
+ */
 export function ExpertiseCopy({ profile }: { profile: Profile }) {
   const hovered = usePolled(readCloudHover);
   const selected = usePolled(readCloudSelect);
   const index = selected >= 0 ? selected : hovered;
   const item = index >= 0 ? profile.expertises[index] : null;
+  // A floor, not an inventory: "22+" against 23 rows, so the claim stays true the day
+  // a row is added or removed in the admin editor.
+  const floor = Math.max(1, profile.expertises.length - 1);
 
   return (
-    <ActSection id="expertise" eyebrow={`${profile.expertises.length} technologies`} title="Expertise">
+    <ActSection
+      id="expertise"
+      eyebrow={`${profile.expertises.length} technologies`}
+      title="Expertise"
+      titleHidden
+      className="prism-act-hud"
+      drift={0}
+    >
+      <ul className="prism-sr">
+        {profile.expertises.map((tech) => (
+          <li key={tech.expertise_id}>
+            {tech.name} — {tech.level}, {tech.duration} months
+          </li>
+        ))}
+      </ul>
+
       {item ? (
         /* Name, level and time only — the descriptions were dropped from this act. */
-        <div className="prism-detail">
-          <h3 className="prism-detail-title">{item.name}</h3>
-          <p className="prism-detail-meta">
-            {item.level} · {item.duration} months
+        <div className="prism-cloud-detail" role="status" aria-live="polite">
+          <h3>{item.name}</h3>
+          <p>
+            <span
+              className={
+                /advanced/i.test(item.level)
+                  ? 'prism-cloud-level is-advanced'
+                  : 'prism-cloud-level'
+              }
+            >
+              {item.level}
+            </span>
+            <i aria-hidden="true" />
+            {item.duration} months
           </p>
         </div>
       ) : (
-        <p className="prism-text prism-text-short">
-          Hover or tap a name on the sphere to see how long it has been in use and at what
-          level. Drag to spin it.
-        </p>
+        <p className="prism-cloud-total">Worked with {floor}+ technologies</p>
       )}
-      <ul className="prism-legend">
-        <li>
-          <i className="dot dot-teal" /> Advanced &amp; intermediate
-        </li>
-        <li>
-          <i className="dot dot-crimson" /> Beginner
-        </li>
-        <li>Size = time spent</li>
-      </ul>
     </ActSection>
   );
 }

@@ -21,8 +21,19 @@ import { ACT_BY_ID, WORLD, actPresence, clamp01 } from '../timeline';
  * canvas, so 23 of them cost less than a single piece of extruded typography would.
  *
  * No descriptions anywhere: they were removed from this act at your request, and the
- * DOM panel shows only the name, its level and how long it has been in use.
+ * HUD shows only the name, its level and how long it has been in use.
+ *
+ * The cloud is fitted to the frame every frame rather than being a fixed 7-unit
+ * sphere. three's `fov` is vertical, so a portrait phone has barely a quarter of a
+ * desktop's horizontal field: a sphere sized for one runs off both sides of the other,
+ * which is what was cutting "Java", "MongoDB" and "Illustrator" in half. The radii are
+ * solved per axis from what the camera can actually see, so the names always land
+ * inside the viewport with a margin, at any size and either orientation.
  */
+
+/** Biggest base sprite scale — the widest word the fit has to leave room for. */
+const MAX_WORD = 0.92;
+
 export function Act03Cloud({
   look,
   expertises,
@@ -44,7 +55,6 @@ export function Act03Cloud({
   const words = useMemo(() => {
     const n = expertises.length;
     const golden = Math.PI * (3 - Math.sqrt(5));
-    const radius = WORLD.expertise.radius;
 
     return expertises.map((item, i) => {
       // Fibonacci sphere: an even spread at any count, so adding a 24th expertise in
@@ -55,7 +65,9 @@ export function Act03Cloud({
       const months = Number(item.duration) || 0;
       // sqrt keeps the 3-to-48-month spread from letting one word dominate.
       const weight = Math.sqrt(months / longest);
-      const advanced = /advanced|intermediate/i.test(item.level);
+      // Advanced is the exception, so advanced is the accent: crimson for the handful
+      // of them, teal for intermediate and beginner alike.
+      const advanced = /advanced/i.test(item.level);
 
       return {
         id: item.expertise_id,
@@ -64,8 +76,10 @@ export function Act03Cloud({
         months,
         weight,
         // Level picks a pole. Only ever teal or crimson — never anything between.
-        colour: poleValue(advanced ? 0 : 1),
-        home: new THREE.Vector3(Math.cos(theta) * r * radius, y * radius, Math.sin(theta) * r * radius),
+        colour: poleValue(advanced ? 1 : 0),
+        // A point on the UNIT sphere. The radii are solved per frame against the
+        // viewport, so the layout cannot bake a size in.
+        unit: new THREE.Vector3(Math.cos(theta) * r, y, Math.sin(theta) * r),
       };
     });
   }, [expertises, longest]);
@@ -91,7 +105,8 @@ export function Act03Cloud({
         // 4:1 canvas, so the sprite has to match or the word stretches.
         const scale = 0.42 + word.weight * 0.5;
         sprite.scale.set(scale * 4, scale, 1);
-        sprite.position.copy(word.home);
+        // A sane first frame; useFrame owns the position from then on.
+        sprite.position.copy(word.unit).multiplyScalar(WORLD.expertise.radius);
         return sprite;
       }),
     [words, look.bloom]
@@ -134,21 +149,47 @@ export function Act03Cloud({
       and it is the same near/far weighting the flat tag cloud had.
     */
     group.getWorldPosition(_c);
-    const centreDist = state.camera.position.distanceTo(_c);
-    const radius = WORLD.expertise.radius;
-    const nearest = centreDist - radius;
-    const farthest = centreDist + radius;
+    const camera = state.camera as THREE.PerspectiveCamera;
+    const centreDist = camera.position.distanceTo(_c);
+
+    /*
+      The fit. What the camera can see at the cloud's own depth, in world units.
+
+      Type shrinks with the frame but bottoms out at 55%: past that the names stop
+      being readable and there is no point fitting them on screen at all. Whatever the
+      type ends up as, the radii then reserve room for the widest word, so a name
+      centred at the edge of the cloud still lands inside the viewport.
+
+      X and Z share a radius deliberately — the cloud spins about Y, and an ellipse
+      that is wider than it is deep would swing outside the frame as it turned.
+    */
+    const halfH = Math.tan((camera.fov * Math.PI) / 360) * centreDist;
+    const halfW = halfH * camera.aspect;
+    const textScale = THREE.MathUtils.clamp(halfW / 7, 0.55, 1);
+    const wordHalfW = MAX_WORD * 2 * textScale;
+    const wordHalfH = MAX_WORD * 0.5 * textScale;
+    const limit = WORLD.expertise.radius;
+    const rx = Math.min(limit, Math.max(1.2, halfW * 0.9 - wordHalfW));
+    // Tighter than the sides: the masthead owns the top of the frame and the readout
+    // the bottom, and the 9-degree idle tilt borrows a little height from Z.
+    const ry = Math.min(limit, Math.max(1.2, halfH * 0.74 - wordHalfH - 0.45));
+
+    const nearest = centreDist - rx;
+    const farthest = centreDist + rx;
 
     sprites.forEach((sprite, i) => {
+      const unit = words[i].unit;
+      sprite.position.set(unit.x * rx, unit.y * ry, unit.z * rx);
+
       sprite.getWorldPosition(_v);
-      const dist = state.camera.position.distanceTo(_v);
+      const dist = camera.position.distanceTo(_v);
       const front = clamp01(1 - (dist - nearest) / Math.max(0.001, farthest - nearest));
 
       const isHovered = hovered === i;
       const dim = hovered >= 0 && !isHovered ? 0.35 : 1;
       sprite.material.opacity = presence * (0.18 + front * 0.82) * dim;
 
-      const base = 0.42 + words[i].weight * 0.5;
+      const base = (0.42 + words[i].weight * 0.5) * textScale;
       // The near face grows a little as well, which reads as perspective on type
       // that is technically always facing you.
       const target = base * (0.86 + front * 0.28) * (isHovered ? 1.25 : 1);

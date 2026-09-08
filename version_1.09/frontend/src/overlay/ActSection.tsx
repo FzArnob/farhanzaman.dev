@@ -24,6 +24,7 @@ export function ActSection({
   align = 'left',
   drift = 22,
   titleHidden = false,
+  className,
 }: {
   id: ActId;
   eyebrow?: string;
@@ -33,6 +34,13 @@ export function ActSection({
   drift?: number;
   /** Keeps the heading for the accessibility tree while the 3D carries it visually. */
   titleHidden?: boolean;
+  /**
+   * An extra class on the section, for an act that needs to sit somewhere other than
+   * the bottom-left column. Background uses it: its copy is a single button pinned to
+   * the spine in the middle of the screen, with everything else read-only to a screen
+   * reader.
+   */
+  className?: string;
 }) {
   const ref = useActFade(id, drift);
   const act = ACT_BY_ID[id];
@@ -43,7 +51,7 @@ export function ActSection({
     <section
       ref={ref as React.RefObject<HTMLElement>}
       id={`act-${id}`}
-      className={`prism-act prism-act-${align}`}
+      className={`prism-act prism-act-${align}${className ? ' ' + className : ''}`}
       // Only ever teal or crimson — the accent never lands between the two.
       style={{ ['--edge' as string]: poleHex(act.band) }}
       aria-labelledby={`act-${id}-title`}

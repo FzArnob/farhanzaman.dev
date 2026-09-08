@@ -13,6 +13,13 @@ import type { Profile } from './types/profile';
  * pages stay eager — they have to render when something has already gone wrong.
  */
 const WorkPage = lazy(() => import('./pages/Work/WorkPage').then((m) => ({ default: m.WorkPage })));
+/*
+  About is the exception among the act paths: the Background act shows a teaser and
+  hands off to this, the v1.07 page, rebuilt as a scroll-driven 3D stage. It is a real
+  document with the full qualification history in it, which is the one thing a fly-past
+  cannot be.
+*/
+const AboutPage = lazy(() => import('./pages/About/AboutPage').then((m) => ({ default: m.AboutPage })));
 const SyncBotPage = lazy(() => import('./pages/SyncBot/SyncBotPage').then((m) => ({ default: m.SyncBotPage })));
 
 /**
@@ -22,7 +29,6 @@ const SyncBotPage = lazy(() => import('./pages/SyncBot/SyncBotPage').then((m) =>
  */
 const PRISM_PATHS = new Set([
   '/',
-  '/about',
   '/expertise',
   '/skills',
   '/achievements',
@@ -71,7 +77,6 @@ export function App() {
           offered as an option.
         */}
         <Route path="/" element={<PrismPage />} />
-        <Route path="/about" element={<PrismPage />} />
         <Route path="/expertise" element={<PrismPage />} />
         <Route path="/skills" element={<PrismPage />} />
         <Route path="/achievements" element={<PrismPage />} />
@@ -80,7 +85,8 @@ export function App() {
         <Route path="/gaming" element={<PrismPage />} />
         <Route path="/contact" element={<PrismPage />} />
 
-        {/* Not acts: a single project deep link, the assistant, and the error pages. */}
+        {/* Not acts: About, a single project deep link, the assistant, the error pages. */}
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/work" element={<WorkPage />} />
         <Route path="/syncbot" element={<SyncBotPage />} />
         <Route path="/403" element={<ForbiddenPage />} />
