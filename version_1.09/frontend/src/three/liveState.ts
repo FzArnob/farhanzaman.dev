@@ -22,8 +22,8 @@ export const prismFocus = { beam: -1, pointerX: 0, pointerY: 0 };
 
 /** Act 03 — the expertise tag sphere: hover, selection and drag momentum. */
 export const cloudState = {
+  /** The word under the pointer, or the last one tapped. -1 = none. */
   hovered: -1,
-  selected: -1,
   spin: 0,
   spinVelocity: 0,
   count: 0,

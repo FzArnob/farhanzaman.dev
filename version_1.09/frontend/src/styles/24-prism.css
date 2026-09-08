@@ -817,75 +817,29 @@ html.prism-locked body {
   white-space: nowrap;
 }
 
-/* The headline count, directly above the readout. */
+/*
+  The one line: the headline count, or the duration of whatever is under the pointer.
+
+  The offset is a fixed pixel value rather than a vh, because the thing it has to clear
+  is: the readout is a fixed-height box, so a viewport-relative gap overlapped it on
+  every screen under about 1250px tall — which is most of them. Three numbers, one per
+  shape the readout takes: full, hint-hidden on a narrow screen, hint-hidden on a short
+  one.
+*/
 .prism-cloud-total {
   position: absolute;
   left: 50%;
-  bottom: clamp(64px, 8.5vh, 88px);
+  bottom: 104px;
   transform: translateX(-50%);
   margin: 0;
   max-width: calc(100vw - 32px);
-  font-size: clamp(15px, 1.5vw, 19px);
+  font-size: clamp(13px, 1.15vw, 16px);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-align: center;
   color: var(--pz-teal);
   text-shadow: 0 0 18px rgba(0, 211, 180, 0.4);
-}
-
-/* What you are pointing at, in the middle of the sphere it belongs to. */
-.prism-cloud-detail {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: min(340px, calc(100vw - 36px));
-  padding: 14px 24px;
-  text-align: center;
-  background: var(--pz-panel);
-  backdrop-filter: var(--pz-blur);
-  border: 1px solid var(--pz-hairline);
-  border-radius: 4px;
-}
-
-.prism-cloud-detail h3 {
-  margin: 0 0 6px;
-  font-family: var(--pz-face);
-  font-size: clamp(20px, 2.4vw, 28px);
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--pz-c1);
-}
-
-.prism-cloud-detail p {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 9px;
-  font-size: 13.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--pz-c2);
-}
-
-.prism-cloud-detail p i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--pz-hairline-2);
-}
-
-/* The same two poles the sphere paints with, so the label confirms the colour. */
-.prism-cloud-level {
-  font-weight: 600;
-  color: var(--pz-teal);
-}
-
-.prism-cloud-level.is-advanced {
-  color: var(--pz-crimson);
 }
 
 .prism-chips {
@@ -1788,6 +1742,10 @@ html:has(link[data-theme='light']) .prism-lightbox {
   .prism-readout-hint {
     display: none;
   }
+  /* The readout drops its hint line here, so the HUD line follows it down. */
+  .prism-cloud-total {
+    bottom: 66px;
+  }
 }
 
 @media (max-width: 520px) {
@@ -1851,6 +1809,10 @@ html:has(link[data-theme='light']) .prism-lightbox {
   }
   .prism-readout-hint {
     display: none;
+  }
+  /* The hint goes here too, so the HUD line follows the readout down again. */
+  .prism-cloud-total {
+    bottom: 74px;
   }
 }
 

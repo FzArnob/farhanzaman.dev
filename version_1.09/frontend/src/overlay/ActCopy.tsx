@@ -115,24 +115,26 @@ export function BackgroundCopy({ profile }: { profile: Profile }) {
 /* -------------------------------------------------------------- 03 expertise */
 
 const readCloudHover = () => cloudState.hovered;
-const readCloudSelect = () => cloudState.selected;
 
 /**
- * Act 03's HUD — a headline count, or the name you are pointing at. Never both.
+ * Act 03's HUD — one line, above the readout, and nothing else.
  *
  * The bottom-left panel is gone: a hint telling you to hover the sphere, a legend for
  * two colours, and a heading repeating the readout, all stacked over the corner of the
- * cloud they were describing. What is left is one line at a time, centred, where the
- * eye already is.
+ * cloud they described. So is the centred detail card that briefly replaced it — the
+ * word you are pointing at is already lit and enlarged on the sphere, so restating its
+ * name in a panel over the top of it was the same information twice. The one thing the
+ * sphere cannot tell you is how long, so that is all this line says.
+ *
+ * Hover and tap write the same field (see CloudPointer in three/Stage.tsx), which is
+ * why a tap on empty space puts the headline straight back.
  *
  * The heading and the full list of technologies stay in the document for search and
  * for a screen reader; they are simply not drawn.
  */
 export function ExpertiseCopy({ profile }: { profile: Profile }) {
   const hovered = usePolled(readCloudHover);
-  const selected = usePolled(readCloudSelect);
-  const index = selected >= 0 ? selected : hovered;
-  const item = index >= 0 ? profile.expertises[index] : null;
+  const item = hovered >= 0 ? profile.expertises[hovered] : null;
   // A floor, not an inventory: "22+" against 23 rows, so the claim stays true the day
   // a row is added or removed in the admin editor.
   const floor = Math.max(1, profile.expertises.length - 1);
@@ -154,27 +156,17 @@ export function ExpertiseCopy({ profile }: { profile: Profile }) {
         ))}
       </ul>
 
-      {item ? (
-        /* Name, level and time only — the descriptions were dropped from this act. */
-        <div className="prism-cloud-detail" role="status" aria-live="polite">
-          <h3>{item.name}</h3>
-          <p>
-            <span
-              className={
-                /advanced/i.test(item.level)
-                  ? 'prism-cloud-level is-advanced'
-                  : 'prism-cloud-level'
-              }
-            >
-              {item.level}
-            </span>
-            <i aria-hidden="true" />
+      <p className="prism-cloud-total" role="status" aria-live="polite">
+        {item ? (
+          <>
+            {/* On screen the sphere supplies the name; a screen reader has no sphere. */}
+            <span className="prism-sr">{item.name}: </span>
             {item.duration} months
-          </p>
-        </div>
-      ) : (
-        <p className="prism-cloud-total">Worked with {floor}+ technologies</p>
-      )}
+          </>
+        ) : (
+          `${floor}+ technologies`
+        )}
+      </p>
     </ActSection>
   );
 }

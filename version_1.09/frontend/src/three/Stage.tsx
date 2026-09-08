@@ -146,10 +146,16 @@ function CloudPointer() {
     const onUp = (event: PointerEvent) => {
       const d = drag.current;
       drag.current = null;
-      // A drag is a spin; only a genuine tap selects.
+      // A drag is a spin; only a genuine tap reads.
       if (!d || d.moved > 6) return;
-      const index = hit(event);
-      if (index >= 0) cloudState.selected = cloudState.selected === index ? -1 : index;
+      /*
+        A tap writes the same field a hover does, empty space included — hit() returns
+        -1 there, which puts the readout back to the headline. There is no second,
+        sticky selection any more: it could only be cleared by tapping the same word
+        again, which on a phone (where there is no pointer to move away) meant a
+        duration could sit on screen for the rest of the act.
+      */
+      cloudState.hovered = hit(event);
     };
 
     element.addEventListener('pointerdown', onDown);
