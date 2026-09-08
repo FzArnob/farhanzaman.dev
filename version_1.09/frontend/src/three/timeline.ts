@@ -143,31 +143,27 @@ export function actPresence(t: number, act: ActSpec, lead = 0.03, tail = 0.03): 
 }
 
 /**
- * How present an act's COPY is — and this one never overlaps.
+ * Which act, if any, owns the copy at t.
  *
- * Each act owns a slice of its window for its text; the slices do not touch. The
- * outgoing block reaches zero before the incoming one leaves zero, so two headlines
- * can never be readable at the same time. That was the single worst thing about the
- * first pass: at every boundary two paragraphs sat on top of each other.
+ * Scroll decides whose turn it is to speak. It no longer scrubs the fade itself:
+ * the copy used to be a ramp over the first 26% of a window, so arriving at an act
+ * showed you a headline at 5% opacity and you had to keep scrolling to be allowed to
+ * read it. The fade is a timed animation now, owned by useActFade — reaching the act
+ * is the trigger, and standing still is enough to see it finish.
  *
- *   t0            t0+in                    t1-out         t1
- *   │──── fade in ────│──── fully legible ────│── fade out ──│
- *                                                            ↑ next act's t0
+ * The last sliver of every window belongs to nobody, so the handover still gets its
+ * beat of empty screen and two headlines are never legible at once.
  */
-const COPY_IN = 0.26; // fraction of the window spent fading in
-const COPY_OUT = 0.3; // fraction spent fading out — ends before the boundary
+const COPY_TAIL = 0.08; // fraction of the window reserved for the handover
 
-export function copyPresence(t: number, act: ActSpec): number {
+export function copyOwner(t: number): ActId | null {
+  const act = actAt(t);
+  if (t < act.t0) return null;
+  // The last act has nothing to hand over to, and the bottom of the scroll is exactly
+  // where its form has to be usable, so it keeps its copy all the way to t = 1.
+  if (act === ACTS[ACTS.length - 1]) return act.id;
   const span = act.t1 - act.t0;
-  const inEnd = act.t0 + span * COPY_IN;
-  const outStart = act.t1 - span * COPY_OUT;
-  // A hair inside the boundary, so the handover has a beat of empty screen.
-  const outEnd = act.t1 - span * 0.04;
-  if (t <= act.t0) return 0;
-  if (t >= outEnd) return 0;
-  if (t < inEnd) return smooth((t - act.t0) / (inEnd - act.t0));
-  if (t > outStart) return 1 - smooth((t - outStart) / (outEnd - outStart));
-  return 1;
+  return t >= act.t1 - span * COPY_TAIL ? null : act.id;
 }
 
 /** The act that owns a given t. */
