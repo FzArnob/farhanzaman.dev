@@ -70,11 +70,11 @@ export function App() {
       <Routes>
         {/*
           v1.09: the site IS the 3D world. Every one of these paths resolves to a
-          position on its single scroll (see three/timeline.ts) and the camera flies
+          position on its single scroll (see stage/timeline.ts) and the camera flies
           there, so existing links, bookmarks and indexed URLs all keep working
-          without a page change. There is no flat variant to switch to — a browser
-          that cannot run WebGL gets StaticFallback, chosen for it rather than
-          offered as an option.
+          without a page change. There is no flat variant to switch to — someone who
+          has asked for reduced motion gets StaticFallback, chosen for them rather
+          than offered as an option.
         */}
         <Route path="/" element={<PrismPage />} />
         <Route path="/expertise" element={<PrismPage />} />

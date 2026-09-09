@@ -1,67 +1,42 @@
 /**
  * Device and network tiering.
  *
- * A 3D portfolio that only works on the machine it was built on is a liability, so the
- * tier is measured rather than guessed: the renderer string and the connection give a
- * first answer, and a short frame probe can demote a tier that proves optimistic.
+ * A portfolio that only works on the machine it was built on is a liability, so what
+ * the world costs is measured against the device rather than assumed. What is being
+ * tiered has changed, though: there is no shader budget any more. The stage is DOM and
+ * one 2D canvas, so the only things worth scaling are how many points are in the field,
+ * how deep the extrusions are, and whether the second particle layer runs at all.
  *
- * There is no user-facing "flat mode" any more. `static` is not a choice — it is what
- * a browser that cannot run WebGL gets, or someone who has asked the OS for reduced
- * motion. Everyone else gets the 3D site at whatever fidelity their device can hold.
+ * The old build probed for a WebGL context and read the unmasked GPU string to decide.
+ * Neither happens now — there is no context to create, and a renderer string tells you
+ * nothing about how fast a compositor moves `<div>`s. Cores, memory, form factor and
+ * the connection are what remain, and they are the honest signals for this workload.
+ *
+ * `static` is not a choice anybody makes: it is what someone who has asked the OS for
+ * reduced motion gets, and it is the one case where a moving world would be wrong
+ * rather than merely expensive.
  */
 
 export type Tier = 'high' | 'mid' | 'low' | 'static';
 
 export interface Quality {
   tier: Tier;
-  /** Device pixel ratio ceiling. */
+  /** Backing-store ratio for the point canvas. Nothing else is rasterised by us. */
   dpr: number;
-  /** Size of the global shard pool. */
+  /** Size of the shard pool. */
   shards: number;
   /** Points in the dust field. */
   dust: number;
-  /** Whether MeshPhysicalMaterial.transmission is affordable at all. */
-  transmission: boolean;
-  /** Whether wavelength dispersion (three r165+) is affordable on top of that. */
-  dispersion: boolean;
+  /** How many copies of the mark build an extrusion. */
+  extrusion: number;
   /** The 2D particle network layer. First thing to go on a weak device. */
   particles: boolean;
-  antialias: boolean;
-  /** How many remote textures may be in flight at once. */
-  textureConcurrency: number;
 }
 
 const PRESETS: Record<Exclude<Tier, 'static'>, Omit<Quality, 'tier'>> = {
-  high: {
-    dpr: 2,
-    shards: 200,
-    dust: 1800,
-    transmission: true,
-    dispersion: true,
-    particles: true,
-    antialias: true,
-    textureConcurrency: 4,
-  },
-  mid: {
-    dpr: 1.5,
-    shards: 84,
-    dust: 900,
-    transmission: false,
-    dispersion: false,
-    particles: true,
-    antialias: true,
-    textureConcurrency: 3,
-  },
-  low: {
-    dpr: 1,
-    shards: 0,
-    dust: 380,
-    transmission: false,
-    dispersion: false,
-    particles: false,
-    antialias: false,
-    textureConcurrency: 2,
-  },
+  high: { dpr: 1.5, shards: 200, dust: 1800, extrusion: 14, particles: true },
+  mid: { dpr: 1.25, shards: 84, dust: 900, extrusion: 9, particles: true },
+  low: { dpr: 1, shards: 0, dust: 380, extrusion: 5, particles: false },
 };
 
 export const STATIC: Quality = {
@@ -69,38 +44,12 @@ export const STATIC: Quality = {
   dpr: 1,
   shards: 0,
   dust: 0,
-  transmission: false,
-  dispersion: false,
+  extrusion: 0,
   particles: false,
-  antialias: false,
-  textureConcurrency: 2,
 };
 
 function prefersReducedMotion(): boolean {
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function hasWebGL(): boolean {
-  try {
-    const canvas = document.createElement('canvas');
-    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
-  } catch {
-    return false;
-  }
-}
-
-/** Reads the unmasked GPU string when the extension is available. */
-function rendererString(): string {
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') as WebGLRenderingContext | null;
-    if (!gl) return '';
-    const ext = gl.getExtension('WEBGL_debug_renderer_info');
-    const raw = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-    return String(raw || '').toLowerCase();
-  } catch {
-    return '';
-  }
 }
 
 interface NetworkInfo {
@@ -111,7 +60,7 @@ interface NetworkInfo {
 
 /**
  * The connection, where the browser will say. A visitor on 2G or with Data Saver on
- * gets the low tier regardless of how fast their GPU is: the bottleneck is the wire,
+ * gets the low tier regardless of how fast their device is: the bottleneck is the wire,
  * and the low tier is the one that asks for the fewest bytes.
  */
 export function networkTier(): 'slow' | 'ok' {
@@ -125,33 +74,22 @@ export function networkTier(): 'slow' | 'ok' {
 }
 
 function guessTier(): Exclude<Tier, 'static'> {
-  const gpu = rendererString();
   const cores = navigator.hardwareConcurrency || 4;
   const mobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 0;
 
   // On a slow link, fidelity is not the constraint — bytes are.
   if (networkTier() === 'slow') return 'low';
-
-  // Software rasterisers cannot afford a transmission pass at any resolution.
-  if (/swiftshader|basic render|software|llvmpipe/.test(gpu)) return 'low';
-
-  if (mobile) {
-    // Apple silicon phones handle mid comfortably; most Android midrange does not.
-    if (/apple/.test(gpu)) return 'mid';
-    return cores >= 8 ? 'mid' : 'low';
-  }
-
-  if (/rtx|radeon rx|apple m[1-9]|arc a[0-9]|geforce|radeon|apple/.test(gpu)) return 'high';
-  if (/intel|uhd|iris/.test(gpu)) return cores >= 8 ? 'mid' : 'low';
+  // A small screen is a small compositor budget, whatever the chip is called.
+  if (mobile) return cores >= 6 ? 'mid' : 'low';
   if (memory && memory <= 4) return 'low';
   return cores >= 8 ? 'high' : 'mid';
 }
 
 /**
- * `?tier=high|mid|low|static` forces a tier. This is how the device matrix gets
- * tested without a drawer full of phones, and how a visitor on a machine the probe
- * misjudges can overrule it.
+ * `?tier=high|mid|low|static` forces a tier. This is how the device matrix gets tested
+ * without a drawer full of phones, and how a visitor on a machine the guess misjudges
+ * can overrule it.
  */
 function forcedTier(): Tier | null {
   if (typeof location === 'undefined') return null;
@@ -165,7 +103,7 @@ export function detectQuality(): Quality {
   if (forced === 'static') return STATIC;
   if (forced) return { tier: forced, ...PRESETS[forced] };
   // Reduced motion means no camera travel at all, not a slower ride.
-  if (prefersReducedMotion() || !hasWebGL()) return STATIC;
+  if (prefersReducedMotion()) return STATIC;
   const tier = guessTier();
   return { tier, ...PRESETS[tier] };
 }

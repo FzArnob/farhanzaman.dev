@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { poleHex } from '../lib/band';
-import { useCurrentAct } from '../three/ScrollRig';
-import { ACT_BY_ID, type ActId } from '../three/timeline';
+import { useCurrentAct } from '../stage/ScrollRig';
+import { ACT_BY_ID, type ActId } from '../stage/timeline';
 import { useActFade } from './useActFade';
 
 /**

@@ -20,27 +20,33 @@ import { SectionReadout } from '../../overlay/SectionReadout';
 import { useProfile } from '../../data/ProfileContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { detectQuality, type Quality } from '../../lib/quality';
-import { HEIGHT_VH, ScrollRig, useScrollRig } from '../../three/ScrollRig';
-import { StageStateProvider, useStageState } from '../../three/StageState';
-import { tForPath } from '../../three/timeline';
+import { HEIGHT_VH, ScrollRig, useScrollRig } from '../../stage/ScrollRig';
+import { StageStateProvider, useStageState } from '../../stage/StageState';
+import { tForPath } from '../../stage/timeline';
 import type { GamingVideo } from '../../types/gaming';
 import { StaticFallback } from './StaticFallback';
 import '../../styles/24-prism.css';
+import '../../styles/26-stage.css';
 
 /**
  * PRISM — the whole site, as one continuous 3D world.
  *
- * Nine acts, one canvas, one scroll. There is no flat/3D switch: this is the site.
- * The only alternative rendering is StaticFallback, which catches a browser that
- * cannot run WebGL and is chosen for the visitor rather than offered to them.
+ * Nine acts, one stage, one scroll. There is no flat/3D switch: this is the site. The
+ * only alternative rendering is StaticFallback, which catches someone who has asked
+ * the OS for reduced motion and is chosen for them rather than offered as an option.
  *
- * Everything heavy is code-split. The overlay, the scroll rig and the timeline import
- * no three.js at all — that is what src/three/liveState.ts and src/lib/band.ts are
- * for — so the hero copy paints before the 3D chunk has even been requested, which is
- * what a visitor on a slow connection actually experiences.
+ * The world is built out of DOM and one 2D canvas — no WebGL, no scene graph, no
+ * shader compilation, and nothing that a locked-down machine or a driver blocklist can
+ * refuse to give us. src/stage/ holds the camera, the projection and the nine acts;
+ * the whole of it is a fraction of the download the three.js build needed and it
+ * starts on the first frame rather than after a compile.
+ *
+ * The stage is still code-split, because the overlay is what has to paint first: the
+ * copy, the rail and the readout import nothing from src/stage/ but liveState and the
+ * timeline, neither of which carries a renderer.
  */
 
-const Stage = lazy(() => import('../../three/Stage').then((m) => ({ default: m.Stage })));
+const Stage = lazy(() => import('../../stage/Stage').then((m) => ({ default: m.Stage })));
 const SyncBotConsole = lazy(() =>
   import('../SyncBot/SyncBotPage').then((m) => ({ default: m.SyncBotPage }))
 );
@@ -122,7 +128,7 @@ function PrismWorld({ quality }: { quality: Quality }) {
           <Stage profile={profile} quality={quality} light={light} onOpenClip={setClip} />
         </Suspense>
 
-        {/* The flat site's own particle network, between the canvas and the copy. */}
+        {/* The flat site's own particle network, between the stage and the copy. */}
         <ParticleLayer enabled={quality.particles} />
 
         <div className="prism-overlay">

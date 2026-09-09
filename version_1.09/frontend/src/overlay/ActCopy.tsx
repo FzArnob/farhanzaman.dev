@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { orderProjects } from '../three/acts/Act06Works';
+import { orderProjects } from '../stage/data';
 import {
   arcadeState,
   cloudState,
@@ -8,8 +8,8 @@ import {
   prismFocus,
   turbineState,
   worksState,
-} from '../three/liveState';
-import { useStageState } from '../three/StageState';
+} from '../stage/liveState';
+import { useStageState } from '../stage/StageState';
 import type { Profile } from '../types/profile';
 import { ActSection } from './ActSection';
 import { usePolled } from './usePolled';
@@ -126,7 +126,7 @@ const readCloudHover = () => cloudState.hovered;
  * name in a panel over the top of it was the same information twice. The one thing the
  * sphere cannot tell you is how long, so that is all this line says.
  *
- * Hover and tap write the same field (see CloudPointer in three/Stage.tsx), which is
+ * Hover and tap write the same field (see src/stage/acts/act03Cloud.ts), which is
  * why a tap on empty space puts the headline straight back.
  *
  * The heading and the full list of technologies stay in the document for search and

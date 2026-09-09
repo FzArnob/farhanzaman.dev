@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { clamp01, smooth } from '../three/timeline';
+import { clamp01, smooth } from '../stage/timeline';
 
 /**
  * Scroll-driven 3D entrances for a flat page.

@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { initParticleNetwork } from '../lib/particleNetwork';
-import { useScrollRig } from '../three/ScrollRig';
-import { ACT_BY_ID, actPresence, clamp01 } from '../three/timeline';
+import { useScrollRig } from '../stage/ScrollRig';
+import { ACT_BY_ID, actPresence, clamp01 } from '../stage/timeline';
 
 /**
  * The flat site's own particle network, reused as the connective tissue of the 3D world.
  *
- * It sits between the WebGL canvas and the DOM overlay: the crystals float behind the
- * net, the copy sits in front of it. That is what stops the works act reading as
- * objects on a black void — the prisms hang inside a live network, which is exactly
- * what the flat design's hero was doing in 2D.
+ * It sits between the stage and the DOM overlay: the crystals float behind the net,
+ * the copy sits in front of it. That is what stops the works act reading as objects on
+ * a black void — the prisms hang inside a live network, which is exactly what the flat
+ * design's hero was doing in 2D.
  *
  * Its opacity is a function of scroll rather than a constant: strongest through the
  * works and expertise acts where the network means something, almost gone in the
@@ -24,13 +24,13 @@ export function ParticleLayer({ enabled = true }: { enabled?: boolean }) {
     if (!host || !enabled) return;
     /*
       Brand colours only, and still a lower density than the flat hero: this net runs
-      behind a WebGL scene, so it has to stay cheap. It was too sparse to read as a
+      behind a whole world, so it has to stay cheap. It was too sparse to read as a
       net at all though, so the density, the line weight and the reach all come up —
       and the staggered spawn drops from 250ms to 40ms a particle, because at this
       count the original interval took the better part of a minute to fill the screen
       and the hero spent its whole first impression nearly empty.
 
-      It also opts out of pointer handling — the 3D canvas above owns that.
+      It also opts out of pointer handling — the stage below owns that.
     */
     const stop = initParticleNetwork(host, {
       velocity: 0.6,

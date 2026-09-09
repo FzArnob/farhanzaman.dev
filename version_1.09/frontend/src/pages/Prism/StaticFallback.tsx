@@ -2,16 +2,17 @@ import { useProfile } from '../../data/ProfileContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 /**
- * What a browser without WebGL sees.
+ * What someone who has asked for reduced motion sees.
  *
- * Not a mode, and not offered as a choice — nobody switches to this, it simply
- * catches the case where the canvas cannot run: a locked-down work laptop, a browser
- * with hardware acceleration disabled, prefers-reduced-motion.
+ * This used to be the catch for a browser that could not run WebGL as well. There is
+ * no WebGL left to fail — the world is DOM and one 2D canvas, so a locked-down laptop
+ * or a driver blocklist is no longer a reason anyone lands here. Reduced motion is,
+ * and it is the one case where a moving world would be wrong rather than expensive.
  *
- * It is the same design language rather than a different site: same nine sections in
- * the same order, the same Titillium face, the same two brand colours, and the mark
- * rendered with CSS instead of geometry. Every field is present, so a recruiter who
- * lands here still sees all of the work.
+ * Not a mode, and not offered as a choice: it is chosen for the visitor. It is the
+ * same design language rather than a different site — same nine sections in the same
+ * order, the same Titillium face, the same two brand colours. Every field is present,
+ * so a recruiter who lands here still sees all of the work.
  */
 export function StaticFallback() {
   const profile = useProfile();
@@ -31,7 +32,7 @@ export function StaticFallback() {
           <span>{info.nick_name}</span>
         </span>
         <p className="prism-static-note">
-          Your browser cannot run WebGL, so this is the flat rendering of the same site.
+          You have asked for reduced motion, so this is the still rendering of the same site.
         </p>
       </header>
 

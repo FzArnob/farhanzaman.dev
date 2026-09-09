@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { poleHex } from '../lib/band';
-import { useCurrentAct, useScrollRig } from '../three/ScrollRig';
-import { ACTS } from '../three/timeline';
+import { useCurrentAct, useScrollRig } from '../stage/ScrollRig';
+import { ACTS } from '../stage/timeline';
 
 /**
  * The centre-bottom readout: which section you are exploring.

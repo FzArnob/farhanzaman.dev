@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useScrollRig } from '../three/ScrollRig';
-import { copyOwner, smooth, type ActId } from '../three/timeline';
+import { useScrollRig } from '../stage/ScrollRig';
+import { copyOwner, smooth, type ActId } from '../stage/timeline';
 
 /**
  * Plays an act's copy in and out — on a clock, not on the scroll wheel.

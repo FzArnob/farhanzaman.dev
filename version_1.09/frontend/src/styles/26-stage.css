@@ -1,0 +1,488 @@
+/* ============================================================
+   PRISM — the stage (v1.09)
+
+   The world, in CSS. This is the stylesheet for src/stage/: the acts build
+   these elements once and the engine's loop only ever writes `transform`,
+   `opacity`, `z-index` and `display` onto them.
+
+   Two rules run through the whole file.
+
+   Nothing here may cause a layout. Every positioned thing is `position:
+   absolute; left: 0; top: 0` with `transform-origin: 0 0`, and is moved from
+   there — so the browser never has geometry to re-solve, whatever the camera
+   does. That is also why `place()` in src/stage/dom.ts does its own centring
+   rather than using `margin` or `inset`.
+
+   And an object's own turn is real 3D. The `perspective` property carries the
+   camera's actual distance (--pz3-persp, written per frame), the group inside
+   keeps `preserve-3d`, and the faces sit on it — so a block that yaws to face
+   you, or a crystal that spins, foreshortens the way it did in the WebGL build
+   rather than merely squashing.
+
+   Colour comes from 24-prism.css. There is no third hue in this file either.
+   ============================================================ */
+
+.pz3-host {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* Vertical drag belongs to the page; the acts that spin take the horizontal. */
+  touch-action: pan-y;
+}
+
+.pz3-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* The stage's contents can never affect the page's layout or paint. */
+  contain: layout paint;
+}
+
+.pz3-act {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* A plain grouping element — no transform of its own, so it costs nothing. */
+.pz3-layer {
+  position: absolute;
+  inset: 0;
+}
+
+/* Every positioned object on the stage. */
+.pz3 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  /* A one-pixel element scaled to length; see span() in src/stage/dom.ts. */
+}
+
+/*
+  A line is one element scaled to length by span(). It is built LINE_BASE px tall
+  (see src/stage/dom.ts) rather than one, because a line that is going to read as a
+  round filament needs somewhere to put the ramp from its dark edge to its hot core,
+  and at one pixel there is no middle to put a core in. span() divides the height back
+  down to whatever thickness the frame asked for.
+*/
+.pz3-line {
+  width: 1px;
+  height: 8px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ---------- thickness ---------- */
+
+/*
+  What extrude() builds: copies of an object's silhouette stepped back along Z, which
+  is how anything on this stage gets an edge. The leaves are siblings of the object's
+  front faces inside the same preserve-3d group, so the browser sorts them against
+  those faces and the whole assembly foreshortens on the one perspective the act
+  already wrote for the object.
+*/
+.pz3-extrude,
+.pz3-extrude-leaf {
+  position: absolute;
+  inset: 0;
+}
+
+.pz3-extrude {
+  transform-style: preserve-3d;
+}
+
+/* The dust and shard canvas. */
+.pz3-points {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* A soft radial glow: the stage's only "sprite". */
+.pz3-glow {
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/*
+  The pane in front of a picture — a gallery work, an arcade thumbnail.
+
+  It sits at the very front of its group, so it catches light the image behind it
+  cannot, and it never takes a pointer event: the click belongs to the work, not to
+  the reflection lying on it.
+*/
+.pz3-gloss {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(2px);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/*
+  Anything that carries a rim, a bevel or a pane of glass painted as a gradient. The
+  acts set the gradient; this is only here so one background never tiles across an
+  object the loop is scaling.
+*/
+.pz3-clip,
+.pz3-plinth,
+.pz3-chip,
+.pz3-tile-face,
+.pz3-crystal-core,
+.pz3-crystal-face {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ---------- the mark ---------- */
+
+.pz3-mark {
+  perspective: var(--pz3-persp, 800px);
+}
+
+.pz3-mark-3d,
+.pz3-mark-stack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/*
+  One copy of the logo per extrusion layer. The mark is a flat outline with straight
+  edges, so a stack of it builds exactly the banded depth the extruded geometry had —
+  and the whole assembly turns on the one transform above it.
+*/
+.pz3-mark-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.pz3-mark-layer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+  The travelling specular highlight. The mask is the mark itself, so the white can only
+  ever land ON the glyph — a highlight, not a lamp hanging next to it.
+*/
+.pz3-mark-sheen {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(1px);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.pz3-mark-sheen-blob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ---------- beams ---------- */
+
+.pz3-beam {
+  /* The gradient lives on the core so the focus swell can scale it alone. */
+  overflow: visible;
+}
+
+.pz3-beam-core {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transform-origin: 50% 50%;
+}
+
+/* ---------- the corridor ---------- */
+
+.pz3-block {
+  perspective: var(--pz3-persp, 900px);
+}
+
+.pz3-block-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/*
+  The edge wire, the frosted body inset inside it, and the type on top — each a step
+  further forward. The steps are small, but they are real Z under a real perspective:
+  as a card swings toward you on its closest pass the rim separates from the body and
+  the type lifts off the glass, which is the difference between a lit rectangle and a
+  thing with a front surface.
+*/
+.pz3-block-edge,
+.pz3-block-body {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-block-body {
+  inset: 2px;
+  transform: translateZ(1.5px);
+}
+
+.pz3-block-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateZ(3px);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  font-family: var(--pz-face);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.pz3-block-rule {
+  position: absolute;
+}
+
+.pz3-block-line {
+  position: absolute;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.005em;
+}
+
+.pz3-block-mono {
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  letter-spacing: 0.02em;
+}
+
+/* The description wraps to the layout's line budget and is clipped there. */
+.pz3-block-detail {
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--pz3-lines, 2);
+  line-clamp: var(--pz3-lines, 2);
+}
+
+/* ---------- the expertise cloud ---------- */
+
+.pz3-word {
+  font-family: var(--pz-face);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  /* The outline the word canvas drew, so a name stays legible over the sphere. */
+  -webkit-text-stroke: var(--pz3-stroke, 4px) rgba(4, 7, 9, 0.92);
+  paint-order: stroke fill;
+  cursor: pointer;
+}
+
+html:has(link[data-theme='light']) .pz3-word {
+  -webkit-text-stroke-color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---------- the skills turbine ---------- */
+
+.pz3-blade,
+.pz3-hub,
+.pz3-marker,
+.pz3-blade-tip {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-blade {
+  perspective: var(--pz3-persp, 900px);
+}
+
+.pz3-blade-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* The lit face of the aerofoil, riding a hair in front of its own thickness. */
+.pz3-blade-face {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(1px);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-hub {
+  /* The icosahedral hub, as the hexagon it reads as at this distance. */
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+}
+
+.pz3-blade-tip {
+  border-radius: 50%;
+}
+
+/* ---------- the constellation ---------- */
+
+.pz3-tile {
+  perspective: var(--pz3-persp, 900px);
+  cursor: pointer;
+}
+
+.pz3-tile-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.pz3-tile-face {
+  position: absolute;
+  inset: 0;
+}
+
+.pz3-tile-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 68%;
+  height: 68%;
+  transform: translate(-50%, -50%) translateZ(9px);
+  object-fit: contain;
+}
+
+/* ---------- the works ring ---------- */
+
+.pz3-crystal {
+  perspective: var(--pz3-persp, 1200px);
+  cursor: pointer;
+}
+
+.pz3-crystal-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/*
+  The silhouette, square to the camera. It is what makes the crystal read as a solid
+  rather than as the handful of faces that happen to be turned your way.
+*/
+.pz3-crystal-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/*
+  Six faces around an axis, each clipped to a pointed spindle. `backface-visibility`
+  does the front-face culling the WebGL material asked for, at no cost.
+*/
+.pz3-crystal-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  backface-visibility: hidden;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-crystal-logo {
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ---------- an opened core ---------- */
+
+.pz3-chamber {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.pz3-chamber-art {
+  position: absolute;
+  inset: -6%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
+.pz3-chamber-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.pz3-chip {
+  border-radius: 2px;
+}
+
+/* ---------- the gallery hall ---------- */
+
+.pz3-floor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pz3-art {
+  perspective: var(--pz3-persp, 900px);
+  cursor: zoom-in;
+}
+
+.pz3-art-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.pz3-art-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---------- the arcade wall ---------- */
+
+.pz3-clip {
+  perspective: var(--pz3-persp, 900px);
+  cursor: pointer;
+}
+
+.pz3-clip-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.pz3-clip-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion never reaches this file — a visitor who has asked for
+   it gets StaticFallback instead of the world — but a print stylesheet
+   can, and a stage printed on paper is a black rectangle.
+   ------------------------------------------------------------------ */
+@media print {
+  .pz3-host {
+    display: none;
+  }
+}

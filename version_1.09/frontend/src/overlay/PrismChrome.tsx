@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toggleTheme } from '../lib/theme';
-import { boot } from '../three/liveState';
-import { useCurrentAct, useScrollRig } from '../three/ScrollRig';
+import { boot } from '../stage/liveState';
+import { useCurrentAct, useScrollRig } from '../stage/ScrollRig';
 
 /**
  * Fixed chrome: the mark, the theme switch, the SyncBot entry, and the calibration
  * curtain that covers the first fraction of a second.
  *
  * There is no view switch. The site is the 3D site — the only reason a visitor ever
- * sees anything else is that their browser cannot run WebGL, and that is decided for
- * them rather than offered as a choice.
+ * sees anything else is that they have asked their OS for reduced motion, and that is
+ * decided for them rather than offered as a choice.
  */
 
 /**

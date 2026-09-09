@@ -9,9 +9,9 @@ import { initParticleNetwork } from '../../lib/particleNetwork';
  * honest way to say so: same animation, same brand colours, same density as the layer
  * that runs behind the 3D canvas.
  *
- * Pointer handling is off. On the world it is off because the WebGL canvas owns the
- * pointer; here it is off because the page underneath owns it, and a canvas that
- * swallowed clicks would break every link on the page.
+ * Pointer handling is off. On the world it is off because the stage owns the pointer;
+ * here it is off because the page underneath owns it, and a canvas that swallowed
+ * clicks would break every link on the page.
  */
 export function AboutBackdrop() {
   const hostRef = useRef<HTMLDivElement>(null);
