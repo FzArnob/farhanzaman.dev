@@ -65,6 +65,26 @@ html.prism-active * {
 }
 
 /*
+  01-base.css paints a 6px teal-to-crimson bar down the window edge. The Prism already
+  reports position with the rail at centre-right and the readout at centre-bottom, so a
+  third indicator at the edge is noise sitting on top of the render. Hidden for the
+  document only -- `scrollbar-width` does not inherit, so panels that scroll inside
+  themselves (the chamber, the arcade lists) keep the bar they need.
+*/
+html.prism-active,
+html.prism-active body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.prism-active::-webkit-scrollbar,
+html.prism-active body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/*
   01-base.css also sets `user-select: none` on `*`. The copy is the content of record,
   so it has to be selectable. Controls stay unselectable so a double-click on a button
   still feels like a button.
