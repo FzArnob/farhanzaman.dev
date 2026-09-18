@@ -6,7 +6,7 @@ import {
   constellationState,
   galleryState,
   prismFocus,
-  turbineState,
+  skillsState,
   worksState,
 } from '../stage/liveState';
 import { useStageState } from '../stage/StageState';
@@ -173,10 +173,10 @@ export function ExpertiseCopy({ profile }: { profile: Profile }) {
 
 /* ----------------------------------------------------------------- 04 skills */
 
-const readTurbine = () => turbineState.index;
+const readSkill = () => skillsState.index;
 
 export function SkillsCopy({ profile }: { profile: Profile }) {
-  const index = usePolled(readTurbine);
+  const index = usePolled(readSkill);
   const skill = profile.skills[Math.min(index, profile.skills.length - 1)];
   if (!skill) return null;
   return (

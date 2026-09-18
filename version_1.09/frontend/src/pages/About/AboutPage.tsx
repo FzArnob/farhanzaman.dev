@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { AboutBackdrop } from '../../components/About3D/AboutBackdrop';
 import { PrismContactForm } from '../../components/ContactForm/PrismContactForm';
 import { useProfile } from '../../data/ProfileContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
@@ -31,8 +30,8 @@ import '../../styles/25-about3d.css';
  * the résumé, the contact details and the direct-message form.
  *
  * Depth comes from useScroll3D — every block rides in from behind the screen as it
- * enters the viewport — and from the particle net behind the whole thing, so arriving
- * here reads as walking into a side room rather than leaving the site.
+ * enters the viewport — so arriving here reads as walking into a side room rather
+ * than leaving the site.
  */
 
 interface Entry {
@@ -122,8 +121,6 @@ export function AboutPage() {
 
   return (
     <div className="about-world">
-      <AboutBackdrop />
-
       {/* The world's own masthead. No navbar — the back button is the way out. */}
       <header className="prism-masthead about-masthead">
         <PrismMark nickName={info.nick_name} onClick={() => window.scrollTo({ top: 0 })} />

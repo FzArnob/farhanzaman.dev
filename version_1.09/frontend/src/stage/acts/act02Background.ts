@@ -19,10 +19,10 @@
  */
 
 import type { Act, BuildContext, Frame } from '../engine';
-import { newProjected } from '../camera';
-import { Item, UNIT, el, place, q, span } from '../dom';
+import { newProjected, type Camera } from '../camera';
+import { Item, UNIT, el, place, q, svg } from '../dom';
 import { buildSpine, type Slab } from '../data';
-import { extrude, filament, glassPane, leafCount, rimSheen } from '../glass';
+import { extrude, glassPane, leafCount, rimSheen } from '../glass';
 import { glowGradient, TEAL_RGB } from '../look';
 import { blockClip, mulberry } from '../shapes';
 import { ACT_BY_ID, WORLD, actPresence, clamp01 } from '../timeline';
@@ -81,10 +81,15 @@ const PORTRAIT: Layout = {
 /** How far inside the block's nominal bounds the type sits, in world units. */
 const FACE_INSET = 0.3;
 /**
- * How many pieces the cable is drawn in. Sixteen is where the taper stops being
- * visibly stepped at the near end, which is the only place the eye can resolve it.
+ * How many points along its length the cable's outline is sampled at. The outline is
+ * one continuous shape either way; this is only how finely its taper bends where the
+ * width reaches its ceiling near the camera.
  */
-const CABLE_SEGMENTS = 16;
+const CABLE_SAMPLES = 20;
+/** How far in front of the camera the cable is cut off, in world units. */
+const CABLE_CLIP = 0.3;
+/** Each build of the act needs its own gradient ids; a theme switch rebuilds it. */
+let cableBuilds = 0;
 /** A card is a slab of glass this thick, in world units, not a decal. */
 const BLOCK_DEPTH = 0.17;
 /** The face was authored as a 768-wide texture; the type scale is still read off it. */
@@ -141,18 +146,50 @@ export function createBackgroundAct(ctx: BuildContext): Act {
   /*
     The cable: one line down the middle of the corridor, and three pulses on it.
 
-    Cut into segments, because a cable is a cylinder and a cylinder has perspective. A
-    single rotated div has one width along its whole length, so it has to be given one
-    depth's worth of thickness — and the corridor runs from arm's reach to eighty units
-    away, which is the difference between a hairline and a slab. Each segment takes the
-    thickness and the fog its own depth earns, so the cable tapers away from you the way
-    it is supposed to, and the segments behind the camera are simply not drawn.
+    One shape, not a chain of pieces. A cable is a cylinder and a cylinder has
+    perspective — arm's reach to eighty units away is the difference between a hairline
+    and a slab — and it used to get that by being cut into sixteen rotated strips, each
+    as thick as its own depth. Every joint between two strips was a step in width and in
+    brightness, and a line that visibly breaks every few units reads as a dotted one.
+
+    So it is a single SVG polygon: the line's two edges, sampled along its length, each
+    sample as wide as its own depth earns. A cylinder's silhouette has straight edges, so
+    the outline is exact wherever the taper is free and only bends where the width meets
+    its ceiling close to the camera. A narrower polygon inside it is the hot core the
+    filament gradient used to paint, and the far tip fades out rather than stopping.
   */
-  const cableSegs = Array.from({ length: CABLE_SEGMENTS }, () => {
-    const node = el('div', 'pz3 pz3-line pz3-cable', root);
-    node.style.backgroundImage = filament(TEAL_RGB, look);
-    return new Item(node);
-  });
+  const cableBox = el('div', 'pz3-cable', root);
+  const cable = new Item(cableBox);
+  const cableSvg = svg('svg', cableBox);
+  const defs = svg('defs', cableSvg);
+  const fadeId = `pz3-cable-${++cableBuilds}`;
+  const fade = (id: string, colour: string) => {
+    const gradient = svg('linearGradient', defs);
+    gradient.id = id;
+    gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+    for (const [offset, opacity] of [
+      [0, 0],
+      [1, 1],
+    ]) {
+      const stop = svg('stop', gradient);
+      stop.setAttribute('offset', String(offset));
+      stop.setAttribute('stop-color', colour);
+      stop.setAttribute('stop-opacity', String(opacity));
+    }
+    return gradient;
+  };
+  const fades = [
+    fade(`${fadeId}-body`, `rgb(${TEAL_RGB})`),
+    fade(`${fadeId}-core`, look.bloom ? '#ffffff' : `rgb(${TEAL_RGB})`),
+  ];
+  const cableBody = svg('polygon', cableSvg);
+  cableBody.setAttribute('fill', `url(#${fadeId}-body)`);
+  cableBody.setAttribute('fill-opacity', look.bloom ? '0.55' : '0.62');
+  const cableCore = svg('polygon', cableSvg);
+  cableCore.setAttribute('fill', `url(#${fadeId}-core)`);
+  cableCore.setAttribute('fill-opacity', look.bloom ? '0.85' : '1');
+  const samples = Array.from({ length: CABLE_SAMPLES }, () => newProjected());
+  let lastBody = '';
 
   const pulses = [0, 1, 2].map(() => {
     const node = el('div', 'pz3 pz3-glow', root);
@@ -294,6 +331,83 @@ export function createBackgroundAct(ctx: BuildContext): Act {
   const wanted = (w: number, h: number) => (w / Math.max(1, h) < 1.1 ? PORTRAIT : LANDSCAPE);
   build(wanted(window.innerWidth, window.innerHeight));
 
+  /** The cable, as one outline down the corridor. See where it is built, above. */
+  const drawCable = (cam: Camera, presence: number) => {
+    const { zNear, zFar } = WORLD.background;
+    const mid = (zNear + zFar) / 2;
+    const half = (Math.abs(zNear - zFar) + 6) / 2;
+    const zA = mid - half;
+    const zB = mid + half;
+    const y = layout.cableY;
+
+    /*
+      Only the part in front of the camera. Depth runs linearly along a straight line,
+      so where the cable crosses the clip distance is a single division — and clipping a
+      little way out rather than at the near plane keeps the cut end's screen position a
+      sane number instead of tens of thousands of pixels off the edge.
+    */
+    cam.project(0, y, zA, a);
+    cam.project(0, y, zB, b);
+    let u0 = 0;
+    let u1 = 1;
+    if (a.depth <= CABLE_CLIP && b.depth <= CABLE_CLIP) {
+      cable.show(false);
+      return;
+    }
+    if (a.depth <= CABLE_CLIP) u0 = (CABLE_CLIP - a.depth) / (b.depth - a.depth);
+    else if (b.depth <= CABLE_CLIP) u1 = (CABLE_CLIP - a.depth) / (b.depth - a.depth);
+
+    const last = CABLE_SAMPLES - 1;
+    for (let i = 0; i < CABLE_SAMPLES; i++) {
+      const u = u0 + ((u1 - u0) * i) / last;
+      cam.project(0, y, zA + (zB - zA) * u, samples[i]);
+    }
+    const first = samples[0];
+    const end = samples[last];
+    const dx = end.x - first.x;
+    const dy = end.y - first.y;
+    const len = Math.hypot(dx, dy);
+    if (!cable.show(len > 1)) return;
+
+    // One normal serves the whole outline: the cable is straight on screen too.
+    const nx = -dy / len;
+    const ny = dx / len;
+    const body: string[] = [];
+    const core: string[] = [];
+    for (let pass = 0; pass < 2; pass++) {
+      for (let k = 0; k < CABLE_SAMPLES; k++) {
+        // Down one edge, back up the other, so the polygon never crosses itself.
+        const s = samples[pass === 0 ? k : last - k];
+        const side = pass === 0 ? 1 : -1;
+        /*
+          0.028 units across, the cylinder's own diameter, at this sample's own depth —
+          never under a pixel, and never over the ceiling however close the camera gets.
+        */
+        const w = Math.min(6, Math.max(1, 0.028 * s.scale)) * 0.5 * side;
+        body.push(`${q(s.x + nx * w)},${q(s.y + ny * w)}`);
+        const c = w * 0.38;
+        core.push(`${q(s.x + nx * c)},${q(s.y + ny * c)}`);
+      }
+    }
+    const bodyPoints = body.join(' ');
+    if (bodyPoints !== lastBody) {
+      lastBody = bodyPoints;
+      cableBody.setAttribute('points', bodyPoints);
+      cableCore.setAttribute('points', core.join(' '));
+      // The fade runs in from whichever end is further away, over its first few samples.
+      const far = first.depth >= end.depth ? 0 : last;
+      const into = samples[far === 0 ? 3 : last - 3];
+      for (const gradient of fades) {
+        gradient.setAttribute('x1', q(samples[far].x));
+        gradient.setAttribute('y1', q(samples[far].y));
+        gradient.setAttribute('x2', q(into.x));
+        gradient.setAttribute('y2', q(into.y));
+      }
+    }
+    cable.opacity(presence * 0.5 * Math.max(first.fog, end.fog));
+    cable.order(1);
+  };
+
   return {
     root,
 
@@ -312,34 +426,9 @@ export function createBackgroundAct(ctx: BuildContext): Act {
 
       const { cam, time } = f;
       const { zNear, zFar } = WORLD.background;
-      const mid = (zNear + zFar) / 2;
-      const half = (Math.abs(zNear - zFar) + 6) / 2;
 
       /* ---- the cable ---- */
-      const zA = mid - half;
-      const zB = mid + half;
-      for (let i = 0; i < cableSegs.length; i++) {
-        const seg = cableSegs[i];
-        const z0 = zA + ((zB - zA) * i) / CABLE_SEGMENTS;
-        const z1 = zA + ((zB - zA) * (i + 1)) / CABLE_SEGMENTS;
-        if (!cam.segment(0, layout.cableY, z0, 0, layout.cableY, z1, a, b)) {
-          seg.show(false);
-          continue;
-        }
-        seg.show(true);
-        /*
-          0.028 units across, the cylinder's own diameter, at this segment's own scale.
-          The nearer end is the min of the two: a segment clipped against the near plane
-          reports an enormous scale there, and taking the max of the pair is what used
-          to turn the last few units of cable into a slab across the middle of the act.
-          The ceiling is the belt to that brace — a cable is never thicker than this,
-          however close the camera gets to it.
-        */
-        const thick = Math.min(6, Math.max(1, 0.028 * Math.min(a.scale, b.scale)));
-        seg.transform(span(a.x, a.y, b.x, b.y, thick));
-        seg.opacity(presence * 0.5 * Math.max(a.fog, b.fog));
-        seg.order(1);
-      }
+      drawCable(cam, presence);
 
       /* ---- pulses travelling toward you: the present is drawing closer ---- */
       for (let i = 0; i < pulses.length; i++) {

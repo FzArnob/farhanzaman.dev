@@ -2,15 +2,15 @@
  * Device and network tiering.
  *
  * A portfolio that only works on the machine it was built on is a liability, so what
- * the world costs is measured against the device rather than assumed. What is being
- * tiered has changed, though: there is no shader budget any more. The stage is DOM and
- * one 2D canvas, so the only things worth scaling are how many points are in the field,
- * how deep the extrusions are, and whether the second particle layer runs at all.
+ * the world costs is measured against the device rather than assumed. The tier scales
+ * how many points are in the field and how deep the CSS extrusions are, and on the
+ * WebGL renderer it also picks the materials and passes: clearcoat and 4x multisampling
+ * on high, bloom on high and mid, neither on low (see stage/gl/GLStage.ts).
  *
- * The old build probed for a WebGL context and read the unmasked GPU string to decide.
- * Neither happens now — there is no context to create, and a renderer string tells you
- * nothing about how fast a compositor moves `<div>`s. Cores, memory, form factor and
- * the connection are what remain, and they are the honest signals for this workload.
+ * Whether WebGL runs at all is not a tier. lib/renderer.ts decides that from whether a
+ * hardware context can be had, and the CSS stage takes over wherever it cannot. The
+ * tier itself is guessed from cores, memory, form factor and the connection — the GPU
+ * string is never read — and the engine's frame probe corrects a guess that was wrong.
  *
  * `static` is not a choice anybody makes: it is what someone who has asked the OS for
  * reduced motion gets, and it is the one case where a moving world would be wrong
@@ -29,14 +29,12 @@ export interface Quality {
   dust: number;
   /** How many copies of the mark build an extrusion. */
   extrusion: number;
-  /** The 2D particle network layer. First thing to go on a weak device. */
-  particles: boolean;
 }
 
 const PRESETS: Record<Exclude<Tier, 'static'>, Omit<Quality, 'tier'>> = {
-  high: { dpr: 1.5, shards: 200, dust: 1800, extrusion: 14, particles: true },
-  mid: { dpr: 1.25, shards: 84, dust: 900, extrusion: 9, particles: true },
-  low: { dpr: 1, shards: 0, dust: 380, extrusion: 5, particles: false },
+  high: { dpr: 1.5, shards: 200, dust: 1800, extrusion: 14 },
+  mid: { dpr: 1.25, shards: 84, dust: 900, extrusion: 9 },
+  low: { dpr: 1, shards: 0, dust: 380, extrusion: 5 },
 };
 
 export const STATIC: Quality = {
@@ -45,7 +43,6 @@ export const STATIC: Quality = {
   shards: 0,
   dust: 0,
   extrusion: 0,
-  particles: false,
 };
 
 function prefersReducedMotion(): boolean {

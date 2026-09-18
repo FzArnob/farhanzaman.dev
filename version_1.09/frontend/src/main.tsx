@@ -8,7 +8,7 @@ import './styles/index.css';
 initTheme();
 
 // StrictMode is deliberately omitted: the page relies on imperative one-shot effects
-// (particle canvas, typed text, visitor tracking) that must not be double-invoked.
+// (typed text, visitor tracking) that must not be double-invoked.
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <App />

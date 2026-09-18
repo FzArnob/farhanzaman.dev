@@ -1,18 +1,12 @@
 import { useEffect, useRef, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import Typed from 'typed.js';
-import { initParticleNetwork } from '../../lib/particleNetwork';
 import type { ProfileInfo } from '../../types/profile';
 import { Icon } from '../Icon/Icon';
 
 export function IntroAnimation({ info }: { info: ProfileInfo }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const designationRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!wrapRef.current) return;
-    return initParticleNetwork(wrapRef.current);
-  }, []);
 
   useEffect(() => {
     if (!designationRef.current) return;
@@ -48,7 +42,7 @@ export function IntroAnimation({ info }: { info: ProfileInfo }) {
 
   return (
     <div className="intro-animation">
-      <div className="particle-network-animation" id="wrap" ref={wrapRef} onMouseMove={onMouseMove}>
+      <div className="intro-stage" id="wrap" ref={wrapRef} onMouseMove={onMouseMove}>
         <div className="intro-text">
           <div className="intro-text-medium">
             <span

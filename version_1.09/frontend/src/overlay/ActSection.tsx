@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { poleHex } from '../lib/band';
+import { layoutState } from '../stage/liveState';
 import { useCurrentAct } from '../stage/ScrollRig';
 import { ACT_BY_ID, type ActId } from '../stage/timeline';
 import { useActFade } from './useActFade';
@@ -46,6 +47,27 @@ export function ActSection({
   const act = ACT_BY_ID[id];
   const current = useCurrentAct();
   const isCurrent = current.id === id;
+
+  // Publish where this block sits, so the stage can frame its subject around it.
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const write = () => {
+      // Vertical from the layout box, so the fade's translate is left out; horizontal
+      // from the rendered box, because a centred block is placed with a translate.
+      const box = node.getBoundingClientRect();
+      layoutState.copy[id] = { top: node.offsetTop, left: box.left, right: box.right };
+    };
+    write();
+    const observer = new ResizeObserver(write);
+    observer.observe(node);
+    window.addEventListener('resize', write);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', write);
+      delete layoutState.copy[id];
+    };
+  }, [id, ref]);
 
   return (
     <section

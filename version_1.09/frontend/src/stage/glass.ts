@@ -18,9 +18,10 @@
  * Depth is the other half of looking like glass. A gradient on a flat div reads as a
  * painted highlight rather than as a solid, so `extrude` gives a silhouette real
  * thickness by stacking copies of it back along Z inside a preserve-3d group. It is
- * the same trick the monogram in act 01 is built from, generalised: it works on any
- * clip-path, needs no geometry, and the thickness only becomes visible as an object
- * comes close — which is exactly when a real edge would show.
+ * the cheap cousin of css3d.ts's true extrusion, and it suits the thin slabs it is
+ * used for — cards and tiles that only ever swing through a shallow angle, where the
+ * thickness shows as an object comes close, which is exactly when a real edge would.
+ * The solids that turn right round — the mark, the skills core — are built by css3d.
  */
 
 import { el, q } from './dom';

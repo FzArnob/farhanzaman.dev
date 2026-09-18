@@ -19,6 +19,7 @@ import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q } from '../dom';
 import { HOBBIES_PREVIEW, buildGallery } from '../data';
 import { bandHex } from '../../lib/band';
+import { SUBJECTS, stacked } from '../framing';
 import { extrude, leafCount, reflection, rimSheen } from '../glass';
 import { glowGradient } from '../look';
 import { galleryState } from '../liveState';
@@ -103,9 +104,22 @@ export function createHobbiesAct(ctx: BuildContext): Act {
   galleryState.total = ctx.profile.gallery.length;
   galleryState.shown = Math.min(HOBBIES_PREVIEW, ctx.profile.gallery.length);
 
+  /*
+    A hall 15 units wide is out of sight on a portrait phone: the field of view is
+    vertical, so the walls sit off both edges until the works are too far away to see.
+    Where the copy runs along the bottom, the walls close in toward the walkway.
+  */
+  let walls = 1;
+  const fit = (width: number, height: number) => {
+    walls = stacked('hobbies', width) ? Math.min(1, Math.max(0.42, (width / height) * 0.9)) : 1;
+    const subject = SUBJECTS.hobbies;
+    if (subject) subject.halfW = WORLD.hobbies.wallX * walls + 1.4;
+  };
+
   return {
     root,
     update(f: Frame) {
+      fit(f.cam.width, f.cam.height);
       const presence = actPresence(f.t, act, 0.04, 0.03);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
@@ -199,7 +213,7 @@ export function createHobbiesAct(ctx: BuildContext): Act {
         // Works angle in toward the walkway, the way they would be hung in a real hall.
         const face = w.frame.x < 0 ? 0.5 : -0.5;
         w.yaw += (face * (1 - nearness * 0.7) - w.yaw) * k;
-        const x = w.frame.x * (1 - nearness * 0.12);
+        const x = w.frame.x * walls * (1 - nearness * 0.12);
         w.shown += ((1 + nearness * 0.1 + (hovered ? 0.1 : 0)) - w.shown) * ks;
         w.alpha += ((inWindow ? 0.3 + nearness * 0.7 : 0) - w.alpha) * k;
 

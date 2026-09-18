@@ -22,6 +22,8 @@ import type { GamingVideo } from '../types/gaming';
 import type { Profile } from '../types/profile';
 import { Camera } from './camera';
 import { el } from './dom';
+import { framingAt, type Framing } from './framing';
+import type { GLDriver, GLStage } from './gl/api';
 import type { WorldLook } from './look';
 import { boot, caseOpenState } from './liveState';
 import { clamp01, smooth } from './timeline';
@@ -49,6 +51,12 @@ export interface Act {
 
 export interface BuildContext {
   host: HTMLElement;
+  /**
+   * The WebGL stage, when this build has one. An act that owns a solid builds it here
+   * if it can and out of the DOM if it cannot; everything else about the act is the
+   * same either way. Null on the CSS renderer.
+   */
+  gl: GLStage | null;
   profile: Profile;
   quality: Quality;
   look: WorldLook;
@@ -85,17 +93,31 @@ export class StageEngine {
   private settled = false;
   private readTime: () => number;
   private detach: Array<() => void> = [];
+  private readonly gl: GLDriver | null;
+  private readonly framing: Framing = { shiftX: 0, shiftY: 0, zoom: 1 };
+  private readonly framingGoal: Framing = { shiftX: 0, shiftY: 0, zoom: 1 };
+  /** Snap the framing next frame instead of easing it: set on start and on resize. */
+  private framingCold = true;
 
   private readonly frame: Frame;
 
-  constructor(ctx: BuildContext, factories: ActFactory[], readT: () => number) {
-    this.ctx = ctx;
+  constructor(
+    ctx: Omit<BuildContext, 'gl'>,
+    factories: ActFactory[],
+    readT: () => number,
+    gl: GLDriver | null = null
+  ) {
+    this.ctx = { ...ctx, gl };
     this.readTime = readT;
+    this.gl = gl;
 
     this.root = el('div', 'pz3-stage', ctx.host);
     this.root.setAttribute('aria-hidden', 'true');
     this.root.setAttribute('role', 'presentation');
     this.root.style.background = ctx.look.background;
+    // The WebGL canvas goes down first: every DOM act — the copy on a block, a label on
+    // a crystal — has to sit in front of the geometry it belongs to.
+    if (gl) this.root.appendChild(gl.canvas);
 
     this.frame = {
       t: 0,
@@ -108,7 +130,7 @@ export class StageEngine {
 
     this.cam.fog(ctx.look.fogNear, ctx.look.fogFar);
 
-    const inner: BuildContext = { ...ctx, host: this.root };
+    const inner: BuildContext = { ...this.ctx, host: this.root };
     for (const make of factories) {
       const act = make(inner);
       this.acts.push(act);
@@ -150,6 +172,8 @@ export class StageEngine {
     const w = window.innerWidth;
     const h = window.innerHeight;
     this.cam.resize(w, h);
+    this.framingCold = true;
+    this.gl?.resize(w, h);
     for (const act of this.acts) act.resize?.(w, h);
   }
 
@@ -196,7 +220,25 @@ export class StageEngine {
     const hold = boot.done ? 0 : 1 - smooth(boot.progress);
     this.cam.update(f.t, delta, this.chamber, hold, this.ctx.quality.tier === 'low' ? 0.4 : 1);
 
+    /*
+      Framing eases rather than snaps: the copy it frames around changes height as the
+      works ring turns and the form changes state, and the world should settle into the
+      new space rather than jump. An open case study is full screen, so it lets go.
+    */
+    const goal = framingAt(f.t, this.cam.width, this.cam.height, this.framingGoal);
+    const outside = 1 - this.chamber;
+    const wantZoom = 1 + (goal.zoom - 1) * outside;
+    const ease = this.framingCold ? 1 : 1 - Math.exp(-delta * 6);
+    this.framingCold = false;
+    const frame = this.framing;
+    frame.shiftX += (goal.shiftX * outside - frame.shiftX) * ease;
+    frame.shiftY += (goal.shiftY * outside - frame.shiftY) * ease;
+    frame.zoom += (wantZoom - frame.zoom) * ease;
+    this.cam.frame(frame.shiftX, frame.shiftY, frame.zoom);
+
     for (let i = 0; i < this.acts.length; i++) this.acts[i].update(f);
+    // After the acts: they have just posed every node the WebGL stage is about to draw.
+    this.gl?.render(this.cam);
     this.probe(delta);
   }
 
@@ -230,6 +272,7 @@ export class StageEngine {
     this.detach = [];
     for (const act of this.acts) act.dispose?.();
     this.acts.length = 0;
+    this.gl?.dispose();
     this.root.remove();
   }
 }

@@ -108,8 +108,9 @@ export const CAMERA_KEYS: CamKey[] = [
   { t: 0.23, p: [0, 0.4, -36], l: [0, 0, -48] }, // arrive at "now"
   { t: 0.28, p: [0, 0.5, -38], l: [0, 0, -56] }, // 03 the sphere, 18 ahead
   { t: 0.35, p: [0, 0.5, -38], l: [0, 0, -56] }, // held while it turns
-  { t: 0.4, p: [0, 0.6, -56], l: [0, 0, -72] }, // 04 turbine, near on-axis
-  { t: 0.45, p: [0, 0.5, -70], l: [0, 0, -84] }, // leaving the turbine
+  { t: 0.375, p: [0, 1.3, -60.5], l: [0, 0.3, -72] }, // 04 the crystal core, from a little above
+  { t: 0.435, p: [0, 1.3, -60.5], l: [0, 0.3, -72] }, // held while each skill comes round
+  { t: 0.45, p: [0, 2.6, -67], l: [0, 0.4, -84] }, // rise over the orbit and on
   { t: 0.5, p: [0, 0.6, -76], l: [0, 0, -92] }, // 05 the constellation
   { t: 0.55, p: [-6, 0.6, -78], l: [0, 0, -92] }, // drift across it
   { t: 0.6, p: [0, 0.2, -118], l: [0, 0, -133] }, // 06 at the ring's hub

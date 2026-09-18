@@ -3,8 +3,12 @@
  *
  * Volumetric dust is the only thing that gives the camera's travel a sense of speed and
  * scale — the void has no floor and no horizon — so unlike every other act this one is
- * never off. It runs the whole length of the scroll, which is exactly why it is the one
- * thing on the stage that is drawn rather than laid out: see fx/PointField.ts.
+ * never off. It runs the whole length of the scroll.
+ *
+ * On WebGL the dust is a point cloud and each shard is a real faceted crystal in one
+ * instanced draw; on the CSS renderer both are drawn to a 2D canvas (fx/PointField.ts).
+ * Either way fx/shards.ts decides where every shard is, so the choreography the other
+ * acts lease — the mark solving out of them, the works ring's handoff — is identical.
  */
 
 import type { Act, BuildContext, Frame } from '../engine';
@@ -17,6 +21,16 @@ export function createFieldAct(ctx: BuildContext): Act {
 
   if (ctx.quality.dust === 0 && ctx.quality.shards === 0) {
     return { root, update() {} };
+  }
+
+  if (ctx.gl) {
+    const field = ctx.gl.field(ctx.quality.dust, ctx.quality.shards);
+    return {
+      root,
+      update(f: Frame) {
+        field.update(f.time, f.t);
+      },
+    };
   }
 
   const field = new PointField(ctx.quality);

@@ -15,7 +15,14 @@ export function ContactCopy({ profile }: { profile: Profile }) {
   const { info } = profile;
 
   return (
-    <ActSection id="contact" eyebrow="Contact" title="Let’s build something" align="center" drift={12}>
+    <ActSection
+      id="contact"
+      eyebrow="Contact"
+      title="Let’s build something"
+      align="center"
+      className="prism-act-contact"
+      drift={12}
+    >
       <p className="prism-text prism-center prism-text-short">{info.contact_preference_details}</p>
 
       <div className="prism-contact">

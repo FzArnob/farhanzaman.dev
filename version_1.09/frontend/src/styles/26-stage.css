@@ -73,6 +73,26 @@
   background-size: 100% 100%;
 }
 
+/*
+  The corridor cable (act02Background.ts): one tapered SVG outline over the whole act,
+  so it is a single continuous line rather than a chain of span() pieces with a step in
+  width at every joint.
+*/
+.pz3-cable {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pz3-cable svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
 /* ---------- thickness ---------- */
 
 /*
@@ -97,6 +117,68 @@
   position: absolute;
   inset: 0;
   display: block;
+}
+
+/*
+  The WebGL stage's canvas (src/stage/gl/). First child of the stage, so every DOM act —
+  the text on a block, the label on a crystal — sits in front of the geometry it
+  belongs to.
+*/
+.pz3-gl {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* ---------- solids, on the CSS renderer (src/stage/css3d.ts) ---------- */
+
+/*
+  One solid: a single 3D context, placed like any other stage element. It is 0×0, so its
+  origin is the solid's centre — which is also where the perspective is taken from.
+*/
+.pz3-poly {
+  width: 0;
+  height: 0;
+  perspective: var(--pz3-persp, 900px);
+}
+
+.pz3-poly-node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  transform-style: preserve-3d;
+}
+
+/* One face, stood exactly in place by its own matrix3d. */
+.pz3-poly-face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-cull {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/*
+  A face's light: the further it turns from the key, the darker this gets. Written as
+  opacity every frame, which the compositor applies without a repaint.
+*/
+.pz3-poly-shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+html:has(link[data-theme='light']) .pz3-poly-shade {
+  background: #2f4a46;
 }
 
 /* A soft radial glow: the stage's only "sprite". */
@@ -139,28 +221,19 @@
 
 /* ---------- the mark ---------- */
 
-.pz3-mark {
-  perspective: var(--pz3-persp, 800px);
-}
-
-.pz3-mark-3d,
-.pz3-mark-stack {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-}
-
 /*
-  One copy of the logo per extrusion layer. The mark is a flat outline with straight
-  edges, so a stack of it builds exactly the banded depth the extruded geometry had —
-  and the whole assembly turns on the one transform above it.
+  A face of the extruded mark (src/stage/markRig.ts): the logo's own SVG, centred on the
+  solid's origin and pushed to the front or back of its depth. The walls between the two
+  are ordinary css3d faces.
 */
-.pz3-mark-layer {
+.pz3-mark-face {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 50%;
 }
 
-.pz3-mark-layer svg {
+.pz3-mark-face svg {
   display: block;
   width: 100%;
   height: 100%;
@@ -293,42 +366,116 @@ html:has(link[data-theme='light']) .pz3-word {
   -webkit-text-stroke-color: rgba(255, 255, 255, 0.92);
 }
 
-/* ---------- the skills turbine ---------- */
+/* ---------- the skills core ---------- */
 
-.pz3-blade,
-.pz3-hub,
-.pz3-marker,
-.pz3-blade-tip {
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-
-.pz3-blade {
-  perspective: var(--pz3-persp, 900px);
-}
-
-.pz3-blade-3d {
+/* An orbit: a hairline circle laid into the tilted plane by its own matrix3d. */
+.pz3-orbit-ring {
   position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-}
-
-/* The lit face of the aerofoil, riding a hair in front of its own thickness. */
-.pz3-blade-face {
-  position: absolute;
-  inset: 0;
-  transform: translateZ(1px);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-
-.pz3-hub {
-  /* The icosahedral hub, as the hexagon it reads as at this distance. */
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-}
-
-.pz3-blade-tip {
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  border: 1.5px solid;
   border-radius: 50%;
+  transform-origin: 0 0;
+}
+
+/*
+  A skill's label, pinned just right of its crystal with a short leader back to it. On
+  both renderers it is DOM, projected from the same world point the crystal is drawn at,
+  so the text is real text at any size.
+*/
+.pz3-skill-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 126px;
+  padding: 9px 13px 8px;
+  border: 1px solid rgba(0, 211, 180, 0.34);
+  background: rgba(3, 8, 9, 0.62);
+  font-family: var(--pz-face);
+  color: var(--pz-c1);
+  white-space: nowrap;
+  pointer-events: none;
+  /*
+    The lit card is scaled up by the act, about the edge its leader meets, so it swells
+    away from its crystal instead of creeping back over the line.
+  */
+  transform-origin: 0 50%;
+  transition: border-color 0.4s ease, background-color 0.4s ease;
+}
+
+.pz3-skill-label::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: #00d3b4;
+}
+
+/* Hung on the crystal's left, near the right edge of a narrow frame. */
+.pz3-skill-label.is-left {
+  transform-origin: 100% 50%;
+}
+
+.pz3-skill-label.is-left::before {
+  left: auto;
+  right: -12px;
+}
+
+.pz3-skill-label strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.pz3-skill-label small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #00d3b4;
+}
+
+.pz3-skill-label.is-crimson {
+  border-color: rgba(253, 33, 85, 0.36);
+}
+
+.pz3-skill-label.is-crimson::before {
+  background: #fd2155;
+}
+
+.pz3-skill-label.is-crimson small {
+  color: #ff4f7e;
+}
+
+.pz3-skill-label.is-active {
+  border-color: rgba(0, 211, 180, 0.8);
+  background-color: rgba(0, 40, 36, 0.72);
+}
+
+.pz3-skill-label.is-crimson.is-active {
+  border-color: rgba(253, 33, 85, 0.82);
+  background-color: rgba(44, 6, 16, 0.72);
+}
+
+html:has(link[data-theme='light']) .pz3-skill-label {
+  background: rgba(255, 255, 255, 0.84);
+}
+
+html:has(link[data-theme='light']) .pz3-skill-label small {
+  color: #00735f;
+}
+
+html:has(link[data-theme='light']) .pz3-skill-label.is-crimson small {
+  color: #b80a37;
+}
+
+html:has(link[data-theme='light']) .pz3-skill-label.is-active,
+html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
+  background-color: #fff;
 }
 
 /* ---------- the constellation ---------- */

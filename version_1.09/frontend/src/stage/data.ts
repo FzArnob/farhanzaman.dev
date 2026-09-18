@@ -176,10 +176,114 @@ function issuerOf(url: string): string {
 }
 
 /**
+ * The closest two tiles' centres are allowed to come. A tile is a hexagon 2 × 0.85
+ * world units across and hover swells it to 1.35×, so this clears the widest a tile
+ * ever gets with a little air left over.
+ */
+export const MIN_GAP = 2.4;
+
+/**
+ * Pushes overlapping pairs apart until every tile has its own space.
+ *
+ * The date and level mapping below places tiles where the data says, which says
+ * nothing about whether two of them land on the same spot — and the layout is only
+ * readable if each mark is legible on its own. So collisions are resolved afterwards
+ * rather than by spacing everything out defensively: the field packs in as tight as
+ * MIN_GAP allows, and only the pairs that actually clash move.
+ *
+ * Z is left alone. The camera looks down it from ninety world units away, so depth is
+ * parallax here, not separation — two tiles a long way apart in Z and nowhere else
+ * still cover each other on screen. The push is in the plane you read the shape in,
+ * and it is weighted toward Y so the date axis survives it.
+ */
+function separate(tiles: CertTile[]): void {
+  for (let pass = 0; pass < 80; pass++) {
+    let moved = false;
+    for (let i = 0; i < tiles.length; i++) {
+      for (let j = i + 1; j < tiles.length; j++) {
+        const a = tiles[i];
+        const b = tiles[j];
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let d = Math.hypot(dx, dy);
+        // The slack is what lets this converge: without it a pair sitting a millionth
+        // of a unit short counts as clashing and the passes never stop running.
+        if (d >= MIN_GAP - 1e-3) continue;
+        // Exactly coincident: no direction to push along, so pick one off the index.
+        if (d < 1e-4) {
+          dx = Math.cos(i * 2.399963);
+          dy = Math.sin(i * 2.399963);
+          d = 1;
+        }
+        const push = (MIN_GAP - d) / d / 2;
+        a.x -= dx * push * 0.4;
+        a.y -= dy * push;
+        b.x += dx * push * 0.4;
+        b.y += dy * push;
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+}
+
+/**
+ * Joins the tiles into one constellation.
+ *
+ * Same-issuer pairs come first, because that is the relationship worth seeing, and
+ * they are drawn whether or not they close a loop. What is left is a scatter of
+ * islands — a tile from an issuer with nothing else under it had no line at all — so a
+ * minimum spanning tree over the shortest remaining pairs joins the islands up. That
+ * is the fewest lines that leave nothing floating on its own, which is the point: a
+ * constellation is a shape, and a dozen unjoined marks is a star field.
+ *
+ * Distance is measured in X and Y for the same reason the separation pass ignores Z:
+ * the shortest line is the one that looks shortest.
+ */
+function connect(tiles: CertTile[]): [number, number][] {
+  const links: [number, number][] = [];
+  const parent = tiles.map((_, i) => i);
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  /** Unions the two roots, and reports whether they were separate to begin with. */
+  const join = (i: number, j: number): boolean => {
+    const ri = find(i);
+    const rj = find(j);
+    if (ri === rj) return false;
+    parent[ri] = rj;
+    return true;
+  };
+
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = i + 1; j < tiles.length; j++) {
+      if (tiles[i].issuer !== tiles[j].issuer) continue;
+      links.push([i, j]);
+      join(i, j);
+    }
+  }
+
+  const pairs: { d: number; i: number; j: number }[] = [];
+  for (let i = 0; i < tiles.length; i++) {
+    for (let j = i + 1; j < tiles.length; j++) {
+      pairs.push({ d: Math.hypot(tiles[j].x - tiles[i].x, tiles[j].y - tiles[i].y), i, j });
+    }
+  }
+  pairs.sort((p, q) => p.d - q.d);
+  // A pair already in one component is skipped, so an issuer link is never doubled.
+  for (const pair of pairs) if (join(pair.i, pair.j)) links.push([pair.i, pair.j]);
+
+  return links;
+}
+
+/**
  * Position is data, not decoration: X is the certification date and distance from the
  * axis is the level, with Advanced innermost. So the shape of the constellation is the
- * actual trajectory — 2021 basics out on the rim, 2023 SQL right at the core. Faint
- * lines join tiles from the same issuer.
+ * actual trajectory — 2021 basics out on the rim, 2023 SQL right at the core.
+ *
+ * The field is laid out tight and then relaxed by `separate`, rather than spread wide
+ * enough that nothing could ever collide. Spread wide, the marks stop reading as one
+ * shape: they drift past the edges of the frame and you are left panning a scatter of
+ * unrelated logos. Packed in, the trajectory is legible at a glance, and the ordering
+ * survives because the relaxation only moves the pairs that clash.
  */
 export function buildConstellation(achievements: Achievement[]): {
   tiles: CertTile[];
@@ -194,26 +298,21 @@ export function buildConstellation(achievements: Achievement[]): {
   const tiles: CertTile[] = achievements.map((achievement, i) => {
     const k = ((new Date(achievement.certification_date).getTime() || min) - min) / span;
     const radial = LEVEL_RADIUS[achievement.level.toLowerCase()] ?? 0.8;
-    // Spiral the angle so tiles at the same date and level do not overlap.
+    // Spiral the angle so tiles at the same date and level start off apart.
     const angle = i * 2.399963;
-    const r = radial * spread * 0.62;
+    const r = radial * spread * 0.26;
     return {
       achievement,
       // Date runs left (oldest) to right (newest).
-      x: (k - 0.5) * spread * 1.9,
+      x: (k - 0.5) * spread * 0.7,
       y: Math.sin(angle) * r,
       z: Math.cos(angle) * r * 0.7,
       issuer: issuerOf(achievement.certification_url),
     };
   });
 
-  const links: [number, number][] = [];
-  for (let i = 0; i < tiles.length; i++) {
-    for (let j = i + 1; j < tiles.length; j++) {
-      if (tiles[i].issuer === tiles[j].issuer) links.push([i, j]);
-    }
-  }
-  return { tiles, links };
+  separate(tiles);
+  return { tiles, links: connect(tiles) };
 }
 
 /* ---------------------------------------------------------------- hobbies */

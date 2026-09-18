@@ -13,7 +13,6 @@ import {
 import { ActRail } from '../../overlay/ActRail';
 import { ContactCopy } from '../../overlay/ContactCopy';
 import { ClipPlayer, Lightbox } from '../../overlay/Lightbox';
-import { ParticleLayer } from '../../overlay/ParticleLayer';
 import { CalibrationCurtain, PrismMasthead } from '../../overlay/PrismChrome';
 import { ProjectPanel } from '../../overlay/ProjectPanel';
 import { SectionReadout } from '../../overlay/SectionReadout';
@@ -127,9 +126,6 @@ function PrismWorld({ quality }: { quality: Quality }) {
         <Suspense fallback={null}>
           <Stage profile={profile} quality={quality} light={light} onOpenClip={setClip} />
         </Suspense>
-
-        {/* The flat site's own particle network, between the stage and the copy. */}
-        <ParticleLayer enabled={quality.particles} />
 
         <div className="prism-overlay">
           <PrismMasthead nickName={profile.info.nick_name} onOpenBot={() => setBot(true)} />

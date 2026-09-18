@@ -24,9 +24,13 @@
 
 import { CAMERA_KEYS, WORLD, clamp01, smooth } from './timeline';
 
-/** three's default camera: 50° vertical field, near 0.1, far 420. */
-const FOV = 50;
-const NEAR = 0.12;
+/**
+ * three's default camera: 50° vertical field, near 0.12, far 420. Exported because the
+ * WebGL layer builds its own camera from these and has to agree with this one exactly.
+ */
+export const FOV = 50;
+export const NEAR = 0.12;
+export const FAR = 420;
 
 export interface Projected {
   /** Screen position in CSS pixels. */
@@ -81,18 +85,32 @@ function sampleKeys(t: number, pos: Vec, look: Vec): void {
 
 export class Camera {
   readonly pos: Vec = { x: 0, y: 0.25, z: 7.4 };
-  /** View basis. Right-handed, forward pointing INTO the screen. */
-  private fwd: Vec = { x: 0, y: 0, z: -1 };
-  private right: Vec = { x: 1, y: 0, z: 0 };
-  private up: Vec = { x: 0, y: 1, z: 0 };
+  /**
+   * View basis. Right-handed, forward pointing INTO the screen. Readable from outside
+   * so the WebGL layer can copy the exact frame — parallax included — rather than
+   * re-deriving it from a look-at and landing a hair off the DOM.
+   */
+  readonly fwd: Vec = { x: 0, y: 0, z: -1 };
+  readonly right: Vec = { x: 1, y: 0, z: 0 };
+  readonly up: Vec = { x: 0, y: 1, z: 0 };
 
   /** Viewport, in CSS pixels. */
   width = 1;
   height = 1;
-  private cx = 0;
-  private cy = 0;
-  /** World-units-to-pixels at unit depth. */
+  /**
+   * Where the view axis meets the screen. The middle of the viewport, unless framing
+   * has shifted the lens (see framing.ts). Read by the WebGL layer, which builds its
+   * projection from these rather than from a field of view so the two cannot disagree.
+   */
+  cx = 0;
+  cy = 0;
+  /** World-units-to-pixels at unit depth, zoom included. */
   focal = 1;
+  /** The framing zoom: 1 is the 50° lens, below 1 sees more of the world. */
+  zoom = 1;
+  private baseFocal = 1;
+  private shiftX = 0;
+  private shiftY = 0;
 
   private target: Vec = { x: 0, y: 0, z: 0 };
   private fogNear = 26;
@@ -107,14 +125,26 @@ export class Camera {
   resize(width: number, height: number): void {
     this.width = width;
     this.height = height;
-    this.cx = width / 2;
-    this.cy = height / 2;
     /*
       three's fov is VERTICAL, so the focal length comes off the height and the same
       value serves both axes — which is why a portrait phone sees so much less of the
       world sideways, and why the acts that fan out sideways solve their own fit.
     */
-    this.focal = height / 2 / Math.tan((FOV * Math.PI) / 360);
+    this.baseFocal = height / 2 / Math.tan((FOV * Math.PI) / 360);
+    this.frame(this.shiftX, this.shiftY, this.zoom);
+  }
+
+  /**
+   * A lens shift and a zoom: a change of projection, not of position. Framing uses it
+   * to move an act's subject into the space its copy leaves.
+   */
+  frame(shiftX: number, shiftY: number, zoom: number): void {
+    this.shiftX = shiftX;
+    this.shiftY = shiftY;
+    this.zoom = zoom;
+    this.cx = this.width / 2 + shiftX;
+    this.cy = this.height / 2 + shiftY;
+    this.focal = this.baseFocal * zoom;
   }
 
   fog(near: number, far: number): void {

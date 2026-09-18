@@ -396,20 +396,6 @@ html:has(link[data-theme='light']) .about-world {
 
 /* ---------- the net ---------- */
 
-.a3d-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.45;
-}
-
-.a3d-backdrop canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 /* ---------- back to the world ---------- */
 
 .a3d-return {
@@ -511,9 +497,5 @@ html:has(link[data-theme='light']) .about-world {
     transform: none;
     opacity: 1;
     will-change: auto;
-  }
-
-  .a3d-backdrop {
-    display: none;
   }
 }

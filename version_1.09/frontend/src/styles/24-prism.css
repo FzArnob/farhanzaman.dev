@@ -129,22 +129,6 @@ html.prism-active body::-webkit-scrollbar {
   touch-action: pan-y;
 }
 
-/* The flat site's particle network, between the 3D and the copy. */
-.prism-particles {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s linear;
-}
-
-.prism-particles canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 .prism-overlay {
   position: fixed;
   inset: 0;
@@ -1032,6 +1016,50 @@ html.prism-locked body {
 
 /* ---------- contact ---------- */
 
+/*
+  Wide frames split the contact act in two: who to reach on the left, the form on the
+  right. Stacked, the block was taller than a 720px laptop screen, so the form scrolled
+  inside itself under the readout — and it pushed the closing mark off the top. Two
+  columns halve the height and leave the mark a real gap to hang in (act09Contact.ts).
+*/
+@media (min-width: 900px), (min-width: 640px) and (max-height: 520px) and (orientation: landscape) {
+  .prism-act.prism-act-contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    column-gap: clamp(24px, 3.2vw, 48px);
+    row-gap: 10px;
+    align-content: start;
+    align-items: start;
+    justify-items: start;
+    width: min(1000px, calc(100vw - 120px));
+    text-align: left;
+  }
+  .prism-act-contact > * {
+    grid-column: 1;
+  }
+  .prism-act-contact > .prism-form {
+    grid-column: 2;
+    grid-row: 1 / span 5;
+    align-self: center;
+    max-width: none;
+  }
+  .prism-act-contact .prism-head {
+    font-size: clamp(30px, 3vw, 46px);
+  }
+  .prism-act-contact .prism-center {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .prism-act-contact .prism-contact {
+    align-items: flex-start;
+  }
+  .prism-act-contact .prism-contact-grid,
+  .prism-act-contact .prism-actions,
+  .prism-act-contact .prism-form-foot {
+    justify-content: flex-start;
+  }
+}
+
 .prism-contact {
   display: flex;
   flex-direction: column;
@@ -1085,7 +1113,7 @@ html.prism-locked body {
 
 .prism-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 7px;
   width: 100%;
   max-width: 560px;
@@ -1099,6 +1127,9 @@ html.prism-locked body {
 }
 
 .prism-panel {
+  /* A grid item sizes to its content by default, and an input's content is 20 characters
+     wide: without this a narrow form column pushed its panels out past its own edge. */
+  min-width: 0;
   background: var(--pz-panel);
   backdrop-filter: var(--pz-blur);
   border: 1px solid var(--pz-hairline);
@@ -1109,9 +1140,15 @@ html.prism-locked body {
   gap: 8px;
 }
 
-.prism-panel:nth-child(2),
-.prism-panel:nth-child(3) {
-  grid-column: 1 / -1;
+/* Name and email share the first panel, side by side: one row, half the height. */
+.prism-panel:first-child {
+  flex-direction: row;
+  gap: 16px;
+}
+
+.prism-panel:first-child label {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .prism-panel label {
@@ -1130,6 +1167,9 @@ html.prism-locked body {
 
 .prism-panel input,
 .prism-panel textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   font: inherit;
   font-size: 16px;
   color: var(--pz-c1);
@@ -1692,17 +1732,17 @@ html:has(link[data-theme='light']) .prism-lightbox {
     height: 44px;
   }
 
-  /* Copy goes full width and sits above the readout. */
+  /* Copy goes full width and sits above the readout, clear of the rail's dots. */
   .prism-act {
     left: 12px;
-    right: 12px;
+    right: 30px;
     width: auto;
     bottom: 104px;
     gap: 9px;
   }
   .prism-act-center {
     left: 12px;
-    right: 12px;
+    right: 30px;
     width: auto;
     transform: translate3d(0, var(--drift, 0px), 0);
     align-items: stretch;
@@ -1813,6 +1853,50 @@ html:has(link[data-theme='light']) .prism-lightbox {
   .prism-static-bars em {
     text-align: left;
   }
+  .prism-role {
+    font-size: 13px;
+    padding: 4px 9px;
+  }
+  .prism-detail-title {
+    font-size: 18px;
+  }
+  /* The hall's categories are decoration; the works list under them is the content. */
+  #act-hobbies .prism-chips {
+    display: none;
+  }
+}
+
+/* Name and email stack once half the panel is too narrow to type an address into. */
+@media (max-width: 380px) {
+  .prism-panel:first-child {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/*
+  A small phone. Every act's copy loses a line of body text, which is the difference
+  between the subject having a third of the frame above the copy and having a sliver.
+*/
+@media (max-width: 520px) and (max-height: 760px) {
+  .prism-text {
+    --pz-lines: 2;
+  }
+  .prism-act {
+    gap: 7px;
+  }
+  /* One row of tags, and buttons that pair up rather than stacking one per row. */
+  .prism-chips {
+    max-height: 1.9em;
+  }
+  .prism-actions {
+    gap: 6px;
+  }
+  .prism-btn {
+    font-size: 12px;
+    padding: 7px 10px;
+    letter-spacing: 0.04em;
+  }
 }
 
 /* Very short viewports — a landscape phone. The readout stays, the copy shrinks. */
@@ -1834,6 +1918,87 @@ html:has(link[data-theme='light']) .prism-lightbox {
   .prism-cloud-total {
     bottom: 74px;
   }
+
+  /*
+    Under 520px of height there is room for the heading, two lines and the buttons, and
+    not much else: without this the works and hobbies blocks ran up past the top of the
+    frame. The tags go (the case study and the hall both carry them), lists keep a row.
+  */
+  .prism-masthead {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .prism-eyebrow {
+    font-size: 11px;
+  }
+  .prism-head {
+    font-size: clamp(22px, 7vh, 32px);
+    line-height: 1.06;
+  }
+  .prism-text {
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 8px 12px 0;
+    border-bottom-width: 8px;
+    max-height: calc(1.6em * var(--pz-lines) + 16px);
+  }
+  .prism-chips {
+    display: none;
+  }
+  .prism-inline-list {
+    max-height: 1.9em;
+  }
+  .prism-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+    letter-spacing: 0.04em;
+  }
+  .prism-role {
+    font-size: 13px;
+    padding: 4px 9px;
+  }
+  .prism-detail {
+    gap: 5px;
+  }
+  .prism-detail-title {
+    font-size: 17px;
+  }
+}
+
+/* The shortest landscape phones: one line of body text, and the copy sits lower. */
+@media (max-height: 360px) {
+  .prism-text {
+    --pz-lines: 1;
+  }
+  .prism-act {
+    bottom: 58px;
+  }
+  .prism-readout {
+    padding: 5px 12px;
+    gap: 4px;
+  }
+}
+
+/*
+  A phone on its side. Stacking the copy along the bottom, as a narrow portrait screen
+  does, would leave the world a strip under the masthead; a column beside it leaves
+  half the frame, and the stage frames each subject into that half (framing.ts).
+*/
+@media (max-width: 820px) and (max-height: 520px) and (orientation: landscape) {
+  .prism-act {
+    left: 14px;
+    right: auto;
+    width: min(380px, 50vw);
+  }
+  .prism-act-center {
+    left: 50%;
+    right: auto;
+    width: min(760px, calc(100vw - 80px));
+    transform: translateX(-50%) translate3d(0, var(--drift, 0px), 0);
+    align-items: center;
+    text-align: center;
+    max-height: calc(100vh - 150px);
+  }
 }
 
 /* Reduced motion switches to the static rendering entirely, but if it is turned on
@@ -1841,7 +2006,6 @@ html:has(link[data-theme='light']) .prism-lightbox {
 @media (prefers-reduced-motion: reduce) {
   .prism-act,
   .prism-form,
-  .prism-particles,
   .prism-curtain img,
   .prism-chamber,
   .prism-lightbox,

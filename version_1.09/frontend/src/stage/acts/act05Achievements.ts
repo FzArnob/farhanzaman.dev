@@ -9,7 +9,8 @@
  *
  * Position is data, not decoration: X is the certification date and distance from the
  * axis is the level, with Advanced innermost. So the shape of the constellation is the
- * actual trajectory. Faint lines join tiles from the same issuer.
+ * actual trajectory. Faint lines join every tile into one figure — same-issuer pairs
+ * first, then the shortest links needed to leave nothing floating on its own.
  *
  * Hover turns a tile face-on — it "flips" to present itself — and a click sends the
  * index to the overlay, which is where the certificate's name, level and link live.
@@ -18,7 +19,8 @@
 import type { Act, BuildContext, Frame } from '../engine';
 import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q, span } from '../dom';
-import { buildConstellation } from '../data';
+import { MIN_GAP, buildConstellation } from '../data';
+import { SUBJECTS, sideRoom, stacked } from '../framing';
 import { extrude, filament, glassPane, leafCount } from '../glass';
 import { TEAL_RGB } from '../look';
 import { constellationState } from '../liveState';
@@ -30,6 +32,16 @@ const TILE_RADIUS = 0.85;
 const LOGO_SIZE = 1.15;
 /** How thick the hexagon is cut, in world units. */
 const TILE_DEPTH = 0.16;
+/**
+ * The most the layout may be squeezed on a narrow frame.
+ *
+ * The constellation is built packed in, with MIN_GAP between the nearest centres and
+ * no more (data.ts). Compressing it further is what closes that gap back up, so the
+ * floor is the ratio at which the nearest pair are just touching — below it the tiles
+ * overlap, which is the one thing the layout pass exists to prevent. What the frame
+ * cannot fit at this spread, the camera zooms out to reach instead.
+ */
+const MIN_SPREAD = (TILE_RADIUS * 2) / MIN_GAP;
 
 export function createAchievementsAct(ctx: BuildContext): Act {
   const act = ACT_BY_ID.achievements;
@@ -39,6 +51,8 @@ export function createAchievementsAct(ctx: BuildContext): Act {
   const look = ctx.look;
 
   const { tiles, links } = buildConstellation(ctx.profile.achievements);
+  const reachX = tiles.reduce((m, tile) => Math.max(m, Math.abs(tile.x)), 0);
+  const reachY = tiles.reduce((m, tile) => Math.max(m, Math.abs(tile.y)), 0);
 
   const nodes = tiles.map((tile, i) => {
     const outer = el('div', 'pz3 pz3-tile', root);
@@ -77,16 +91,43 @@ export function createAchievementsAct(ctx: BuildContext): Act {
     return { item: new Item(outer), turn, tile, spin: Math.PI * 0.16, shown: 1 };
   });
 
-  /* Faint lines between tiles from the same issuer. */
+  /* Faint lines joining the constellation up; see `connect` in data.ts. */
   const wires = links.map(() => {
     const node = el('div', 'pz3 pz3-line pz3-wire', root);
     node.style.backgroundImage = filament(TEAL_RGB, look);
     return new Item(node);
   });
 
+  /*
+    The constellation is laid out for a wide frame: dates run a long way left to right.
+    Where the copy runs along the bottom of a narrow screen the camera frames it into
+    the space above (framing.ts), and where the copy is a column beside it on a
+    mid-width screen the camera moves it clear of the column — and either way the shape
+    closes up to fit first. The dates still run left to right and the levels still
+    spread out from the axis, just nearer.
+  */
+  let spreadX = 1;
+  let spreadY = 1;
+  const fit = (width: number, height: number) => {
+    const narrow = stacked('achievements', width);
+    const room = narrow ? null : sideRoom('achievements', width, height);
+    spreadX = narrow
+      ? Math.min(1, Math.max(MIN_SPREAD, width / height / 1.2))
+      : room === null
+        ? 1
+        : Math.min(1, Math.max(MIN_SPREAD, (room - TILE_RADIUS) / Math.max(0.001, reachX)));
+    spreadY = narrow ? Math.max(MIN_SPREAD, 0.82) : 1;
+    const subject = SUBJECTS.achievements;
+    if (subject) {
+      subject.halfW = reachX * spreadX + TILE_RADIUS;
+      subject.halfH = reachY * spreadY + TILE_RADIUS;
+    }
+  };
+
   return {
     root,
     update(f: Frame) {
+      fit(f.cam.width, f.cam.height);
       const presence = actPresence(f.t, act, 0.035, 0.035);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
@@ -110,9 +151,9 @@ export function createAchievementsAct(ctx: BuildContext): Act {
         const wantSpin = hovered ? 0 : Math.sin(time * 0.35 + i) * 0.5 + Math.PI * 0.16;
         node.spin += (wantSpin - node.spin) * k;
         node.shown += ((hovered ? 1.35 : 1) - node.shown) * ks;
-        const y = tile.y + Math.sin(time * 0.4 + i * 2.1) * 0.16;
+        const y = tile.y * spreadY + Math.sin(time * 0.4 + i * 2.1) * 0.16;
 
-        cam.project(tile.x, y, z + tile.z, a);
+        cam.project(tile.x * spreadX, y, z + tile.z, a);
         if (!node.item.show(a.visible)) continue;
         node.item.transform(place(a.x, a.y, a.scale * node.shown));
         node.item.opacity(presence * 0.92 * a.fog);
@@ -127,7 +168,13 @@ export function createAchievementsAct(ctx: BuildContext): Act {
         const [from, to] = links[i];
         const p1 = tiles[from];
         const p2 = tiles[to];
-        if (!cam.segment(p1.x, p1.y, z + p1.z, p2.x, p2.y, z + p2.z, a, b)) {
+        if (
+          !cam.segment(
+            p1.x * spreadX, p1.y * spreadY, z + p1.z,
+            p2.x * spreadX, p2.y * spreadY, z + p2.z,
+            a, b
+          )
+        ) {
           wires[i].show(false);
           continue;
         }

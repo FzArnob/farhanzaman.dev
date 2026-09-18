@@ -1,20 +1,10 @@
-/* particle network animation */
-.particle-network-animation {
+/* The intro stage: a full-viewport frame the hero copy is centred in. */
+.intro-stage {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 100vh;
-}
-
-.particle-network-animation::before {
-  z-index: -2;
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
 
 .glow {

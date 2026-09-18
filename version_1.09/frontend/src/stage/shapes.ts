@@ -59,8 +59,25 @@ export const ABERRATION = {
 };
 
 /**
- * The mark as an SVG, in a 100×100 viewBox centred the way the extruded geometry was.
- * One string, cloned for every extrusion layer.
+ * The mark's two outlines in world units, centred, y up — the numbers both renderers
+ * extrude. The WebGL stage turns them into a THREE.Shape; the CSS stage stands a wall
+ * on every edge. One source, so the two marks are the same solid to the hundredth.
+ */
+export function markOutlines(): Array<Array<[number, number]>> {
+  return FZ_POLYGONS.map((poly) =>
+    poly
+      .trim()
+      .split(/\s+/)
+      .map((pair) => {
+        const [sx, sy] = pair.split(',');
+        return [(parseFloat(sx) - CX) * SCALE, (CY - parseFloat(sy)) * SCALE] as [number, number];
+      })
+  );
+}
+
+/**
+ * The mark as an SVG, in a 100×100 viewBox centred the way the extruded geometry is.
+ * The front and back faces of the CSS extrusion (markRig.ts) are this string.
  */
 export function markSvg(fill: string, stroke = '', strokeWidth = 0.7): string {
   // An optional cut edge. Glass is brightest where a face ends, and on a mark built

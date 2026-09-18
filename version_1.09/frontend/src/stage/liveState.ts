@@ -29,8 +29,8 @@ export const cloudState = {
   count: 0,
 };
 
-/** Act 04 — the blade at the readout position. */
-export const turbineState = { index: 0, frozen: false };
+/** Act 04 — the skill crystal swung to the front of the orbit, which the copy reads out. */
+export const skillsState = { index: 0 };
 
 /** Act 05 — the certificate tile under the pointer. */
 export const constellationState = { hovered: -1 };
@@ -58,6 +58,27 @@ export const galleryState = { hovered: -1, expanded: false, shown: 6, total: 0 }
 
 /** Act 08 — the clip tile under the pointer. */
 export const arcadeState = { hovered: -1, loaded: 0 };
+
+/**
+ * Act 09 — where the closing mark hangs this frame, so the shards can ring it rather
+ * than gather at a fixed point the copy might be covering.
+ */
+export const contactMark = { x: 0, y: 0, z: -216, scale: 1 };
+
+/**
+ * The overlay's layout, as laid out — the one thing the stage reads back from the DOM.
+ *
+ * On a narrow screen the copy runs along the bottom of the frame, and the stage frames
+ * each act's subject into the space above it (stage/framing.ts). ActSection and the
+ * masthead write these whenever they change size; nothing here is polled per frame.
+ * Positions are CSS px from the top left of the viewport, with the fade's drift left
+ * out, so a block that is still easing in reports where it is going to be.
+ */
+export const layoutState = {
+  /** The masthead row's bottom edge. 0 until measured. */
+  ceiling: 0,
+  copy: {} as Record<string, { top: number; left: number; right: number }>,
+};
 
 /**
  * Act 00 — the calibration clock. `progress` drives the curtain and the aberration

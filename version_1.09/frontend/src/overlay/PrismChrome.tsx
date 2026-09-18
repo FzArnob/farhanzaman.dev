@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toggleTheme } from '../lib/theme';
-import { boot } from '../stage/liveState';
+import { boot, layoutState } from '../stage/liveState';
 import { useCurrentAct, useScrollRig } from '../stage/ScrollRig';
 
 /**
@@ -49,9 +49,23 @@ export function PrismMasthead({
 }) {
   const rig = useScrollRig();
   const act = useCurrentAct();
+  const ref = useRef<HTMLElement>(null);
+
+  // The stage keeps subjects below this row when it frames them on a narrow screen.
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    const write = () => {
+      layoutState.ceiling = node.offsetTop + node.offsetHeight;
+    };
+    write();
+    const observer = new ResizeObserver(write);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <header className="prism-masthead">
+    <header ref={ref} className="prism-masthead">
       <PrismMark nickName={nickName} onClick={() => rig.seek(0)} />
       <div className="prism-masthead-actions">
         {/*
