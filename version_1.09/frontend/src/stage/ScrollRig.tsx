@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { ACTS, actAt, clamp01, type ActSpec } from './timeline';
+import { ACTS, HEIGHT_VH, actAt, clamp01, type ActSpec } from './timeline';
 
 /**
  * Scroll is the only clock.
@@ -56,8 +56,6 @@ export function useScrollRig(): RigApi {
 export function useCurrentAct(): ActSpec {
   return useContext(ActContext);
 }
-
-const HEIGHT_VH = 900;
 
 /**
  * Momentum scrolling can be turned off with `?smooth=0`. It is a real preference —
@@ -176,4 +174,9 @@ export function ScrollRig({
   );
 }
 
+/**
+ * The page's height is not a number chosen here any more. It is the sum of every act's
+ * three scroll budgets (timeline.ts), so lengthening a section's hold lengthens the
+ * document by exactly that much instead of squeezing its neighbours.
+ */
 export { HEIGHT_VH };

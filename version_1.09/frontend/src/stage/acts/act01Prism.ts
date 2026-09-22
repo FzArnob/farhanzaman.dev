@@ -24,7 +24,7 @@ import { beamGradient } from '../look';
 import { bandHex } from '../../lib/band';
 import { prismFocus } from '../liveState';
 import { buildMark, type MarkPose } from '../markRig';
-import { ACT_BY_ID, actPresence } from '../timeline';
+import { ACT_BY_ID, actPresence, clamp01 } from '../timeline';
 
 const BEAM_BANDS = [0, 0.5, 1];
 
@@ -77,7 +77,7 @@ export function createPrismAct(ctx: BuildContext): Act {
   return {
     root,
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.02, 0.05);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         mark.hide();
@@ -96,11 +96,18 @@ export function createPrismAct(ctx: BuildContext): Act {
       lift += (prismFocus.pointerY * 0.12 - lift) * k;
 
       pose.y = lift;
+      /*
+        Read from the act rather than from the page, so the mark's turn and its growth
+        are the same at the top of the ride however the acts below it are budgeted.
+        Both finish at the end of the intro's own hold: the drift past the mark is the
+        departure, and it should be at full size before that begins.
+      */
+      const u = clamp01((f.t - act.t0) / (act.enterT + act.holdT));
       // Scroll drives the turn; a slow idle rotation keeps it alive when parked.
-      pose.ry = f.t * 9 + time * 0.1;
-      pose.rx = Math.sin(f.t * 6) * 0.1;
+      pose.ry = u * 0.9 + time * 0.1;
+      pose.rx = Math.sin(u * 0.6) * 0.1;
       pose.rz = roll;
-      pose.scale = 0.92 + (1.16 - 0.92) * Math.min(1, f.t / act.t1);
+      pose.scale = 0.92 + (1.16 - 0.92) * u;
       pose.fade = presence;
       pose.sweep = time * 0.55;
       pose.sheen = 0.55 + 0.45 * Math.sin(time * 1.3);

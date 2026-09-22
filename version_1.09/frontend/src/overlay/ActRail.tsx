@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { poleHex } from '../lib/band';
 import { useCurrentAct, useScrollRig } from '../stage/ScrollRig';
-import { ACTS } from '../stage/timeline';
+import { ACTS, tForAct } from '../stage/timeline';
 
 /**
  * The section tracker, centre-right.
@@ -47,7 +47,9 @@ export function ActRail() {
                 aria-current={active ? 'true' : undefined}
                 aria-label={act.name}
                 title={act.name}
-                onClick={() => rig.seek(act.t0 + (act.t1 - act.t0) * 0.4)}
+                // The top of the act's hold: the arrival is behind you, so the room is
+                // built and the first item is current with its whole slice still ahead.
+                onClick={() => rig.seek(tForAct(act))}
               >
                 <i />
                 <span>{act.name}</span>

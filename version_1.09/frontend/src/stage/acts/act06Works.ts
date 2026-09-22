@@ -34,7 +34,7 @@ import { facetPane } from '../glass';
 import { glowGradient, TEAL_RGB } from '../look';
 import { worksState } from '../liveState';
 import { crystalInteriorUri, crystalSpec, mulberry, spindleClip } from '../shapes';
-import { ACT_BY_ID, WORLD, actPresence, clamp01, smooth } from '../timeline';
+import { ACT_BY_ID, WORLD, actPresence, clamp01, itemIndex, smooth } from '../timeline';
 
 /** How many shards a crystal scatters through on a handoff. */
 const SCATTER = 28;
@@ -192,7 +192,7 @@ export function createWorksAct(ctx: BuildContext): Act {
   return {
     root,
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.035, 0.045);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         if (root.style.pointerEvents !== 'none') root.style.pointerEvents = 'none';
@@ -216,9 +216,14 @@ export function createWorksAct(ctx: BuildContext): Act {
       radius += (wantRadius - radius) * (1 - Math.exp(-delta * 3));
       const step = (Math.PI * 2) / Math.max(1, shown);
 
-      const span = act.t1 - act.t0;
-      const progress = clamp01((f.t - act.t0) / span) * Math.max(0, shown - 1);
-      const index = Math.max(0, Math.min(shown - 1, Math.round(progress)));
+      /*
+        Stepped across the act's hold, so the ring is only ever turned while the camera
+        is parked on its hub. It used to run across the whole window and round to the
+        nearest of `shown - 1` steps, which gave the first and last projects half the
+        dwell of the middle ones — and spent that half on the fly-in and the fly-out,
+        where the crystal was still fading up or already dissolving.
+      */
+      const index = itemIndex(f.t, act, shown);
       worksState.index = index;
 
       // Ease to the nearest index so a crystal is centred and full size for most of the
@@ -313,9 +318,15 @@ export function createWorksAct(ctx: BuildContext): Act {
        * scatter, and back onto the new one. Nothing is created or destroyed.
        */
       if (perCrystal > 0 && handoff > 0.02 && shown > 1) {
+        /*
+          Which crystal we are coming from: the neighbour the ring is still swinging
+          away from. Taken from the ring's own eased angle rather than re-derived from
+          scroll, because the two disagree during the turn — and because the scroll
+          position is a step function now, so it no longer says which way we are going.
+        */
         const from = Math.max(
           0,
-          Math.min(shown - 1, Math.round(progress + Math.sign(index - progress)))
+          Math.min(shown - 1, index + (ring < target ? -1 : 1))
         );
         if (from !== index) {
           const out = crystals[from];

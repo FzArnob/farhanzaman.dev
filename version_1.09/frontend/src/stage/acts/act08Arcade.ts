@@ -125,7 +125,7 @@ export function createArcadeAct(ctx: BuildContext): Act {
       live = false;
     },
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.04, 0.04);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         if (root.style.pointerEvents !== 'none') root.style.pointerEvents = 'none';

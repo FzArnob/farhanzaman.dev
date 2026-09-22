@@ -120,7 +120,7 @@ export function createHobbiesAct(ctx: BuildContext): Act {
     root,
     update(f: Frame) {
       fit(f.cam.width, f.cam.height);
-      const presence = actPresence(f.t, act, 0.04, 0.03);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         if (root.style.pointerEvents !== 'none') root.style.pointerEvents = 'none';

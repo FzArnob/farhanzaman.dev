@@ -143,7 +143,7 @@ export function createCloudAct(ctx: BuildContext): Act {
     },
 
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.04, 0.04);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         // The act owns the pointer only while it is on screen.

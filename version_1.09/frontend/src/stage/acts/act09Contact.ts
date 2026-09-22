@@ -6,8 +6,8 @@
  * crimson layer sliding back into register — the aberration resolved.
  *
  * It is the hero's closing answer, except here it is earned: the visitor watched the
- * light split 900vh ago, and the mark coming back into focus is the reply to the
- * question the first act asked. It is the same solid act 01 opened on (markRig.ts), so
+ * light split at the top of the ride, and the mark coming back into focus is the reply
+ * to the question the first act asked. It is the same solid act 01 opened on (markRig.ts), so
  * on either renderer the mark that closes the page is the mark that opened it.
  *
  * No headline plate. The DOM carries those words — one copy, selectable, and readable
@@ -108,7 +108,7 @@ export function createContactAct(ctx: BuildContext): Act {
   return {
     root,
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.04, 0.01);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         if (root.style.display !== 'none') root.style.display = 'none';
         mark.hide();
@@ -117,8 +117,13 @@ export function createContactAct(ctx: BuildContext): Act {
       if (root.style.display === 'none') root.style.display = '';
 
       const { cam, time, delta } = f;
-      // How far through the resolution we are: 0 at the act's start, 1 at the very end.
-      const resolve = smooth(ramp(f.t, act.t0 + 0.01, 1.0));
+      /*
+        How far through the resolution we are. It runs over the arrival and lands on
+        the top of the hold, not on t = 1: the mark coming back into focus is the last
+        act's way of announcing itself, and once it has, the rest of the act's scroll
+        belongs to the form — which has to be still and finished while it is filled in.
+      */
+      const resolve = smooth(ramp(f.t, act.t0, act.h0));
 
       yaw += (0 - yaw) * (1 - Math.exp(-delta * 2.2));
 

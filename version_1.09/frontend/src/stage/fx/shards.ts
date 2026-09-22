@@ -21,7 +21,10 @@
 
 import { boot, contactMark } from '../liveState';
 import { fzSurfaceSamples, mulberry } from '../shapes';
-import { WORLD, clamp01, ramp, smooth } from '../timeline';
+import { ACT_BY_ID, WORLD, clamp01, ramp, smooth } from '../timeline';
+
+/** The gather runs over act 09's arrival, so it is finished before its hold begins. */
+const CONTACT = ACT_BY_ID.contact;
 
 export interface ShardLease {
   /** Where the shard is being pulled to, in world units. */
@@ -159,7 +162,7 @@ export class ShardSim {
       and sized to it. It used to close to a disc in front of a fixed point, which on
       most screens was right behind the contact details.
     */
-    const eased = smooth(ramp(t, 0.93, 1.0));
+    const eased = smooth(ramp(t, CONTACT.t0, CONTACT.h0));
     const ring = 2.3 * contactMark.scale;
     const turn = time * 0.12;
 

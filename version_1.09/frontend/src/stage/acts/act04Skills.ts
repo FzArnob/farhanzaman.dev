@@ -39,16 +39,10 @@ import type { GLLight, GLNode, Tint } from '../gl/api';
 import { CRIMSON_RGB, glowGradient, TEAL_RGB } from '../look';
 import { skillsState } from '../liveState';
 import { mulberry } from '../shapes';
-import { ACT_BY_ID, WORLD, actPresence, clamp01 } from '../timeline';
+import { ACT_BY_ID, WORLD, actPresence, clamp01, holdProgress, itemIndex } from '../timeline';
 
 /** Where the core hangs above the axis the camera travels. */
 const CORE_Y = 0.3;
-/**
- * The window of scroll the camera holds on the core (timeline.ts has the matching
- * keyframes). The skills are stepped through inside it, not across the whole act, so
- * none of them is read out while the camera is still flying in.
- */
-const HOLD: readonly [number, number] = [0.375, 0.435];
 
 const CORE_RADIUS = 1.05;
 const CAGE_RADIUS = 1.24;
@@ -256,7 +250,7 @@ export function createSkillsAct(ctx: BuildContext): Act {
   return {
     root,
     update(f: Frame) {
-      const presence = actPresence(f.t, act, 0.035, 0.035);
+      const presence = actPresence(f.t, act);
       if (presence <= 0.005) {
         hide();
         return;
@@ -264,9 +258,15 @@ export function createSkillsAct(ctx: BuildContext): Act {
       if (root.style.display === 'none') root.style.display = '';
 
       const { cam, time, delta } = f;
-      const progress = clamp01((f.t - HOLD[0]) / (HOLD[1] - HOLD[0]));
-      const index = Math.min(count - 1, Math.floor(progress * count));
-      skillsState.index = Math.max(0, index);
+      /*
+        The act's hold, not its window: the camera is parked across exactly this span
+        (timeline.ts pins its two keyframes to the same two beats), so every skill —
+        the first and the twelfth included — comes round to the front while the core is
+        still and gets the same slice of wheel as the ten in between.
+      */
+      const progress = holdProgress(f.t, act);
+      const index = itemIndex(f.t, act, count);
+      skillsState.index = index;
 
       // Turn the orbit so the indexed crystal comes round to FRONT. The index only ever
       // moves one step at a time, so the target never wraps and the ease never spins
