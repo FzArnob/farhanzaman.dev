@@ -124,14 +124,14 @@ function glMark(ctx: BuildContext, glow: { size: number; peak: number }): MarkRi
 
 /**
  * One extruded copy of the mark: its face, its back, and the walls between them. The
- * face is the logo's own SVG — a cut edge stroked round it, where glass is brightest —
- * and the walls take the body colour and are relit from their normals every frame.
+ * face is the logo's own SVG, flat colour with no outline — the walls are what give it
+ * an edge as it turns — and the walls take the body colour and are relit from their
+ * normals every frame.
  */
 function cssSolid(
   parent: CssNode,
   front: string,
   back: string,
-  edge: string,
   wall: (n: Vec) => string
 ): { node: CssNode; face: HTMLElement; parts: HTMLElement[] } {
   const node = new CssNode(parent);
@@ -142,13 +142,14 @@ function cssSolid(
   const faceEl = el('div', 'pz3-mark-face pz3-cull', node.el);
   faceEl.style.width = w + 'px';
   faceEl.style.height = h + 'px';
-  faceEl.innerHTML = markSvg(front, edge);
+  faceEl.innerHTML = markSvg(front);
   faceEl.style.transform = `translate3d(-50%,-50%,${q(half)}px)`;
 
   const backEl = el('div', 'pz3-mark-face pz3-cull', node.el);
   backEl.style.width = w + 'px';
   backEl.style.height = h + 'px';
-  backEl.innerHTML = markSvg(back);
+  // Drawn mirrored, so the rotateY(180deg) below turns it back into register.
+  backEl.innerHTML = markSvg(back, true);
   backEl.style.transform = `translate3d(-50%,-50%,${q(-half)}px) rotateY(180deg)`;
 
   for (const outline of markOutlines()) buildWalls(node, outline, MARK.depth, wall);
@@ -188,16 +189,9 @@ function cssMark(ctx: BuildContext, root: HTMLElement, glow: { size: number; pea
     scene,
     look.bloom ? '#fd2155' : '#d70f41',
     look.bloom ? '#8e0f30' : '#a50a33',
-    look.bloom ? 'rgba(255,190,205,0.85)' : 'rgba(120,0,30,0.6)',
     crimsonWall
   );
-  const front = cssSolid(
-    scene,
-    look.glass,
-    look.bloom ? '#006b5c' : '#00735f',
-    look.bloom ? 'rgba(226,255,250,0.9)' : 'rgba(0,60,50,0.6)',
-    tealWall
-  );
+  const front = cssSolid(scene, look.glass, look.bloom ? '#006b5c' : '#00735f', tealWall);
 
   /*
     The white in this act. The mark's own colour is the logo's teal and crimson, so the

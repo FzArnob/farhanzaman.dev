@@ -39,10 +39,12 @@ function sharedDataPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), sharedDataPlugin()],
   server: {
+    host: true,
     port: 3050,
     strictPort: true,
   },
   preview: {
+    host: true,
     port: 3050,
     strictPort: true,
   },

@@ -74,6 +74,14 @@ work against a XAMPP backend, set `VITE_API_HOST` in `.env` (see `.env.example`)
 it only applies to `npm run dev`, so a production build can never ship a
 localhost URL.
 
+### Testing on a phone on the same Wi-Fi
+
+`npm run dev` (and `npm run preview`) bind to every interface, so the dev server
+is reachable at `http://<your-LAN-IP>:3050` — Vite prints it as the **Network**
+URL on startup. On Windows, allow Node through the firewall for private networks
+the first time it asks. If `VITE_API_HOST` is set, point it at the same LAN IP
+instead of `localhost`, or the phone cannot reach the PHP backend.
+
 ### Layout
 
 ```

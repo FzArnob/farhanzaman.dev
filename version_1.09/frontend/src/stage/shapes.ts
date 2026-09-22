@@ -78,19 +78,19 @@ export function markOutlines(): Array<Array<[number, number]>> {
 /**
  * The mark as an SVG, in a 100×100 viewBox centred the way the extruded geometry is.
  * The front and back faces of the CSS extrusion (markRig.ts) are this string.
+ *
+ * `mirrored` draws it flipped left to right about its centre, for the back face. That
+ * face is turned to look backwards with rotateY(180deg), and the turn mirrors whatever
+ * is drawn on it — so a back face drawn the right way round lands mirrored against the
+ * walls, and from behind the mark comes apart into a face and a loose set of slabs.
+ * Drawing it pre-flipped cancels the turn and puts every edge back on its wall.
  */
-export function markSvg(fill: string, stroke = '', strokeWidth = 0.7): string {
-  // An optional cut edge. Glass is brightest where a face ends, and on a mark built
-  // from flat polygons that edge is the only place the material can show at all.
-  const edge = stroke
-    ? ` stroke="${stroke}" stroke-width="${strokeWidth}" stroke-linejoin="round"`
-    : '';
-  const polys = FZ_POLYGONS.map(
-    (points) => `<polygon points="${points}" fill="${fill}"${edge}/>`
-  ).join('');
+export function markSvg(fill: string, mirrored = false): string {
+  const polys = FZ_POLYGONS.map((points) => `<polygon points="${points}" fill="${fill}"/>`).join('');
+  const body = mirrored ? `<g transform="translate(${2 * CX} 0) scale(-1 1)">${polys}</g>` : polys;
   return (
     `<svg viewBox="${CX - 50} ${CY - 50} 100 100" width="100%" height="100%" ` +
-    `aria-hidden="true" focusable="false">${polys}</svg>`
+    `aria-hidden="true" focusable="false">${body}</svg>`
   );
 }
 
