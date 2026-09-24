@@ -21,10 +21,10 @@ import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q, span } from '../dom';
 import { MIN_GAP, buildConstellation } from '../data';
 import { SUBJECTS, sideRoom, stacked } from '../framing';
-import { extrude, filament, glassPane, leafCount } from '../glass';
+import { clipOf, filament, glassPane, slab } from '../glass';
 import { TEAL_RGB } from '../look';
 import { constellationState } from '../liveState';
-import { hexClip } from '../shapes';
+import { hexOutline } from '../shapes';
 import { ACT_BY_ID, WORLD, actPresence } from '../timeline';
 
 /** hexTileGeometry(0.85, 0.14): the tile's radius, and the logo plane inside it. */
@@ -62,10 +62,12 @@ export function createAchievementsAct(ctx: BuildContext): Act {
     /*
       A certificate is a cut hexagon of glass, not a hexagonal sticker. Hover flips a
       tile face-on, which means every tile spends most of its time turned away from you
-      — and a turned decal is an invisible decal. The extrusion is what it turns on.
+      — and a turned decal is an invisible decal. Its six walls are what it turns on.
     */
-    const clip = hexClip();
-    extrude(turn, clip, TILE_DEPTH * UNIT, leafCount(ctx.quality.extrusion), look);
+    const outline = hexOutline();
+    const clip = clipOf(outline);
+    const size = TILE_RADIUS * 2 * UNIT;
+    slab(turn, outline, size, size, TILE_DEPTH * UNIT, look, { tint: TEAL_RGB });
 
     const face = el('div', 'pz3-tile-face', turn);
     face.style.clipPath = clip;

@@ -6,7 +6,8 @@
  * never off. It runs the whole length of the scroll.
  *
  * On WebGL the dust is a point cloud and each shard is a real faceted crystal in one
- * instanced draw; on the CSS renderer both are drawn to a 2D canvas (fx/PointField.ts).
+ * instanced draw; on the CSS renderer both are drawn to a 2D canvas (fx/PointField.ts),
+ * the shards as the same solids, projected and shaded there.
  * Either way fx/shards.ts decides where every shard is, so the choreography the other
  * acts lease — the mark solving out of them, the works ring's handoff — is identical.
  */

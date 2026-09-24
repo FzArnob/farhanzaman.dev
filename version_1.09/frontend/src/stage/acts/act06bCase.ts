@@ -18,7 +18,7 @@ import type { Act, BuildContext, Frame } from '../engine';
 import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q, span } from '../dom';
 import { bandHex } from '../../lib/band';
-import { filament, rimSheen } from '../glass';
+import { RECT, filament, rimSheen, slab } from '../glass';
 import { glowGradient, TEAL_RGB } from '../look';
 import { caseOpenState } from '../liveState';
 import { WORLD, clamp01, smooth } from '../timeline';
@@ -26,6 +26,10 @@ import { glassTone, projectRgb, rgbString } from '../../lib/projectTheme';
 
 /** Chips are the tech stack, capped so a 20-item stack does not become confetti. */
 const MAX_CHIPS = 18;
+/** A chip's size, in world units: a bar, not a label. */
+const CHIP_W = 0.9;
+const CHIP_H = 0.28;
+const CHIP_D = 0.14;
 const CHAMBER_R = 8.8;
 
 export function createCaseAct(ctx: BuildContext): Act {
@@ -46,12 +50,19 @@ export function createCaseAct(ctx: BuildContext): Act {
   glowEl.style.backgroundImage = glowGradient(TEAL_RGB, 0.34);
   const glow = new Item(glowEl);
 
-  /* Up to eighteen chips, built once and re-coloured when the project changes. */
+  /*
+    Up to eighteen chips, built once and re-coloured when the project changes. Each is
+    a small bar with real sides, turned to face the middle of the chamber, so it
+    foreshortens and shows its end as it swings round rather than being squeezed flat.
+  */
   const chips = Array.from({ length: MAX_CHIPS }, () => {
     const node = el('div', 'pz3 pz3-chip', root);
-    node.style.width = q(0.9 * UNIT) + 'px';
-    node.style.height = q(0.28 * UNIT) + 'px';
-    return new Item(node);
+    node.style.width = q(CHIP_W * UNIT) + 'px';
+    node.style.height = q(CHIP_H * UNIT) + 'px';
+    const turn = el('div', 'pz3-chip-3d', node);
+    slab(turn, RECT, CHIP_W * UNIT, CHIP_H * UNIT, CHIP_D * UNIT, look);
+    const face = el('div', 'pz3-chip-face', turn);
+    return { item: new Item(node), turn, face };
   });
 
   /* Eight fracture lines at six segments each: the most any project asks for. */
@@ -87,8 +98,8 @@ export function createCaseAct(ctx: BuildContext): Act {
       .slice(0, MAX_CHIPS);
     chipCount = stack.length;
     for (let i = 0; i < chipCount; i++) {
-      chips[i].el.style.backgroundColor = bandHex(i / Math.max(1, chipCount - 1));
-      chips[i].el.style.backgroundImage = rimSheen(look);
+      chips[i].face.style.backgroundColor = bandHex(i / Math.max(1, chipCount - 1));
+      chips[i].face.style.backgroundImage = rimSheen(look);
     }
 
     // One fracture per challenge sentence, drawn into the inner wall.
@@ -129,20 +140,23 @@ export function createCaseAct(ctx: BuildContext): Act {
 
       /* ---- the tech stack, in orbit ---- */
       for (let i = 0; i < chips.length; i++) {
+        const chip = chips[i];
         if (i >= chipCount) {
-          chips[i].show(false);
+          chip.item.show(false);
           continue;
         }
         const orbit = 3.4 + (i % 3) * 1.5;
         const angle = (i / Math.max(1, chipCount)) * Math.PI * 2 + time * (0.1 + (i % 3) * 0.05);
         const y = Math.sin(angle * 1.6 + i) * 1.9;
         cam.project(Math.cos(angle) * orbit, y, z0 + Math.sin(angle) * orbit, a);
-        if (!chips[i].show(a.visible)) continue;
-        // Chips face the middle, so they foreshorten as they swing round the back.
-        const face = Math.abs(Math.cos(angle));
-        chips[i].transform(place(a.x, a.y, a.scale * eased, `scaleX(${(0.25 + face * 0.75).toFixed(3)})`));
-        chips[i].opacity(eased * 0.9);
-        chips[i].order(Math.round(4000 - a.depth * 8));
+        if (!chip.item.show(a.visible)) continue;
+        chip.item.transform(place(a.x, a.y, a.scale * eased));
+        chip.item.opacity(eased * 0.9);
+        chip.item.order(Math.round(4000 - a.depth * 8));
+        chip.item.el.style.setProperty('--pz3-persp', q(a.depth * UNIT) + 'px');
+        // Face the middle: the face's normal turned to point back along the radius.
+        const faceYaw = Math.atan2(-Math.cos(angle), -Math.sin(angle));
+        chip.turn.style.transform = `rotateY(${q((faceYaw * 180) / Math.PI)}deg)`;
       }
 
       /* ---- the challenges, as cracks in the wall ---- */

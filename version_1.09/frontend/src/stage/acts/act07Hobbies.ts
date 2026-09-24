@@ -20,7 +20,7 @@ import { Item, UNIT, el, place, q } from '../dom';
 import { HOBBIES_PREVIEW, buildGallery } from '../data';
 import { bandHex } from '../../lib/band';
 import { SUBJECTS, stacked } from '../framing';
-import { extrude, leafCount, reflection, rimSheen } from '../glass';
+import { RECT, bodyRgb, reflection, rimSheen, slab } from '../glass';
 import { glowGradient } from '../look';
 import { galleryState } from '../liveState';
 import { ACT_BY_ID, WORLD, actPresence, clamp01 } from '../timeline';
@@ -57,9 +57,13 @@ export function createHobbiesAct(ctx: BuildContext): Act {
     /*
       Works hang on the walls of a hall the camera walks down, so they are seen at an
       angle for the whole act — which is the one condition under which a frame's depth
-      is the difference between a painting and a poster.
+      is the difference between a painting and a poster. So it is a box: a mount the
+      work is laid on, four sides and a back.
     */
-    extrude(turn, '', FRAME_DEPTH * UNIT, leafCount(ctx.quality.extrusion), look);
+    slab(turn, RECT, frame.width * UNIT, frame.height * UNIT, FRAME_DEPTH * UNIT, look, {
+      front: look.frameBack,
+      tint: look.bloom ? '255,255,255' : bodyRgb(look),
+    });
 
     const img = el('img', 'pz3-art-img', turn);
     img.alt = '';

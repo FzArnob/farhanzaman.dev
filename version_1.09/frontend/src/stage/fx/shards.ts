@@ -8,9 +8,10 @@
  * mark. If each renderer carried its own copy of that choreography, the two versions
  * of the site would drift apart the first time either was touched.
  *
- * So this file owns where every shard is, and nothing else. It never draws. The 2D
- * point field turns each shard into a folded diamond; the WebGL field writes the same
- * numbers into an instance matrix and gets a real crystal that catches real light.
+ * So this file owns where every shard is, and nothing else. It never draws. Both
+ * renderers turn each shard into the same tumbling crystal from the same numbers: the
+ * WebGL field as an instance matrix, the 2D point field by projecting and shading the
+ * solid itself.
  *
  * The lease protocol is unchanged from the WebGL build: acts do not create shards,
  * they claim a slice of the pool for one frame and say where those shards should be.
@@ -56,7 +57,11 @@ export class ShardSim {
    * toward the key and some away, which is what a cloud of real crystal does.
    */
   readonly bright: Float32Array;
-  /** In-plane spin, for the 2D renderer's diamond. Radians per second. */
+  /**
+   * An in-plane spin the 2D renderer's flat diamond used. Nothing draws from it now
+   * both renderers tumble the solid, but its draw stays in the seeded stream so every
+   * shard after it still hangs where it always did.
+   */
   readonly spin: Float32Array;
   readonly phase: Float32Array;
   /** Tumble rates about three axes, for the 3D renderer. Stride 3. */

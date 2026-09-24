@@ -22,9 +22,9 @@ import type { Act, BuildContext, Frame } from '../engine';
 import { newProjected, type Camera } from '../camera';
 import { Item, UNIT, el, place, q, svg } from '../dom';
 import { buildSpine, type Slab } from '../data';
-import { extrude, glassPane, leafCount, rimSheen } from '../glass';
+import { clipOf, glassPane, rimSheen, slab as solidify } from '../glass';
 import { glowGradient, TEAL_RGB } from '../look';
-import { blockClip, mulberry } from '../shapes';
+import { blockOutline, mulberry } from '../shapes';
 import { ACT_BY_ID, WORLD, actPresence, clamp01 } from '../timeline';
 
 /** Where the cable and the two rows sit, per orientation. */
@@ -224,7 +224,8 @@ export function createBackgroundAct(ctx: BuildContext): Act {
       const wobble = 0.82 + rnd() * 0.36;
       const w = layout.width * (0.94 + rnd() * 0.12);
       const h = layout.height * (0.94 + rnd() * 0.12);
-      const clip = blockClip(w, h, rnd);
+      const outline = blockOutline(w, h, rnd);
+      const clip = clipOf(outline);
 
       const outer = el('div', 'pz3 pz3-block', holder);
       outer.style.width = q(w * UNIT) + 'px';
@@ -232,11 +233,15 @@ export function createBackgroundAct(ctx: BuildContext): Act {
       const turn = el('div', 'pz3-block-3d', outer);
 
       /*
-        The card's thickness, behind everything else on it. A corridor of decals reads
-        as a corridor of stickers however well lit they are; the moment a card yaws
-        toward you at closest approach, this is the edge that turns with it.
+        The card's solid, behind everything else on it: a wall on every edge of its
+        cut, chamfer included, and a back. A corridor of decals reads as a corridor of
+        stickers however well lit they are; the moment a card yaws toward you at
+        closest approach, these are the edges that turn with it.
       */
-      extrude(turn, clip, BLOCK_DEPTH * UNIT, leafCount(ctx.quality.extrusion), look);
+      solidify(turn, outline, w * UNIT, h * UNIT, BLOCK_DEPTH * UNIT, look, {
+        tint: education ? TEAL_RGB : '253,33,85',
+        alpha: 0.9,
+      });
 
       // Edge wire in the row's colour; a live edge if the role is current.
       const edge = el('div', 'pz3-block-edge', turn);

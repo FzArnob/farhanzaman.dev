@@ -3,9 +3,9 @@
  *
  * A portfolio that only works on the machine it was built on is a liability, so what
  * the world costs is measured against the device rather than assumed. The tier scales
- * how many points are in the field and how deep the CSS extrusions are, and on the
- * WebGL renderer it also picks the materials and passes: clearcoat and 4x multisampling
- * on high, bloom on high and mid, neither on low (see stage/gl/GLStage.ts).
+ * how many points are in the field, and on the WebGL renderer it also picks the
+ * materials and passes: clearcoat and 4x multisampling on high, bloom on high and mid,
+ * neither on low (see stage/gl/GLStage.ts).
  *
  * Whether WebGL runs at all is not a tier. lib/renderer.ts decides that from whether a
  * hardware context can be had, and the CSS stage takes over wherever it cannot. The
@@ -27,14 +27,12 @@ export interface Quality {
   shards: number;
   /** Points in the dust field. */
   dust: number;
-  /** How many copies of the mark build an extrusion. */
-  extrusion: number;
 }
 
 const PRESETS: Record<Exclude<Tier, 'static'>, Omit<Quality, 'tier'>> = {
-  high: { dpr: 1.5, shards: 200, dust: 1800, extrusion: 14 },
-  mid: { dpr: 1.25, shards: 84, dust: 900, extrusion: 9 },
-  low: { dpr: 1, shards: 0, dust: 380, extrusion: 5 },
+  high: { dpr: 1.5, shards: 200, dust: 1800 },
+  mid: { dpr: 1.25, shards: 84, dust: 900 },
+  low: { dpr: 1, shards: 0, dust: 380 },
 };
 
 export const STATIC: Quality = {
@@ -42,7 +40,6 @@ export const STATIC: Quality = {
   dpr: 1,
   shards: 0,
   dust: 0,
-  extrusion: 0,
 };
 
 function prefersReducedMotion(): boolean {

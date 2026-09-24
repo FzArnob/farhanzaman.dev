@@ -128,13 +128,13 @@ function towards(x: number, y: number, tx: number, ty: number, d: number): [numb
  * inside as the block yaws — and the face inset is set wide enough that neither the
  * jitter nor the chamfer can ever reach a word.
  *
- * Returned as percentages so one clip-path serves the block at any size.
+ * Returned as fractions of the block's box, clockwise from the top left, so one
+ * outline serves the face's clip-path and the walls its solid stands on (glass.ts).
  */
-export function blockClip(w: number, h: number, rnd: () => number): string {
+export function blockOutline(w: number, h: number, rnd: () => number): Array<[number, number]> {
   const unit = Math.min(w, h);
   const jx = () => ((rnd() - 0.5) * unit * 0.08) / w;
   const jy = () => ((rnd() - 0.5) * unit * 0.08) / h;
-  // Clockwise from the top left, in 0..1 face space.
   const pts: [number, number][] = [
     [0 + jx(), 0 + jy()],
     [1 + jx(), 0 + jy()],
@@ -145,36 +145,30 @@ export function blockClip(w: number, h: number, rnd: () => number): string {
   const cut = Math.floor(rnd() * 4);
   const size = 0.1 + rnd() * 0.18;
 
-  const out: string[] = [];
+  const out: [number, number][] = [];
   for (let i = 0; i < 4; i++) {
     const [x, y] = pts[i];
     if (i === cut) {
       const prev = pts[(i + 3) % 4];
       const next = pts[(i + 1) % 4];
-      const a = towards(x, y, prev[0], prev[1], size);
-      const b = towards(x, y, next[0], next[1], size);
-      out.push(pct(a[0], a[1]), pct(b[0], b[1]));
+      out.push(towards(x, y, prev[0], prev[1], size), towards(x, y, next[0], next[1], size));
     } else {
-      out.push(pct(x, y));
+      out.push([x, y]);
     }
   }
-  return `polygon(${out.join(',')})`;
-}
-
-function pct(x: number, y: number): string {
-  return `${(x * 100).toFixed(2)}% ${(y * 100).toFixed(2)}%`;
+  return out;
 }
 
 /* ------------------------------------------------------------ tiles, blades */
 
-/** A flat-topped hexagon, for a certificate tile. */
-export function hexClip(): string {
-  const pts: string[] = [];
+/** A flat-topped hexagon, for a certificate tile, as fractions of its box. */
+export function hexOutline(): Array<[number, number]> {
+  const pts: [number, number][] = [];
   for (let i = 0; i < 6; i++) {
     const a = (i / 6) * Math.PI * 2 + Math.PI / 6;
-    pts.push(pct(0.5 + Math.cos(a) * 0.5, 0.5 + Math.sin(a) * 0.5));
+    pts.push([0.5 + Math.cos(a) * 0.5, 0.5 + Math.sin(a) * 0.5]);
   }
-  return `polygon(${pts.join(',')})`;
+  return pts;
 }
 
 /** A blade: a tapered aerofoil, root at the bottom, tip at the top. */

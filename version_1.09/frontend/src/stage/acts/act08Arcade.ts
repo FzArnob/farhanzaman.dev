@@ -15,7 +15,7 @@ import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q } from '../dom';
 import { loadGamingVideos } from '../../data/loadProfile';
 import type { GamingVideo } from '../../types/gaming';
-import { glassPane, reflection } from '../glass';
+import { RECT, glassPane, reflection, slab } from '../glass';
 import { TEAL_RGB } from '../look';
 import { arcadeState } from '../liveState';
 import { ACT_BY_ID, WORLD, actPresence } from '../timeline';
@@ -25,6 +25,8 @@ const ROWS = 5;
 const RADIUS = 13;
 const TILE_W = 1.72;
 const TILE_H = 0.98;
+/** How deep a screen is, in world units. */
+const TILE_DEPTH = 0.09;
 /** Thumbnails load for the tiles that are actually facing you. */
 const EAGER = COLUMNS * 2;
 
@@ -59,15 +61,17 @@ export function createArcadeAct(ctx: BuildContext): Act {
     outer.style.width = q(TILE_W * UNIT) + 'px';
     outer.style.height = q(TILE_H * UNIT) + 'px';
     /*
-      A bevel rather than an extrusion. Every tile on this wall is wrapped onto a
-      cylinder that faces the walkway, so no tile ever turns far enough for a real edge
-      to show — seventy extruded tiles would be four hundred elements of fill nobody
-      can see. A lit top-left and a shaded bottom-right say "thick screen" from the one
-      angle these are ever viewed from, and cost one gradient.
+      A screen is a box, not a bevel painted on a rectangle. The tiles are wrapped onto
+      a cylinder that faces the walkway, so the sides that show are the ones toward the
+      wall's ends — and those are exactly the ones a curved bank of real screens shows.
+      Walls turned away are culled, so a tile seen square on costs its face and nothing
+      else.
     */
-    outer.style.backgroundColor = look.bloom ? '#0d1518' : '#dfe7e5';
-    outer.style.backgroundImage = glassPane(look, TEAL_RGB);
     const turn = el('div', 'pz3-clip-3d', outer);
+    slab(turn, RECT, TILE_W * UNIT, TILE_H * UNIT, TILE_DEPTH * UNIT, look, {
+      front: `${glassPane(look, TEAL_RGB)}, ${look.bloom ? '#0d1518' : '#dfe7e5'}`,
+      tint: TEAL_RGB,
+    });
     const img = el('img', 'pz3-clip-img', turn);
     img.alt = '';
     img.loading = 'lazy';

@@ -16,12 +16,11 @@
  * gradient instead, which the rasteriser gives away free.
  *
  * Depth is the other half of looking like glass. A gradient on a flat div reads as a
- * painted highlight rather than as a solid, so `extrude` gives a silhouette real
- * thickness by stacking copies of it back along Z inside a preserve-3d group. It is
- * the cheap cousin of css3d.ts's true extrusion, and it suits the thin slabs it is
- * used for — cards and tiles that only ever swing through a shallow angle, where the
- * thickness shows as an object comes close, which is exactly when a real edge would.
- * The solids that turn right round — the mark, the skills core — are built by css3d.
+ * painted highlight rather than as a solid, so `slab` gives a flat object — a card, a
+ * tile, a frame — the rest of its solid: a back face and a wall standing on every edge
+ * of its outline, each one a real plane in the object's own preserve-3d group. The
+ * solids that turn right round — the mark, the skills core, the crystals — are built
+ * by css3d.ts, which also relights them every frame.
  */
 
 import { el, q } from './dom';
@@ -128,57 +127,128 @@ export function reflection(look: WorldLook): string {
   );
 }
 
-/**
- * How many leaves an extrusion gets at a given quality.
- *
- * Far fewer than the monogram's stack, deliberately. The mark is deep and permanently
- * turned, so it needs enough copies that the banding between them disappears. A card
- * or a tile is a thin slab that only ever swings through a shallow angle, and there
- * two or three silhouettes already read as a solid edge. Every leaf is a full-area
- * clipped fill, so this number is fill rate — it is the one place in the material
- * where being generous would actually cost a frame.
- */
-export function leafCount(extrusion: number): number {
-  return Math.max(2, Math.min(4, Math.round(extrusion * 0.28)));
-}
-
-/** The dark interior an extrusion is cut from, per world. */
+/** The dark interior a slab is cut from, per world. */
 export function bodyRgb(look: WorldLook): string {
   return look.bloom ? '10,20,22' : '176,192,189';
 }
 
-/**
- * Gives a flat silhouette thickness, by stacking copies of it back along Z.
- *
- * The caller's element must already be inside a `preserve-3d` group carrying the
- * camera's real distance — then the stack foreshortens correctly, and the thickness
- * only shows as the object turns or comes close, which is when a real edge would show
- * too.
- *
- * The leaves are drawn at low alpha and accumulate into a solid interior, so the count
- * is a quality dial rather than a correctness one: five leaves and fourteen differ in
- * how smooth the edge band is, not in whether the object has one.
- */
-export function extrude(
-  parent: HTMLElement,
-  clip: string,
-  depthPx: number,
-  layers: number,
-  look: WorldLook
-): HTMLElement {
-  const stack = el('div', 'pz3-extrude', parent);
-  const rgb = bodyRgb(look);
-  const n = Math.max(2, layers);
-  // Enough per leaf to build a solid body at any count, never enough to read as banding.
-  const step = 0.62 / n + 0.04;
-  for (let i = 0; i < n; i++) {
-    const k = i / (n - 1);
-    const leaf = el('div', 'pz3-extrude-leaf', stack);
-    if (clip) leaf.style.clipPath = clip;
-    // The band darkens with depth, the way the inside of a thick edge does.
-    leaf.style.background = `rgba(${rgb},${(1 - k * 0.45).toFixed(3)})`;
-    leaf.style.opacity = (step * (look.bloom ? 1 : 0.8)).toFixed(3);
-    leaf.style.transform = `translateZ(${q(-k * depthPx)}px)`;
-  }
-  return stack;
+/** The key, as a direction on the screen (y down): up and to the left, from KEY_DEG. */
+const KEY_2D: [number, number] = [
+  -Math.sin((KEY_DEG * Math.PI) / 180),
+  Math.cos((KEY_DEG * Math.PI) / 180),
+];
+
+export interface SlabOptions {
+  /** The colour the walls' lit front edge takes, as "r,g,b". White when omitted. */
+  tint?: string;
+  /** Paints a front face at z = 0 as well, under whatever the caller puts there. */
+  front?: string;
+  /** How opaque the walls are. Glass cards want to be seen into; frames do not. */
+  alpha?: number;
 }
+
+/**
+ * The rest of a flat object's solid: its back face and a wall on every edge.
+ *
+ * `outline` is the silhouette in fractions of the object's box (0..1, y down) — the
+ * same numbers its clip-path is written from, so the walls stand exactly on the edge
+ * the face is cut to. The walls run from the front plane (z = 0) back `depth` pixels,
+ * and the back face closes the solid there, turned to look backwards.
+ *
+ * Every wall is one element: stood on its edge by `rotateZ`, folded back into the
+ * screen by `rotateX(-90deg)`, and culled when it turns away, so a card seen square on
+ * costs the browser nothing extra, and a card seen at an angle shows exactly the sides
+ * a real one would. The walls take their light once, from which way their outward
+ * normal points against the key: the top-left edges catch it, the bottom-right ones
+ * fall into shadow — the same key every gradient on the stage is struck from.
+ *
+ * The parent must be a preserve-3d group whose box is the object's box.
+ */
+export function slab(
+  parent: HTMLElement,
+  outline: Array<[number, number]>,
+  width: number,
+  height: number,
+  depth: number,
+  look: WorldLook,
+  opts: SlabOptions = {}
+): HTMLElement {
+  const group = el('div', 'pz3-slab', parent);
+  const body = bodyRgb(look);
+  const tint = opts.tint ?? '255,255,255';
+  const alpha = opts.alpha ?? 0.94;
+  const s = keyStrength(look);
+
+  let pts = outline.map(([x, y]) => [x * width, y * height] as [number, number]);
+  // rotateX(-90deg) turns a wall's face toward its edge's left-hand side, which is the
+  // outside only for an outline wound anticlockwise on screen. Wind it that way.
+  let area = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const [x1, y1] = pts[i];
+    const [x2, y2] = pts[(i + 1) % pts.length];
+    area += x1 * y2 - x2 * y1;
+  }
+  if (area > 0) pts = pts.slice().reverse();
+
+  if (opts.front) {
+    const front = el('div', 'pz3-slab-front', group);
+    front.style.clipPath = clipOf(outline);
+    front.style.background = opts.front;
+  }
+
+  for (let i = 0; i < pts.length; i++) {
+    const [ax, ay] = pts[i];
+    const [bx, by] = pts[(i + 1) % pts.length];
+    const len = Math.hypot(bx - ax, by - ay);
+    if (len < 0.5) continue;
+    const angle = Math.atan2(by - ay, bx - ax);
+    // The outward normal, on the screen: the edge's direction turned a quarter.
+    const nx = -Math.sin(angle);
+    const ny = Math.cos(angle);
+    const lit = Math.max(0, nx * KEY_2D[0] + ny * KEY_2D[1]);
+    const k = 0.3 + 0.7 * lit;
+    const wall = el('div', 'pz3-slab-wall', group);
+    // A pixel over at each end, so neighbouring walls close their corner.
+    wall.style.width = q(len + 1) + 'px';
+    wall.style.height = q(depth) + 'px';
+    wall.style.backgroundColor = `rgba(${body},${alpha.toFixed(3)})`;
+    // Down the wall is back into the object: the lit front edge falls into the body.
+    wall.style.backgroundImage =
+      `linear-gradient(180deg, rgba(${tint},${(0.75 * k * s).toFixed(3)}) 0%,` +
+      ` rgba(${tint},${(0.22 * k * s).toFixed(3)}) 34%, rgba(${tint},0) 70%),` +
+      `linear-gradient(0deg, rgba(0,0,0,${((1 - k) * (look.bloom ? 0.55 : 0.28)).toFixed(3)}),` +
+      ` rgba(0,0,0,${((1 - k) * (look.bloom ? 0.55 : 0.28)).toFixed(3)}))`;
+    wall.style.transform =
+      `translate3d(${q(ax)}px,${q(ay)}px,0) rotateZ(${q((angle * 180) / Math.PI)}deg)` +
+      ' translateX(-0.5px) rotateX(-90deg)';
+  }
+
+  /*
+    The back, turned to look backwards. The turn mirrors it left to right, so its
+    outline is drawn mirrored to land back on the walls.
+  */
+  const back = el('div', 'pz3-slab-back', group);
+  back.style.transform = `translateZ(${q(-depth)}px) rotateY(180deg)`;
+  back.style.clipPath = clipOf(outline.map(([x, y]) => [1 - x, y] as [number, number]));
+  back.style.backgroundColor = `rgba(${body},${alpha.toFixed(3)})`;
+  back.style.backgroundImage =
+    `linear-gradient(${SHADE_DEG}deg, rgba(${tint},${(0.12 * s).toFixed(3)}) 0%, rgba(${tint},0) 60%)`;
+  return group;
+}
+
+/** An outline in fractions of its box, as the clip-path that cuts a face to it. */
+export function clipOf(outline: Array<[number, number]>): string {
+  return (
+    'polygon(' +
+    outline.map(([x, y]) => `${(x * 100).toFixed(2)}% ${(y * 100).toFixed(2)}%`).join(',') +
+    ')'
+  );
+}
+
+/** A rectangle's outline, for the slabs that are plain boxes. */
+export const RECT: Array<[number, number]> = [
+  [0, 0],
+  [1, 0],
+  [1, 1],
+  [0, 1],
+];

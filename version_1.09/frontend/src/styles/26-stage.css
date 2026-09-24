@@ -96,20 +96,36 @@
 /* ---------- thickness ---------- */
 
 /*
-  What extrude() builds: copies of an object's silhouette stepped back along Z, which
-  is how anything on this stage gets an edge. The leaves are siblings of the object's
-  front faces inside the same preserve-3d group, so the browser sorts them against
-  those faces and the whole assembly foreshortens on the one perspective the act
-  already wrote for the object.
+  What slab() builds (src/stage/glass.ts): the rest of a flat object's solid — a wall
+  standing on every edge of its outline and a back face closing it. They are siblings
+  of the object's front inside the same preserve-3d group, so the browser sorts them
+  against it, and the walls are culled as they turn away, the way a real box's are.
 */
-.pz3-extrude,
-.pz3-extrude-leaf {
+.pz3-slab {
   position: absolute;
   inset: 0;
+  transform-style: preserve-3d;
 }
 
-.pz3-extrude {
-  transform-style: preserve-3d;
+.pz3-slab-wall {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.pz3-slab-back,
+.pz3-slab-front {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 /* The dust and shard canvas. */
@@ -225,7 +241,7 @@ html:has(link[data-theme='light']) .pz3-poly-shade {
 */
 .pz3-clip,
 .pz3-plinth,
-.pz3-chip,
+.pz3-chip-face,
 .pz3-tile-face {
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -573,7 +589,18 @@ html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
 }
 
 .pz3-chip {
-  border-radius: 2px;
+  perspective: var(--pz3-persp, 900px);
+}
+
+.pz3-chip-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.pz3-chip-face {
+  position: absolute;
+  inset: 0;
 }
 
 /* ---------- the gallery hall ---------- */
@@ -600,6 +627,8 @@ html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
   inset: 0;
   width: 100%;
   height: 100%;
+  /* Laid on the mount, a hair in front of it, so the two are never sorted as one plane. */
+  transform: translateZ(1px);
   object-fit: contain;
 }
 
@@ -618,9 +647,10 @@ html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
 
 .pz3-clip-img {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
+  transform: translateZ(1px);
   object-fit: cover;
 }
 
