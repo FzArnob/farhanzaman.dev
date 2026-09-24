@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Project } from '../../types/profile';
+import { ProjectMark } from './ProjectMark';
 
 interface WorkCardProps {
   work: Project;
@@ -13,7 +14,7 @@ interface WorkCardProps {
 /** Compact card used inside the home page marquee. */
 export function WorkCard({ work, width, index, noBottomBorder }: WorkCardProps) {
   const navigate = useNavigate();
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -40,7 +41,7 @@ export function WorkCard({ work, width, index, noBottomBorder }: WorkCardProps) 
       onMouseLeave={onMouseLeave}
       onClick={() => navigate('/work?work_id=' + (index + 1))}
     >
-      <img ref={imageRef} className="work-card-image" src={work.logo_image} />
+      <ProjectMark ref={imageRef} className="work-card-image" project={work} />
       <div className="work-card-tags">
         <div ref={typeRef} className="work-card-tag c-theme animate-right">
           {work.type}

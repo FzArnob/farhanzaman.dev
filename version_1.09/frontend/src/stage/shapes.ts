@@ -177,19 +177,6 @@ export function hexClip(): string {
   return `polygon(${pts.join(',')})`;
 }
 
-/**
- * One face of a quartz prism: a long hexagon with a point at each end.
- *
- * Six of these around an axis is the shape a crystal actually grows into — a
- * hexagonal column with pyramidal caps — and it is the silhouette the WebGL cores had,
- * built from six faces instead of twenty-eight triangles. The cap fraction is the
- * pyramid's share of the total height.
- */
-export function spindleClip(cap: number): string {
-  const c = Math.max(0.02, Math.min(0.45, cap));
-  return `polygon(50% 0%, 100% ${(c * 100).toFixed(1)}%, 100% ${((1 - c) * 100).toFixed(1)}%, 50% 100%, 0% ${((1 - c) * 100).toFixed(1)}%, 0% ${(c * 100).toFixed(1)}%)`;
-}
-
 /** A blade: a tapered aerofoil, root at the bottom, tip at the top. */
 export function bladeClip(): string {
   return 'polygon(28% 100%, 72% 100%, 60% 6%, 50% 0%, 40% 6%)';
@@ -224,51 +211,6 @@ export function crystalSpec(seed: number, scale = 1): CrystalSpec {
     twist: rnd() * 0.5,
     lean: (rnd() - 0.5) * 0.22,
   };
-}
-
-/**
- * What is inside a project's crystal.
- *
- * The WebGL build drew this to a canvas and mapped it across the facets: a seeded
- * abstract that gives the glass something to bend, deliberately quiet because the
- * readable content is the logo suspended inside it. Same PRNG, same seed, same
- * twenty-two rectangles and four hairlines — as an SVG the browser can hold as one
- * static background image instead of a texture upload.
- */
-export function crystalInteriorUri(seed: number, light: boolean): string {
-  const rnd = mulberry(seed * 104729 + 7);
-  const parts: string[] = [];
-  parts.push(
-    light
-      ? '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dde8e6"/><stop offset="1" stop-color="#f6faf9"/></linearGradient>'
-      : '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#06181c"/><stop offset="1" stop-color="#170a11"/></linearGradient>'
-  );
-  const body: string[] = ['<rect width="512" height="512" fill="url(#g)"/>'];
-  for (let i = 0; i < 22; i++) {
-    const crimson = rnd() > 0.7;
-    const alpha = (0.05 + rnd() * 0.2).toFixed(3);
-    const w = 30 + rnd() * 190;
-    const h = 8 + rnd() * 36;
-    const x = rnd() * (512 - w);
-    const y = rnd() * (512 - h);
-    body.push(
-      `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" ` +
-        `fill="rgba(${crimson ? '253,33,85' : '0,211,180'},${alpha})"/>`
-    );
-  }
-  for (let i = 0; i < 4; i++) {
-    const alpha = (0.1 + rnd() * 0.16).toFixed(3);
-    const width = (1 + rnd() * 1.5).toFixed(2);
-    const y1 = (rnd() * 512).toFixed(1);
-    const y2 = (rnd() * 512).toFixed(1);
-    body.push(
-      `<line x1="0" y1="${y1}" x2="512" y2="${y2}" stroke="rgba(0,211,180,${alpha})" stroke-width="${width}"/>`
-    );
-  }
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="none">` +
-    `<defs>${parts.join('')}</defs>${body.join('')}</svg>`;
-  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
 /* --------------------------------------------------------- surface samples */

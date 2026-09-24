@@ -181,6 +181,20 @@ html:has(link[data-theme='light']) .pz3-poly-shade {
   background: #2f4a46;
 }
 
+/*
+  A face catching the key and throwing it at the eye — opacity, set every frame. A
+  sweep from the key's corner rather than a flat fill: a face that goes uniformly white
+  reads as paper, one that flares from an edge reads as glass.
+*/
+.pz3-poly-glint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(143deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 38%,
+    rgba(255, 255, 255, 0.06) 78%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* A soft radial glow: the stage's only "sprite". */
 .pz3-glow {
   border-radius: 50%;
@@ -212,9 +226,7 @@ html:has(link[data-theme='light']) .pz3-poly-shade {
 .pz3-clip,
 .pz3-plinth,
 .pz3-chip,
-.pz3-tile-face,
-.pz3-crystal-core,
-.pz3-crystal-face {
+.pz3-tile-face {
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -513,40 +525,29 @@ html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
   cursor: pointer;
 }
 
-.pz3-crystal-3d {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-}
-
 /*
-  The silhouette, square to the camera. It is what makes the crystal read as a solid
-  rather than as the handful of faces that happen to be turned your way.
+  The project's logo inside its crystal (src/stage/acts/act06Works.ts): hung at the
+  solid's centre in the same 3D context as its faces, and turned every frame to face
+  the eye, so the browser sorts it between the near glass and the far.
 */
-.pz3-crystal-core {
+.pz3-crystal-inclusion {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
-}
-
-/*
-  Six faces around an axis, each clipped to a pointed spindle. `backface-visibility`
-  does the front-face culling the WebGL material asked for, at no cost.
-*/
-.pz3-crystal-face {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  backface-visibility: hidden;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-
-.pz3-crystal-logo {
-  object-fit: contain;
   pointer-events: none;
+}
+
+.pz3-crystal-inclusion img {
+  width: 82%;
+  height: 50%;
+  object-fit: contain;
+  user-select: none;
 }
 
 /* ---------- an opened core ---------- */

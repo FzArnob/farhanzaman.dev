@@ -26,6 +26,7 @@
 
 import type { Camera } from './camera';
 import { UNIT, el, q } from './dom';
+import type { CrystalSpec } from './shapes';
 
 export type Vec = [number, number, number];
 /** Row-major 3×3. */
@@ -162,12 +163,27 @@ function shadeFor(normal: Vec): number {
   return (1 - (0.24 + 0.76 * lambert)) * SHADOW;
 }
 
+/**
+ * The key's reflection off a face, as seen from `half` — the direction halfway between
+ * the key and the eye. Tight on purpose: a facet flashes as it passes through the angle
+ * and is dark either side of it, which is how cut glass tells you it is turning.
+ */
+function glintFor(normal: Vec, half: Vec): number {
+  const h = Math.max(0, dot(normal, half));
+  return Math.pow(h, 28);
+}
+
 /* ----------------------------------------------------------------- nodes */
 
 interface LitFace {
   shade: HTMLElement;
   normal: Vec;
   last: number;
+  /** How much of SHADOW this face may take — less for glass, which stays clear in shade. */
+  shadow: number;
+  glint: HTMLElement | null;
+  strength: number;
+  lastGlint: number;
 }
 
 /**
@@ -224,7 +240,7 @@ export class CssNode {
    * Writes this node's transform — `rot` is what goes into CSS, which for a scene's
    * root is the camera-relative rotation — and relights its faces from `world`.
    */
-  protected write(rot: M3, world: M3): void {
+  protected write(rot: M3, world: M3, half: Vec | null): void {
     const m = cssMatrix(rot, this.px, this.py, this.pz, this.sx, this.sy, this.sz);
     if (m !== this.lastTransform) {
       this.lastTransform = m;
@@ -232,21 +248,29 @@ export class CssNode {
     }
     for (let i = 0; i < 9; i++) this.world[i] = world[i];
     for (const face of this.lit) {
-      const shade = Math.round(shadeFor(apply(world, face.normal)) * 100) / 100;
+      const n = apply(world, face.normal);
+      const shade = Math.round(shadeFor(n) * face.shadow * 100) / 100;
       if (shade !== face.last) {
         face.last = shade;
         face.shade.style.opacity = String(shade);
+      }
+      if (face.glint && half) {
+        const glint = Math.round(glintFor(n, half) * face.strength * 100) / 100;
+        if (glint !== face.lastGlint) {
+          face.lastGlint = glint;
+          face.glint.style.opacity = String(glint);
+        }
       }
     }
   }
 
   /** Commit a child: its own rotation into CSS, its world rotation into its light. */
-  commit(parentWorld: M3): void {
+  commit(parentWorld: M3, half: Vec | null = null): void {
     if (!this.visible) return;
     euler(this.rx, this.ry, this.rz, this.local);
     const world = mul(parentWorld, this.local);
-    this.write(this.local, world);
-    for (const child of this.children) child.commit(world);
+    this.write(this.local, world, half);
+    for (const child of this.children) child.commit(world, half);
   }
 
   /** For the scene root, which needs its own rotation before viewOf. */
@@ -271,12 +295,20 @@ export class CssScene extends CssNode {
     this.outer = outer;
   }
 
+  /** The rotation last written into CSS: the solid's own, in the camera's frame. */
+  get viewRotation(): M3 {
+    return this.view;
+  }
+
   /** Commit the whole solid for this frame, as seen from `cam`. */
   commitView(cam: Camera): void {
     const world = this.localRotation().slice();
     viewOf(cam, world, this.view);
-    this.write(this.view, world);
-    for (const child of this.children) child.commit(world);
+    // Toward the eye is the camera's back; halfway between that and the key is where
+    // a face has to point to throw the key's reflection straight at you.
+    const half = norm(KEY[0] - cam.fwd.x, KEY[1] - cam.fwd.y, KEY[2] - cam.fwd.z);
+    this.write(this.view, world, half);
+    for (const child of this.children) child.commit(world, half);
   }
 }
 
@@ -360,7 +392,16 @@ export function face(
 
   if (opts.lit !== false && !opts.wire) {
     const shade = el('i', 'pz3-poly-shade', node3);
-    node.lit.push({ shade, normal, last: -1 });
+    const glint = opts.glint ? el('i', 'pz3-poly-glint', node3) : null;
+    node.lit.push({
+      shade,
+      normal,
+      last: -1,
+      shadow: opts.shadow ?? 1,
+      glint,
+      strength: opts.glint ?? 0,
+      lastGlint: -1,
+    });
   }
   return node3;
 }
@@ -370,6 +411,10 @@ export interface FaceOptions {
   cull?: boolean;
   /** Relight every frame from the face's normal. Default true. */
   lit?: boolean;
+  /** Scales how dark the face gets turned from the key. Default 1. */
+  shadow?: number;
+  /** Flash white, up to this opacity, as the face reflects the key at the eye. */
+  glint?: number;
   /** Draw only the outline, in this colour. */
   wire?: string;
   className?: string;
@@ -424,6 +469,36 @@ export function octahedron(): Solid {
       [1, 4, 2],
     ],
   };
+}
+
+/**
+ * A project's crystal — a hexagonal column with a pyramid at each end, the top ring a
+ * little narrower and turned out of register with the bottom one. The same vertices
+ * and the same triangles as the WebGL prism (gl/GLStage.ts, prismGeometry), so a
+ * project's crystal is one object on both renderers, down to where it comes to rest.
+ *
+ * The twist is why each long side is two triangles rather than one face: its four
+ * corners are no longer in one plane, and the fold down its diagonal is a real edge.
+ */
+export function prism(spec: CrystalSpec): Solid {
+  const sides = 6;
+  const verts: Vec[] = [];
+  const ring = (y: number, r: number, rot: number) => {
+    for (let i = 0; i < sides; i++) {
+      const a = (i / sides) * Math.PI * 2 + rot;
+      verts.push([Math.cos(a) * r, y, Math.sin(a) * r]);
+    }
+  };
+  ring(-spec.half, spec.radius, 0);
+  ring(spec.half, spec.radius * spec.taper, spec.twist);
+  const tip = verts.push([0, spec.half + spec.cap, 0]) - 1;
+  const base = verts.push([0, -spec.half - spec.cap, 0]) - 1;
+  const faces: number[][] = [];
+  for (let i = 0; i < sides; i++) {
+    const j = (i + 1) % sides;
+    faces.push([i, sides + j, j], [i, sides + i, sides + j], [sides + i, tip, sides + j], [j, base, i]);
+  }
+  return { verts, faces };
 }
 
 /**

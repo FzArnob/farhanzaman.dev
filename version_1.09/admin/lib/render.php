@@ -28,6 +28,15 @@ function admin_render_field(array $field, $value, $namePrefix)
             echo '<option value="' . e($optionValue) . '"' . $selected . '>' . e($optionLabel) . '</option>';
         }
         echo '</select>';
+    } elseif ($type === 'color') {
+        // A picker and the hex it stands for, kept in step by admin.js. The text input is
+        // the one that is submitted, so a colour can also be pasted in.
+        $hex = preg_match('/^#[0-9a-f]{6}$/i', (string)$display) ? strtolower((string)$display) : '#00d3b4';
+        echo '<div class="color-field">';
+        echo '<input type="color" value="' . e($hex) . '" data-color-for="' . e($id) . '" aria-label="' . e($field['label']) . ' picker" />';
+        echo '<input id="' . e($id) . '" type="text" name="' . e($name) . '" value="' . e($display) . '"'
+            . ' placeholder="#00d3b4" spellcheck="false" maxlength="7" data-color-text />';
+        echo '</div>';
     } else {
         $inputType = $type === 'number' ? 'number' : 'text';
         echo '<input id="' . e($id) . '" type="' . $inputType . '" name="' . e($name) . '" value="' . e($display) . '"'

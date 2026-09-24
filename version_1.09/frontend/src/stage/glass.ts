@@ -85,29 +85,14 @@ export function rimSheen(look: WorldLook): string {
   );
 }
 
-/**
- * One facet of a crystal.
- *
- * `key` is the facet's share of the light, decided by which way it is turned; `angle`
- * runs along the facet's length. The first layer is the important one: two hot lines
- * down the facet's long edges, where the glass turns away and the key skims it. That
- * is what makes a prism read as *cut* — without lit edges, six shaded quadrilaterals
- * are just six shaded quadrilaterals.
- */
-export function facetPane(look: WorldLook, rgb: string, key: number, angle: number): string {
-  const s = keyStrength(look);
-  const edge = key * s;
+/** The facet's body: the glass's own colour, deepening along its length. */
+export function facetBody(look: WorldLook, rgb: string, key: number, angle: number): string {
   const deep = look.bloom ? '0,0,0' : '116,136,134';
-  return [
-    `linear-gradient(90deg, rgba(255,255,255,${(edge * 0.85).toFixed(3)}) 0%,` +
-      ` rgba(255,255,255,0) 8%, rgba(255,255,255,0) 92%,` +
-      ` rgba(255,255,255,${(edge * 0.6).toFixed(3)}) 100%)`,
-    `linear-gradient(${q(angle)}deg, rgba(255,255,255,${(edge * 0.72).toFixed(3)}) 0%,` +
-      ` rgba(255,255,255,${(edge * 0.1).toFixed(3)}) 34%, rgba(255,255,255,0) 62%)`,
+  return (
     `linear-gradient(${q(angle)}deg, rgba(${rgb},${(key * 0.6).toFixed(3)}) 0%,` +
-      ` rgba(${rgb},${(key * 0.3).toFixed(3)}) 52%,` +
-      ` rgba(${deep},${look.bloom ? 0.48 : 0.2}) 100%)`,
-  ].join(',');
+    ` rgba(${rgb},${(key * 0.3).toFixed(3)}) 52%,` +
+    ` rgba(${deep},${look.bloom ? 0.48 : 0.2}) 100%)`
+  );
 }
 
 /**

@@ -9,10 +9,22 @@
  * place: the radius opens up and the remaining crystals fade in between the existing
  * ones. It stays one continuous scene rather than becoming a separate page.
  *
- * A crystal is six faces around an axis, each clipped to a pointed spindle — the shape
- * quartz actually grows into, and the silhouette the WebGL cores had, in six elements
- * instead of twenty-eight triangles. `backface-visibility: hidden` does the front-face
- * culling the material used to ask for, for free.
+ * A crystal is a hexagonal column with a pyramid at each end — the shape quartz
+ * actually grows into. On CSS it is built as the real solid (css3d.ts, prism): the
+ * same twenty-four triangles as the WebGL mesh, each its own element, relit every frame
+ * from its normal and flashing as it turns through the key. Six spindle-shaped cards
+ * around an axis used to stand in for it, and read as cards: their points never met,
+ * and a flat silhouette behind them never turned.
+ *
+ * Each crystal is cut from its project's own glass — `theme_color` in profile.json —
+ * with the project's `logo` held inside it as an inclusion. Inside, not on: on WebGL
+ * every facet refracts the mark by its own angle (gl/GLStage.ts, withInclusion); on CSS
+ * the mark hangs at the crystal's centre, square to the eye, and the browser sorts it
+ * between the near faces and the far ones, so the glass and its edges pass over it.
+ *
+ * A crystal arriving at the front slows and settles with one facet square to the
+ * camera, so the mark is read through a flat face rather than across a seam, and it
+ * picks its spin back up as it leaves.
  *
  * The transition between crystals is the point of the act. The outgoing prism sheds
  * shards into the shared pool and those same shards reassemble as the incoming one —
@@ -29,15 +41,44 @@ import { newProjected } from '../camera';
 import { Item, UNIT, el, place, q } from '../dom';
 import { HOME_COUNT, orderProjects } from '../data';
 import { shardClaims } from '../fx/shards';
+import { CssNode, CssScene, buildSolid, cssMatrix, prism, type M3 } from '../css3d';
 import type { GLNode } from '../gl/api';
-import { facetPane } from '../glass';
-import { glowGradient, TEAL_RGB } from '../look';
+import { facetBody } from '../glass';
+import { glowGradient } from '../look';
 import { worksState } from '../liveState';
-import { crystalInteriorUri, crystalSpec, mulberry, spindleClip } from '../shapes';
+import { crystalSpec, mulberry } from '../shapes';
 import { ACT_BY_ID, WORLD, actPresence, clamp01, itemIndex, smooth } from '../timeline';
+import {
+  glassTone,
+  hexString,
+  logoSrc,
+  monogramUri,
+  projectRgb,
+  rgbString,
+} from '../../lib/projectTheme';
 
 /** How many shards a crystal scatters through on a handoff. */
 const SCATTER = 28;
+
+/** One facet's turn: a hexagonal column comes square to you every sixty degrees. */
+const FACET = Math.PI / 3;
+
+/** The inclusion's width, as a share of the column's narrowest width across its flats. */
+const INCLUSION_SPAN = 0.9;
+
+/** The transpose of a rotation — its inverse. */
+function transpose(m: M3, out: M3): M3 {
+  out[0] = m[0];
+  out[1] = m[3];
+  out[2] = m[6];
+  out[3] = m[1];
+  out[4] = m[4];
+  out[5] = m[7];
+  out[6] = m[2];
+  out[7] = m[5];
+  out[8] = m[8];
+  return out;
+}
 
 export function createWorksAct(ctx: BuildContext): Act {
   const act = ACT_BY_ID.works;
@@ -49,110 +90,102 @@ export function createWorksAct(ctx: BuildContext): Act {
   const perCrystal =
     ctx.quality.shards > 0 ? Math.floor(ctx.quality.shards / Math.max(1, ordered.length)) : 0;
 
+  const lit = ctx.quality.tier !== 'low';
+  const inverse: M3 = new Array(9);
+
   const crystals = ordered.map((project, i) => {
     const seed = Number(project.project_id) || i + 1;
     const spec = crystalSpec(seed, 2.5);
     const height = spec.half * 2 + spec.cap * 2;
-    const capFraction = spec.cap / height;
-
-    const outer = el('div', 'pz3 pz3-crystal', root);
-    outer.style.width = q(spec.radius * 2 * UNIT) + 'px';
-    outer.style.height = q(height * UNIT) + 'px';
-    const spin = el('div', 'pz3-crystal-3d', outer);
-
     const apothem = spec.radius * Math.cos(Math.PI / 6);
-    const clip = spindleClip(capFraction);
+
+    // The project's colour, pulled into the band this world can show glass in.
+    const tone = glassTone(projectRgb(project), !look.bloom);
+    const toneRgb = rgbString(tone);
+    const logo = logoSrc(project);
+    const fallback = monogramUri(project.name);
 
     let solid: GLNode | null = null;
     let halo: GLNode | null = null;
     let glow: Item | null = null;
+    let scene: CssScene | null = null;
+    let inclusion: Item | null = null;
+    let outer: HTMLElement;
+
     if (ctx.gl) {
-      solid = ctx.gl.solid({ kind: 'prism', seed, scale: 2.5 });
-      halo = ctx.gl.solid({ kind: 'halo', size: 12, tint: 'teal', strength: 0.36 });
+      // On WebGL the element is only a hit area over the mesh, so it needs a size.
+      outer = el('div', 'pz3 pz3-crystal', root);
+      outer.style.width = q(spec.radius * 2 * UNIT) + 'px';
+      outer.style.height = q(height * UNIT) + 'px';
+      solid = ctx.gl.solid({
+        kind: 'prism',
+        seed,
+        scale: 2.5,
+        tint: hexString(tone) as `#${string}`,
+        logo,
+        fallback,
+      });
+      halo = ctx.gl.solid({ kind: 'halo', size: 12, tint: hexString(tone) as `#${string}`, strength: 0.36 });
     } else {
-      /*
-        The body.
-
-        Six turning faces alone do not read as a solid: between the two you can see is a
-        third turned edge-on, and the void shows through the seam. So the silhouette is
-        drawn once, square to the camera, and the facets ride on top of it. That is also
-        where the crystal's contents live — the same seeded abstract the WebGL cores
-        carried, quiet on purpose, because what you are meant to read is the logo
-        suspended inside rather than the pattern in the glass.
-      */
-      const core = el('div', 'pz3-crystal-core', outer);
-      core.style.width = q(apothem * 2 * UNIT) + 'px';
-      core.style.height = q(height * UNIT) + 'px';
-      core.style.marginLeft = q(-apothem * UNIT) + 'px';
-      core.style.marginTop = q(-height * UNIT * 0.5) + 'px';
-      core.style.clipPath = clip;
-      const glassRgb = look.bloom ? '0,211,180' : '0,148,127';
-      core.style.backgroundImage =
-        /*
-          Two things happen inside a piece of glass that never happen on a painted panel,
-          and both of them are here. The key does not stop at the surface — it carries
-          into the body and lands on the far wall, offset from where it went in. And the
-          crystal's own colour pools where the light came to rest rather than where it
-          struck. Put those below the facets and above the seeded interior and the thing
-          acquires an inside.
-        */
-        `radial-gradient(ellipse 46% 30% at 32% 20%, rgba(255,255,255,${look.bloom ? 0.34 : 0.2}) 0%,` +
-        ` rgba(255,255,255,0) 72%),` +
-        `radial-gradient(ellipse 36% 48% at 74% 78%, rgba(${glassRgb},${look.bloom ? 0.44 : 0.24}) 0%,` +
-        ` rgba(${glassRgb},0) 78%),` +
-        `linear-gradient(104deg, rgba(${glassRgb},0.42) 0%,` +
-        ` rgba(${glassRgb},0.16) 52%,` +
-        ` rgba(${look.bloom ? '4,26,26' : '150,175,170'},0.55) 100%),` +
-        crystalInteriorUri(seed, !look.bloom);
+      scene = new CssScene(root, 'pz3-crystal');
+      outer = scene.outer;
+      const shape = prism(spec);
 
       /*
-        The six long faces. Each one is a side of the hexagon — side length equals the
-        circumradius — stood on the apothem, so the column is exactly the width the
-        geometry was. A hair over, so two neighbours never leave a hairline between them.
-        The lean is folded into the group rather than each face.
+        The glass. Each face is the project's colour, deepening along its length at an
+        angle of its own so no two neighbours are painted alike; the per-frame light and
+        glint do the rest. The shadow is held back — glass in shade darkens but stays
+        clear, and the mark has to be read through whichever faces are turned from the key.
       */
-      for (let face = 0; face < 6; face++) {
-        const node = el('div', 'pz3-crystal-face', spin);
-        node.style.width = q(spec.radius * 1.03 * UNIT) + 'px';
-        node.style.height = q(height * UNIT) + 'px';
-        node.style.marginLeft = q(-spec.radius * 1.03 * UNIT * 0.5) + 'px';
-        node.style.marginTop = q(-height * UNIT * 0.5) + 'px';
-        node.style.clipPath = clip;
-        node.style.transform =
-          `rotateY(${q(face * 60 + (spec.twist * 180) / Math.PI)}deg) translateZ(${q(apothem * UNIT)}px)`;
-        /*
-          Flat shading, as the material had it: each facet takes a fixed share of the key
-          light, and which one is bright is decided by which one is turned toward you.
-          The group's rotation does that, so nothing here is touched again after build.
+      const body = new CssNode(scene);
+      buildSolid(body, shape, [1, 1, 1], (_, k) => facetBody(look, toneRgb, 0.8, 24 + k * 37), {
+        shadow: 0.55,
+        glint: lit ? (look.bloom ? 0.85 : 0.6) : 0,
+        lit,
+      });
 
-          facetPane adds the part that was missing — a hot line down each facet's two long
-          edges. That is where a real prism gives itself away: the ground edge between two
-          faces catches the key from whatever direction it arrives, so a turning crystal
-          is a moving cage of bright lines. Without them, six shaded quadrilaterals stay
-          six shaded quadrilaterals however carefully they are lit.
-        */
-        const key = 0.16 + 0.5 * Math.abs(Math.cos((face / 6) * Math.PI * 2 + 0.6));
-        node.style.backgroundImage = facetPane(look, glassRgb, key, 24 + face * 11);
-      }
+      /*
+        The mark, hung at the centre and turned every frame to face the eye. It is inside
+        the same 3D context as the faces, so the browser draws it behind the near ones and
+        in front of the far ones: it sits in the glass, not on it. The project's colour
+        pools behind it, so a dark wordmark reads as a silhouette against its own brand
+        and a white one as light within light. Its width stays inside the narrower top
+        ring's flats, so however the crystal turns it never pokes through a face.
+      */
+      const span = apothem * spec.taper * 2 * INCLUSION_SPAN * UNIT;
+      const holder = el('div', 'pz3-crystal-inclusion', scene.el);
+      holder.style.width = q(span) + 'px';
+      holder.style.height = q(span * 1.6) + 'px';
+      holder.style.backgroundImage =
+        `radial-gradient(closest-side, rgba(${toneRgb},${look.bloom ? 0.7 : 0.45}) 0%,` +
+        ` rgba(${toneRgb},${look.bloom ? 0.22 : 0.14}) 55%, rgba(${toneRgb},0) 100%)`;
+      const img = el('img', '', holder);
+      img.alt = '';
+      img.decoding = 'async';
+      img.draggable = false;
+      img.onerror = () => {
+        if (img.src !== fallback) img.src = fallback;
+      };
+      img.src = logo;
+      inclusion = new Item(holder);
+
+      /*
+        The edges, as a cage just outside the glass. It is never culled, so the far
+        edges show through the near faces — dimmed by them, the way the back of a real
+        crystal is — and that crossing of near and far lines is most of what tells the
+        eye this is a solid and not a cut-out.
+      */
+      const edges = new CssNode(scene);
+      edges.size(1.004);
+      buildSolid(edges, shape, [1, 1, 1], () => '', {
+        wire: look.bloom ? 'rgba(255,255,255,0.42)' : 'rgba(40,62,58,0.42)',
+      });
 
       const glowEl = el('div', 'pz3 pz3-glow', root);
       glowEl.style.width = glowEl.style.height = 12 * UNIT + 'px';
-      glowEl.style.backgroundImage = glowGradient(TEAL_RGB, 0.4);
+      glowEl.style.backgroundImage = glowGradient(toneRgb, 0.4);
       glow = new Item(glowEl);
     }
-
-    /*
-      The project's real artwork goes on a billboard inside the crystal rather than on
-      its faces: mapped across six facets it came out as an unreadable smear, and the
-      whole point of a prism is that you see through it.
-    */
-    const logoEl = el('img', 'pz3 pz3-crystal-logo', root);
-    const art = project.logo_image || project.media?.[0]?.media_link || '';
-    if (art) logoEl.src = art;
-    logoEl.alt = '';
-    logoEl.loading = 'lazy';
-    logoEl.decoding = 'async';
-    logoEl.style.width = logoEl.style.height = 2 * UNIT + 'px';
 
     outer.addEventListener('click', () => {
       if (i === worksState.index) ctx.onOpenProject(project.project_id);
@@ -161,13 +194,19 @@ export function createWorksAct(ctx: BuildContext): Act {
     return {
       project,
       item: new Item(outer),
-      spin,
+      scene,
+      inclusion,
       glow,
       solid,
       halo,
-      logo: new Item(logoEl),
-      hasArt: Boolean(art),
       lean: spec.lean,
+      /*
+        The turn at which a facet is square to the camera, which is where a crystal
+        comes to rest at the front. Both renderers build the same solid — its faces sit
+        between the vertices and take half the top ring's twist — so one angle serves.
+      */
+      rest: spec.twist / 2,
+      yaw: i,
       shardFrom: i * perCrystal,
       shardCount: perCrystal,
     };
@@ -244,7 +283,6 @@ export function createWorksAct(ctx: BuildContext): Act {
         if (i >= shown) {
           c.item.show(false);
           c.glow?.show(false);
-          c.logo.show(false);
           c.solid?.show(false);
           c.halo?.show(false);
           continue;
@@ -263,15 +301,27 @@ export function createWorksAct(ctx: BuildContext): Act {
         delta2 = Math.atan2(Math.sin(delta2), Math.cos(delta2));
         const near = clamp01(1 - Math.abs(delta2) / step);
 
+        /*
+          The crystal's own turn. Away from the front it spins freely; as it arrives it
+          slows and a spring draws it to the nearest face-on facet, with a slow sway
+          left in so it never looks switched off. The well is sixty degrees wide and the
+          sway a tenth of that, so a parked crystal can never slip into the next facet.
+        */
+        const pull = near * near;
+        c.yaw += delta * 0.14 * (1 - 0.9 * pull);
+        const settle = c.rest + Math.round((c.yaw - c.rest) / FACET) * FACET + Math.sin(time * 0.45 + i) * 0.1;
+        c.yaw += (settle - c.yaw) * (1 - Math.exp(-delta * 2.4 * pull));
+        const tilt = Math.sin(time * 0.2 + i) * 0.08;
+
         const scale = (0.42 + (1.12 - 0.42) * near * near) * (1 - handoff * 0.12 * near);
 
         const fade = presence * (0.3 + 0.7 * near) * (1 - handoff * 0.2 * near);
         if (c.solid) {
           c.solid.show(true);
-          c.solid.pose(wx, 0, z0 + wz, Math.sin(time * 0.2 + i) * 0.08, time * 0.14 + i, c.lean);
+          c.solid.pose(wx, 0, z0 + wz, tilt, c.yaw, c.lean);
           c.solid.size(scale);
           c.solid.fade(fade);
-          // The crystal at the front is the one lit from inside.
+          // The crystal at the front is the one lit from inside, and its mark with it.
           c.solid.shine(0.6 + near * 1.4);
         }
 
@@ -280,27 +330,27 @@ export function createWorksAct(ctx: BuildContext): Act {
           c.item.transform(place(p.x, p.y, p.scale * scale));
           c.item.order(Math.round(4000 - p.depth * 8));
           // On WebGL the element is only a hit area over the mesh; it has nothing to turn.
-          if (!c.solid) {
+          if (c.scene) {
             c.item.opacity(fade * p.fog);
             c.item.el.style.setProperty('--pz3-persp', q(p.depth * UNIT) + 'px');
-            c.spin.style.transform =
-              `rotateY(${q(((time * 0.14 + i) * 180) / Math.PI)}deg) ` +
-              `rotateX(${q((-Math.sin(time * 0.2 + i) * 0.08 * 180) / Math.PI)}deg) ` +
-              `rotateZ(${q((-c.lean * 180) / Math.PI)}deg)`;
+            c.scene.pose(0, 0, 0, tilt, c.yaw, c.lean);
+            c.scene.commitView(cam);
+            // Undo the solid's turn, so the mark inside it always faces the eye.
+            transpose(c.scene.viewRotation, inverse);
+            c.inclusion?.transform(cssMatrix(inverse, 0, 0, 0) + ' translate(-50%,-50%)');
+            c.inclusion?.opacity(0.45 + 0.55 * near);
           }
         }
 
-        // The logo billboard: inside the crystal, always facing you, and only legible
-        // on the crystal that is actually at the front.
-        if (c.logo.show(p.visible && c.hasArt && near > 0.02)) {
-          c.logo.transform(place(p.x, p.y, p.scale * scale));
-          c.logo.opacity(presence * near * near * 0.95 * p.fog);
-          c.logo.order(Math.round(4001 - p.depth * 8));
-        }
-
+        /*
+          The glow stands just behind the crystal, where the CSS stage paints its own, so
+          it backlights the glass instead of washing over it. In front, an additive halo
+          in a light brand colour — Pocketalk's yellow — turned the whole crystal and the
+          mark inside it into one flat glare.
+        */
         if (c.halo) {
           c.halo.show(near > 0.01);
-          c.halo.pose(wx * 0.9, 0, z0 + wz * 0.9);
+          c.halo.pose(wx * 1.08, 0, z0 + wz * 1.08);
           c.halo.fade(presence * near * 0.85);
         } else if (c.glow) {
           cam.project(wx * 0.9, 0, z0 + wz * 0.9, p);

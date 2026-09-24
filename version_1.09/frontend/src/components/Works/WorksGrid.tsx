@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import type { Project } from '../../types/profile';
+import { ProjectMark } from './ProjectMark';
 
 function columnsFor(width: number): number {
   switch (true) {
@@ -21,7 +22,7 @@ function columnsFor(width: number): number {
 function FullWorkCard({ work, width, index }: { work: Project; width: number; index: number }) {
   const navigate = useNavigate();
   const cardRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,7 @@ function FullWorkCard({ work, width, index }: { work: Project; width: number; in
       onMouseLeave={onMouseLeave}
       onClick={() => navigate('/work?work_id=' + (index + 1))}
     >
-      <img ref={imageRef} className="work-card-image-full" src={work.logo_image} />
+      <ProjectMark ref={imageRef} className="work-card-image-full" project={work} />
       <div className="work-card-tags">
         <div ref={typeRef} className="work-card-tag c-theme animate-slide-down">
           {work.type}

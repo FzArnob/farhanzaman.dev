@@ -94,7 +94,10 @@ export interface Project {
   project_id: string;
   name: string;
   work_role: string;
-  logo_image: string;
+  /** A transparent mark (PNG or SVG) — suspended inside the project's crystal. */
+  logo: string;
+  /** The project's brand colour, `#rrggbb`. The crystal is cut from glass of this colour. */
+  theme_color: string;
   type: string;
   stack: string;
   details: string;

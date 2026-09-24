@@ -1,4 +1,5 @@
 import type { Project } from '../../types/profile';
+import { ProjectMark } from '../Works/ProjectMark';
 
 function Media({ mediaType, link }: { mediaType: string; link: string }) {
   if (mediaType === 'Image') {
@@ -33,11 +34,7 @@ export function ProjectDetails({ project }: { project: Project }) {
     <div className="row" style={{ justifyContent: 'center' }}>
       <div className="work-left">
         <div className="work-details">
-          <img
-            className="img-float-left work-logo animate-left"
-            src={project.logo_image}
-            alt="Logo Image"
-          />
+          <ProjectMark className="img-float-left work-logo animate-left" project={project} />
           <span dangerouslySetInnerHTML={{ __html: project.details }} />
         </div>
         <div className="work-gallery animate-left">

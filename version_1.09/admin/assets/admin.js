@@ -224,6 +224,22 @@
     event.returnValue = '';
   });
 
+  // A colour field is a picker plus its hex; whichever one changes, the other follows.
+  // Delegated, so the fields on a freshly added project work too.
+  document.addEventListener('input', function (event) {
+    var target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (target.type === 'color' && target.dataset.colorFor !== undefined) {
+      var text = target.parentElement.querySelector('[data-color-text]');
+      if (text) text.value = target.value;
+    } else if (target.hasAttribute('data-color-text')) {
+      var picker = target.parentElement.querySelector('input[type="color"]');
+      var value = target.value.trim();
+      if (value.charAt(0) !== '#') value = '#' + value;
+      if (picker && /^#[0-9a-f]{6}$/i.test(value)) picker.value = value.toLowerCase();
+    }
+  });
+
   // Ctrl/Cmd + S saves.
   document.addEventListener('keydown', function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {

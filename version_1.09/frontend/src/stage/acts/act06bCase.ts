@@ -22,6 +22,7 @@ import { filament, rimSheen } from '../glass';
 import { glowGradient, TEAL_RGB } from '../look';
 import { caseOpenState } from '../liveState';
 import { WORLD, clamp01, smooth } from '../timeline';
+import { glassTone, projectRgb, rgbString } from '../../lib/projectTheme';
 
 /** Chips are the tech stack, capped so a 20-item stack does not become confetti. */
 const MAX_CHIPS = 18;
@@ -74,9 +75,10 @@ export function createCaseAct(ctx: BuildContext): Act {
     const project = id ? ctx.profile.projects.find((pr) => pr.project_id === id) ?? null : null;
     if (!project) return;
 
-    const art =
-      project.media?.find((m) => m.media_type === 'Image')?.media_link ?? project.logo_image ?? '';
+    const art = project.media?.find((m) => m.media_type === 'Image')?.media_link ?? '';
     shellArt.style.backgroundImage = art ? `url("${art}")` : 'none';
+    // You are inside the project's crystal now, so the light in here is its colour.
+    glowEl.style.backgroundImage = glowGradient(rgbString(glassTone(projectRgb(project), !look.bloom)), 0.34);
 
     const stack = String(project.tech_stack || '')
       .split(',')

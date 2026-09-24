@@ -20,6 +20,10 @@ function admin_normalize_value(array $field, $raw)
     $value = is_string($raw) ? trim($raw) : $raw;
     $value = is_scalar($value) ? (string)$value : '';
 
+    if ($type === 'color' && preg_match('/^#?([0-9a-f]{6})$/i', $value, $m)) {
+        return '#' . strtolower($m[1]);
+    }
+
     // Normalise the newlines inside long text so the JSON stays consistent.
     if ($type === 'textarea' || $type === 'html') {
         $value = str_replace(array("\r\n", "\r"), "\n", $value);
@@ -209,6 +213,12 @@ function admin_validate(array $profile, array $schema)
             if (!isset($item[$titleField]) || trim((string)$item[$titleField]) === '') {
                 $errors[] = $section['label'] . ' #' . $position . ': ' . $titleField . ' is required.';
             }
+            foreach ($section['fields'] as $field) {
+                if (isset($field['type']) && $field['type'] === 'color'
+                    && !preg_match('/^#[0-9a-f]{6}$/', (string)($item[$field['name']] ?? ''))) {
+                    $errors[] = $section['label'] . ' #' . $position . ': ' . strtolower($field['label']) . ' must be a colour like #1a2b3c.';
+                }
+            }
             if ($name === 'skills') {
                 $percentage = (string)$item['percentage'];
                 if ($percentage === '' || !is_numeric($percentage) || (float)$percentage < 0 || (float)$percentage > 100) {
@@ -234,6 +244,11 @@ function admin_validate(array $profile, array $schema)
 function admin_warnings(array $profile)
 {
     $warnings = array();
+    foreach ($profile['projects'] as $index => $project) {
+        if (trim((string)($project['logo'] ?? '')) === '') {
+            $warnings[] = 'Projects #' . ($index + 1) . ' (' . ($project['name'] ?? '') . ') has no logo; its crystal shows the project\'s initials instead.';
+        }
+    }
     $projectCount = count($profile['projects']);
     if ($projectCount < 8) {
         $warnings[] = 'The home page marquee reads 8 projects on wide screens; there are only ' . $projectCount . '. Add more or the marquee will break.';

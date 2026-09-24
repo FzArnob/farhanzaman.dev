@@ -110,6 +110,18 @@ select {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+.color-field {
+  display: flex;
+  gap: 8px;
+}
+
+.color-field input[type='color'] {
+  flex: 0 0 44px;
+  width: 44px;
+  padding: 3px;
+  cursor: pointer;
+}
+
 textarea {
   resize: vertical;
   line-height: 1.55;

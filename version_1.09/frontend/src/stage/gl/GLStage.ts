@@ -40,11 +40,16 @@ import { dustPositions } from '../fx/PointField';
 import { SHARD_RADIUS, ShardSim } from '../fx/shards';
 import type { WorldLook } from '../look';
 import { crystalSpec, markOutlines, MARK } from '../shapes';
+import { glassTone, parseHex } from '../../lib/projectTheme';
 import type { GLDriver, GLField, GLLight, GLNode, SolidSpec, Tint } from './api';
 
 /* ------------------------------------------------------------------ palette */
 
 function tintHex(tint: Tint, look: WorldLook): number {
+  if (tint.startsWith('#')) {
+    const [r, g, b] = glassTone(parseHex(tint), !look.bloom);
+    return (r << 16) | (g << 8) | b;
+  }
   if (tint === 'white') return 0xffffff;
   if (tint === 'crimson') return look.bloom ? 0xfd2155 : 0xd70f41;
   return look.bloom ? 0x00d3b4 : 0x00947f;
@@ -66,6 +71,8 @@ interface Part {
   opacity: number;
   /** Resting emissive intensity, or -1 for an unlit material whose glow is its alpha. */
   emissive: number;
+  /** Anything else the node's shine drives — a prism's inclusion. */
+  onShine?: (k: number) => void;
 }
 
 class Node implements GLNode {
@@ -117,6 +124,7 @@ class Node implements GLNode {
       if (this.shineDirty && part.emissive >= 0) {
         (part.material as THREE.MeshStandardMaterial).emissiveIntensity = part.emissive * this.ownShine;
       }
+      if (this.shineDirty) part.onShine?.(this.ownShine);
     }
     this.shineDirty = false;
     for (const child of this.children) child.apply(fade);
@@ -221,6 +229,196 @@ function moteTexture(): THREE.Texture {
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
+}
+
+/* -------------------------------------------------------------- inclusion */
+
+/** The logo canvas: square, the mark fitted inside it, transparent everywhere else. */
+const INCLUSION_PX = 512;
+
+/**
+ * A project's logo as a texture, drawn into a square canvas so every mark — a wide
+ * wordmark, a square badge — lands in the same frame the shader samples.
+ *
+ * The texture exists at once, empty, and fills when the image arrives, so building the
+ * ring never waits on the network. A logo that will not load (a host without CORS
+ * headers cannot be uploaded to WebGL at all) is replaced by the fallback, the
+ * project's monogram, rather than by nothing.
+ */
+function inclusionTexture(url: string, fallback: string, anisotropy: number): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = INCLUSION_PX;
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = anisotropy;
+
+  const draw = (img: HTMLImageElement) => {
+    const g = canvas.getContext('2d');
+    if (!g) return;
+    const w = img.naturalWidth || INCLUSION_PX;
+    const h = img.naturalHeight || INCLUSION_PX;
+    const k = INCLUSION_PX / Math.max(w, h);
+    g.clearRect(0, 0, INCLUSION_PX, INCLUSION_PX);
+    g.drawImage(img, (INCLUSION_PX - w * k) / 2, (INCLUSION_PX - h * k) / 2, w * k, h * k);
+    tex.needsUpdate = true;
+  };
+  const load = (src: string, onFail?: () => void) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.decoding = 'async';
+    img.onload = () => draw(img);
+    if (onFail) img.onerror = onFail;
+    img.src = src;
+  };
+  load(url || fallback, url && url !== fallback ? () => load(fallback) : undefined);
+  return tex;
+}
+
+/**
+ * The logo, inside the glass.
+ *
+ * A mark painted on a crystal reads as a sticker, and a mark floated in front of one
+ * reads as a label. What makes something read as *inside* a piece of cut glass is that
+ * every facet shows it from a slightly different place: the eye's ray bends at each
+ * face by a different amount, so the object breaks at every seam and the pieces slide
+ * against each other as the crystal turns. That is what this does, per pixel.
+ *
+ * The mark is a billboard through the crystal's centre, square to the eye. Each
+ * fragment of a front facet refracts the view ray through that facet's own normal
+ * (glass, n ≈ 1.5) and looks the logo up where the bent ray crosses the billboard. The
+ * face turned toward you shows the mark almost true; the faces either side show it
+ * displaced and magnified, the way a real inclusion looks.
+ *
+ * Three rays rather than one: red, green and blue refract at slightly different
+ * indices, so a mark seen through an oblique facet fringes into its colours at the
+ * edges — the dispersion that separates a crystal from a lens. Around the mark, the
+ * crystal's own colour gathers the way light pools about an object in glass. It is
+ * read from a low mip of the same texture, so the glow is exactly the logo's
+ * silhouette, blurred, for the price of one lookup.
+ *
+ * It is all spliced into the standard material, so the crystal keeps every bit of the
+ * lighting, clearcoat and fog it already had.
+ */
+function withInclusion(
+  material: THREE.MeshStandardMaterial,
+  map: THREE.Texture,
+  size: number,
+  tint: THREE.Color,
+  lift: number
+): (k: number) => void {
+  const uniforms = {
+    uIncl: { value: map },
+    uInclSize: { value: size },
+    uInclShine: { value: 1 },
+    uInclTint: { value: tint },
+    uInclLift: { value: lift },
+  };
+  material.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, uniforms);
+    shader.vertexShader = shader.vertexShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        varying vec3 vInclCentre;
+        varying float vInclScale;`
+      )
+      .replace(
+        '#include <project_vertex>',
+        `#include <project_vertex>
+        vInclCentre = (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+        vInclScale = length(modelViewMatrix[0].xyz);`
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        uniform sampler2D uIncl;
+        uniform float uInclSize;
+        uniform float uInclShine;
+        uniform vec3 uInclTint;
+        uniform float uInclLift;
+        varying vec3 vInclCentre;
+        varying float vInclScale;
+
+        // Where the view ray, bent by this facet, crosses the billboard through C.
+        vec2 inclusionUv(vec3 P, vec3 V, vec3 N, vec3 C, vec3 nP, vec3 bu, vec3 bv, float s, float eta) {
+          vec3 R = refract(V, N, eta);
+          float d = dot(R, nP);
+          if (d > -1e-4) return vec2(-1.0);
+          float t = dot(C - P, nP) / d;
+          if (t < 0.0) return vec2(-1.0);
+          vec3 H = P + R * t - C;
+          return vec2(dot(H, bu), dot(H, bv)) / s + 0.5;
+        }
+        float inBox(vec2 uv) {
+          return step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
+        }`
+      )
+      .replace(
+        '#include <emissivemap_fragment>',
+        `#include <emissivemap_fragment>
+        float inclGlare = 1.0;
+        {
+          vec3 P = -vViewPosition;
+          vec3 V = normalize(P);
+          vec3 N = normalize(normal);
+          N = dot(N, V) > 0.0 ? -N : N;
+          vec3 C = vInclCentre;
+          vec3 nP = normalize(-C);
+          vec3 bu = normalize(cross(vec3(0.0, 1.0, 0.0), nP));
+          vec3 bv = cross(nP, bu);
+          float s = uInclSize * vInclScale;
+
+          vec2 uvR = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.44);
+          vec2 uvG = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.50);
+          vec2 uvB = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.56);
+          vec4 tR = texture2D(uIncl, uvR) * inBox(uvR);
+          vec4 tG = texture2D(uIncl, uvG) * inBox(uvG);
+          vec4 tB = texture2D(uIncl, uvB) * inBox(uvB);
+          float a = (tR.a + tG.a + tB.a) / 3.0;
+          vec3 ink = vec3(tR.r * tR.a, tG.g * tG.a, tB.b * tB.a);
+
+          // The brand light pooled around the mark, and a softer echo of it from deeper
+          // in. Both from low mips: neither costs more than a lookup.
+          float glow = textureLod(uIncl, uvG, 5.5).a * inBox(uvG);
+          vec2 uvE = inclusionUv(P, V, N, C - nP * s * 0.5, nP, bu, bv, s * 1.16, 1.0 / 1.5);
+          float echo = textureLod(uIncl, uvE, 3.0).a * inBox(uvE);
+
+          float lit = clamp(uInclShine * 0.5, 0.0, 1.0);
+          float around = 1.0 - a;
+          // The mark stands in front of the glass behind it...
+          diffuseColor.rgb = mix(diffuseColor.rgb, ink / max(a, 1e-3) * 0.45, a * lit * 0.85);
+          diffuseColor.a = min(1.0, diffuseColor.a * (1.0 + a * lit * 0.14));
+          // ...is lit from inside, and is backed by the crystal's own colour. Half-lit, not
+          // fully: a pale mark at full self-light crosses the bloom threshold and flares
+          // into a white blob that no longer reads as anything.
+          totalEmissiveRadiance += ink * uInclLift * lit * 0.5;
+          totalEmissiveRadiance += uInclTint * (glow * 0.62 + echo * 0.22) * around * lit * uInclLift;
+          // Where the mark is, the surface's own glare is held back (see below).
+          inclGlare = 1.0 - 0.8 * clamp(max(a, glow) * lit, 0.0, 1.0);
+        }`
+      )
+      /*
+        The fill light sits at the eye, so a facet square to the camera mirrors it
+        straight back — and the front crystal parks exactly that way. Left alone, the
+        mark disappears under a white sheet of glare. So the surface specular and the
+        clearcoat are damped where the mark is; everywhere else the glass shines as before.
+      */
+      .replace(
+        '#include <lights_physical_fragment>',
+        `#include <lights_physical_fragment>
+        #ifdef USE_CLEARCOAT
+          material.clearcoat *= inclGlare;
+        #endif`
+      )
+      .replace(
+        'vec3 outgoingLight = totalDiffuse + totalSpecular + totalEmissiveRadiance;',
+        'vec3 outgoingLight = totalDiffuse + totalSpecular * inclGlare + totalEmissiveRadiance;'
+      );
+  };
+  return (k) => {
+    uniforms.uInclShine.value = k;
+  };
 }
 
 /* ----------------------------------------------------------------- stage */
@@ -384,16 +582,46 @@ export class WebGLStage implements GLDriver {
         const geo = this.cached(`prism:${spec.seed}:${spec.scale}`, () =>
           prismGeometry(spec.seed, spec.scale)
         );
+        /*
+          The project's own glass. Void's body is the brand colour taken most of the way
+          to black — about the ratio the teal cores had to #00d3b4 — so the colour reads
+          from the lit edges and the light inside rather than as a painted solid. Studio's
+          is the colour washed toward white: glass under daylight.
+        */
+        const hex = tintHex(spec.tint, look);
+        const tone = new THREE.Color(hex);
+        // Scaled in sRGB, as the teal core's hex was: the same 0.3 in linear light is
+        // nearer 0.6 to the eye, and the crystal comes out a lamp.
+        const srgb = (k: number, c: number) => (((hex >> c) & 255) / 255) * k;
+        const body = bloom
+          ? new THREE.Color().setRGB(srgb(0.3, 16), srgb(0.3, 8), srgb(0.3, 0), THREE.SRGBColorSpace)
+          : tone.clone().lerp(new THREE.Color(0xffffff), 0.32);
         const m = this.glass({
-          color: bloom ? 0x0c3f3a : 0x9fd9cf,
-          emissive: tintHex('teal', look),
-          emissiveIntensity: bloom ? 0.08 : 0.02,
+          color: body.getHex(),
+          emissive: tone.getHex(),
+          emissiveIntensity: bloom ? 0.1 : 0.03,
           metalness: 0.5,
           roughness: 0.24,
           opacity: 0.88,
           flatShading: true,
         });
+        const crystal = crystalSpec(spec.seed, spec.scale);
+        const map = inclusionTexture(
+          spec.logo,
+          spec.fallback,
+          Math.min(4, this.renderer.capabilities.getMaxAnisotropy())
+        );
+        this.trash.push(map);
+        const onShine = withInclusion(
+          m,
+          map,
+          // Most of the column's width, so the mark sits in the glass with air round it.
+          crystal.radius * Math.cos(Math.PI / 6) * 1.5,
+          tone,
+          bloom ? 1 : 0.55
+        );
         add(new THREE.Mesh(geo, m), m, m.emissiveIntensity);
+        node.parts[node.parts.length - 1].onShine = onShine;
         break;
       }
       case 'gem': {
