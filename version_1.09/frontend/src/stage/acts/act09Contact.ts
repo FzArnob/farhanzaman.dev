@@ -129,8 +129,10 @@ export function createContactAct(ctx: BuildContext): Act {
 
       /*
         The gap: from under the masthead to the top of the contact copy, centred on the
-        copy. The mark takes two thirds of it, capped so a tall screen gets a small mark
-        with room around it rather than a large one. Where there is barely any gap — a
+        copy. The mark takes about half of it, leaving room for the halo of
+        shards around it (fx/shards.ts), which stands about 1.7 times the mark's height.
+        Capped so a tall screen gets a small mark with room around it rather than a
+        large one. Where there is barely any gap — a
         phone with the form open — it keeps a floor and hangs from the top instead.
       */
       const width = cam.width;
@@ -139,7 +141,7 @@ export function createContactAct(ctx: BuildContext): Act {
       const copy = layoutState.copy.contact;
       const top = layoutState.ceiling || 64;
       const gap = Math.max(0, (copy ? copy.top : height * 0.4) - top);
-      const px = Math.max(MIN_PX, Math.min(gap * 0.66, height * MAX_SHARE, MAX_PX));
+      const px = Math.max(MIN_PX, Math.min(gap * 0.52, height * MAX_SHARE, MAX_PX));
       const sx = copy ? (copy.left + copy.right) / 2 : width / 2;
       const sy = top + Math.max(gap, px + 8) / 2;
       const u = ((sx - width / 2) / focal) * depth;

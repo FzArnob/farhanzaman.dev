@@ -28,6 +28,12 @@ import type { WorldLook } from './look';
 import { boot, caseOpenState } from './liveState';
 import { clamp01, smooth } from './timeline';
 
+/** The world's frame rate while someone is interacting, and while nobody is. */
+const ACTIVE_FRAME_MS = 1000 / 60;
+const IDLE_FRAME_MS = 1000 / 30;
+/** How long after the last scroll or pointer move the world counts as idle. */
+const IDLE_AFTER_MS = 2500;
+
 export interface Frame {
   /** Damped scroll position, 0..1. The only clock the acts read. */
   t: number;
@@ -87,6 +93,11 @@ export class StageEngine {
   private frameId = 0;
   private started = 0;
   private last = 0;
+  /** When the loop last ran a frame, on its own schedule rather than the display's. */
+  private then = 0;
+  /** When the visitor last scrolled or moved the pointer. */
+  private lastInput = 0;
+  private lastT = -1;
   private chamber = 0;
   private bootElapsed = 0;
   private samples: number[] = [];
@@ -153,6 +164,7 @@ export class StageEngine {
       the one thing a DOM scene gets for free that a canvas has to raycast for.
     */
     const onMove = (e: PointerEvent) => {
+      this.lastInput = performance.now();
       this.cam.pointer((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1);
     };
     window.addEventListener('pointermove', onMove, { passive: true });
@@ -183,6 +195,19 @@ export class StageEngine {
     this.last = 0;
     const tick = (now: number) => {
       this.frameId = requestAnimationFrame(tick);
+      /*
+        The world runs on its own clock, not the display's. A 144 Hz monitor would
+        otherwise ask for 144 frames a second of a scene whose motion reads identically
+        at 60 — every one of them re-sorting the 3D layers and repainting every blur
+        over them. While nobody is scrolling or moving the pointer the only motion is
+        the ambient drift, which is slow enough to hold at 30.
+      */
+      const interval = now - this.lastInput < IDLE_AFTER_MS ? ACTIVE_FRAME_MS : IDLE_FRAME_MS;
+      const elapsed = now - this.then;
+      // A millisecond of slack, so a 60 Hz display is never made to skip its own frames.
+      if (elapsed < interval - 1) return;
+      // Carry the remainder, so the rate averages out right on any refresh rate.
+      this.then = now - (elapsed % interval);
       this.run(now);
     };
     this.frameId = requestAnimationFrame(tick);
@@ -201,6 +226,9 @@ export class StageEngine {
 
     const f = this.frame;
     f.t = this.readTime();
+    // Scroll counts as input: the world is moving under the camera, so run full rate.
+    if (Math.abs(f.t - this.lastT) > 1e-6) this.lastInput = now;
+    this.lastT = f.t;
     f.time = (now - this.started) / 1000;
     f.delta = delta;
 
@@ -214,6 +242,8 @@ export class StageEngine {
     }
 
     const open = this.ctx.openProject() !== null;
+    // An opening or closing core is a camera flight: keep it at full rate too.
+    if (!boot.done || Math.abs((open ? 1 : 0) - this.chamber) > 0.002) this.lastInput = now;
     this.chamber += ((open ? 1 : 0) - this.chamber) * (1 - Math.exp(-delta * 2.6));
     caseOpenState.progress = this.chamber;
 

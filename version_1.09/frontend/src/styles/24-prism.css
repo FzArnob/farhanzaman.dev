@@ -27,11 +27,17 @@
 
   /* Overlay surfaces. Copy always sits on one of these, never straight on the
      canvas — that is what keeps text readable over a moving 3D background. */
-  --pz-panel: rgba(20, 20, 20, 0.72);
+  --pz-panel: rgba(20, 20, 20, 0.88);
   --pz-panel-strong: rgba(24, 24, 24, 0.93);
   --pz-hairline: rgba(231, 231, 231, 0.14);
   --pz-hairline-2: rgba(231, 231, 231, 0.28);
-  --pz-blur: blur(14px) saturate(1.05);
+  /*
+    No frosted glass. Every panel sits over a stage that moves every frame, and a
+    backdrop blur has to be recomputed whenever what is behind it changes — it was the
+    single largest cost on the GPU. The panels carry a denser tint instead, which keeps
+    copy just as readable over the moving world.
+  */
+  --pz-blur: none;
 
   --pz-face: 'titillium-font', 'Titillium Web', system-ui, sans-serif;
 }
@@ -43,7 +49,7 @@ html:has(link[data-theme='light']) {
   --pz-c3: #7f7f7f;
   --pz-bg1: #ffffff;
   --pz-bg2: #f6f6f6;
-  --pz-panel: rgba(255, 255, 255, 0.8);
+  --pz-panel: rgba(255, 255, 255, 0.92);
   --pz-panel-strong: rgba(255, 255, 255, 0.96);
   --pz-hairline: rgba(37, 37, 37, 0.14);
   --pz-hairline-2: rgba(37, 37, 37, 0.26);
@@ -1216,8 +1222,8 @@ html.prism-locked body {
   display: grid;
   place-items: center;
   padding: clamp(10px, 3vh, 40px);
-  background: rgba(10, 10, 10, 0.66);
-  backdrop-filter: blur(8px);
+  /* Dense rather than blurred: the stage keeps moving behind an open case study. */
+  background: rgba(10, 10, 10, 0.86);
 }
 
 .prism-console {

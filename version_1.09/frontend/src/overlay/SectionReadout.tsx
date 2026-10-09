@@ -19,15 +19,23 @@ export function SectionReadout() {
   const rig = useScrollRig();
   const act = useCurrentAct();
   const barRef = useRef<HTMLSpanElement>(null);
-  const stepRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     let frame = 0;
+    let last = '';
     const tick = () => {
       const t = rig.state.current.t;
       const within = Math.max(0, Math.min(1, (t - act.t0) / (act.t1 - act.t0)));
-      if (barRef.current) barRef.current.style.transform = `scaleX(${within.toFixed(3)})`;
-      if (stepRef.current) stepRef.current.textContent = `${act.index} / ${ACTS.length}`;
+      /*
+        Written only when it moves. The pill sits over the moving stage, and any write
+        to it — even the same text or the same transform — invalidates its paint, so a
+        parked page used to repaint it on every display frame.
+      */
+      const next = `scaleX(${within.toFixed(3)})`;
+      if (next !== last && barRef.current) {
+        last = next;
+        barRef.current.style.transform = next;
+      }
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
@@ -44,7 +52,7 @@ export function SectionReadout() {
       <p className="prism-readout-line">
         <span className="prism-readout-label">Exploring</span>
         <span className="prism-readout-name">{act.name}</span>
-        <span ref={stepRef} className="prism-readout-step">
+        <span className="prism-readout-step">
           {act.index} / {ACTS.length}
         </span>
       </p>

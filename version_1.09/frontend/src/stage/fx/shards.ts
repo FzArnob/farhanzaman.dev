@@ -8,10 +8,9 @@
  * mark. If each renderer carried its own copy of that choreography, the two versions
  * of the site would drift apart the first time either was touched.
  *
- * So this file owns where every shard is, and nothing else. It never draws. Both
- * renderers turn each shard into the same tumbling crystal from the same numbers: the
- * WebGL field as an instance matrix, the 2D point field by projecting and shading the
- * solid itself.
+ * So this file owns where every shard is, and nothing else. It never draws. The 2D
+ * point field turns each shard into a folded diamond; the WebGL field writes the same
+ * numbers into an instance matrix and gets a real crystal that catches real light.
  *
  * The lease protocol is unchanged from the WebGL build: acts do not create shards,
  * they claim a slice of the pool for one frame and say where those shards should be.
@@ -26,6 +25,16 @@ import { ACT_BY_ID, WORLD, clamp01, ramp, smooth } from '../timeline';
 
 /** The gather runs over act 09's arrival, so it is finished before its hold begins. */
 const CONTACT = ACT_BY_ID.contact;
+
+/**
+ * The closing halo's half-width and half-height at mark scale 1, in world units. The F
+ * spans about ±0.87 across and ±1.2 up and down; the halo clears both with room for the
+ * larger diamonds.
+ */
+const RING_X = 2.15;
+const RING_Y = 1.9;
+/** How far the halo leans back in depth, as a share of its height. */
+const RING_LEAN = 0.35;
 
 export interface ShardLease {
   /** Where the shard is being pulled to, in world units. */
@@ -57,11 +66,7 @@ export class ShardSim {
    * toward the key and some away, which is what a cloud of real crystal does.
    */
   readonly bright: Float32Array;
-  /**
-   * An in-plane spin the 2D renderer's flat diamond used. Nothing draws from it now
-   * both renderers tumble the solid, but its draw stays in the seeded stream so every
-   * shard after it still hangs where it always did.
-   */
+  /** In-plane spin, for the 2D renderer's diamond. Radians per second. */
   readonly spin: Float32Array;
   readonly phase: Float32Array;
   /** Tumble rates about three axes, for the 3D renderer. Stride 3. */
@@ -162,13 +167,16 @@ export class ShardSim {
     }
 
     /*
-      Act 09 gathers every shard into an orbit around the closing mark — a flat ring
-      seen nearly edge-on, turning slowly — wherever the mark has been hung this frame
-      and sized to it. It used to close to a disc in front of a fixed point, which on
-      most screens was right behind the contact details.
+      Act 09 gathers every shard into a halo around the closing mark, wherever the mark
+      has been hung this frame and sized to it. The ring faces the camera — the closing
+      shot looks straight down −z — and is an upright ellipse cut wider and taller than
+      the F's own outline, so the logo sits inside the circle of diamonds rather than
+      behind a band of them. It leans back a little in depth, the top arc behind the
+      mark and the bottom in front, so it still reads as a ring and not a flat wreath.
     */
     const eased = smooth(ramp(t, CONTACT.t0, CONTACT.h0));
-    const ring = 2.3 * contactMark.scale;
+    const ringX = RING_X * contactMark.scale;
+    const ringY = RING_Y * contactMark.scale;
     const turn = time * 0.12;
 
     for (let i = 0; i < n; i++) {
@@ -189,12 +197,14 @@ export class ShardSim {
       }
 
       if (eased > 0) {
-        // Ring in from wide, each shard on its own lane so the orbit has some depth.
+        // Ring in from wide, each shard on its own lane so the halo has some body. The
+        // narrowest lane still clears the mark by a shard's width all the way round.
         const a = phase + turn * drift;
-        const r = ring * (0.86 + drift * 0.24) * (1 + (1 - eased) * 2.2);
-        x += (contactMark.x + Math.cos(a) * r - x) * eased;
-        y += (contactMark.y + Math.sin(a) * r * 0.14 - y) * eased;
-        z += (contactMark.z + Math.sin(a) * r * 0.8 - z) * eased;
+        const lane = (0.92 + drift * 0.16) * (1 + (1 - eased) * 2.2);
+        const sin = Math.sin(a);
+        x += (contactMark.x + Math.cos(a) * ringX * lane - x) * eased;
+        y += (contactMark.y + sin * ringY * lane - y) * eased;
+        z += (contactMark.z - sin * ringY * lane * RING_LEAN - z) * eased;
         scale += (this.base[i] * (0.35 + 0.55 * Math.min(1.4, contactMark.scale)) - scale) * eased;
       }
 

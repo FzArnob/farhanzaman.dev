@@ -642,15 +642,20 @@ html:has(link[data-theme='light']) .pz3-skill-label.is-crimson.is-active {
 .pz3-clip-3d {
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Flat: the screen, its picture and its glass are one layer, turned as one. */
+.pz3-clip .pz3-gloss {
+  transform: none;
 }
 
 .pz3-clip-img {
   position: absolute;
-  inset: 6%;
-  width: 88%;
-  height: 88%;
-  transform: translateZ(1px);
+  inset: 5%;
+  width: 90%;
+  height: 90%;
   object-fit: cover;
 }
 

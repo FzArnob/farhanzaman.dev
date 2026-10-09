@@ -29,6 +29,8 @@ interface Entry {
   drift: number;
   /** 0 → 1 animation progress, advanced by elapsed time. */
   p: number;
+  /** The progress last written to the element; -1 before the first write. */
+  written: number;
 }
 
 /** Milliseconds for the entrance, and for the quicker exit. */
@@ -70,6 +72,13 @@ function loop(now: number) {
     const entering = e.actId === showing;
     const step = dt / (entering ? IN_MS : OUT_MS);
     e.p = entering ? Math.min(1, e.p + step) : Math.max(0, e.p - step);
+    /*
+      A block at rest is left alone. Writing the same opacity back every frame still
+      invalidates the element's paint, and these panels sit over the moving stage — so
+      nine settled blocks were being repainted on every display frame for nothing.
+    */
+    if (e.p === e.written) return;
+    e.written = e.p;
 
     const eased = smooth(e.p);
     e.el.style.opacity = eased.toFixed(3);
@@ -105,7 +114,7 @@ export function useActFade(actId: ActId, drift = 0) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const entry: Entry = { el, actId, drift, p: 0 };
+    const entry: Entry = { el, actId, drift, p: 0, written: -1 };
     entries.add(entry);
     return () => {
       entries.delete(entry);
