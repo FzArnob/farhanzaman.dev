@@ -234,7 +234,14 @@ function moteTexture(): THREE.Texture {
 /* -------------------------------------------------------------- inclusion */
 
 /** The logo canvas: square, the mark fitted inside it, transparent everywhere else. */
-const INCLUSION_PX = 512;
+const INCLUSION_PX = 1024;
+
+/**
+ * The share of the canvas the mark fills. The rest is a clear margin, because the glow
+ * is read from the texture's low mips and spreads past the mark: a logo drawn edge to
+ * edge pushes that glow into the canvas border, where it is cut off into a hard square.
+ */
+const INCLUSION_FILL = 0.7;
 
 /**
  * A project's logo as a texture, drawn into a square canvas so every mark — a wide
@@ -257,8 +264,12 @@ function inclusionTexture(url: string, fallback: string, anisotropy: number): TH
     if (!g) return;
     const w = img.naturalWidth || INCLUSION_PX;
     const h = img.naturalHeight || INCLUSION_PX;
-    const k = INCLUSION_PX / Math.max(w, h);
+    const k = (INCLUSION_PX * INCLUSION_FILL) / Math.max(w, h);
     g.clearRect(0, 0, INCLUSION_PX, INCLUSION_PX);
+    // Most logos are a few hundred pixels and are drawn up here; the browser's best
+    // resampling keeps their lines clean rather than stepped.
+    g.imageSmoothingEnabled = true;
+    g.imageSmoothingQuality = 'high';
     g.drawImage(img, (INCLUSION_PX - w * k) / 2, (INCLUSION_PX - h * k) / 2, w * k, h * k);
     tex.needsUpdate = true;
   };
@@ -350,8 +361,11 @@ function withInclusion(
           vec3 H = P + R * t - C;
           return vec2(dot(H, bu), dot(H, bv)) / s + 0.5;
         }
-        float inBox(vec2 uv) {
-          return step(0.0, uv.x) * step(uv.x, 1.0) * step(0.0, uv.y) * step(uv.y, 1.0);
+        // Fades to nothing over the canvas margin rather than stopping at its edge, so
+        // nothing read from the texture ever shows the square it was drawn in.
+        float inclEdge(vec2 uv) {
+          vec2 e = smoothstep(0.0, 0.1, uv) * smoothstep(0.0, 0.1, 1.0 - uv);
+          return e.x * e.y;
         }`
       )
       .replace(
@@ -372,28 +386,38 @@ function withInclusion(
           vec2 uvR = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.44);
           vec2 uvG = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.50);
           vec2 uvB = inclusionUv(P, V, N, C, nP, bu, bv, s, 1.0 / 1.56);
-          vec4 tR = texture2D(uIncl, uvR) * inBox(uvR);
-          vec4 tG = texture2D(uIncl, uvG) * inBox(uvG);
-          vec4 tB = texture2D(uIncl, uvB) * inBox(uvB);
-          float a = (tR.a + tG.a + tB.a) / 3.0;
-          vec3 ink = vec3(tR.r * tR.a, tG.g * tG.a, tB.b * tB.a);
+          // A slight negative bias: the logos are drawn up from small images, and the
+          // mip the hardware picks for them is a step softer than the screen needs.
+          vec4 tR = texture2D(uIncl, uvR, -0.5) * inclEdge(uvR);
+          vec4 tG = texture2D(uIncl, uvG, -0.5) * inclEdge(uvG);
+          vec4 tB = texture2D(uIncl, uvB, -0.5) * inclEdge(uvB);
+          float cover = (tR.a + tG.a + tB.a) / 3.0;
+          vec3 ink = vec3(tR.r * tR.a, tG.g * tG.a, tB.b * tB.a) / max(cover, 1e-3);
+          // Firm the edge the upscale left soft, so the mark's lines read as lines.
+          float a = smoothstep(0.04, 0.72, cover);
+
+          // The face turned to you shows the mark whole; the oblique faces either side
+          // show it again, displaced, and quieter, so they read as the glass at work and
+          // not as more copies of the logo.
+          float face = mix(0.5, 1.0, smoothstep(0.55, 0.95, -dot(N, V)));
 
           // The brand light pooled around the mark, and a softer echo of it from deeper
-          // in. Both from low mips: neither costs more than a lookup.
-          float glow = textureLod(uIncl, uvG, 5.5).a * inBox(uvG);
+          // in. Both from low mips, so each is a blur of the logo's own silhouette for
+          // the price of one lookup — and both low enough that neither reads as a copy.
+          float glow = textureLod(uIncl, uvG, 6.0).a * inclEdge(uvG);
           vec2 uvE = inclusionUv(P, V, N, C - nP * s * 0.5, nP, bu, bv, s * 1.16, 1.0 / 1.5);
-          float echo = textureLod(uIncl, uvE, 3.0).a * inBox(uvE);
+          float echo = textureLod(uIncl, uvE, 6.5).a * inclEdge(uvE);
 
-          float lit = clamp(uInclShine * 0.5, 0.0, 1.0);
+          float lit = clamp(uInclShine * 0.5, 0.0, 1.0) * face;
           float around = 1.0 - a;
           // The mark stands in front of the glass behind it...
-          diffuseColor.rgb = mix(diffuseColor.rgb, ink / max(a, 1e-3) * 0.45, a * lit * 0.85);
+          diffuseColor.rgb = mix(diffuseColor.rgb, ink * 0.45, a * lit * 0.92);
           diffuseColor.a = min(1.0, diffuseColor.a * (1.0 + a * lit * 0.14));
           // ...is lit from inside, and is backed by the crystal's own colour. Half-lit, not
           // fully: a pale mark at full self-light crosses the bloom threshold and flares
           // into a white blob that no longer reads as anything.
-          totalEmissiveRadiance += ink * uInclLift * lit * 0.5;
-          totalEmissiveRadiance += uInclTint * (glow * 0.62 + echo * 0.22) * around * lit * uInclLift;
+          totalEmissiveRadiance += ink * a * uInclLift * lit * 0.5;
+          totalEmissiveRadiance += uInclTint * (glow * 0.5 + echo * 0.16) * around * lit * uInclLift;
           // Where the mark is, the surface's own glare is held back (see below).
           inclGlare = 1.0 - 0.8 * clamp(max(a, glow) * lit, 0.0, 1.0);
         }`
@@ -616,7 +640,8 @@ export class WebGLStage implements GLDriver {
           m,
           map,
           // Most of the column's width, so the mark sits in the glass with air round it.
-          crystal.radius * Math.cos(Math.PI / 6) * 1.5,
+          // The canvas is larger than the mark by its margin; the mark keeps this size.
+          (crystal.radius * Math.cos(Math.PI / 6) * 1.5) / INCLUSION_FILL,
           tone,
           bloom ? 1 : 0.55
         );
